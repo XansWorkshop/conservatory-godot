@@ -1999,6 +1999,38 @@ void VisualShader::_get_property_list(List<PropertyInfo> *p_list) const {
 		HashMap<String, String> stencil_enums;
 		HashSet<String> stencil_toggles;
 
+		for (int i = 0; i < smodes.size(); i++) {
+			const ShaderLanguage::ModeInfo &info = smodes[i];
+
+			if (!info.options.is_empty()) {
+				const String begin = String(info.name);
+
+				for (int j = 0; j < info.options.size(); j++) {
+					const String option = String(info.options[j]).capitalize();
+
+					if (!stencil_enums.has(begin)) {
+						stencil_enums[begin] = option;
+					} else {
+						stencil_enums[begin] += "," + option;
+					}
+				}
+			} else {
+				stencil_toggles.insert(String(info.name));
+			}
+		}
+
+	const Vector<ShaderLanguage::ModeInfo> &smodes = ShaderTypes::get_singleton()->get_stencil_modes(RenderingServer::ShaderMode(shader_mode));
+
+	if (smodes.size() > 0) {
+		p_list->push_back(PropertyInfo(Variant::BOOL, vformat("%s/%s", PNAME("stencil"), PNAME("enabled"))));
+
+		uint32_t stencil_prop_usage = stencil_enabled ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_STORAGE;
+
+		p_list->push_back(PropertyInfo(Variant::INT, vformat("%s/%s", PNAME("stencil"), PNAME("reference")), PROPERTY_HINT_RANGE, "0,255,1", stencil_prop_usage));
+
+		HashMap<String, String> stencil_enums;
+		HashSet<String> stencil_toggles;
+
 		for (const ShaderLanguage::ModeInfo &info : smodes) {
 			if (!info.options.is_empty()) {
 				const String begin = String(info.name);
