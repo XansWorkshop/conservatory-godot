@@ -214,6 +214,11 @@ void SceneShaderForwardMobile::ShaderData::set_code(const String &p_code) {
 	stencil_compare = StencilCompare(stencil_comparei);
 	stencil_reference = stencil_referencei;
 
+	stencil_enabled = stencil_referencei != -1;
+	stencil_flags = stencil_readi | stencil_writei | stencil_write_depth_faili;
+	stencil_compare = StencilCompare(stencil_comparei);
+	stencil_reference = stencil_referencei;
+
 #ifdef DEBUG_ENABLED
 	if (uses_sss) {
 		WARN_PRINT_ONCE_ED("Subsurface scattering is only available when using the Forward+ renderer.");
