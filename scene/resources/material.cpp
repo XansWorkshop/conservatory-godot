@@ -810,6 +810,35 @@ void BaseMaterial3D::_update_shader() {
 			break; // Internal value, skip.
 	}
 
+	switch (depth_function) {
+		case DEPTH_FUNCTION_GREATER_OR_EQUAL:
+			code += ", depth_function_greater_or_equal";
+			break;
+		case DEPTH_FUNCTION_LESS_OR_EQUAL:
+			code += ", depth_function_less_or_equal";
+			break;
+		case DEPTH_FUNCTION_LESS:
+			code += ", depth_function_less";
+			break;
+		case DEPTH_FUNCTION_EQUAL:
+			code += ", depth_function_equal";
+			break;
+		case DEPTH_FUNCTION_GREATER:
+			code += ", depth_function_greater";
+			break;
+		case DEPTH_FUNCTION_NOT_EQUAL:
+			code += ", depth_function_not_equal";
+			break;
+		case DEPTH_FUNCTION_ALWAYS:
+			code += ", depth_function_always";
+			break;
+		case DEPTH_FUNCTION_NEVER:
+			code += ", depth_function_never";
+			break;
+		case DEPTH_FUNCTION_MAX:
+			break; // Internal value, skip.
+	}
+
 	switch (cull_mode) {
 		case CULL_BACK:
 			code += ", cull_back";
@@ -3557,6 +3586,7 @@ void BaseMaterial3D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "blend_mode", PROPERTY_HINT_ENUM, "Mix,Add,Subtract,Multiply,Premultiplied Alpha"), "set_blend_mode", "get_blend_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "cull_mode", PROPERTY_HINT_ENUM, "Back,Front,Disabled"), "set_cull_mode", "get_cull_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "depth_draw_mode", PROPERTY_HINT_ENUM, "Opaque Only,Always,Never"), "set_depth_draw_mode", "get_depth_draw_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "depth_function", PROPERTY_HINT_ENUM, "Greater or Equal,Less or Equal,Less,Equal,Greater,Not Equal,Always,Never"), "set_depth_function", "get_depth_function");
 	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "no_depth_test"), "set_flag", "get_flag", FLAG_DISABLE_DEPTH_TEST);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "depth_test", PROPERTY_HINT_ENUM, "Default,Inverted"), "set_depth_test", "get_depth_test");
 
