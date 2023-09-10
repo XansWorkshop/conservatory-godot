@@ -167,6 +167,10 @@
 			Determines which comparison operator is used when testing depth. See [enum DepthFunction].
 			[b]Note:[/b] Changing [member depth_function] to a non-default value only has a visible effect when used on a transparent material, or a material that has [member depth_draw_mode] set to [constant DEPTH_DRAW_DISABLED].
 		</member>
+		<member name="depth_function" type="int" setter="set_depth_function" getter="get_depth_function" enum="BaseMaterial3D.DepthFunction" default="0">
+			Determines which comparison operator is used when testing depth. See [enum DepthFunction].
+			[b]Note:[/b] Changing [member depth_function] to a non-default value only has a visible effect when used on a transparent material, or a material that has [member depth_draw_mode] set to [constant DEPTH_DRAW_DISABLED].
+		</member>
 		<member name="detail_albedo" type="Texture2D" setter="set_texture" getter="get_texture">
 			Texture that specifies the color of the detail overlay. [member detail_albedo]'s alpha channel is used as a mask, even when the material is opaque. To use a dedicated texture as a mask, see [member detail_mask].
 			[b]Note:[/b] [member detail_albedo] is [i]not[/i] modulated by [member albedo_color].
