@@ -12,6 +12,8 @@ This fork of the Godot Engine is based on **Godot 4.5**, and features several ch
 * Implementation of `RayCastResult` which works in tandem with `RayCast3DDirect`.
   * This technique provides context as to what *kind* of object got hit. In particular, this is important for *The Conservatory* as it has many physics objects without nodes. Being able to know if it's an area or a body is vital.
 * Support for the stencil buffer from [apples](https://github.com/apples)'s fork of the engine ([Fork](https://github.com/apples/godot/tree/7174-apples-stencil) | [Pull Request](https://github.com/godotengine/godot/pull/80710))
+* Support for `#pragma features` and `#pragma exclusive_variants` in the shader language. 
+  * These don't do anything on the engine level and are instead used in some code in *The Conservatory* that previously had to be placed within an `#if false` block to prevent the preprocessor from worrying about it.
 
 ## What's possibly planned?
 * Nothing right now
