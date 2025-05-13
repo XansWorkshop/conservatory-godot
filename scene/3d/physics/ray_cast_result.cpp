@@ -118,15 +118,15 @@ void RayCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("clear"), &RayCastResult::clear);
 	ClassDB::bind_method(D_METHOD("copy_to", "destination"), &RayCastResult::copy_to);
 
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::BOOL, "success", PROPERTY_HINT_NONE), "set_success", "get_success");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "hit_position", PROPERTY_HINT_NONE, "suffix:m"), "set_hit_position", "get_hit_position");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "hit_normal", PROPERTY_HINT_NONE, "suffix:m"), "set_hit_normal", "get_hit_normal");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::RID, "hit_rid", PROPERTY_HINT_NONE), "set_rid", "get_rid");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_collider_id", PROPERTY_HINT_NONE), "set_collider_id", "get_collider_id");
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "hit_collider", PROPERTY_HINT_NONE), "get_collider");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_type", PROPERTY_HINT_ENUM, "invalid,area,body,soft_body"), "set_collider_type", "get_collider_type");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_shape_index", PROPERTY_HINT_NONE), "set_shape_index", "get_shape_index");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_face_index", PROPERTY_HINT_NONE), "set_face_index", "get_face_index");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "success", PROPERTY_HINT_NONE), "set_success", "get_success");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "hit_position", PROPERTY_HINT_NONE, "suffix:m"), "set_hit_position", "get_hit_position");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "hit_normal", PROPERTY_HINT_NONE, "suffix:m"), "set_hit_normal", "get_hit_normal");
+	ADD_PROPERTY(PropertyInfo(Variant::RID, "hit_rid", PROPERTY_HINT_NONE), "set_rid", "get_rid");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_collider_id", PROPERTY_HINT_NONE), "set_collider_id", "get_collider_id");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "hit_collider", PROPERTY_HINT_NONE), "get_collider", "");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_type", PROPERTY_HINT_ENUM, "invalid,area,body,soft_body"), "set_collider_type", "get_collider_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_shape_index", PROPERTY_HINT_NONE), "set_shape_index", "get_shape_index");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_face_index", PROPERTY_HINT_NONE), "set_face_index", "get_face_index");
 }
 
 RayCastResult::RayCastResult() {
