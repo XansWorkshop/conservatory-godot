@@ -797,6 +797,16 @@ void ShaderPreprocessor::process_pragma(Tokenizer *p_tokenizer) {
 	// If more pragma options are created, then refactor into a more defined structure.
 	if (label == "disable_preprocessor") {
 		state->disabled = true;
+	} else if (label == "features" || label == "exclusive_variants") {
+		String body = tokens_to_string(p_tokenizer->advance('\n')).strip_edges();
+		if (body.is_empty()) {
+			if (label == "features") {
+				set_error(RTR("At least one MACRO_CASE feature name should be written after #pragma features"), line);
+			} else {
+				set_error(RTR("At least one MACRO_CASE variant name should be written after #pragma exclusive_variants"), line);
+			}
+		}
+		return;
 	} else {
 		set_error(vformat(RTR("Invalid '%s' directive."), "pragma"), line);
 		return;
@@ -1445,6 +1455,8 @@ void ShaderPreprocessor::get_keyword_list(List<String> *r_keywords, bool p_inclu
 
 void ShaderPreprocessor::get_pragma_list(List<String> *r_pragmas) {
 	r_pragmas->push_back("disable_preprocessor");
+	r_pragmas->push_back("features");
+	r_pragmas->push_back("exclusive_variants");
 }
 
 ShaderPreprocessor::ShaderPreprocessor() {
