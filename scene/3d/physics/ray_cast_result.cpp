@@ -94,6 +94,8 @@ void RayCastResult::copy_to(const Ref<RayCastResult> &p_destination) const {
 	other->success = success;
 }
 
+#define ADD_READONLY_PROPERTY(m_property, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(), _scs_create(m_getter))
+
 void RayCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_success"), &RayCastResult::get_success);
 	ClassDB::bind_method(D_METHOD("get_hit_position"), &RayCastResult::get_hit_position);
@@ -123,11 +125,13 @@ void RayCastResult::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "hit_normal", PROPERTY_HINT_NONE, "suffix:m"), "set_hit_normal", "get_hit_normal");
 	ADD_PROPERTY(PropertyInfo(Variant::RID, "hit_rid", PROPERTY_HINT_NONE), "set_rid", "get_rid");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_collider_id", PROPERTY_HINT_NONE), "set_collider_id", "get_collider_id");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "hit_collider", PROPERTY_HINT_NONE), "get_collider", "");
+	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "hit_collider", PROPERTY_HINT_NONE), "get_collider");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_type", PROPERTY_HINT_ENUM, "invalid,area,body,soft_body"), "set_collider_type", "get_collider_type");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_shape_index", PROPERTY_HINT_NONE), "set_shape_index", "get_shape_index");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_face_index", PROPERTY_HINT_NONE), "set_face_index", "get_face_index");
 }
+
+#undef ADD_READONLY_PROPERTY
 
 RayCastResult::RayCastResult() {
 }

@@ -39,7 +39,6 @@
 #include "scene/3d/node_3d.h"
 #include "servers/physics_server_3d.h"
 #include "scene/3d/physics/collision_object_3d.h"
-#include "core/conservatory_extensions.h"
 #include "scene/3d/physics/ray_cast_result.h"
 
 class RayCast3DDirect : public RefCounted {
