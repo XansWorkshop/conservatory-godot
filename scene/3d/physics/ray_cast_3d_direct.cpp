@@ -193,6 +193,7 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 	ERR_FAIL_COND_V_MSG(p_parameters.is_null(), false, "The PhysicsRayQueryParameters3D instance is not valid.");
 	ERR_FAIL_COND_V_MSG(p_result.is_null(), false, "The RayCastResult instance is not valid.");
 
+	
 	PhysicsDirectSpaceState3D::RayResult rr;
 
 	if (dss->intersect_ray(p_parameters->get_parameters(), rr)) {
