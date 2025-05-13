@@ -278,6 +278,8 @@ bool RayCast3DDirect::is_hit_back_faces_enabled() const {
 	return hit_back_faces;
 }
 
+#define ADD_READONLY_PROPERTY(m_property, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(), _scs_create(m_getter))
+
 void RayCast3DDirect::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_source_position", "global_point"), &RayCast3DDirect::set_source_position);
 	ClassDB::bind_method(D_METHOD("get_source_position"), &RayCast3DDirect::get_source_position);
@@ -347,6 +349,8 @@ void RayCast3DDirect::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_with_areas", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collide_with_areas", "is_collide_with_areas_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_with_bodies", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collide_with_bodies", "is_collide_with_bodies_enabled");
 }
+
+#undef ADD_READONLY_PROPERTY
 
 RayCast3DDirect::RayCast3DDirect() {
 }

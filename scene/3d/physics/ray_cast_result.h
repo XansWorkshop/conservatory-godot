@@ -9,7 +9,6 @@
 #include "core/templates/rid.h"
 #include "core/math/vector3.h"
 #include "core/variant/binder_common.h"
-#include "core/conservatory_extensions.h"
 
 class RayCastResult : public RefCounted {
 	GDCLASS(RayCastResult, RefCounted);
