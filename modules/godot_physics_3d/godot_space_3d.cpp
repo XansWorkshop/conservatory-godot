@@ -203,6 +203,7 @@ bool GodotPhysicsDirectSpaceState3D::intersect_ray(const RayParameters &p_parame
 	r_result.position = res_point;
 	r_result.rid = res_obj->get_self();
 	r_result.shape = res_shape;
+	r_result.type = (int)res_obj->get_type() + 1;
 
 	return true;
 }
