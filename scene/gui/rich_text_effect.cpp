@@ -33,6 +33,7 @@
 #include "core/object/script_language.h"
 
 CharFXTransform::CharFXTransform() {
+	label = nullptr;
 }
 
 CharFXTransform::~CharFXTransform() {
