@@ -60,6 +60,8 @@ public:
 	const StringName ready = "ready";
 	const StringName _ready = "_ready";
 
+	const StringName global_input = "global_input";
+
 	const StringName item_rect_changed = "item_rect_changed";
 	const StringName size_flags_changed = "size_flags_changed";
 	const StringName minimum_size_changed = "minimum_size_changed";
