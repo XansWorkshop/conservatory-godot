@@ -35,6 +35,7 @@
 #include "core/input/default_controller_mappings.h"
 #include "core/input/input_map.h"
 #include "core/os/os.h"
+#include "scene/scene_string_names.h"
 
 #ifdef DEV_ENABLED
 #include "core/os/thread.h"
@@ -47,8 +48,6 @@
 #define EVENT_DISPATCH_FUNCTION_VALID event_dispatch_function
 #endif
 #endif
-
-const StringName global_input = "global_input";
 
 static const char *_joy_buttons[(size_t)JoyButton::SDL_MAX] = {
 	"a",
@@ -1248,7 +1247,7 @@ void Input::event_dispatch_function(const Ref<InputEvent> &p_event) const {
 
 	Variant variant = Variant(p_event.ptr());
 	const Variant *vptr = &variant;
-	singleton->emit_signalp(global_input, &vptr, 1);
+	singleton->emit_signalp(SceneStringName(global_input), &vptr, 1);
 }
 #endif
 
