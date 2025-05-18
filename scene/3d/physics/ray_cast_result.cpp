@@ -9,13 +9,13 @@ Vector3 RayCastResult::get_hit_normal() const {
 RID RayCastResult::get_rid() const {
 	return rid;
 }
-ObjectID RayCastResult::_get_collider_id() const {
+ObjectID RayCastResult::_get_hit_object_id() const {
 	return collider_id;
 }
-int64_t RayCastResult::get_collider_id() const {
+int64_t RayCastResult::get_hit_object_id() const {
 	return (int64_t)collider_id;
 }
-Object *RayCastResult::get_collider() const {
+Object *RayCastResult::get_hit_object() const {
 	return collider;
 }
 int RayCastResult::get_collider_type() const {
@@ -40,10 +40,10 @@ void RayCastResult::set_hit_normal(const Vector3 &p_normal) {
 void RayCastResult::set_rid(const RID &p_rid) {
 	rid = p_rid;
 }
-void RayCastResult::_set_collider_id(const ObjectID &p_id) {
+void RayCastResult::_set_hit_object_id(const ObjectID &p_id) {
 	collider_id = p_id;
 }
-void RayCastResult::set_collider_id_and_instance(const int64_t p_id) {
+void RayCastResult::set_hit_object_id_and_instance(const int64_t p_id) {
 	// The public version
 	collider_id = ObjectID(p_id);
 	if (!collider_id.is_null()) {
@@ -52,8 +52,8 @@ void RayCastResult::set_collider_id_and_instance(const int64_t p_id) {
 		collider = nullptr;
 	}
 }
-void RayCastResult::set_collider(Object *p_collider) {
-	collider = p_collider;
+void RayCastResult::set_hit_object(const Object *p_collider) {
+	collider = (Object*)p_collider;
 }
 void RayCastResult::set_collider_type(int p_type) {
 	type = p_type;
@@ -101,8 +101,8 @@ void RayCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_hit_position"), &RayCastResult::get_hit_position);
 	ClassDB::bind_method(D_METHOD("get_hit_normal"), &RayCastResult::get_hit_normal);
 	ClassDB::bind_method(D_METHOD("get_rid"), &RayCastResult::get_rid);
-	ClassDB::bind_method(D_METHOD("get_collider_id"), &RayCastResult::get_collider_id);
-	ClassDB::bind_method(D_METHOD("get_collider"), &RayCastResult::get_collider);
+	ClassDB::bind_method(D_METHOD("get_hit_object_id"), &RayCastResult::get_hit_object_id);
+	ClassDB::bind_method(D_METHOD("get_hit_godot_object"), &RayCastResult::get_hit_object);
 	ClassDB::bind_method(D_METHOD("get_collider_type"), &RayCastResult::get_collider_type);
 	ClassDB::bind_method(D_METHOD("get_shape_index"), &RayCastResult::get_shape_index);
 	ClassDB::bind_method(D_METHOD("get_face_index"), &RayCastResult::get_face_index);
@@ -111,8 +111,7 @@ void RayCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_hit_position"), &RayCastResult::set_hit_position);
 	ClassDB::bind_method(D_METHOD("set_hit_normal"), &RayCastResult::set_hit_normal);
 	ClassDB::bind_method(D_METHOD("set_rid"), &RayCastResult::set_rid);
-	ClassDB::bind_method(D_METHOD("set_collider_id"), &RayCastResult::set_collider_id_and_instance);
-	// ClassDB::bind_method(D_METHOD("set_collider"), &RayCastResult::set_collider);
+	ClassDB::bind_method(D_METHOD("set_hit_object_id"), &RayCastResult::set_hit_object_id_and_instance);
 	ClassDB::bind_method(D_METHOD("set_collider_type"), &RayCastResult::set_collider_type);
 	ClassDB::bind_method(D_METHOD("set_shape_index"), &RayCastResult::set_shape_index);
 	ClassDB::bind_method(D_METHOD("set_face_index"), &RayCastResult::set_face_index);
@@ -124,8 +123,8 @@ void RayCastResult::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "hit_position", PROPERTY_HINT_NONE, "suffix:m"), "set_hit_position", "get_hit_position");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "hit_normal", PROPERTY_HINT_NONE, "suffix:m"), "set_hit_normal", "get_hit_normal");
 	ADD_PROPERTY(PropertyInfo(Variant::RID, "hit_rid", PROPERTY_HINT_NONE), "set_rid", "get_rid");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_collider_id", PROPERTY_HINT_NONE), "set_collider_id", "get_collider_id");
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "hit_collider", PROPERTY_HINT_NONE), "get_collider");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_object_id", PROPERTY_HINT_NONE), "set_hit_object_id", "get_hit_object_id");
+	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "hit_godot_object", PROPERTY_HINT_NONE), "get_hit_godot_object");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_type", PROPERTY_HINT_ENUM, "invalid,area,body,soft_body"), "set_collider_type", "get_collider_type");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_shape_index", PROPERTY_HINT_NONE), "set_shape_index", "get_shape_index");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "hit_face_index", PROPERTY_HINT_NONE), "set_face_index", "get_face_index");

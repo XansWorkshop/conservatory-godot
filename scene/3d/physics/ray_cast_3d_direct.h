@@ -101,8 +101,8 @@ public:
 	void store_in_result(const Ref<RayCastResult> &p_result) const;
 
 	bool get_hit_something() const;
-	Object *get_collider() const;
-	ObjectID get_collider_id() const;
+	Object *get_hit_object() const;
+	ObjectID get_hit_object_id() const;
 	RID get_collider_rid() const;
 	int get_collider_type() const;
 	int get_collider_shape() const;
