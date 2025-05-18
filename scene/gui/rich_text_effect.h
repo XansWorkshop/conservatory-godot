@@ -32,6 +32,7 @@
 
 #include "core/io/resource.h"
 #include "core/object/gdvirtual.gen.inc"
+#include "scene/gui/rich_text_label.h"
 
 class CharFXTransform : public RefCounted {
 	GDCLASS(CharFXTransform, RefCounted);
@@ -40,6 +41,7 @@ protected:
 	static void _bind_methods();
 
 public:
+	RichTextLabel* label;
 	Transform2D transform;
 	Vector2i range;
 	bool visibility = true;
@@ -57,25 +59,28 @@ public:
 	CharFXTransform();
 	~CharFXTransform();
 
-	void set_transform(const Transform2D &p_transform) { transform = p_transform; }
-	const Transform2D &get_transform() { return transform; }
+	RichTextLabel *get_label() const { return label; }
+	void set_label(const RichTextLabel *p_label) { label = (RichTextLabel*)p_label; }
 
-	Vector2i get_range() { return range; }
+	const Transform2D &get_transform() const { return transform; }
+	void set_transform(const Transform2D &p_transform) { transform = p_transform; }
+
+	Vector2i get_range() const { return range; }
 	void set_range(const Vector2i &p_range) { range = p_range; }
 
-	double get_elapsed_time() { return elapsed_time; }
+	double get_elapsed_time() const { return elapsed_time; }
 	void set_elapsed_time(double p_elapsed_time) { elapsed_time = p_elapsed_time; }
 
-	bool is_visible() { return visibility; }
+	bool is_visible() const { return visibility; }
 	void set_visibility(bool p_visibility) { visibility = p_visibility; }
 
-	bool is_outline() { return outline; }
+	bool is_outline() const { return outline; }
 	void set_outline(bool p_outline) { outline = p_outline; }
 
-	Point2 get_offset() { return offset; }
+	Point2 get_offset() const { return offset; }
 	void set_offset(Point2 p_offset) { offset = p_offset; }
 
-	Color get_color() { return color; }
+	Color get_color() const { return color; }
 	void set_color(Color p_color) { color = p_color; }
 
 	uint32_t get_glyph_index() const { return glyph_index; }
@@ -93,8 +98,9 @@ public:
 	RID get_font() const { return font; }
 	void set_font(RID p_font) { font = p_font; }
 
-	Dictionary get_environment() { return environment; }
+	Dictionary get_environment() const { return environment; }
 	void set_environment(Dictionary p_environment) { environment = p_environment; }
+
 };
 
 class RichTextEffect : public Resource {
