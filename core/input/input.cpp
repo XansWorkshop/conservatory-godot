@@ -40,6 +40,16 @@
 #include "core/os/thread.h"
 #endif
 
+#ifndef EVENT_DISPATCH_FUNCTION_VALID
+#ifdef CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
+#define EVENT_DISPATCH_FUNCTION_VALID true
+#else
+#define EVENT_DISPATCH_FUNCTION_VALID event_dispatch_function
+#endif
+#endif
+
+const StringName global_input = StaticCString::create("global_input");
+
 static const char *_joy_buttons[(size_t)JoyButton::SDL_MAX] = {
 	"a",
 	"b",
@@ -200,6 +210,10 @@ void Input::_bind_methods() {
 	BIND_ENUM_CONSTANT(CURSOR_HELP);
 
 	ADD_SIGNAL(MethodInfo("joy_connection_changed", PropertyInfo(Variant::INT, "device"), PropertyInfo(Variant::BOOL, "connected")));
+
+#ifdef CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
+	ADD_SIGNAL(MethodInfo("global_input", PropertyInfo(Variant::OBJECT, "event", PROPERTY_HINT_NONE, "" , 6U, "InputEvent")));
+#endif
 }
 
 #ifdef TOOLS_ENABLED
@@ -706,7 +720,7 @@ void Input::_parse_input_event_impl(const Ref<InputEvent> &p_event, bool p_is_em
 			set_mouse_position(pos);
 		}
 
-		if (event_dispatch_function && emulate_touch_from_mouse && !p_is_emulated && mb->get_button_index() == MouseButton::LEFT) {
+		if (EVENT_DISPATCH_FUNCTION_VALID && emulate_touch_from_mouse && !p_is_emulated && mb->get_button_index() == MouseButton::LEFT) {
 			Ref<InputEventScreenTouch> touch_event;
 			touch_event.instantiate();
 			touch_event->set_pressed(mb->is_pressed());
@@ -731,7 +745,7 @@ void Input::_parse_input_event_impl(const Ref<InputEvent> &p_event, bool p_is_em
 		Vector2 screen_relative = mm->get_relative_screen_position();
 		mouse_velocity_track.update(relative, screen_relative);
 
-		if (event_dispatch_function && emulate_touch_from_mouse && !p_is_emulated && mm->get_button_mask().has_flag(MouseButtonMask::LEFT)) {
+		if (EVENT_DISPATCH_FUNCTION_VALID && emulate_touch_from_mouse && !p_is_emulated && mm->get_button_mask().has_flag(MouseButtonMask::LEFT)) {
 			Ref<InputEventScreenDrag> drag_event;
 			drag_event.instantiate();
 
@@ -853,7 +867,7 @@ void Input::_parse_input_event_impl(const Ref<InputEvent> &p_event, bool p_is_em
 	Ref<InputEventGesture> ge = p_event;
 
 	if (ge.is_valid()) {
-		if (event_dispatch_function) {
+		if (EVENT_DISPATCH_FUNCTION_VALID) {
 			_THREAD_SAFE_UNLOCK_
 			event_dispatch_function(ge);
 			_THREAD_SAFE_LOCK_
@@ -897,7 +911,7 @@ void Input::_parse_input_event_impl(const Ref<InputEvent> &p_event, bool p_is_em
 		}
 	}
 
-	if (event_dispatch_function) {
+	if (EVENT_DISPATCH_FUNCTION_VALID) {
 		_THREAD_SAFE_UNLOCK_
 		event_dispatch_function(p_event);
 		_THREAD_SAFE_LOCK_
@@ -1217,8 +1231,26 @@ void Input::release_pressed_events() {
 }
 
 void Input::set_event_dispatch_function(EventDispatchFunc p_function) {
+#ifdef CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
+	event_dispatch_function_instance = p_function;
+#else
 	event_dispatch_function = p_function;
+#endif
 }
+
+#ifdef CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
+void Input::event_dispatch_function(const Ref<InputEvent> &p_event) const {
+	ERR_FAIL_COND_MSG(p_event.is_null(), "The input event was null.");
+
+	if (event_dispatch_function_instance) {
+		event_dispatch_function_instance(p_event);
+	}
+
+	Variant variant = Variant(p_event.ptr());
+	const Variant *vptr = &variant;
+	singleton->emit_signalp(global_input, &vptr, 1);
+}
+#endif
 
 void Input::joy_button(int p_device, JoyButton p_button, bool p_pressed) {
 	_THREAD_SAFE_METHOD_;

@@ -37,6 +37,8 @@
 #include "core/templates/rb_set.h"
 #include "core/variant/typed_array.h"
 
+#define CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
+
 class Input : public Object {
 	GDCLASS(Input, Object);
 	_THREAD_SAFE_CLASS_
@@ -272,7 +274,16 @@ private:
 	static CursorShape (*get_current_cursor_shape_func)();
 	static void (*set_custom_mouse_cursor_func)(const Ref<Resource> &, CursorShape, const Vector2 &);
 
+#ifdef CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
+	EventDispatchFunc event_dispatch_function_instance = nullptr;
+public:
+	// Xan: I use this name now.
+	void event_dispatch_function(const Ref<InputEvent> &p_event) const;
+
+private:
+#else
 	EventDispatchFunc event_dispatch_function = nullptr;
+#endif
 
 #ifndef DISABLE_DEPRECATED
 	void _vibrate_handheld_bind_compat_91143(int p_duration_ms = 500);
