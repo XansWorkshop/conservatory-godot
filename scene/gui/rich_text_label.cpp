@@ -1271,7 +1271,9 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 								charfx->color = font_color;
 								charfx->transform = char_xform;
 
+								charfx->label = this;
 								bool effect_status = custom_effect->_process_effect_impl(charfx);
+								charfx->label = nullptr;
 								custom_fx_ok = effect_status;
 
 								char_xform = charfx->transform;
