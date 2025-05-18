@@ -94,7 +94,7 @@ void RayCastResult::copy_to(const Ref<RayCastResult> &p_destination) const {
 	other->success = success;
 }
 
-#define ADD_READONLY_PROPERTY(m_property, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(), _scs_create(m_getter))
+#define ADD_READONLY_PROPERTY(m_property, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(), StringName(m_getter))
 
 void RayCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_success"), &RayCastResult::get_success);

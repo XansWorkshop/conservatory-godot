@@ -48,7 +48,7 @@
 #endif
 #endif
 
-const StringName global_input = StaticCString::create("global_input");
+const StringName global_input = "global_input";
 
 static const char *_joy_buttons[(size_t)JoyButton::SDL_MAX] = {
 	"a",
