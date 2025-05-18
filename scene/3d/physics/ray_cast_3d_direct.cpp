@@ -84,7 +84,7 @@ bool RayCast3DDirect::get_hit_something() const {
 	return collided;
 }
 
-Object *RayCast3DDirect::get_collider() const {
+Object *RayCast3DDirect::get_hit_object() const {
 	if (against.is_null()) {
 		return nullptr;
 	}
@@ -92,7 +92,7 @@ Object *RayCast3DDirect::get_collider() const {
 	return ObjectDB::get_instance(against);
 }
 
-ObjectID RayCast3DDirect::get_collider_id() const {
+ObjectID RayCast3DDirect::get_hit_object_id() const {
 	return against;
 }
 
@@ -167,7 +167,7 @@ void RayCast3DDirect::store_in_result(const Ref<RayCastResult> &p_result) const 
 	castResult->set_hit_position(collision_point);
 	castResult->set_hit_normal(collision_normal);
 	castResult->set_rid(against_rid);
-	castResult->set_collider_id_and_instance(against);
+	castResult->set_hit_object_id_and_instance(against);
 	castResult->set_collider_type(type);
 	castResult->set_shape_index(against_shape);
 	castResult->set_face_index(collision_face_index);
@@ -188,8 +188,8 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 		castResult->set_hit_position(rr.position);
 		castResult->set_hit_normal(rr.normal);
 		castResult->set_rid(rr.rid);
-		castResult->_set_collider_id(rr.collider_id);
-		castResult->set_collider(rr.collider);
+		castResult->_set_hit_object_id(rr.collider_id);
+		castResult->set_hit_object(rr.collider);
 		castResult->set_collider_type(rr.type);
 		castResult->set_shape_index(rr.shape);
 		castResult->set_face_index(rr.face_index);
@@ -200,8 +200,8 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 		castResult->set_hit_position(Vector3());
 		castResult->set_hit_normal(Vector3());
 		castResult->set_rid(RID());
-		castResult->_set_collider_id(ObjectID());
-		castResult->set_collider(nullptr);
+		castResult->_set_hit_object_id(ObjectID());
+		castResult->set_hit_object(nullptr);
 		castResult->set_collider_type(0);
 		castResult->set_shape_index(0);
 		castResult->set_face_index(0);
@@ -294,8 +294,8 @@ void RayCast3DDirect::_bind_methods() {
 	ClassDB::bind_static_method("RayCast3DDirect", D_METHOD("cast_statically", "space", "parameters", "result"), &RayCast3DDirect::cast_statically);
 
 	ClassDB::bind_method(D_METHOD("get_hit_something"), &RayCast3DDirect::get_hit_something);
-	ClassDB::bind_method(D_METHOD("get_collider"), &RayCast3DDirect::get_collider);
-	ClassDB::bind_method(D_METHOD("get_collider_id"), &RayCast3DDirect::get_collider_id);
+	ClassDB::bind_method(D_METHOD("get_godot_object"), &RayCast3DDirect::get_hit_object);
+	ClassDB::bind_method(D_METHOD("get_object_id"), &RayCast3DDirect::get_hit_object_id);
 	ClassDB::bind_method(D_METHOD("get_collider_rid"), &RayCast3DDirect::get_collider_rid);
 	ClassDB::bind_method(D_METHOD("get_collider_type"), &RayCast3DDirect::get_collider_type);
 	ClassDB::bind_method(D_METHOD("get_collider_shape"), &RayCast3DDirect::get_collider_shape);
@@ -335,8 +335,8 @@ void RayCast3DDirect::_bind_methods() {
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "last_hit_position", PROPERTY_HINT_NONE), "get_collision_point");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "last_hit_normal", PROPERTY_HINT_NONE), "get_collision_normal");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::RID, "last_hit_rid", PROPERTY_HINT_NONE), "get_collider_rid");
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "last_hit_collider_id", PROPERTY_HINT_NONE), "get_collider_id");
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "last_hit_collider", PROPERTY_HINT_NONE), "get_collider");
+	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "last_hit_object_id", PROPERTY_HINT_NONE), "get_object_id");
+	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "last_hit_godot_object", PROPERTY_HINT_NONE), "get_godot_object");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "last_hit_object_type", PROPERTY_HINT_ENUM, "invalid,area,body,soft_body"), "get_collider_type");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "last_hit_shape_index", PROPERTY_HINT_NONE), "get_collider_shape");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "last_hit_face_index", PROPERTY_HINT_NONE), "get_collider_face_index");

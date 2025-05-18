@@ -36,13 +36,13 @@ public:
 	RID get_rid() const;
 	void set_rid(const RID &p_rid);
 
-	ObjectID _get_collider_id() const;
-	int64_t get_collider_id() const;
-	void _set_collider_id(const ObjectID &p_id);
-	void set_collider_id_and_instance(const int64_t p_id);
+	ObjectID _get_hit_object_id() const;
+	int64_t get_hit_object_id() const;
+	void _set_hit_object_id(const ObjectID &p_id);
+	void set_hit_object_id_and_instance(const int64_t p_id);
 
-	Object *get_collider() const;
-	void set_collider(Object *p_collider);
+	Object *get_hit_object() const;
+	void set_hit_object(const Object *p_collider);
 
 	int get_collider_type() const;
 	void set_collider_type(int p_type);
