@@ -167,10 +167,10 @@ void RayCastResult::_bind_methods() {
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_shape_index", PROPERTY_HINT_NONE), "set_shape_index", "get_shape_index");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_face_index", PROPERTY_HINT_NONE), "set_face_index", "get_face_index");
 
-	BIND_ENUM_CONSTANT(RayCastResult::PhysicsObjectType::INVALID);
-	BIND_ENUM_CONSTANT(RayCastResult::PhysicsObjectType::AREA);
-	BIND_ENUM_CONSTANT(RayCastResult::PhysicsObjectType::BODY);
-	BIND_ENUM_CONSTANT(RayCastResult::PhysicsObjectType::SOFT_BODY);
+	BIND_ENUM_CONSTANT(INVALID);
+	BIND_ENUM_CONSTANT(AREA);
+	BIND_ENUM_CONSTANT(BODY);
+	BIND_ENUM_CONSTANT(SOFT_BODY);
 }
 
 RayCastResult::RayCastResult() {
