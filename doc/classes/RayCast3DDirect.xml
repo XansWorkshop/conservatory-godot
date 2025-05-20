@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="RayCast3DDirect" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		A ray in 3D space, used to find the first object it intersects.
+	</brief_description>
+	<description>
+		A ray in 3D space, used to find the first object it intersects. Unlike its sibling, [RayCast3D], this is not a [Node] and does not go into the scene tree. Instead, you must provide the [RID] for the physics space to query yourself, and then manually invoke the cast. This can be done statically, or through an instance, and provides its results in a [RayCastResult].
+	</description>
+	<tutorials>
+		<link title="Ray-casting">$DOCS_URL/tutorials/physics/ray-casting.html</link>
+		<link title="3D Voxel Demo">https://godotengine.org/asset-library/asset/2755</link>
+	</tutorials>
+	<methods>
+		
+	</methods>
+	<members>
+		
+	</members>
+</class>
