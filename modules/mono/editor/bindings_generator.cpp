@@ -2305,7 +2305,9 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 
 	// Add properties
 
+	bool has_any_required_properties = false;
 	for (const PropertyInterface &iprop : itype.properties) {
+		has_any_required_properties |= iprop.is_required;
 		Error prop_err = _generate_cs_property(itype, iprop, output);
 		ERR_FAIL_COND_V_MSG(prop_err != OK, prop_err,
 				"Failed to generate property '" + iprop.cname.operator String() +
@@ -2360,6 +2362,8 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 		}
 
 		if (is_derived_type) {
+			String sets_required_members = has_any_required_properties ? (MEMBER_BEGIN "[System.Diagnostics.CodeAnalysis.SetsRequiredMembers]\n") : "";
+
 			// Add default constructor
 			if (itype.is_instantiable) {
 				output << MEMBER_BEGIN "public " << itype.proxy_name << "() : this("
@@ -2371,7 +2375,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 					   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 			} else {
 				// Hide the constructor
-				output << MEMBER_BEGIN "internal " << itype.proxy_name << "() : this("
+				output << sets_required_members << MEMBER_BEGIN "internal " << itype.proxy_name << "() : this("
 					   << (itype.memory_own ? "true" : "false") << ")\n" OPEN_BLOCK_L1
 					   << INDENT2 "unsafe\n" INDENT2 OPEN_BLOCK
 					   << INDENT3 "ConstructAndInitialize(null, "
@@ -2380,7 +2384,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 					   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 			}
 
-			output << MEMBER_BEGIN "internal " << itype.proxy_name << "(IntPtr " CS_PARAM_INSTANCE ") : this("
+			output << sets_required_members << MEMBER_BEGIN "internal " << itype.proxy_name << "(IntPtr " CS_PARAM_INSTANCE ") : this("
 				   << (itype.memory_own ? "true" : "false") << ")\n" OPEN_BLOCK_L1
 				   << INDENT2 "NativePtr = " CS_PARAM_INSTANCE ";\n"
 				   << INDENT2 "unsafe\n" INDENT2 OPEN_BLOCK
@@ -2390,6 +2394,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 				   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 
 			// Add.. em.. trick constructor. Sort of.
+			output.append(sets_required_members);
 			output.append(MEMBER_BEGIN "internal ");
 			output.append(itype.proxy_name);
 			output.append("(bool " CS_PARAM_MEMORYOWN ") : base(" CS_PARAM_MEMORYOWN ") { }\n");
