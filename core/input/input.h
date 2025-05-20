@@ -277,7 +277,9 @@ private:
 #ifdef CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
 	EventDispatchFunc event_dispatch_function_instance = nullptr;
 public:
-	// Xan: I use this name now.
+	bool last_dispatched_input_was_handled = false;
+
+	// Xan: I use this name now, as a convenience.
 	void event_dispatch_function(const Ref<InputEvent> &p_event) const;
 
 private:
