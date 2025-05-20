@@ -351,6 +351,11 @@
 #include "scene/resources/3d/world_boundary_shape_3d.h"
 #endif // PHYSICS_3D_DISABLED
 
+
+#if !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
+#include "scene/3d/simulation_3d.h"
+#endif
+
 static Ref<ResourceFormatSaverText> resource_saver_text;
 static Ref<ResourceFormatLoaderText> resource_loader_text;
 
@@ -437,7 +442,6 @@ void register_scene_types() {
 	GDREGISTER_CLASS(Window);
 
 	GDREGISTER_CLASS(StatusIndicator);
-
 	/* REGISTER GUI */
 
 	GDREGISTER_CLASS(ButtonGroup);
@@ -996,6 +1000,7 @@ void register_scene_types() {
 	GDREGISTER_CLASS(WorldBoundaryShape3D);
 	GDREGISTER_CLASS(ConvexPolygonShape3D);
 	GDREGISTER_CLASS(ConcavePolygonShape3D);
+	GDREGISTER_ABSTRACT_CLASS(Simulation3D);
 #endif // PHYSICS_3D_DISABLED
 	GDREGISTER_CLASS(World3D);
 
