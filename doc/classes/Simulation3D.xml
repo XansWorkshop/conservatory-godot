@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Simulation3D" inherits="Node" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		A container for a space and scenario, for use in [i]The Conservatory[/i].
+	</brief_description>
+	<description>
+		[Simulation3D] is a specialzied class designed explicitly for [i]The Conservatory[/i]. It is similar to [SubViewport] in that it has its own space and scenario (for physics and rendering respectively), but it is strictly controlled by the engine.
+		All attempts to manage this object yourself will crash the game. You are expected to use its properties, and nothing more. The only class that can create new instances of this type is The Fabric of Reality.
+
+		This class cannot be used in [code]GDScript[/code].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_is_live" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if this instance is valid and can be used.
+			</description>
+		</method>
+		<method name="get_physics_space" qualifiers="const">
+			<return type="RID" />
+			<description>
+				Returns the [RID] of the physical space for this [Scenario3D]. Physical objects for this simulation should have their space set to this RID.
+				[b]DANGER:[/b] Freeing this RID will crash the game.
+			</description>
+		</method>
+		<method name="get_render_scenario" qualifiers="const">
+			<return type="RID" />
+			<description>
+				Returns the [RID] of the render scenario for this [Scenario3D]. Rendered objects for this simulation should have their scenario set to this RID.
+				[b]DANGER:[/b] Freeing this RID will crash the game.
+			</description>
+		</method>
+		<method name="destroy">
+			<return type="void" />
+			<description>
+				Destroys this instance like [method Free], but validates that it is acceptable to do so.
+				[b]DANGER:[/b] [i]Never[/i] [code]free()[/code] a [Simulation3D], or remove it as a child from the scene tree, or call this method without first destroying the corresponding [code]WorldInstance[/code] (a class in [i]The Conservatory[/i]). Failure to follow this warning will crash the game.
+			</description>
+		</method>
+		<method name="set_conservatory_callbacks">
+			<return type="long" />
+			<description>
+				[b]DANGER:[/b] This is strictly for internal use by [i]The Conservatory[/i]'s scene tree type, [i]The Fabric of Reality[/i].
+				Attempting to use this yourself will crash the game.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="is_live" type="bool" setter="" getter="get_is_live" default="false">
+			Will be [code]true[/code] if this instance is valid and can be used.
+		</member>
+		<member name="physics_space" type="RID" setter="" getter="get_physics_space" default="false">
+			The [RID] of the physical space for this [Scenario3D]. Physical objects for this simulation should have their space set to this RID.
+		</member>
+		<member name="render_scenario" type="RID" setter="" getter="get_render_scenario" default="false">
+			The [RID] of the render scenario for this [Scenario3D]. Rendered objects for this simulation should have their scenario set to this RID.
+		</member>
+	</members>
+	<signals>
+	</signals>
+	<constants>
+	</constants>
+</class>
