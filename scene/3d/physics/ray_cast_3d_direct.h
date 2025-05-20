@@ -31,6 +31,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#if !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
 #ifndef RAY_CAST_3D_DIRECT_H
 #define RAY_CAST_3D_DIRECT_H
 
@@ -121,3 +122,4 @@ public:
 };
 
 #endif // RAY_CAST_3D_DIRECT_H
+#endif // !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
