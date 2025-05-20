@@ -2791,6 +2791,10 @@ Error BindingsGenerator::_generate_cs_property(const BindingsGenerator::TypeInte
 
 	String prop_cs_type = prop_itype->cs_type + _get_generic_type_parameters(*prop_itype, proptype_name.generic_type_parameters);
 
+	if (setter && p_iprop.is_required) {
+		p_output.append("required ");
+	}
+
 	p_output.append(prop_cs_type);
 	p_output.append(" ");
 	p_output.append(p_iprop.proxy_name);
@@ -2816,7 +2820,11 @@ Error BindingsGenerator::_generate_cs_property(const BindingsGenerator::TypeInte
 	}
 
 	if (setter) {
-		p_output.append(INDENT2 "set\n" OPEN_BLOCK_L2 INDENT3);
+		if (p_iprop.is_init_only) {
+			p_output.append(INDENT2 "init\n" OPEN_BLOCK_L2 INDENT3);
+		} else {
+			p_output.append(INDENT2 "set\n" OPEN_BLOCK_L2 INDENT3);
+		}
 
 		p_output.append(setter->proxy_name + "(");
 		if (p_iprop.index != -1) {
@@ -3949,8 +3957,12 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 
 			PropertyInterface iprop;
 			iprop.cname = property.name;
-			iprop.setter = ClassDB::get_property_setter(type_cname, iprop.cname);
+			iprop.setter = ClassDB::get_property_setter(type_cname, iprop.cname, &iprop.is_init_only, &iprop.is_required);
 			iprop.getter = ClassDB::get_property_getter(type_cname, iprop.cname);
+
+			if (iprop.setter == StringName() && iprop.is_required) {
+				ERR_FAIL_V_MSG(false, "Invalid property: '" + itype.name + "." + String(iprop.cname) + "'. A property cannot be marked as required and read-only at the same time.");
+			}
 
 			// If the property is internal hide it; otherwise, hide the getter and setter.
 			if (property.usage & PROPERTY_USAGE_INTERNAL) {
