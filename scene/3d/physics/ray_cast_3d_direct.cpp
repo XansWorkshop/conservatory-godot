@@ -31,6 +31,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#if !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
 #include "ray_cast_3d_direct.h"
 
 void RayCast3DDirect::set_source_position(const Vector3 &p_point) {
@@ -168,7 +169,7 @@ void RayCast3DDirect::store_in_result(const Ref<RayCastResult> &p_result) const 
 	castResult->set_hit_normal(collision_normal);
 	castResult->set_rid(against_rid);
 	castResult->set_hit_object_id_and_instance(against);
-	castResult->set_collider_type(type);
+	castResult->set_collider_type((RayCastResult::PhysicsObjectType)type);
 	castResult->set_shape_index(against_shape);
 	castResult->set_face_index(collision_face_index);
 	castResult->set_success(collided);
@@ -190,7 +191,7 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 		castResult->set_rid(rr.rid);
 		castResult->_set_hit_object_id(rr.collider_id);
 		castResult->set_hit_object(rr.collider);
-		castResult->set_collider_type(rr.type);
+		castResult->set_collider_type((RayCastResult::PhysicsObjectType)rr.type);
 		castResult->set_shape_index(rr.shape);
 		castResult->set_face_index(rr.face_index);
 		castResult->set_success(true);
@@ -202,7 +203,7 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 		castResult->set_rid(RID());
 		castResult->_set_hit_object_id(ObjectID());
 		castResult->set_hit_object(nullptr);
-		castResult->set_collider_type(0);
+		castResult->set_collider_type(RayCastResult::PhysicsObjectType::INVALID);
 		castResult->set_shape_index(0);
 		castResult->set_face_index(0);
 		castResult->set_success(false);
@@ -278,8 +279,6 @@ bool RayCast3DDirect::is_hit_back_faces_enabled() const {
 	return hit_back_faces;
 }
 
-#define ADD_READONLY_PROPERTY(m_property, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(), StringName(m_getter))
-
 void RayCast3DDirect::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_source_position", "global_point"), &RayCast3DDirect::set_source_position);
 	ClassDB::bind_method(D_METHOD("get_source_position"), &RayCast3DDirect::get_source_position);
@@ -350,11 +349,11 @@ void RayCast3DDirect::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_with_bodies", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collide_with_bodies", "is_collide_with_bodies_enabled");
 }
 
-#undef ADD_READONLY_PROPERTY
-
 RayCast3DDirect::RayCast3DDirect() {
 }
 
 RayCast3DDirect::RayCast3DDirect(const Ref<PhysicsRayQueryParameters3D> &p_parameters) {
 	set_from_parameters(p_parameters);
 }
+
+#endif // !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
