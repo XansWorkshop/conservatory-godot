@@ -160,13 +160,13 @@ enum PropertyUsageFlags {
 
 // The Conservatory
 // Add a new property which has a getter but not a setter.
-#define ADD_READONLY_PROPERTY(m_property, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(), StringName(m_getter))
+#define ADD_READONLY_PROPERTY(m_property, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(), StringName(m_getter), -1, false, false)
 // Add a new property which uses the C# init keyword. This is not supported in GDScript and can be set regardless.
-#define ADD_INITONLY_PROPERTY(m_property, m_initer, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(m_initer), StringName(m_getter), -1, true)
+#define ADD_INITONLY_PROPERTY(m_property, m_initer, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(m_initer), StringName(m_getter), -1, true, false)
 // Add a new property which uses the C# init keyword. This is not supported in GDScript and can be set regardless.
-#define ADD_REQUIRED_PROPERTY(m_property, m_initer, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(m_initer), StringName(m_getter), -1, true)
+#define ADD_REQUIRED_PROPERTY(m_property, m_initer, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(m_initer), StringName(m_getter), -1, false, true)
 // Add a new property which uses the C# init keyword. This is not supported in GDScript and can be set regardless.
-#define ADD_REQUIRED_INITONLY_PROPERTY(m_property, m_initer, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(m_initer), StringName(m_getter), -1, true)
+#define ADD_REQUIRED_INITONLY_PROPERTY(m_property, m_initer, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(m_initer), StringName(m_getter), -1, true, true)
 
 // Helper macro to use with PROPERTY_HINT_ARRAY_TYPE for arrays of specific resources:
 // PropertyInfo(Variant::ARRAY, "fallbacks", PROPERTY_HINT_ARRAY_TYPE, MAKE_RESOURCE_TYPE_HINT("Font")
