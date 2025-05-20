@@ -1455,7 +1455,7 @@ void ClassDB::add_property_array(const StringName &p_class, const StringName &p_
 }
 
 // NOTE: For implementation simplicity reasons, this method doesn't allow setters to have optional arguments at the end.
-void ClassDB::add_property(const StringName &p_class, const PropertyInfo &p_pinfo, const StringName &p_setter, const StringName &p_getter, int p_index) {
+void ClassDB::add_property(const StringName &p_class, const PropertyInfo &p_pinfo, const StringName &p_setter, const StringName &p_getter, int p_index, bool p_cs_initonly, bool p_cs_required) {
 	Locker::Lock lock(Locker::STATE_WRITE);
 
 	ClassInfo *type = classes.getptr(p_class);
@@ -1507,6 +1507,8 @@ void ClassDB::add_property(const StringName &p_class, const PropertyInfo &p_pinf
 	psg._getptr = mb_get;
 	psg.index = p_index;
 	psg.type = p_pinfo.type;
+	psg.init_only = p_cs_initonly;
+	psg.required = p_cs_required;
 
 	type->property_setget[p_pinfo.name] = psg;
 }
@@ -1754,12 +1756,18 @@ Variant::Type ClassDB::get_property_type(const StringName &p_class, const String
 	return Variant::NIL;
 }
 
-StringName ClassDB::get_property_setter(const StringName &p_class, const StringName &p_property) {
+StringName ClassDB::get_property_setter(const StringName &p_class, const StringName &p_property, bool *r_is_initonly, bool *r_is_required) {
 	ClassInfo *type = classes.getptr(p_class);
 	ClassInfo *check = type;
 	while (check) {
 		const PropertySetGet *psg = check->property_setget.getptr(p_property);
 		if (psg) {
+			if (r_is_initonly) {
+				*r_is_initonly = psg->init_only;
+			}
+			if (r_is_required) {
+				*r_is_required = psg->required;
+			}
 			return psg->setter;
 		}
 
