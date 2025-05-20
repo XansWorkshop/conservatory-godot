@@ -35,6 +35,8 @@
 #include "simulation_3d.h"
 
 bool Simulation3D::declared;
+void (*Simulation3D::tc_crash)(const unsigned char *, int, const unsigned char *, int, int);
+bool (*Simulation3D::tc_destroy_validator)(const int64_t);
 
 void Simulation3D::_tc_crash(const String &p_msg, const String &p_context, int p_tc_error_code) {
 	if (tc_crash) {
@@ -79,8 +81,13 @@ void Simulation3D::_notification(int p_what) {
 		case Node::NOTIFICATION_ENTER_TREE:
 			if (!created_properly) {
 				malformed = true;
-				_tc_crash("This Simulation3D was not created using the correct technique.", "Verifying correct construction procedure (in-engine).", 0x8005);
+				if (declared) {
+					_tc_crash("This Simulation3D was not created using the correct technique.", "Verifying correct construction procedure (in-engine).", 0x8005);
+				} else {
+					_tc_crash("Xan forgot to statically initialize the simulation class.", "Verifying correct construction procedure (in-engine).", 0x8005);
+				}
 			} else {
+				is_locked = true;
 				space = PhysicsServer3D::get_singleton()->space_create();
 				PhysicsServer3D::get_singleton()->space_set_active(space, true);
 				PhysicsServer3D::get_singleton()->area_set_param(space, PhysicsServer3D::AREA_PARAM_GRAVITY, gravity);
@@ -89,29 +96,35 @@ void Simulation3D::_notification(int p_what) {
 				PhysicsServer3D::get_singleton()->area_set_param(space, PhysicsServer3D::AREA_PARAM_ANGULAR_DAMP, GLOBAL_GET("physics/3d/default_angular_damp"));
 
 				scenario = RenderingServer::get_singleton()->scenario_create();
+				RS::get_singleton()->scenario_set_environment(scenario, TC_GET_RID(environment));
+				RS::get_singleton()->scenario_set_camera_attributes(scenario, TC_GET_RID(camera_attributes));
+				RS::get_singleton()->scenario_set_compositor(scenario, TC_GET_RID(compositor));
 			}
 			break;
 		case Node::NOTIFICATION_PREDELETE:
 			predeleted = true;
 			if (!world_instance_and_marshals_destroyed) {
-				_tc_crash("Illegal attempt to destroy Simulation3D using Free(), or before its WorldInstance was destroyed..", "Verifying correct disposal procedure (in-engine).", 0x8005);
+				_tc_crash("Illegal attempt to destroy Simulation3D using Free(), or before its WorldInstance was destroyed.", "Verifying correct disposal procedure (in-engine).", 0x8005);
 			}
 			break;
 		case Node::NOTIFICATION_EXIT_TREE:
 			if (!predeleted) {
 				_tc_crash("Attempt to unparent a Simulation3D. It cannot be removed from the scene tree via RemoveChild(); it MUST be deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
 			}
-			if (space.is_valid()) {
-				PhysicsServer3D::get_singleton()->free(space);
-				space = RID();
-			}
-			if (scenario.is_valid()) {
-				RenderingServer::get_singleton()->free(scenario);
-				scenario = RID();
-			}
+			TC_CND_FREE_RID(PhysicsServer3D, space);
+			TC_CND_FREE_RID(RenderingServer, scenario);
+			environment = nullptr;
+			camera_attributes = nullptr;
+			compositor = nullptr;
 			break;
-		//case Node::NOTIFICATION_UNPARENTED:
-			//break;
+#ifdef ALLOW_GETTING_LAST_SUBMITTED_PARAMETERS
+		case Node::NOTIFICATION_INTERNAL_PROCESS:
+			bool is_live = get_is_live();
+			VALIDATE_PARAMETER(environment, is_live);
+			VALIDATE_PARAMETER(camera_attributes, is_live);
+			VALIDATE_PARAMETER(compositor, is_live);
+			break;
+#endif
 	}
 }
 
@@ -138,9 +151,9 @@ float Simulation3D::get_gravity() const {
 	return gravity;
 }
 
-void Simulation3D::set_gravity(float p_gravity) {
-	if (space.is_valid()) {
-		_tc_crash("The physics space has already been created. This must be set on initialization.", "Verifying integrity of Simulation3D (in-engine).", 0x8005);
+void Simulation3D::set_gravity(const float p_gravity) {
+	if (is_locked) {
+		_tc_crash("The physics space has already been created. This must be set before adding the Simulation3D to the scene tree.", "Verifying integrity of Simulation3D (in-engine).", 0x8005);
 	}
 	gravity = p_gravity;
 }
@@ -149,10 +162,47 @@ void Simulation3D::destroy() {
 	world_instance_and_marshals_destroyed = _tc_destroy_validator(this);
 	if (world_instance_and_marshals_destroyed) {
 		//this->queue_free();
+		if (scenario.is_valid()) {
+			RS::get_singleton()->scenario_set_environment(scenario, RID());
+			RS::get_singleton()->scenario_set_camera_attributes(scenario, RID());
+			RS::get_singleton()->scenario_set_compositor(scenario, RID());
+		}
 		memdelete(this);
 	}
 }
+void Simulation3D::init_environment(const Ref<Environment> &p_environment) {
+	if (is_locked) {
+		_tc_crash("Invalid attempt to set the environment after adding this simulation to the scene.", "Verifying integrity of Simulation3D (in-engine)", 0x8005);
+		return;
+	}
+	TC_ASSIGN_PARAMETER(environment);
+}
+void Simulation3D::init_camera_attributes(const Ref<CameraAttributes> &p_camera_attributes) {
+	if (is_locked) {
+		_tc_crash("Invalid attempt to set the camera attributes after adding this simulation to the scene.", "Verifying integrity of Simulation3D (in-engine)", 0x8005);
+		return;
+	}
+	TC_ASSIGN_PARAMETER(camera_attributes);
+}
+void Simulation3D::init_compositor(const Ref<Compositor> &p_compositor) {
+	if (is_locked) {
+		_tc_crash("Invalid attempt to set the compositor after adding this simulation to the scene.", "Verifying integrity of Simulation3D (in-engine)", 0x8005);
+		return;
+	}
+	TC_ASSIGN_PARAMETER(compositor);
+}
 
+#ifdef ALLOW_GETTING_LAST_SUBMITTED_PARAMETERS
+Ref<Environment> Simulation3D::get_environment() const {
+	return environment;
+}
+Ref<CameraAttributes> Simulation3D::get_camera_attributes() const {
+	return camera_attributes;
+}
+Ref<Compositor> Simulation3D::get_compositor() const {
+	return compositor;
+}
+#endif
 void Simulation3D::_bind_methods() {
 	ClassDB::bind_static_method("Simulation3D", D_METHOD("set_conservatory_callbacks", "crash", "destroy"), &Simulation3D::set_conservatory_callbacks);
 	ClassDB::bind_method(D_METHOD("get_is_live"), &Simulation3D::get_is_live);
@@ -165,10 +215,26 @@ void Simulation3D::_bind_methods() {
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::Type::BOOL, "is_live"), "get_is_live");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::Type::RID, "physics_space"), "get_physics_space");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::Type::RID, "render_scenario"), "get_render_scenario");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::Type::FLOAT, "gravity"), "set_gravity", "get_gravity");
+
+	
+	ClassDB::bind_method(D_METHOD("init_environment", "replacement_environment"), &Simulation3D::init_environment);
+	ClassDB::bind_method(D_METHOD("init_camera_attributes", "replacement_camera_attributes"), &Simulation3D::init_camera_attributes);
+	ClassDB::bind_method(D_METHOD("init_compositor", "replacement_compositor"), &Simulation3D::init_compositor);
+
+#ifdef ALLOW_GETTING_LAST_SUBMITTED_PARAMETERS
+	ClassDB::bind_method(D_METHOD("get_environment"), &Simulation3D::get_environment);
+	ClassDB::bind_method(D_METHOD("get_camera_attributes"), &Simulation3D::get_camera_attributes);
+	ClassDB::bind_method(D_METHOD("get_compositor"), &Simulation3D::get_compositor);
+#endif
 }
 
 Simulation3D::Simulation3D() { }
-Simulation3D::~Simulation3D() { }
+Simulation3D::~Simulation3D() {
+	TC_CND_FREE_RID(PhysicsServer3D, space);
+	TC_CND_FREE_RID(RenderingServer, scenario);
+	environment = nullptr;
+	camera_attributes = nullptr;
+	compositor = nullptr;
+}
 
 #endif // !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)

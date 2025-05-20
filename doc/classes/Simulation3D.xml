@@ -39,11 +39,67 @@
 				[b]DANGER:[/b] [i]Never[/i] [code]free()[/code] a [Simulation3D], or remove it as a child from the scene tree, or call this method without first destroying the corresponding [code]WorldInstance[/code] (a class in [i]The Conservatory[/i]). Failure to follow this warning will crash the game.
 			</description>
 		</method>
+		<method name="set_gravity">
+			<return type="void" />
+			<param index="0" name="gravity" type="float" />
+			<description>
+				Sets the environmental gravity that this simulation will use.
+				[b]This can only be used during construction. Attempting to call this after the simulation is live will crash the game.[/b]
+			</description>
+		</method>
 		<method name="set_conservatory_callbacks">
 			<return type="long" />
 			<description>
 				[b]DANGER:[/b] This is strictly for internal use by [i]The Conservatory[/i]'s scene tree type, [i]The Fabric of Reality[/i].
 				Attempting to use this yourself will crash the game.
+			</description>
+		</method>
+		<method name="init_environment">
+			<return type="void" />
+			<param index="0" name="environment" type="Environment" />
+			<description>
+				Informs the simulation that it must change its current environment to the provided instance.
+				[b]This can only be used during construction. Attempting to call this after the simulation is live will crash the game.[/b]
+				[b]This instance is cloned when used. Modifying the original will not affect the simulation.[/b]
+			</description>
+		</method>
+		<method name="init_camera_attributes">
+			<return type="void" />
+			<param index="0" name="camera_attributes" type="CameraAttributes" />
+			<description>
+				Informs the simulation that it must change its current camera attributes to the provided instance.
+				[b]This can only be used during construction. Attempting to call this after the simulation is live will crash the game.[/b]
+				[b]This instance is cloned when used. Modifying the original will not affect the simulation.[/b]
+			</description>
+		</method>
+		<method name="init_compositor">
+			<return type="void" />
+			<param index="0" name="compositor" type="Compositor" />
+			<description>
+				Informs the simulation that it must change its current compositor to the provided instance.
+				[b]This can only be used during construction. Attempting to call this after the simulation is live will crash the game.[/b]
+				[b]This instance is cloned when used. Modifying the original will not affect the simulation.[/b]
+			</description>
+		</method>
+		<method name="get_environment">
+			<return type="Environment" />
+			<description>
+				Returns the current internal [Environment] that the simulation is using.
+				[b]Danger:[/b] Deleting this object before deleting the [Simulation3D] will crash the game.
+			</description>
+		</method>
+		<method name="get_camera_attributes">
+			<return type="CameraAttributes" />
+			<description>
+				Returns the current internal [CameraAttributes] that the simulation is using.
+				[b]Danger:[/b] Deleting this object before deleting the [Simulation3D] will crash the game.
+			</description>
+		</method>
+		<method name="get_compositor">
+			<return type="Compositor" />
+			<description>
+				Returns the current internal [Compositor] that the simulation is using.
+				[b]Danger:[/b] Deleting this object before deleting the [Simulation3D] will crash the game.
 			</description>
 		</method>
 	</methods>
