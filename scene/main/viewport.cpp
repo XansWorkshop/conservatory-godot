@@ -1006,6 +1006,8 @@ void Viewport::_process_picking() {
 			}
 		}
 #endif // PHYSICS_3D_DISABLED
+
+		Input::get_singleton()->emit_signal(SceneStringName(global_input), ev.ptr(), is_input_handled(), true);
 	}
 }
 #endif // !defined(PHYSICS_2D_DISABLED) || !defined(PHYSICS_3D_DISABLED)
@@ -3842,6 +3844,7 @@ void Viewport::set_input_as_handled() {
 	}
 
 	local_input_handled = true;
+	Input::get_singleton()->last_dispatched_input_was_handled = true;
 }
 
 bool Viewport::is_input_handled() const {

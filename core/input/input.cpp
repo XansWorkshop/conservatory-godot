@@ -211,7 +211,7 @@ void Input::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("joy_connection_changed", PropertyInfo(Variant::INT, "device"), PropertyInfo(Variant::BOOL, "connected")));
 
 #ifdef CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
-	ADD_SIGNAL(MethodInfo("global_input", PropertyInfo(Variant::OBJECT, "event", PROPERTY_HINT_NONE, "" , 6U, "InputEvent")));
+	ADD_SIGNAL(MethodInfo("global_input", PropertyInfo(Variant::OBJECT, "event", PROPERTY_HINT_NONE, "", 6U, "InputEvent"), PropertyInfo(Variant::BOOL, "handled"), PropertyInfo(Variant::BOOL, "is_physics_pick")));
 #endif
 }
 
@@ -1241,13 +1241,13 @@ void Input::set_event_dispatch_function(EventDispatchFunc p_function) {
 void Input::event_dispatch_function(const Ref<InputEvent> &p_event) const {
 	ERR_FAIL_COND_MSG(p_event.is_null(), "The input event was null.");
 
+	singleton->last_dispatched_input_was_handled = false;
+
 	if (event_dispatch_function_instance) {
 		event_dispatch_function_instance(p_event);
 	}
 
-	Variant variant = Variant(p_event.ptr());
-	const Variant *vptr = &variant;
-	singleton->emit_signalp(SceneStringName(global_input), &vptr, 1);
+	singleton->emit_signal(SceneStringName(global_input), p_event.ptr(), singleton->last_dispatched_input_was_handled, false);
 }
 #endif
 
