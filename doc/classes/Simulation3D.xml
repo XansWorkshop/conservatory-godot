@@ -4,10 +4,9 @@
 		A container for a space and scenario, for use in [i]The Conservatory[/i].
 	</brief_description>
 	<description>
-		[Simulation3D] is a specialzied class designed explicitly for [i]The Conservatory[/i]. It is similar to [SubViewport] in that it has its own space and scenario (for physics and rendering respectively), but it is strictly controlled by the engine.
-		All attempts to manage this object yourself will crash the game. You are expected to use its properties, and nothing more. The only class that can create new instances of this type is The Fabric of Reality.
+		[Simulation3D] is a specialzied [Viewport]-like class designed explicitly for [i]The Conservatory[/i]. It is similar to [SubViewport] in that it has its own space and scenario (for physics and rendering respectively), but it is strictly controlled by the engine and moreover does not need a container or texture to render.
 
-		This class cannot be used in [code]GDScript[/code].
+		If [i]The Conservatory[/i] is running as a game client (with a rendered display), this node will override the simulated world of the root window, causing the [Simulation3D]'s own data to display in its place. Additionally, the [b]root[/b] [Viewport]'s method to find its 3D world will be overridden. In contrast, on a game server (headless), the root viewport is untouched.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -39,67 +38,11 @@
 				[b]DANGER:[/b] [i]Never[/i] [code]free()[/code] a [Simulation3D], or remove it as a child from the scene tree, or call this method without first destroying the corresponding [code]WorldInstance[/code] (a class in [i]The Conservatory[/i]). Failure to follow this warning will crash the game.
 			</description>
 		</method>
-		<method name="set_gravity">
-			<return type="void" />
-			<param index="0" name="gravity" type="float" />
-			<description>
-				Sets the environmental gravity that this simulation will use.
-				[b]This can only be used during construction. Attempting to call this after the simulation is live will crash the game.[/b]
-			</description>
-		</method>
 		<method name="set_conservatory_callbacks">
 			<return type="long" />
 			<description>
 				[b]DANGER:[/b] This is strictly for internal use by [i]The Conservatory[/i]'s scene tree type, [i]The Fabric of Reality[/i].
 				Attempting to use this yourself will crash the game.
-			</description>
-		</method>
-		<method name="init_environment">
-			<return type="void" />
-			<param index="0" name="environment" type="Environment" />
-			<description>
-				Informs the simulation that it must change its current environment to the provided instance.
-				[b]This can only be used during construction. Attempting to call this after the simulation is live will crash the game.[/b]
-				[b]This instance is cloned when used. Modifying the original will not affect the simulation.[/b]
-			</description>
-		</method>
-		<method name="init_camera_attributes">
-			<return type="void" />
-			<param index="0" name="camera_attributes" type="CameraAttributes" />
-			<description>
-				Informs the simulation that it must change its current camera attributes to the provided instance.
-				[b]This can only be used during construction. Attempting to call this after the simulation is live will crash the game.[/b]
-				[b]This instance is cloned when used. Modifying the original will not affect the simulation.[/b]
-			</description>
-		</method>
-		<method name="init_compositor">
-			<return type="void" />
-			<param index="0" name="compositor" type="Compositor" />
-			<description>
-				Informs the simulation that it must change its current compositor to the provided instance.
-				[b]This can only be used during construction. Attempting to call this after the simulation is live will crash the game.[/b]
-				[b]This instance is cloned when used. Modifying the original will not affect the simulation.[/b]
-			</description>
-		</method>
-		<method name="get_environment">
-			<return type="Environment" />
-			<description>
-				Returns the current internal [Environment] that the simulation is using.
-				[b]Danger:[/b] Deleting this object before deleting the [Simulation3D] will crash the game.
-			</description>
-		</method>
-		<method name="get_camera_attributes">
-			<return type="CameraAttributes" />
-			<description>
-				Returns the current internal [CameraAttributes] that the simulation is using.
-				[b]Danger:[/b] Deleting this object before deleting the [Simulation3D] will crash the game.
-			</description>
-		</method>
-		<method name="get_compositor">
-			<return type="Compositor" />
-			<description>
-				Returns the current internal [Compositor] that the simulation is using.
-				[b]Danger:[/b] Deleting this object before deleting the [Simulation3D] will crash the game.
 			</description>
 		</method>
 	</methods>
@@ -109,9 +52,16 @@
 		</member>
 		<member name="physics_space" type="RID" setter="" getter="get_physics_space" default="false">
 			The [RID] of the physical space for this [Scenario3D]. Physical objects for this simulation should have their space set to this RID.
+			This is a proxy to that of the [member world_3d].
 		</member>
 		<member name="render_scenario" type="RID" setter="" getter="get_render_scenario" default="false">
 			The [RID] of the render scenario for this [Scenario3D]. Rendered objects for this simulation should have their scenario set to this RID.
+			This is a proxy to that of the [member world_3d].
+		</member>
+		<member name="world_3d" type="World3D" setter="set_world_3d" getter="get_world_3d">
+			The private [World3D] belonging to this simulation.
+
+			[b]DANGER:[/b] [i]Never[/i] delete this instance yourself; doing so will crash the game.
 		</member>
 	</members>
 	<signals>

@@ -35,44 +35,52 @@
 #ifndef SIMULATION_3D_H
 #define SIMULATION_3D_H
 
-#define ALLOW_GETTING_LAST_SUBMITTED_PARAMETERS
-
 #include "core/config/project_settings.h"
-#include "core/object/callable_method_pointer.h"
 #include "core/object/object.h"
 #include "scene/3d/world_environment.h"
 #include "scene/main/node.h"
 #include "scene/main/viewport.h"
+#include "scene/resources/3d/world_3d.h"
+#include "scene/main/window.h"
+/*
+#include "scene/3d/camera_3d.h"
 #include "scene/resources/camera_attributes.h"
 #include "scene/resources/compositor.h"
 #include "scene/resources/environment.h"
 #include "servers/physics_server_3d.h"
 #include "servers/rendering_server.h"
+*/
+
+// #define USE_WORLD_PTR_NOT_REF
+
+#ifdef USE_WORLD_PTR_NOT_REF
+#error "This causes the world pointer to be destroyed."
+#define TC_PTR(type, name) type *name
+#define TC_IS_VALID(a) (a)
+#define TC_IS_NULL(a) (!a)
+#define TC_INSTANTIATE(type, name) name = memnew(type)
+#define TC_DELETE(a) memdelete(a)
+#else
+#define TC_PTR(type, name) Ref<type> name
+#define TC_IS_VALID(a) (a.is_valid())
+#define TC_IS_NULL(a) (a.is_null())
+#define TC_INSTANTIATE(type, name) name.instantiate()
+#define TC_DELETE(a) memdelete(a.ptr())
+#endif
 
 class Simulation3D;
+class WorldEnvirionment;
 
-class Simulation3D : public Node {
-	GDCLASS(Simulation3D, Node);
+class Simulation3D : public Viewport {
+	friend class Viewport;
+	GDCLASS(Simulation3D, Viewport);
 
 	bool predeleted = false;
 	bool is_locked = false;
 	bool world_instance_and_marshals_destroyed = false;
 	bool created_properly = false;
 	bool malformed = false;
-	RID space = RID();
-	RID scenario = RID();
-
-	Ref<Environment> environment;
-	Ref<CameraAttributes> camera_attributes;
-	Ref<Compositor> compositor;
-
-#ifdef ALLOW_GETTING_LAST_SUBMITTED_PARAMETERS
-	bool environment_was_declared = false;
-	bool camera_attributes_was_declared = false;
-	bool compositor_was_declared = false;
-#endif
-
-	float gravity = -9.806f;
+	TC_PTR(World3D, world);
 
 	// Parameters: message, message length, context, context length, error code
 	static void (*tc_crash)(const unsigned char *, int, const unsigned char *, int, int);
@@ -80,75 +88,42 @@ class Simulation3D : public Node {
 	// Parameters: Simulation3D address, returns true if deletion is OK, false if not.
 	static bool (*tc_destroy_validator)(const int64_t);
 
+	// Parameters: None
+	static bool (*tc_should_take_main_viewport)(void);
+
 	static bool declared;
 
 protected:
 	void _notification(int p_what);
 	static void _tc_crash(const String &p_msg, const String &p_context, int p_tc_error_code);
 	static bool _tc_destroy_validator(const Simulation3D *p_instance);
+	static bool _tc_should_take_main_viewport();
 	static void _bind_methods();
+	virtual DisplayServer::WindowID get_window_id() const override;
 
 public:
-	static int64_t set_conservatory_callbacks(const int64_t &p_crash, const int64_t &p_destroy);
+	static int64_t set_conservatory_callbacks(const int64_t p_crash, const int64_t p_destroy, const int64_t p_is_client);
+	static Simulation3D *current;
 
 	bool get_is_live() const;
 	RID get_physics_space() const;
 	RID get_render_scenario() const;
-	float get_gravity() const;
-	void set_gravity(const float p_gravity);
 	void destroy();
 
-	void init_environment(const Ref<Environment> &p_environment);
-	void init_camera_attributes(const Ref<CameraAttributes> &p_camera_attributes);
-	void init_compositor(const Ref<Compositor> &p_compositor);
-
-#ifdef ALLOW_GETTING_LAST_SUBMITTED_PARAMETERS
-	Ref<Environment> get_environment() const;
-	Ref<CameraAttributes> get_camera_attributes() const;
-	Ref<Compositor> get_compositor() const;
-#endif
+	void set_world_3d(const Ref<World3D> &p_world_3d) override;
+	Ref<World3D> get_world_3d() const override;
+	Ref<World3D> find_world_3d() const override;
+	void set_use_own_world_3d(bool p_use_own_world_3d) override;
+	bool is_using_own_world_3d() const override;
 
 	_FORCE_INLINE_ static const int64_t static_construct() {
 		Simulation3D *instance = memnew(Simulation3D);
-		instance->created_properly = declared;
 		return (int64_t)instance;
 	}
 
 	Simulation3D();
 	~Simulation3D();
 };
-
-#ifdef ALLOW_GETTING_LAST_SUBMITTED_PARAMETERS
-#define TC_ASSIGN_PARAMETER(destination)                       \
-	if (p_##destination.is_valid()) {                          \
-		destination = p_##destination.ptr()->duplicate(false); \
-		destination##_was_declared = true;                     \
-	} else {                                                   \
-		destination = nullptr;                                 \
-		destination##_was_declared = false;                    \
-	}
-#else
-#define TC_ASSIGN_PARAMETER(destination)                       \
-	if (p_##destination.is_valid()) {                          \
-		destination = p_##destination.ptr()->duplicate(false); \
-	} else {                                                   \
-		destination = nullptr;                                 \
-	}
-#endif
-
-#define TC_GET_RID(param) param.is_valid() ? param.ptr()->get_rid() : RID()
-
-#define VALIDATE_PARAMETER(param, is_live)                                                                                                        \
-	if (is_live && param##_was_declared && param.is_null()) {                                                                                     \
-		_tc_crash(_STR(param) " was freed while its Simulation3D was still active.", "Verifying integrity of Simulation3D (in-engine).", 0x8005); \
-		return;																																	  \
-	}
-
-#define TC_CND_FREE_RID(server, rid)        \
-	if (rid.is_valid()) {                   \
-		server::get_singleton()->free(rid); \
-	}										\
-	rid = RID()
 
 #endif // SIMULATION_3D_H
 #endif // !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
