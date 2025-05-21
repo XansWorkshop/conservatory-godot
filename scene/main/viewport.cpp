@@ -54,6 +54,9 @@
 #include "scene/3d/audio_listener_3d.h"
 #include "scene/3d/camera_3d.h"
 #include "scene/3d/world_environment.h"
+#ifndef PHYSICS_3D_DISABLED
+#include "scene/3d/simulation_3d.h"
+#endif // PHYSICS_3D_DISABLED
 #endif // _3D_DISABLED
 
 #ifndef PHYSICS_2D_DISABLED
@@ -4647,6 +4650,11 @@ Ref<World3D> Viewport::get_world_3d() const {
 
 Ref<World3D> Viewport::find_world_3d() const {
 	ERR_READ_THREAD_GUARD_V(Ref<World3D>());
+#ifndef PHYSICS_3D_DISABLED
+	if (Simulation3D::current && Simulation3D::current->get_parent_viewport() == this) {
+		return Simulation3D::current->get_world_3d();
+	}
+#endif
 	if (own_world_3d.is_valid()) {
 		return own_world_3d;
 	} else if (world_3d.is_valid()) {

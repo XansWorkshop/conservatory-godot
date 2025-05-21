@@ -61,6 +61,7 @@ public:
 	};
 
 private:
+	bool success = false;
 	Vector3 position;
 	Vector3 normal;
 	RID rid;
@@ -69,7 +70,6 @@ private:
 	int shape = -1;
 	int face_index = -1;
 	PhysicsObjectType type = INVALID;
-	bool success = false;
 
 	static bool can_index_face() {
 		if (IS_USING_JOLT) {
@@ -77,6 +77,18 @@ private:
 		}
 		return true;
 	}
+
+	// This struct is shared by The Conservatory.
+	struct RayCastResultStruct {
+		bool success;
+		Vector3 position;
+		Vector3 normal;
+		RID rid;
+		uint64_t collider_id;
+		int32_t shape;
+		int32_t face_index;
+		PhysicsObjectType type;
+	};
 
 protected:
 	static void _bind_methods();
@@ -115,9 +127,9 @@ public:
 	void clear();
 
 	void copy_to(const Ref<RayCastResult> &p_destination) const;
+	void copy_to_unsafe(const int64_t p_ptr) const;
 
 	RayCastResult();
-
 };
 
 VARIANT_ENUM_CAST(RayCastResult::PhysicsObjectType);

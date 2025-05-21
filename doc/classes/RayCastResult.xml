@@ -68,6 +68,21 @@
 				[b]Note:[/b] If the current physics engine is set to Jolt Physics, you must enable [code]physics/jolt_physics_3d/queries/enable_ray_cast_face_index[/code], which has a nontrivial memory cost (and is thus not recommended). If this setting is not enabled, an error will be raised when reading this property, unless it has been overridden on initialization.
 			</description>
 		</method>
+		<method name="copy_to" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="destination" type="RayCastResult" />
+			<description>
+				Copies the current result's information into another [RayCastResult] exactly.
+			</description>
+		</method>
+		<method name="copy_to_unsafe" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="destination" type="RayCastResult" />
+			<description>
+				[b]DANGER /// UNSAFE POINTER LOGIC[/b]
+				This expects a pinned pointer (from C#) of a very specific struct to be passed in by address. The C++ side of this code will write to the struct.
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="success" type="bool" setter="set_success" getter="get_success" default="false">
