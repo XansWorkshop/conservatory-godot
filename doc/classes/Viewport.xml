@@ -31,6 +31,8 @@
 			<return type="World3D" />
 			<description>
 				Returns the first valid [World3D] for this viewport, searching the [member world_3d] property of itself and any Viewport ancestor.
+
+				[b]Notice:[/b] [i]The Conservatory[/i]'s fork of the engine causes this method's result to be overridden if (and ONLY if) this is the root viewport. If this requirement is satisfied, this method will always return the world belonging to the current game client's [Simulation3D].
 			</description>
 		</method>
 		<method name="get_audio_listener_2d" qualifiers="const">

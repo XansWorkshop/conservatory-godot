@@ -38,6 +38,9 @@ class Camera3D;
 class CollisionObject3D;
 class AudioListener3D;
 class World3D;
+#ifndef PHYSICS_3D_DISABLED
+class Simulation3D;
+#endif // PHYSICS_3D_DISABLED
 #endif // _3D_DISABLED
 
 class AudioListener2D;
@@ -841,11 +844,11 @@ public:
 	void set_disable_3d(bool p_disable);
 	bool is_3d_disabled() const;
 
-	void set_world_3d(const Ref<World3D> &p_world_3d);
-	Ref<World3D> get_world_3d() const;
-	Ref<World3D> find_world_3d() const;
-	void set_use_own_world_3d(bool p_use_own_world_3d);
-	bool is_using_own_world_3d() const;
+	virtual void set_world_3d(const Ref<World3D> &p_world_3d);
+	virtual Ref<World3D> get_world_3d() const;
+	virtual Ref<World3D> find_world_3d() const;
+	virtual void set_use_own_world_3d(bool p_use_own_world_3d);
+	virtual bool is_using_own_world_3d() const;
 
 	void set_use_xr(bool p_use_xr);
 	bool is_using_xr();
