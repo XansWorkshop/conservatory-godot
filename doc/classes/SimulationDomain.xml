@@ -17,7 +17,7 @@
 				Returns [code]true[/code] if this instance is valid and can be used.
 			</description>
 		</method>
-		<method name="get_is_current" qualifiers="const">
+		<method name="get_is_active" qualifiers="const">
 			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if this instance is the one currently overriding the root viewport.
@@ -72,7 +72,7 @@
 		<member name="is_valid" type="bool" setter="" getter="get_is_valid" default="false">
 			Will be [code]true[/code] if this instance is valid and can be used.
 		</member>
-		<member name="is_current" type="bool" setter="" getter="get_is_current" default="false">
+		<member name="is_active" type="bool" setter="" getter="get_is_active" default="false">
 			Will be [code]true[/code] if this instance is the one currently overriding the root viewport.
 			This is always [code]false[/code]in headless mode.
 		</member>
