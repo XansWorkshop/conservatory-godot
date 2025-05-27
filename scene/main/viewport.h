@@ -38,7 +38,7 @@ class Camera3D;
 class CollisionObject3D;
 class AudioListener3D;
 class World3D;
-#ifndef PHYSICS_3D_DISABLED
+#if !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
 class SimulationDomain;
 #endif // PHYSICS_3D_DISABLED
 #endif // _3D_DISABLED
