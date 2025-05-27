@@ -131,21 +131,23 @@ Dictionary Engine::get_version_info() const {
 	dict["hex"] = GODOT_VERSION_HEX;
 	dict["status"] = GODOT_VERSION_STATUS;
 	dict["build"] = GODOT_VERSION_BUILD;
+	dict["version"] = GODOT_VERSION_NUMBER;
+	dict["timestamp"] = GODOT_VERSION_TIMESTAMP;
 
 	String modules = String(GODOT_VERSION_MODULE_CONFIG);
 	dict["modules"] = modules.split(".", false);
 
 	String hash = String(GODOT_VERSION_HASH);
-	dict["hash"] = hash.is_empty() ? String("unknown") : hash;
-
-	dict["timestamp"] = GODOT_VERSION_TIMESTAMP;
-
-	String stringver = String(dict["major"]) + "." + String(dict["minor"]);
-	if ((int)dict["patch"] != 0) {
-		stringver += "." + String(dict["patch"]);
+	if (hash.is_empty()) {
+		dict["hash"] = "unknown";
+		dict["commit"] = "??????";
+	} else {
+		dict["hash"] = hash;
+		dict["commit"] = hash.substr(0, 6);
 	}
-	stringver += "-" + String(dict["status"]) + " (" + String(dict["build"]) + ")";
-	dict["string"] = stringver;
+
+	const char *text = GODOT_VERSION_NUMBER "-" GODOT_VERSION_STATUS " (" GODOT_VERSION_BUILD ")";
+	dict["string"] = String(text);
 
 	return dict;
 }
@@ -173,7 +175,6 @@ Dictionary Engine::get_author_info() const {
 	dict["project_managers"] = array_from_info(AUTHORS_PROJECT_MANAGERS);
 	dict["founders"] = array_from_info(AUTHORS_FOUNDERS);
 	dict["developers"] = array_from_info(AUTHORS_DEVELOPERS);
-	dict["conservatory_fork"] = array_from_info(THE_CONSERVATORY_FORK);
 
 	return dict;
 }
