@@ -272,6 +272,7 @@ bool SimulationDomain::is_using_own_world_3d() const {
 void SimulationDomain::_bind_methods() {
 	ClassDB::bind_static_method("SimulationDomain", D_METHOD("set_conservatory_callbacks", "crash", "destroy_callback", "should_take_over_main_viewport"), &SimulationDomain::set_conservatory_callbacks);
 	ClassDB::bind_method(D_METHOD("get_is_valid"), &SimulationDomain::get_is_valid);
+	ClassDB::bind_method(D_METHOD("get_is_current"), &SimulationDomain::get_is_current);
 	ClassDB::bind_method(D_METHOD("get_physics_space_2d"), &SimulationDomain::get_physics_space_2d);
 	ClassDB::bind_method(D_METHOD("get_physics_space_3d"), &SimulationDomain::get_physics_space_3d);
 	ClassDB::bind_method(D_METHOD("get_render_canvas"), &SimulationDomain::get_render_canvas);
