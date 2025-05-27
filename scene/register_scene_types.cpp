@@ -979,10 +979,6 @@ void register_scene_types() {
 
 	OS::get_singleton()->yield(); // may take time to init
 
-#if !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
-	GDREGISTER_ABSTRACT_CLASS(SimulationDomain);
-#endif
-
 #ifndef PHYSICS_3D_DISABLED
 	GDREGISTER_ABSTRACT_CLASS(Shape3D);
 	GDREGISTER_CLASS(SeparationRayShape3D);
@@ -1044,6 +1040,10 @@ void register_scene_types() {
 	GDREGISTER_CLASS(SVGTexture);
 #ifndef DISABLE_DEPRECATED
 	GDREGISTER_CLASS(AnimatedTexture);
+#endif
+
+#if !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
+	GDREGISTER_ABSTRACT_CLASS(SimulationDomain);
 #endif
 
 	// These classes are part of renderer_rd
