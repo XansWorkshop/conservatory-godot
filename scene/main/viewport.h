@@ -39,7 +39,7 @@ class CollisionObject3D;
 class AudioListener3D;
 class World3D;
 #ifndef PHYSICS_3D_DISABLED
-class Simulation3D;
+class SimulationDomain;
 #endif // PHYSICS_3D_DISABLED
 #endif // _3D_DISABLED
 
@@ -53,6 +53,9 @@ class SceneTreeTimer;
 class Viewport;
 class Window;
 class World2D;
+class SimulationDomain;
+
+#define CONSERVATORY_VIRTUAL virtual
 
 class ViewportTexture : public Texture2D {
 	GDCLASS(ViewportTexture, Texture2D);
@@ -96,6 +99,7 @@ public:
 
 class Viewport : public Node {
 	GDCLASS(Viewport, Node);
+	friend class SimulationDomain;
 
 public:
 	enum Scaling3DMode {
@@ -298,13 +302,13 @@ private:
 	StringName unhandled_input_group;
 	StringName unhandled_key_input_group;
 
-	void _update_audio_listener_2d();
+	CONSERVATORY_VIRTUAL void _update_audio_listener_2d();
 
 	bool disable_3d = false;
 
 	static void _propagate_drag_notification(Node *p_node, int p_what);
 
-	void _update_global_transform();
+	CONSERVATORY_VIRTUAL void _update_global_transform();
 
 	RID texture_rid;
 
@@ -331,7 +335,7 @@ private:
 	Ref<ViewportTexture> default_texture;
 	HashSet<ViewportTexture *> viewport_textures;
 
-	void _update_viewport_path();
+	CONSERVATORY_VIRTUAL void _update_viewport_path();
 
 	SDFOversize sdf_oversize = SDF_OVERSIZE_120_PERCENT;
 	SDFScale sdf_scale = SDF_SCALE_50_PERCENT;
@@ -425,313 +429,313 @@ private:
 	bool disable_input = false;
 	bool disable_input_override = false;
 
-	void _gui_call_input(Control *p_control, const Ref<InputEvent> &p_input);
-	void _gui_call_notification(Control *p_control, int p_what);
+	CONSERVATORY_VIRTUAL void _gui_call_input(Control *p_control, const Ref<InputEvent> &p_input);
+	CONSERVATORY_VIRTUAL void _gui_call_notification(Control *p_control, int p_what);
 
-	void _gui_sort_roots();
-	Control *_gui_find_control_at_pos(CanvasItem *p_node, const Point2 &p_global, const Transform2D &p_xform);
+	CONSERVATORY_VIRTUAL void _gui_sort_roots();
+	CONSERVATORY_VIRTUAL Control *_gui_find_control_at_pos(CanvasItem *p_node, const Point2 &p_global, const Transform2D &p_xform);
 
-	void _gui_input_event(Ref<InputEvent> p_event);
-	void _perform_drop(Control *p_control = nullptr);
-	void _gui_cleanup_internal_state(Ref<InputEvent> p_event);
+	CONSERVATORY_VIRTUAL void _gui_input_event(Ref<InputEvent> p_event);
+	CONSERVATORY_VIRTUAL void _perform_drop(Control *p_control = nullptr);
+	CONSERVATORY_VIRTUAL void _gui_cleanup_internal_state(Ref<InputEvent> p_event);
 
-	void _push_unhandled_input_internal(const Ref<InputEvent> &p_event);
+	CONSERVATORY_VIRTUAL void _push_unhandled_input_internal(const Ref<InputEvent> &p_event);
 
-	Ref<InputEvent> _make_input_local(const Ref<InputEvent> &ev);
+	CONSERVATORY_VIRTUAL Ref<InputEvent> _make_input_local(const Ref<InputEvent> &ev);
 
 	friend class Control;
 
-	List<Control *>::Element *_gui_add_root_control(Control *p_control);
+	CONSERVATORY_VIRTUAL List<Control*>::Element *_gui_add_root_control(Control *p_control);
 
-	void _gui_remove_root_control(List<Control *>::Element *RI);
+	CONSERVATORY_VIRTUAL void _gui_remove_root_control(List<Control*>::Element *RI);
 
-	String _gui_get_tooltip(Control *p_control, const Vector2 &p_pos, Control **r_tooltip_owner = nullptr);
-	void _gui_cancel_tooltip();
-	void _gui_show_tooltip();
-	void _gui_show_tooltip_at(const Point2i &p_pos);
+	CONSERVATORY_VIRTUAL String _gui_get_tooltip(Control *p_control, const Vector2 &p_pos, Control **r_tooltip_owner = nullptr);
+	CONSERVATORY_VIRTUAL void _gui_cancel_tooltip();
+	CONSERVATORY_VIRTUAL void _gui_show_tooltip();
+	CONSERVATORY_VIRTUAL void _gui_show_tooltip_at(const Point2i &p_pos);
 
-	void _gui_remove_control(Control *p_control);
-	void _gui_hide_control(Control *p_control);
-	void _gui_update_mouse_over();
+	CONSERVATORY_VIRTUAL void _gui_remove_control(Control *p_control);
+	CONSERVATORY_VIRTUAL void _gui_hide_control(Control *p_control);
+	CONSERVATORY_VIRTUAL void _gui_update_mouse_over();
 
-	void _gui_force_drag_start();
-	void _gui_force_drag_cancel();
-	void _gui_force_drag(Control *p_base, const Variant &p_data, Control *p_control);
-	void _gui_set_drag_preview(Control *p_base, Control *p_control);
-	Control *_gui_get_drag_preview();
+	CONSERVATORY_VIRTUAL void _gui_force_drag_start();
+	CONSERVATORY_VIRTUAL void _gui_force_drag_cancel();
+	CONSERVATORY_VIRTUAL void _gui_force_drag(Control *p_base, const Variant &p_data, Control *p_control);
+	CONSERVATORY_VIRTUAL void _gui_set_drag_preview(Control *p_base, Control *p_control);
+	CONSERVATORY_VIRTUAL Control *_gui_get_drag_preview();
 
-	void _gui_remove_focus_for_window(Node *p_window);
-	void _gui_unfocus_control(Control *p_control);
-	bool _gui_control_has_focus(const Control *p_control);
-	void _gui_control_grab_focus(Control *p_control);
-	void _gui_grab_click_focus(Control *p_control);
-	void _post_gui_grab_click_focus();
-	void _gui_accept_event();
+	CONSERVATORY_VIRTUAL void _gui_remove_focus_for_window(Node *p_window);
+	CONSERVATORY_VIRTUAL void _gui_unfocus_control(Control *p_control);
+	CONSERVATORY_VIRTUAL bool _gui_control_has_focus(const Control *p_control);
+	CONSERVATORY_VIRTUAL void _gui_control_grab_focus(Control *p_control);
+	CONSERVATORY_VIRTUAL void _gui_grab_click_focus(Control *p_control);
+	CONSERVATORY_VIRTUAL void _post_gui_grab_click_focus();
+	CONSERVATORY_VIRTUAL void _gui_accept_event();
 
-	bool _gui_drop(Control *p_at_control, Point2 p_at_pos, bool p_just_check);
+	CONSERVATORY_VIRTUAL bool _gui_drop(Control *p_at_control, Point2 p_at_pos, bool p_just_check);
 
 	friend class CanvasLayer;
-	void _canvas_layer_add(CanvasLayer *p_canvas_layer);
-	void _canvas_layer_remove(CanvasLayer *p_canvas_layer);
+	CONSERVATORY_VIRTUAL void _canvas_layer_add(CanvasLayer *p_canvas_layer);
+	CONSERVATORY_VIRTUAL void _canvas_layer_remove(CanvasLayer *p_canvas_layer);
 
-	void _drop_mouse_over(Control *p_until_control = nullptr);
-	void _drop_mouse_focus();
-	void _drop_physics_mouseover(bool p_paused_only = false);
+	CONSERVATORY_VIRTUAL void _drop_mouse_over(Control *p_until_control = nullptr);
+	CONSERVATORY_VIRTUAL void _drop_mouse_focus();
+	CONSERVATORY_VIRTUAL void _drop_physics_mouseover(bool p_paused_only = false);
 
-	void _update_canvas_items(Node *p_node);
+	CONSERVATORY_VIRTUAL void _update_canvas_items(Node *p_node);
 
 	friend class Window;
 
-	void _sub_window_update_order();
-	void _sub_window_register(Window *p_window);
-	void _sub_window_update(Window *p_window);
-	void _sub_window_grab_focus(Window *p_window);
-	void _sub_window_remove(Window *p_window);
-	int _sub_window_find(Window *p_window) const;
-	bool _sub_windows_forward_input(const Ref<InputEvent> &p_event);
-	SubWindowResize _sub_window_get_resize_margin(Window *p_subwindow, const Point2 &p_point);
+	CONSERVATORY_VIRTUAL void _sub_window_update_order();
+	CONSERVATORY_VIRTUAL void _sub_window_register(Window *p_window);
+	CONSERVATORY_VIRTUAL void _sub_window_update(Window *p_window);
+	CONSERVATORY_VIRTUAL void _sub_window_grab_focus(Window *p_window);
+	CONSERVATORY_VIRTUAL void _sub_window_remove(Window *p_window);
+	CONSERVATORY_VIRTUAL int _sub_window_find(Window *p_window) const;
+	CONSERVATORY_VIRTUAL bool _sub_windows_forward_input(const Ref<InputEvent> &p_event);
+	CONSERVATORY_VIRTUAL SubWindowResize _sub_window_get_resize_margin(Window *p_subwindow, const Point2 &p_point);
 
-	void _update_mouse_over();
+	CONSERVATORY_VIRTUAL void _update_mouse_over();
 	virtual void _update_mouse_over(Vector2 p_pos);
 	virtual void _mouse_leave_viewport();
 
 	virtual bool _can_consume_input_events() const { return true; }
 	uint64_t event_count = 0;
 
-	void _process_dirty_canvas_parent_orders();
-	void _propagate_world_2d_changed(Node *p_node);
+	CONSERVATORY_VIRTUAL void _process_dirty_canvas_parent_orders();
+	CONSERVATORY_VIRTUAL void _propagate_world_2d_changed(Node *p_node);
 
-	void _window_start_drag(Window *p_window);
-	void _window_start_resize(SubWindowResize p_edge, Window *p_window);
+	CONSERVATORY_VIRTUAL void _window_start_drag(Window *p_window);
+	CONSERVATORY_VIRTUAL void _window_start_resize(SubWindowResize p_edge, Window *p_window);
 
 protected:
-	bool _set_size(const Size2i &p_size, const Size2 &p_size_2d_override, bool p_allocated);
+	CONSERVATORY_VIRTUAL bool _set_size(const Size2i &p_size, const Size2 &p_size_2d_override, bool p_allocated);
 
-	Size2i _get_size() const;
-	Size2 _get_size_2d_override() const;
-	bool _is_size_allocated() const;
+	CONSERVATORY_VIRTUAL Size2i _get_size() const;
+	CONSERVATORY_VIRTUAL Size2 _get_size_2d_override() const;
+	CONSERVATORY_VIRTUAL bool _is_size_allocated() const;
 
 	void _notification(int p_what);
 #if !defined(PHYSICS_2D_DISABLED) || !defined(PHYSICS_3D_DISABLED)
-	void _process_picking();
+	CONSERVATORY_VIRTUAL void _process_picking();
 #endif // !defined(PHYSICS_2D_DISABLED) || !defined(PHYSICS_3D_DISABLED)
 	static void _bind_methods();
-	void _validate_property(PropertyInfo &p_property) const;
+	CONSERVATORY_VIRTUAL void _validate_property(PropertyInfo &p_property) const;
 
 public:
-	void canvas_parent_mark_dirty(Node *p_node);
-	void canvas_item_top_level_changed();
+	CONSERVATORY_VIRTUAL void canvas_parent_mark_dirty(Node *p_node);
+	CONSERVATORY_VIRTUAL void canvas_item_top_level_changed();
 
-	uint64_t get_processed_events_count() const { return event_count; }
+	CONSERVATORY_VIRTUAL uint64_t get_processed_events_count() const { return event_count; }
 
-	void cancel_tooltip();
-	void show_tooltip(Control *p_control);
+	CONSERVATORY_VIRTUAL void cancel_tooltip();
+	CONSERVATORY_VIRTUAL void show_tooltip(Control *p_control);
 
-	void update_canvas_items();
+	CONSERVATORY_VIRTUAL void update_canvas_items();
 
-	Rect2 get_visible_rect() const;
-	RID get_viewport_rid() const;
+	CONSERVATORY_VIRTUAL Rect2 get_visible_rect() const;
+	CONSERVATORY_VIRTUAL RID get_viewport_rid() const;
 
-	void set_world_2d(const Ref<World2D> &p_world_2d);
-	Ref<World2D> get_world_2d() const;
-	Ref<World2D> find_world_2d() const;
+	CONSERVATORY_VIRTUAL void set_world_2d(const Ref<World2D> &p_world_2d);
+	CONSERVATORY_VIRTUAL Ref<World2D> get_world_2d() const;
+	CONSERVATORY_VIRTUAL Ref<World2D> find_world_2d() const;
 
-	void enable_canvas_transform_override(bool p_enable);
-	bool is_canvas_transform_override_enabled() const;
+	CONSERVATORY_VIRTUAL void enable_canvas_transform_override(bool p_enable);
+	CONSERVATORY_VIRTUAL bool is_canvas_transform_override_enabled() const;
 
-	void set_canvas_transform_override(const Transform2D &p_transform);
-	Transform2D get_canvas_transform_override() const;
+	CONSERVATORY_VIRTUAL void set_canvas_transform_override(const Transform2D &p_transform);
+	CONSERVATORY_VIRTUAL Transform2D get_canvas_transform_override() const;
 
-	void set_canvas_transform(const Transform2D &p_transform);
-	Transform2D get_canvas_transform() const;
+	CONSERVATORY_VIRTUAL void set_canvas_transform(const Transform2D &p_transform);
+	CONSERVATORY_VIRTUAL Transform2D get_canvas_transform() const;
 
-	void set_global_canvas_transform(const Transform2D &p_transform);
-	Transform2D get_global_canvas_transform() const;
+	CONSERVATORY_VIRTUAL void set_global_canvas_transform(const Transform2D &p_transform);
+	CONSERVATORY_VIRTUAL Transform2D get_global_canvas_transform() const;
 
-	Transform2D get_stretch_transform() const;
+	CONSERVATORY_VIRTUAL Transform2D get_stretch_transform() const;
 	virtual Transform2D get_final_transform() const;
 
-	void gui_set_root_order_dirty();
+	CONSERVATORY_VIRTUAL void gui_set_root_order_dirty();
 
-	void set_transparent_background(bool p_enable);
-	bool has_transparent_background() const;
+	CONSERVATORY_VIRTUAL void set_transparent_background(bool p_enable);
+	CONSERVATORY_VIRTUAL bool has_transparent_background() const;
 
-	void set_use_hdr_2d(bool p_enable);
-	bool is_using_hdr_2d() const;
+	CONSERVATORY_VIRTUAL void set_use_hdr_2d(bool p_enable);
+	CONSERVATORY_VIRTUAL bool is_using_hdr_2d() const;
 
-	Ref<ViewportTexture> get_texture() const;
+	CONSERVATORY_VIRTUAL Ref<ViewportTexture> get_texture() const;
 
-	void set_positional_shadow_atlas_size(int p_size);
-	int get_positional_shadow_atlas_size() const;
+	CONSERVATORY_VIRTUAL void set_positional_shadow_atlas_size(int p_size);
+	CONSERVATORY_VIRTUAL int get_positional_shadow_atlas_size() const;
 
-	void set_positional_shadow_atlas_16_bits(bool p_16_bits);
-	bool get_positional_shadow_atlas_16_bits() const;
+	CONSERVATORY_VIRTUAL void set_positional_shadow_atlas_16_bits(bool p_16_bits);
+	CONSERVATORY_VIRTUAL bool get_positional_shadow_atlas_16_bits() const;
 
-	void set_positional_shadow_atlas_quadrant_subdiv(int p_quadrant, PositionalShadowAtlasQuadrantSubdiv p_subdiv);
-	PositionalShadowAtlasQuadrantSubdiv get_positional_shadow_atlas_quadrant_subdiv(int p_quadrant) const;
+	CONSERVATORY_VIRTUAL void set_positional_shadow_atlas_quadrant_subdiv(int p_quadrant, PositionalShadowAtlasQuadrantSubdiv p_subdiv);
+	CONSERVATORY_VIRTUAL PositionalShadowAtlasQuadrantSubdiv get_positional_shadow_atlas_quadrant_subdiv(int p_quadrant) const;
 
-	void set_msaa_2d(MSAA p_msaa);
-	MSAA get_msaa_2d() const;
+	CONSERVATORY_VIRTUAL void set_msaa_2d(MSAA p_msaa);
+	CONSERVATORY_VIRTUAL MSAA get_msaa_2d() const;
 
-	void set_msaa_3d(MSAA p_msaa);
-	MSAA get_msaa_3d() const;
+	CONSERVATORY_VIRTUAL void set_msaa_3d(MSAA p_msaa);
+	CONSERVATORY_VIRTUAL MSAA get_msaa_3d() const;
 
-	void set_screen_space_aa(ScreenSpaceAA p_screen_space_aa);
-	ScreenSpaceAA get_screen_space_aa() const;
+	CONSERVATORY_VIRTUAL void set_screen_space_aa(ScreenSpaceAA p_screen_space_aa);
+	CONSERVATORY_VIRTUAL ScreenSpaceAA get_screen_space_aa() const;
 
-	void set_use_taa(bool p_use_taa);
-	bool is_using_taa() const;
+	CONSERVATORY_VIRTUAL void set_use_taa(bool p_use_taa);
+	CONSERVATORY_VIRTUAL bool is_using_taa() const;
 
-	void set_use_oversampling(bool p_oversampling);
-	bool is_using_oversampling() const;
+	CONSERVATORY_VIRTUAL void set_use_oversampling(bool p_oversampling);
+	CONSERVATORY_VIRTUAL bool is_using_oversampling() const;
 
-	void set_oversampling_override(float p_oversampling);
-	float get_oversampling_override() const;
+	CONSERVATORY_VIRTUAL void set_oversampling_override(float p_oversampling);
+	CONSERVATORY_VIRTUAL float get_oversampling_override() const;
 
-	float get_oversampling() const { return font_oversampling; }
+	CONSERVATORY_VIRTUAL float get_oversampling() const { return font_oversampling; }
 
-	void set_scaling_3d_mode(Scaling3DMode p_scaling_3d_mode);
-	Scaling3DMode get_scaling_3d_mode() const;
+	CONSERVATORY_VIRTUAL void set_scaling_3d_mode(Scaling3DMode p_scaling_3d_mode);
+	CONSERVATORY_VIRTUAL Scaling3DMode get_scaling_3d_mode() const;
 
-	void set_scaling_3d_scale(float p_scaling_3d_scale);
-	float get_scaling_3d_scale() const;
+	CONSERVATORY_VIRTUAL void set_scaling_3d_scale(float p_scaling_3d_scale);
+	CONSERVATORY_VIRTUAL float get_scaling_3d_scale() const;
 
-	void set_fsr_sharpness(float p_fsr_sharpness);
-	float get_fsr_sharpness() const;
+	CONSERVATORY_VIRTUAL void set_fsr_sharpness(float p_fsr_sharpness);
+	CONSERVATORY_VIRTUAL float get_fsr_sharpness() const;
 
-	void set_texture_mipmap_bias(float p_texture_mipmap_bias);
-	float get_texture_mipmap_bias() const;
+	CONSERVATORY_VIRTUAL void set_texture_mipmap_bias(float p_texture_mipmap_bias);
+	CONSERVATORY_VIRTUAL float get_texture_mipmap_bias() const;
 
-	void set_anisotropic_filtering_level(AnisotropicFiltering p_anisotropic_filtering_level);
-	AnisotropicFiltering get_anisotropic_filtering_level() const;
+	CONSERVATORY_VIRTUAL void set_anisotropic_filtering_level(AnisotropicFiltering p_anisotropic_filtering_level);
+	CONSERVATORY_VIRTUAL AnisotropicFiltering get_anisotropic_filtering_level() const;
 
-	void set_use_debanding(bool p_use_debanding);
-	bool is_using_debanding() const;
+	CONSERVATORY_VIRTUAL void set_use_debanding(bool p_use_debanding);
+	CONSERVATORY_VIRTUAL bool is_using_debanding() const;
 
-	void set_mesh_lod_threshold(float p_pixels);
-	float get_mesh_lod_threshold() const;
+	CONSERVATORY_VIRTUAL void set_mesh_lod_threshold(float p_pixels);
+	CONSERVATORY_VIRTUAL float get_mesh_lod_threshold() const;
 
-	void set_use_occlusion_culling(bool p_us_occlusion_culling);
-	bool is_using_occlusion_culling() const;
+	CONSERVATORY_VIRTUAL void set_use_occlusion_culling(bool p_us_occlusion_culling);
+	CONSERVATORY_VIRTUAL bool is_using_occlusion_culling() const;
 
-	Vector2 get_camera_coords(const Vector2 &p_viewport_coords) const;
-	Vector2 get_camera_rect_size() const;
+	CONSERVATORY_VIRTUAL Vector2 get_camera_coords(const Vector2 &p_viewport_coords) const;
+	CONSERVATORY_VIRTUAL Vector2 get_camera_rect_size() const;
 
-	void push_text_input(const String &p_text);
-	void push_input(const Ref<InputEvent> &p_event, bool p_local_coords = false);
+	CONSERVATORY_VIRTUAL void push_text_input(const String &p_text);
+	CONSERVATORY_VIRTUAL void push_input(const Ref<InputEvent> &p_event, bool p_local_coords = false);
 #ifndef DISABLE_DEPRECATED
-	void push_unhandled_input(const Ref<InputEvent> &p_event, bool p_local_coords = false);
+	CONSERVATORY_VIRTUAL void push_unhandled_input(const Ref<InputEvent> &p_event, bool p_local_coords = false);
 #endif // DISABLE_DEPRECATED
-	void notify_mouse_entered();
-	void notify_mouse_exited();
+	CONSERVATORY_VIRTUAL void notify_mouse_entered();
+	CONSERVATORY_VIRTUAL void notify_mouse_exited();
 
-	void set_disable_input(bool p_disable);
-	bool is_input_disabled() const;
+	CONSERVATORY_VIRTUAL void set_disable_input(bool p_disable);
+	CONSERVATORY_VIRTUAL bool is_input_disabled() const;
 
-	void set_disable_input_override(bool p_disable);
+	CONSERVATORY_VIRTUAL void set_disable_input_override(bool p_disable);
 
-	Vector2 get_mouse_position() const;
-	void warp_mouse(const Vector2 &p_position);
-	Point2 wrap_mouse_in_rect(const Vector2 &p_relative, const Rect2 &p_rect);
+	CONSERVATORY_VIRTUAL Vector2 get_mouse_position() const;
+	CONSERVATORY_VIRTUAL void warp_mouse(const Vector2 &p_position);
+	CONSERVATORY_VIRTUAL Point2 wrap_mouse_in_rect(const Vector2 &p_relative, const Rect2 &p_rect);
 	virtual void update_mouse_cursor_state();
 
 #if !defined(PHYSICS_2D_DISABLED) || !defined(PHYSICS_3D_DISABLED)
-	void set_physics_object_picking(bool p_enable);
-	bool get_physics_object_picking();
-	void set_physics_object_picking_sort(bool p_enable);
-	bool get_physics_object_picking_sort();
-	void set_physics_object_picking_first_only(bool p_enable);
-	bool get_physics_object_picking_first_only();
+	CONSERVATORY_VIRTUAL void set_physics_object_picking(bool p_enable);
+	CONSERVATORY_VIRTUAL bool get_physics_object_picking();
+	CONSERVATORY_VIRTUAL void set_physics_object_picking_sort(bool p_enable);
+	CONSERVATORY_VIRTUAL bool get_physics_object_picking_sort();
+	CONSERVATORY_VIRTUAL void set_physics_object_picking_first_only(bool p_enable);
+	CONSERVATORY_VIRTUAL bool get_physics_object_picking_first_only();
 #endif // !defined(PHYSICS_2D_DISABLED) || !defined(PHYSICS_3D_DISABLED)
 
-	Variant gui_get_drag_data() const;
-	String gui_get_drag_description() const;
-	void gui_set_drag_description(const String &p_description);
+	CONSERVATORY_VIRTUAL Variant gui_get_drag_data() const;
+	CONSERVATORY_VIRTUAL String gui_get_drag_description() const;
+	CONSERVATORY_VIRTUAL void gui_set_drag_description(const String &p_description);
 
-	void gui_reset_canvas_sort_index();
-	int gui_get_canvas_sort_index();
+	CONSERVATORY_VIRTUAL void gui_reset_canvas_sort_index();
+	CONSERVATORY_VIRTUAL int gui_get_canvas_sort_index();
 
-	void gui_release_focus();
-	Control *gui_get_focus_owner() const;
-	Control *gui_get_hovered_control() const;
-	Window *get_focused_subwindow() const { return gui.subwindow_focused; }
+	CONSERVATORY_VIRTUAL void gui_release_focus();
+	CONSERVATORY_VIRTUAL Control *gui_get_focus_owner() const;
+	CONSERVATORY_VIRTUAL Control *gui_get_hovered_control() const;
+	CONSERVATORY_VIRTUAL Window *get_focused_subwindow() const { return gui.subwindow_focused; }
 
-	PackedStringArray get_configuration_warnings() const override;
+	CONSERVATORY_VIRTUAL PackedStringArray get_configuration_warnings() const override;
 
-	void set_debug_draw(DebugDraw p_debug_draw);
-	DebugDraw get_debug_draw() const;
+	CONSERVATORY_VIRTUAL void set_debug_draw(DebugDraw p_debug_draw);
+	CONSERVATORY_VIRTUAL DebugDraw get_debug_draw() const;
 
-	int get_render_info(RenderInfoType p_type, RenderInfo p_info);
+	CONSERVATORY_VIRTUAL int get_render_info(RenderInfoType p_type, RenderInfo p_info);
 
-	void set_snap_controls_to_pixels(bool p_enable);
-	bool is_snap_controls_to_pixels_enabled() const;
+	CONSERVATORY_VIRTUAL void set_snap_controls_to_pixels(bool p_enable);
+	CONSERVATORY_VIRTUAL bool is_snap_controls_to_pixels_enabled() const;
 
-	void set_snap_2d_transforms_to_pixel(bool p_enable);
-	bool is_snap_2d_transforms_to_pixel_enabled() const;
+	CONSERVATORY_VIRTUAL void set_snap_2d_transforms_to_pixel(bool p_enable);
+	CONSERVATORY_VIRTUAL bool is_snap_2d_transforms_to_pixel_enabled() const;
 
-	void set_snap_2d_vertices_to_pixel(bool p_enable);
-	bool is_snap_2d_vertices_to_pixel_enabled() const;
+	CONSERVATORY_VIRTUAL void set_snap_2d_vertices_to_pixel(bool p_enable);
+	CONSERVATORY_VIRTUAL bool is_snap_2d_vertices_to_pixel_enabled() const;
 
-	void set_input_as_handled();
-	bool is_input_handled() const;
+	CONSERVATORY_VIRTUAL void set_input_as_handled();
+	CONSERVATORY_VIRTUAL bool is_input_handled() const;
 
-	void set_handle_input_locally(bool p_enable);
-	bool is_handling_input_locally() const;
+	CONSERVATORY_VIRTUAL void set_handle_input_locally(bool p_enable);
+	CONSERVATORY_VIRTUAL bool is_handling_input_locally() const;
 
-	bool gui_is_dragging() const;
-	bool gui_is_drag_successful() const;
-	void gui_cancel_drag();
-	void gui_perform_drop_at(const Point2 &p_pos, Control *p_control = nullptr);
+	CONSERVATORY_VIRTUAL bool gui_is_dragging() const;
+	CONSERVATORY_VIRTUAL bool gui_is_drag_successful() const;
+	CONSERVATORY_VIRTUAL void gui_cancel_drag();
+	CONSERVATORY_VIRTUAL void gui_perform_drop_at(const Point2 &p_pos, Control *p_control = nullptr);
 
-	Control *gui_find_control(const Point2 &p_global);
+	CONSERVATORY_VIRTUAL Control *gui_find_control(const Point2 &p_global);
 
-	void set_sdf_oversize(SDFOversize p_sdf_oversize);
-	SDFOversize get_sdf_oversize() const;
+	CONSERVATORY_VIRTUAL void set_sdf_oversize(SDFOversize p_sdf_oversize);
+	CONSERVATORY_VIRTUAL SDFOversize get_sdf_oversize() const;
 
-	void set_sdf_scale(SDFScale p_sdf_scale);
-	SDFScale get_sdf_scale() const;
+	CONSERVATORY_VIRTUAL void set_sdf_scale(SDFScale p_sdf_scale);
+	CONSERVATORY_VIRTUAL SDFScale get_sdf_scale() const;
 
-	void set_default_canvas_item_texture_filter(DefaultCanvasItemTextureFilter p_filter);
-	DefaultCanvasItemTextureFilter get_default_canvas_item_texture_filter() const;
+	CONSERVATORY_VIRTUAL void set_default_canvas_item_texture_filter(DefaultCanvasItemTextureFilter p_filter);
+	CONSERVATORY_VIRTUAL DefaultCanvasItemTextureFilter get_default_canvas_item_texture_filter() const;
 
-	void set_default_canvas_item_texture_repeat(DefaultCanvasItemTextureRepeat p_repeat);
-	DefaultCanvasItemTextureRepeat get_default_canvas_item_texture_repeat() const;
+	CONSERVATORY_VIRTUAL void set_default_canvas_item_texture_repeat(DefaultCanvasItemTextureRepeat p_repeat);
+	CONSERVATORY_VIRTUAL DefaultCanvasItemTextureRepeat get_default_canvas_item_texture_repeat() const;
 
 	// VRS
 
-	void set_vrs_mode(VRSMode p_vrs_mode);
-	VRSMode get_vrs_mode() const;
+	CONSERVATORY_VIRTUAL void set_vrs_mode(VRSMode p_vrs_mode);
+	CONSERVATORY_VIRTUAL VRSMode get_vrs_mode() const;
 
-	void set_vrs_update_mode(VRSUpdateMode p_vrs_update_mode);
-	VRSUpdateMode get_vrs_update_mode() const;
+	CONSERVATORY_VIRTUAL void set_vrs_update_mode(VRSUpdateMode p_vrs_update_mode);
+	CONSERVATORY_VIRTUAL VRSUpdateMode get_vrs_update_mode() const;
 
-	void set_vrs_texture(Ref<Texture2D> p_texture);
-	Ref<Texture2D> get_vrs_texture() const;
+	CONSERVATORY_VIRTUAL void set_vrs_texture(Ref<Texture2D> p_texture);
+	CONSERVATORY_VIRTUAL Ref<Texture2D> get_vrs_texture() const;
 
 	virtual DisplayServer::WindowID get_window_id() const = 0;
 
-	void set_embedding_subwindows(bool p_embed);
-	bool is_embedding_subwindows() const;
-	TypedArray<Window> get_embedded_subwindows() const;
-	void subwindow_set_popup_safe_rect(Window *p_window, const Rect2i &p_rect);
-	Rect2i subwindow_get_popup_safe_rect(Window *p_window) const;
+	CONSERVATORY_VIRTUAL void set_embedding_subwindows(bool p_embed);
+	CONSERVATORY_VIRTUAL bool is_embedding_subwindows() const;
+	CONSERVATORY_VIRTUAL TypedArray<Window> get_embedded_subwindows() const;
+	CONSERVATORY_VIRTUAL void subwindow_set_popup_safe_rect(Window *p_window, const Rect2i &p_rect);
+	CONSERVATORY_VIRTUAL Rect2i subwindow_get_popup_safe_rect(Window *p_window) const;
 
-	Viewport *get_parent_viewport() const;
-	Window *get_base_window();
+	CONSERVATORY_VIRTUAL Viewport *get_parent_viewport() const;
+	CONSERVATORY_VIRTUAL Window *get_base_window();
 
-	void set_canvas_cull_mask(uint32_t p_layers);
-	uint32_t get_canvas_cull_mask() const;
+	CONSERVATORY_VIRTUAL void set_canvas_cull_mask(uint32_t p_layers);
+	CONSERVATORY_VIRTUAL uint32_t get_canvas_cull_mask() const;
 
-	void set_canvas_cull_mask_bit(uint32_t p_layer, bool p_enable);
-	bool get_canvas_cull_mask_bit(uint32_t p_layer) const;
+	CONSERVATORY_VIRTUAL void set_canvas_cull_mask_bit(uint32_t p_layer, bool p_enable);
+	CONSERVATORY_VIRTUAL bool get_canvas_cull_mask_bit(uint32_t p_layer) const;
 
 #ifdef TOOLS_ENABLED
-	bool is_visible_subviewport() const;
+	CONSERVATORY_VIRTUAL bool is_visible_subviewport() const;
 #endif // TOOLS_ENABLED
 
 	virtual bool is_size_2d_override_stretch_enabled() const { return true; }
 
-	Transform2D get_screen_transform() const;
+	CONSERVATORY_VIRTUAL Transform2D get_screen_transform() const;
 	virtual Transform2D get_screen_transform_internal(bool p_absolute_position = false) const;
 	virtual Transform2D get_popup_base_transform() const { return Transform2D(); }
 	virtual Viewport *get_section_root_viewport() const { return nullptr; }
@@ -742,14 +746,14 @@ private:
 	// 2D audio, camera, and physics. (don't put World2D here because World2D is needed for Control nodes).
 	friend class AudioListener2D; // Needs _audio_listener_2d_set and _audio_listener_2d_remove
 	AudioListener2D *audio_listener_2d = nullptr;
-	void _audio_listener_2d_set(AudioListener2D *p_audio_listener);
-	void _audio_listener_2d_remove(AudioListener2D *p_audio_listener);
+	CONSERVATORY_VIRTUAL void _audio_listener_2d_set(AudioListener2D *p_audio_listener);
+	CONSERVATORY_VIRTUAL void _audio_listener_2d_remove(AudioListener2D *p_audio_listener);
 	bool is_audio_listener_2d_enabled = false;
 	RID internal_audio_listener_2d;
 
 	friend class Camera2D; // Needs _camera_2d_set
 	Camera2D *camera_2d = nullptr;
-	void _camera_2d_set(Camera2D *p_camera_2d);
+	CONSERVATORY_VIRTUAL void _camera_2d_set(Camera2D *p_camera_2d);
 
 #ifndef PHYSICS_2D_DISABLED
 	// Collider to frame
@@ -757,16 +761,16 @@ private:
 	// Collider & shape to frame
 	HashMap<Pair<ObjectID, int>, uint64_t> physics_2d_shape_mouseover;
 	// Cleans up colliders corresponding to old frames or all of them.
-	void _cleanup_mouseover_colliders(bool p_clean_all_frames, bool p_paused_only, uint64_t p_frame_reference = 0);
+	CONSERVATORY_VIRTUAL void _cleanup_mouseover_colliders(bool p_clean_all_frames, bool p_paused_only, uint64_t p_frame_reference = 0);
 #endif // PHYSICS_2D_DISABLED
 
 public:
-	AudioListener2D *get_audio_listener_2d() const;
-	void set_as_audio_listener_2d(bool p_enable);
-	bool is_audio_listener_2d() const;
+	CONSERVATORY_VIRTUAL AudioListener2D *get_audio_listener_2d() const;
+	CONSERVATORY_VIRTUAL void set_as_audio_listener_2d(bool p_enable);
+	CONSERVATORY_VIRTUAL bool is_audio_listener_2d() const;
 
-	Camera2D *get_camera_2d() const;
-	void assign_next_enabled_camera_2d(const StringName &p_camera_group);
+	CONSERVATORY_VIRTUAL Camera2D *get_camera_2d() const;
+	CONSERVATORY_VIRTUAL void assign_next_enabled_camera_2d(const StringName &p_camera_group);
 
 #ifndef _3D_DISABLED
 private:
@@ -777,15 +781,15 @@ private:
 	HashSet<AudioListener3D *> audio_listener_3d_set;
 	bool is_audio_listener_3d_enabled = false;
 	RID internal_audio_listener_3d;
-	void _update_audio_listener_3d();
-	void _listener_transform_3d_changed_notify();
-	void _audio_listener_3d_set(AudioListener3D *p_listener);
-	bool _audio_listener_3d_add(AudioListener3D *p_listener); //true if first
-	void _audio_listener_3d_remove(AudioListener3D *p_listener);
-	void _audio_listener_3d_make_next_current(AudioListener3D *p_exclude);
+	CONSERVATORY_VIRTUAL void _update_audio_listener_3d();
+	CONSERVATORY_VIRTUAL void _listener_transform_3d_changed_notify();
+	CONSERVATORY_VIRTUAL void _audio_listener_3d_set(AudioListener3D *p_listener);
+	CONSERVATORY_VIRTUAL bool _audio_listener_3d_add(AudioListener3D *p_listener); //true if first
+	CONSERVATORY_VIRTUAL void _audio_listener_3d_remove(AudioListener3D *p_listener);
+	CONSERVATORY_VIRTUAL void _audio_listener_3d_make_next_current(AudioListener3D *p_exclude);
 
 #ifndef PHYSICS_3D_DISABLED
-	void _collision_object_3d_input_event(CollisionObject3D *p_object, Camera3D *p_camera, const Ref<InputEvent> &p_input_event, const Vector3 &p_pos, const Vector3 &p_normal, int p_shape);
+	CONSERVATORY_VIRTUAL void _collision_object_3d_input_event(CollisionObject3D *p_object, Camera3D *p_camera, const Ref<InputEvent> &p_input_event, const Vector3 &p_pos, const Vector3 &p_normal, int p_shape);
 #endif // PHYSICS_3D_DISABLED
 
 	struct Camera3DOverrideData {
@@ -809,49 +813,49 @@ private:
 	friend class Camera3D;
 	Camera3D *camera_3d = nullptr;
 	HashSet<Camera3D *> camera_3d_set;
-	void _camera_3d_transform_changed_notify();
-	void _camera_3d_set(Camera3D *p_camera);
-	bool _camera_3d_add(Camera3D *p_camera); //true if first
-	void _camera_3d_remove(Camera3D *p_camera);
-	void _camera_3d_make_next_current(Camera3D *p_exclude);
+	CONSERVATORY_VIRTUAL void _camera_3d_transform_changed_notify();
+	CONSERVATORY_VIRTUAL void _camera_3d_set(Camera3D *p_camera);
+	CONSERVATORY_VIRTUAL bool _camera_3d_add(Camera3D *p_camera); //true if first
+	CONSERVATORY_VIRTUAL void _camera_3d_remove(Camera3D *p_camera);
+	CONSERVATORY_VIRTUAL void _camera_3d_make_next_current(Camera3D *p_exclude);
 
 	Ref<World3D> world_3d;
 	Ref<World3D> own_world_3d;
-	void _own_world_3d_changed();
-	void _propagate_enter_world_3d(Node *p_node);
-	void _propagate_exit_world_3d(Node *p_node);
+	CONSERVATORY_VIRTUAL void _own_world_3d_changed();
+	CONSERVATORY_VIRTUAL void _propagate_enter_world_3d(Node *p_node);
+	CONSERVATORY_VIRTUAL void _propagate_exit_world_3d(Node *p_node);
 
 public:
-	AudioListener3D *get_audio_listener_3d() const;
-	void set_as_audio_listener_3d(bool p_enable);
-	bool is_audio_listener_3d() const;
+	CONSERVATORY_VIRTUAL AudioListener3D *get_audio_listener_3d() const;
+	CONSERVATORY_VIRTUAL void set_as_audio_listener_3d(bool p_enable);
+	CONSERVATORY_VIRTUAL bool is_audio_listener_3d() const;
 
-	Camera3D *get_camera_3d() const;
-	void enable_camera_3d_override(bool p_enable);
-	bool is_camera_3d_override_enabled() const;
+	CONSERVATORY_VIRTUAL Camera3D *get_camera_3d() const;
+	CONSERVATORY_VIRTUAL void enable_camera_3d_override(bool p_enable);
+	CONSERVATORY_VIRTUAL bool is_camera_3d_override_enabled() const;
 
-	void set_camera_3d_override_transform(const Transform3D &p_transform);
-	Transform3D get_camera_3d_override_transform() const;
+	CONSERVATORY_VIRTUAL void set_camera_3d_override_transform(const Transform3D &p_transform);
+	CONSERVATORY_VIRTUAL Transform3D get_camera_3d_override_transform() const;
 
-	void set_camera_3d_override_perspective(real_t p_fovy_degrees, real_t p_z_near, real_t p_z_far);
-	void set_camera_3d_override_orthogonal(real_t p_size, real_t p_z_near, real_t p_z_far);
-	HashMap<StringName, real_t> get_camera_3d_override_properties() const;
+	CONSERVATORY_VIRTUAL void set_camera_3d_override_perspective(real_t p_fovy_degrees, real_t p_z_near, real_t p_z_far);
+	CONSERVATORY_VIRTUAL void set_camera_3d_override_orthogonal(real_t p_size, real_t p_z_near, real_t p_z_far);
+	CONSERVATORY_VIRTUAL HashMap<StringName, real_t> get_camera_3d_override_properties() const;
 
-	Vector3 camera_3d_override_project_ray_normal(const Point2 &p_pos) const;
-	Vector3 camera_3d_override_project_ray_origin(const Point2 &p_pos) const;
-	Vector3 camera_3d_override_project_local_ray_normal(const Point2 &p_pos) const;
+	CONSERVATORY_VIRTUAL Vector3 camera_3d_override_project_ray_normal(const Point2 &p_pos) const;
+	CONSERVATORY_VIRTUAL Vector3 camera_3d_override_project_ray_origin(const Point2 &p_pos) const;
+	CONSERVATORY_VIRTUAL Vector3 camera_3d_override_project_local_ray_normal(const Point2 &p_pos) const;
 
-	void set_disable_3d(bool p_disable);
-	bool is_3d_disabled() const;
+	CONSERVATORY_VIRTUAL void set_disable_3d(bool p_disable);
+	CONSERVATORY_VIRTUAL bool is_3d_disabled() const;
 
-	virtual void set_world_3d(const Ref<World3D> &p_world_3d);
-	virtual Ref<World3D> get_world_3d() const;
-	virtual Ref<World3D> find_world_3d() const;
-	virtual void set_use_own_world_3d(bool p_use_own_world_3d);
-	virtual bool is_using_own_world_3d() const;
+	CONSERVATORY_VIRTUAL void set_world_3d(const Ref<World3D> &p_world_3d);
+	CONSERVATORY_VIRTUAL Ref<World3D> get_world_3d() const;
+	CONSERVATORY_VIRTUAL Ref<World3D> find_world_3d() const;
+	CONSERVATORY_VIRTUAL void set_use_own_world_3d(bool p_use_own_world_3d);
+	CONSERVATORY_VIRTUAL bool is_using_own_world_3d() const;
 
-	void set_use_xr(bool p_use_xr);
-	bool is_using_xr();
+	CONSERVATORY_VIRTUAL void set_use_xr(bool p_use_xr);
+	CONSERVATORY_VIRTUAL bool is_using_xr();
 #endif // _3D_DISABLED
 
 	Viewport();
@@ -930,3 +934,5 @@ VARIANT_ENUM_CAST(Viewport::RenderInfo);
 VARIANT_ENUM_CAST(Viewport::RenderInfoType);
 VARIANT_ENUM_CAST(Viewport::DefaultCanvasItemTextureFilter);
 VARIANT_ENUM_CAST(Viewport::DefaultCanvasItemTextureRepeat);
+
+#undef CONSERVATORY_VIRTUAL

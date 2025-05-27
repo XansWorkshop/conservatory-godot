@@ -350,10 +350,9 @@
 #include "scene/resources/3d/world_boundary_shape_3d.h"
 #endif // PHYSICS_3D_DISABLED
 
-
-#if !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
-#include "scene/3d/simulation_3d.h"
-#endif
+#if !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
+#include "scene/3d/simulation_domain.h"
+#endif // !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
 
 static Ref<ResourceFormatSaverText> resource_saver_text;
 static Ref<ResourceFormatLoaderText> resource_loader_text;
@@ -987,6 +986,10 @@ void register_scene_types() {
 
 	OS::get_singleton()->yield(); // may take time to init
 
+#if !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
+	GDREGISTER_ABSTRACT_CLASS(SimulationDomain);
+#endif
+
 #ifndef PHYSICS_3D_DISABLED
 	GDREGISTER_ABSTRACT_CLASS(Shape3D);
 	GDREGISTER_CLASS(SeparationRayShape3D);
@@ -998,7 +1001,6 @@ void register_scene_types() {
 	GDREGISTER_CLASS(WorldBoundaryShape3D);
 	GDREGISTER_CLASS(ConvexPolygonShape3D);
 	GDREGISTER_CLASS(ConcavePolygonShape3D);
-	GDREGISTER_ABSTRACT_CLASS(Simulation3D);
 #endif // PHYSICS_3D_DISABLED
 	GDREGISTER_CLASS(World3D);
 

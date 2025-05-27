@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="SimulationDomain" inherits="Node" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		An advanced, [Viewport]-like class for [i]The Conservatory[/i].
+	</brief_description>
+	<description>
+		[SimulationDomain] is a specialzied [Viewport]-like class designed explicitly for [i]The Conservatory[/i]. It is similar to [SubViewport] in that it has its own space, canvas, and scenario (for physics and 2D+3D rendering respectively), but it is strictly controlled by the engine and moreover does not need a container or texture to render to. Instead, one domain is selected to be "active" and will override the root viewport.
+
+		This system allows many worlds to be loaded in parallel without having to worry about which one to draw or simulate; this is handled by the engine and game together.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_is_valid" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if this instance is valid and can be used.
+			</description>
+		</method>
+		<method name="get_is_current" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if this instance is the one currently overriding the root viewport.
+				This is always [code]false[/code]in headless mode.
+			</description>
+		</method>
+		<method name="get_physics_space_2d" qualifiers="const">
+			<return type="RID" />
+			<description>
+				Returns the [RID] of the 2D physical space for this [SimulationDomain]. Physical 2D objects for this simulation should have their space set to this RID.
+				[b]DANGER:[/b] Freeing this RID will crash the game.
+			</description>
+		</method>
+		<method name="get_physics_space_3d" qualifiers="const">
+			<return type="RID" />
+			<description>
+				Returns the [RID] of the 3D physical space for this [SimulationDomain]. Physical 3D objects for this simulation should have their space set to this RID.
+				[b]DANGER:[/b] Freeing this RID will crash the game.
+			</description>
+		</method>
+		<method name="get_render_canvas" qualifiers="const">
+			<return type="RID" />
+			<description>
+				Returns the [RID] of the render canvas for this [SimulationDomain]. Rendered 2D objects for this simulation should have their canvas set to this RID.
+				[b]DANGER:[/b] Freeing this RID will crash the game.
+			</description>
+		</method>
+		<method name="get_render_scenario" qualifiers="const">
+			<return type="RID" />
+			<description>
+				Returns the [RID] of the render scenario for this [SimulationDomain]. Rendered 3D objects for this simulation should have their scenario set to this RID.
+				[b]DANGER:[/b] Freeing this RID will crash the game.
+			</description>
+		</method>
+		<method name="destroy">
+			<return type="void" />
+			<description>
+				Destroys this instance like [method Free], but validates that it is acceptable to do so.
+				[b]DANGER:[/b] [i]Never[/i] [code]free()[/code] a [SimulationDomain], or remove it as a child from the scene tree, or call this method without first destroying the corresponding [code]WorldInstance[/code] (a class in [i]The Conservatory[/i]). Failure to follow this warning will crash the game.
+				Note that [code]WorldInstance[/code] invokes this method itself when calling [code]SaveAndUnload()[/code].
+			</description>
+		</method>
+		<method name="set_conservatory_callbacks">
+			<return type="long" />
+			<description>
+				[b]DANGER:[/b] This is strictly for internal use by [i]The Conservatory[/i]'s scene tree type, [i]The Fabric of Reality[/i].
+				Attempting to use this yourself will crash the game.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="is_valid" type="bool" setter="" getter="get_is_valid" default="false">
+			Will be [code]true[/code] if this instance is valid and can be used.
+		</member>
+		<member name="is_current" type="bool" setter="" getter="get_is_current" default="false">
+			Will be [code]true[/code] if this instance is the one currently overriding the root viewport.
+			This is always [code]false[/code]in headless mode.
+		</member>
+		<member name="physics_space_2d" type="RID" setter="" getter="get_physics_space_2d" default="0">
+			The [RID] of the 2D physical space for this [SimulationDomain]. Physical 2D objects for this simulation should have their space set to this RID.
+			[b]DANGER:[/b] Freeing this RID will crash the game.
+		</member>
+		<member name="physics_space_3d" type="RID" setter="" getter="get_physics_space_3d" default="0">
+			The [RID] of the 3D physical space for this [SimulationDomain]. Physical 3D objects for this simulation should have their space set to this RID.
+			[b]DANGER:[/b] Freeing this RID will crash the game.
+		</member>
+		<member name="render_canvas" type="RID" setter="" getter="get_render_scenario" default="0">
+			The [RID] of the render canvas for this [SimulationDomain]. Rendered 2D objects for this simulation should have their canvas set to this RID. This is a proxy to that of the [member world_2d].
+			[b]DANGER:[/b] Freeing this RID will crash the game.
+		</member>
+		<member name="render_scenario" type="RID" setter="" getter="get_render_scenario" default="0">
+			The [RID] of the render scenario for this [SimulationDomain]. Rendered 3D objects for this simulation should have their scenario set to this RID. This is a proxy to that of the [member world_3d].
+			[b]DANGER:[/b] Freeing this RID will crash the game.
+		</member>
+		<member name="world_2d" type="World2D" setter="set_world_2d" getter="get_world_2d">
+			The private [World2D] belonging to this simulation.
+
+			[b]DANGER:[/b] [i]Never[/i] delete this instance yourself; doing so will crash the game.
+		</member>
+		<member name="world_3d" type="World3D" setter="set_world_3d" getter="get_world_3d">
+			The private [World3D] belonging to this simulation.
+
+			[b]DANGER:[/b] [i]Never[/i] delete this instance yourself; doing so will crash the game.
+		</member>
+	</members>
+	<signals>
+	</signals>
+	<constants>
+	</constants>
+</class>
