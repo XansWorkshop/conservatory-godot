@@ -54,10 +54,11 @@
 #include "scene/3d/audio_listener_3d.h"
 #include "scene/3d/camera_3d.h"
 #include "scene/3d/world_environment.h"
-#ifndef PHYSICS_3D_DISABLED
-#include "scene/3d/simulation_3d.h"
-#endif // PHYSICS_3D_DISABLED
 #endif // _3D_DISABLED
+
+#if !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
+#include "scene/3d/simulation_domain.h"
+#endif // !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
 
 #ifndef PHYSICS_2D_DISABLED
 #include "scene/2d/physics/collision_object_2d.h"
@@ -1297,6 +1298,9 @@ void Viewport::set_world_2d(const Ref<World2D> &p_world_2d) {
 	if (world_2d == p_world_2d) {
 		return;
 	}
+	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
+		return;
+	}
 
 	if (is_inside_tree()) {
 		RenderingServer::get_singleton()->viewport_remove_canvas(viewport, current_canvas);
@@ -1328,6 +1332,9 @@ void Viewport::set_world_2d(const Ref<World2D> &p_world_2d) {
 
 Ref<World2D> Viewport::find_world_2d() const {
 	ERR_READ_THREAD_GUARD_V(Ref<World2D>());
+	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
+		return SimulationDomain::current->get_world_2d();
+	}
 	if (world_2d.is_valid()) {
 		return world_2d;
 	} else if (parent) {
@@ -4650,11 +4657,9 @@ Ref<World3D> Viewport::get_world_3d() const {
 
 Ref<World3D> Viewport::find_world_3d() const {
 	ERR_READ_THREAD_GUARD_V(Ref<World3D>());
-#ifndef PHYSICS_3D_DISABLED
-	if (Simulation3D::current && Simulation3D::current->get_parent_viewport() == this) {
-		return Simulation3D::current->get_world_3d();
+	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
+		return SimulationDomain::current->get_world_3d();
 	}
-#endif
 	if (own_world_3d.is_valid()) {
 		return own_world_3d;
 	} else if (world_3d.is_valid()) {
@@ -4669,6 +4674,9 @@ Ref<World3D> Viewport::find_world_3d() const {
 void Viewport::set_world_3d(const Ref<World3D> &p_world_3d) {
 	ERR_MAIN_THREAD_GUARD;
 	if (world_3d == p_world_3d) {
+		return;
+	}
+	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
 		return;
 	}
 
@@ -4726,6 +4734,9 @@ void Viewport::_own_world_3d_changed() {
 void Viewport::set_use_own_world_3d(bool p_use_own_world_3d) {
 	ERR_MAIN_THREAD_GUARD;
 	if (p_use_own_world_3d == own_world_3d.is_valid()) {
+		return;
+	}
+	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
 		return;
 	}
 
