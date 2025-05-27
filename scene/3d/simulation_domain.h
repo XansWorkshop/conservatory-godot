@@ -240,7 +240,9 @@ public:
 	_FORCE_INLINE_ Vector2 get_camera_rect_size() const override { return get_parent_viewport()->get_camera_rect_size(); }
 	_FORCE_INLINE_ void push_text_input(const String &p_text) override { get_parent_viewport()->push_text_input(p_text); }
 	_FORCE_INLINE_ void push_input(const Ref<InputEvent> &p_event, bool p_local_coords = false) override { get_parent_viewport()->push_input(p_event, p_local_coords); }
+#ifndef DISABLE_DEPRECATED
 	_FORCE_INLINE_ void push_unhandled_input(const Ref<InputEvent> &p_event, bool p_local_coords = false) override { get_parent_viewport()->push_unhandled_input(p_event, p_local_coords); }
+#endif
 	_FORCE_INLINE_ void notify_mouse_entered() override { get_parent_viewport()->notify_mouse_entered(); }
 	_FORCE_INLINE_ void notify_mouse_exited() override { get_parent_viewport()->notify_mouse_exited(); }
 	_FORCE_INLINE_ void set_disable_input(bool p_disable) override { get_parent_viewport()->set_disable_input(p_disable); }
