@@ -103,7 +103,7 @@ public:
 	static SimulationDomain *current;
 
 	bool get_is_valid() const;
-	bool get_is_current() const;
+	bool get_is_active() const;
 	RID get_physics_space_2d() const;
 	RID get_physics_space_3d() const;
 	RID get_render_canvas() const;
