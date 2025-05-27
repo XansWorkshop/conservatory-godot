@@ -132,6 +132,9 @@ Dictionary Engine::get_version_info() const {
 	dict["status"] = GODOT_VERSION_STATUS;
 	dict["build"] = GODOT_VERSION_BUILD;
 
+	String modules = String(GODOT_VERSION_MODULE_CONFIG);
+	dict["modules"] = modules.split(".", false);
+
 	String hash = String(GODOT_VERSION_HASH);
 	dict["hash"] = hash.is_empty() ? String("unknown") : hash;
 
@@ -170,6 +173,7 @@ Dictionary Engine::get_author_info() const {
 	dict["project_managers"] = array_from_info(AUTHORS_PROJECT_MANAGERS);
 	dict["founders"] = array_from_info(AUTHORS_FOUNDERS);
 	dict["developers"] = array_from_info(AUTHORS_DEVELOPERS);
+	dict["conservatory_fork"] = array_from_info(THE_CONSERVATORY_FORK);
 
 	return dict;
 }
