@@ -55,6 +55,7 @@ public:
 	uint8_t glyph_count = 0;
 	int32_t relative_index = 0;
 	RID font;
+	int font_size = 0;
 
 	CharFXTransform();
 	~CharFXTransform();
@@ -97,6 +98,13 @@ public:
 
 	RID get_font() const { return font; }
 	void set_font(RID p_font) { font = p_font; }
+
+	int get_font_size() const { return font_size; }
+	void set_font_size(int p_font_size) { font_size = p_font_size; }
+
+	int64_t get_glyph_codepoint() const { return TS->font_get_char_from_glyph_index(font, font_size, glyph_index); }
+	void set_glyph_codepoint(int64_t p_codepoint, int64_t p_variation_selector) { glyph_index = TS->font_get_glyph_index(font, font_size, p_codepoint, p_variation_selector); }
+	void set_glyph_codepoint_novariant(int64_t p_codepoint) { glyph_index = TS->font_get_glyph_index(font, font_size, p_codepoint, 0); }
 
 	Dictionary get_environment() const { return environment; }
 	void set_environment(Dictionary p_environment) { environment = p_environment; }
