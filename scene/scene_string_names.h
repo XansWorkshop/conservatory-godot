@@ -47,6 +47,7 @@ public:
 
 	const StringName resized = "resized";
 	const StringName draw = "draw";
+	const StringName draw_early = "draw_early";
 	const StringName hidden = "hidden";
 	const StringName visibility_changed = "visibility_changed";
 

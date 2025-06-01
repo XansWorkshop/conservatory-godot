@@ -146,6 +146,9 @@ void CanvasItem::_redraw_callback() {
 			ts->set_current_drawn_item_oversampling(get_viewport()->get_oversampling());
 		}
 		current_item_drawn = this;
+		notification(NOTIFICATION_DRAW_EARLY);
+		emit_signal(SceneStringName(draw_early));
+		GDVIRTUAL_CALL(_draw_early);
 		notification(NOTIFICATION_DRAW);
 		emit_signal(SceneStringName(draw));
 		GDVIRTUAL_CALL(_draw);
@@ -1427,6 +1430,7 @@ void CanvasItem::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_clip_children_mode", "mode"), &CanvasItem::set_clip_children_mode);
 	ClassDB::bind_method(D_METHOD("get_clip_children_mode"), &CanvasItem::get_clip_children_mode);
 
+	GDVIRTUAL_BIND(_draw_early);
 	GDVIRTUAL_BIND(_draw);
 
 	ADD_GROUP("Visibility", "");
@@ -1454,6 +1458,7 @@ void CanvasItem::_bind_methods() {
 	// ADD_PROPERTY(PropertyInfo(Variant::BOOL,"transform/notify"),"set_transform_notify","is_transform_notify_enabled");
 
 	ADD_SIGNAL(MethodInfo("draw"));
+	ADD_SIGNAL(MethodInfo("draw_early"));
 	ADD_SIGNAL(MethodInfo("visibility_changed"));
 	ADD_SIGNAL(MethodInfo("hidden"));
 	ADD_SIGNAL(MethodInfo("item_rect_changed"));
@@ -1465,6 +1470,7 @@ void CanvasItem::_bind_methods() {
 	BIND_CONSTANT(NOTIFICATION_ENTER_CANVAS);
 	BIND_CONSTANT(NOTIFICATION_EXIT_CANVAS);
 	BIND_CONSTANT(NOTIFICATION_WORLD_2D_CHANGED);
+	BIND_CONSTANT(NOTIFICATION_DRAW_EARLY);
 
 	BIND_ENUM_CONSTANT(TEXTURE_FILTER_PARENT_NODE);
 	BIND_ENUM_CONSTANT(TEXTURE_FILTER_NEAREST);
