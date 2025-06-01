@@ -1909,6 +1909,7 @@ Error BindingsGenerator::generate_cs_core_project(const String &p_proj_dir) {
 		includes_props_content.append("    <Compile Include=\"" + include + "\" />\n");
 	}
 
+	includes_props_content.append("    <Compile Include=\"Core/XansWorkshop/ConservatoryInjections.cs\" />\n");
 	includes_props_content.append("  </ItemGroup>\n"
 								  "</Project>\n");
 
