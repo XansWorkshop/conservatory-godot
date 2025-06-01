@@ -10,6 +10,7 @@ This fork of the Godot Engine is based on **Godot 4.5**, and features several ch
 * `RayCast3DDirect` (a non-`Node`-based alternative to `RayCast3D`. **Supersedes** `DirectPhysicsSpaceState3D.intersect_ray()`!)
 * `RayCastResult` (a non-`Dictionary`-based result used in `RayCast3DDirect`)
 * `SimulationDomain` as a non-rendering alternative to `SubViewport`, for isolated world simulation in both 3D and 2D.
+  * "non-rendering" means that it does not need to be told to render to a specific target; it overrides the main viewport when marked as active, and like a camera, only one can be active at a time. All instances still physically simulate regardless of activity.
 * Implements [apples](https://github.com/apples)'s Stencil Buffer support. ([Fork](https://github.com/apples/godot/tree/7174-apples-stencil) | [Pull Request](https://github.com/godotengine/godot/pull/80710))
 * Support for `#pragma features` and `#pragma exclusive_variants` in the shader language. These don't do anything on the engine level. Game code uses it.
 * Assorted improvements to `Engine::get_version_info`
