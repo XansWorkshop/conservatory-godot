@@ -58,7 +58,8 @@
 		</member>
 		<member name="glyph_codepoint" type="int" setter="set_glyph_codepoint_novariant" getter="get_glyph_codepoint" default="0">
 			Unicode codepoint of this character as it appears in the text.
-			In C# environments, the [code]System.Text.Rune[/code] struct is especially useful for this purpose.
+			In C# environments, the [code]System.Text.Rune[/code] struct is especially useful for this purpose. Changing this value will change the value of [member glyph_index] automatically.
+			Returns [code]-1[/code] if the font or font size is invalid and thus getting a codepoint is impossible.
 		</member>
 		<member name="offset" type="Vector2" setter="set_offset" getter="get_offset" default="Vector2(0, 0)">
 			The position offset the character will be drawn with (in pixels).
