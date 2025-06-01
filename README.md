@@ -16,3 +16,10 @@ This fork of the Godot Engine is based on **Godot 4.5**, and features several ch
   * Added `version` field, which is a stringified version following GD's display rules i.e. "4.5" instead of "4.5.0".
   * Added `commit` field mimicking the git commit, 6 characters long. It's the same as the `hash` field. Set to `??????` if an error occurs.
   * Added `modules` field, which includes stuff like `mono` and etc as a string array.
+* `CanvasItem::DrawEarly` event and virtual method, which invokes **before** `NOTIFICATION_DRAW`.
+  * Also comes with `NOTIFICATION_DRAW_EARLY`.
+* `CharFXTransform` upgrades, including:
+  * A reference to the current label being rendered at the time of the effect call (init-only)
+  * The font size at the currently rendered glyph (init-only)
+  * The unicode codepoint of the currently rendered glyph, which should be significantly easier to use instead of `get_glyph_index`.
+    * A C#-only property exists in this type, implementing [`System.Text.Rune`](https://learn.microsoft.com/en-us/dotnet/api/system.text.rune?view=net-9.0)
