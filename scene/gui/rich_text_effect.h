@@ -102,9 +102,24 @@ public:
 	int get_font_size() const { return font_size; }
 	void set_font_size(int p_font_size) { font_size = p_font_size; }
 
-	int64_t get_glyph_codepoint() const { return TS->font_get_char_from_glyph_index(font, font_size, glyph_index); }
-	void set_glyph_codepoint(int64_t p_codepoint, int64_t p_variation_selector) { glyph_index = TS->font_get_glyph_index(font, font_size, p_codepoint, p_variation_selector); }
-	void set_glyph_codepoint_novariant(int64_t p_codepoint) { glyph_index = TS->font_get_glyph_index(font, font_size, p_codepoint, 0); }
+	int64_t get_glyph_codepoint() const {
+		ERR_FAIL_COND_V(font.is_null(), -1);
+		ERR_FAIL_COND_V(font_size <= 0, -1);
+		return TS->font_get_char_from_glyph_index(font, font_size, glyph_index);
+	}
+	void set_glyph_codepoint(int64_t p_codepoint, int64_t p_variation_selector) {
+		ERR_FAIL_COND(font.is_null());
+		ERR_FAIL_COND(font_size <= 0);
+		ERR_FAIL_COND(p_codepoint < 0);
+		ERR_FAIL_COND(p_variation_selector < 0);
+		glyph_index = TS->font_get_glyph_index(font, font_size, p_codepoint, p_variation_selector);
+	}
+	void set_glyph_codepoint_novariant(int64_t p_codepoint) {
+		ERR_FAIL_COND(font.is_null());
+		ERR_FAIL_COND(font_size <= 0);
+		ERR_FAIL_COND(p_codepoint < 0);
+		glyph_index = TS->font_get_glyph_index(font, font_size, p_codepoint, 0);
+	}
 
 	Dictionary get_environment() const { return environment; }
 	void set_environment(Dictionary p_environment) { environment = p_environment; }
