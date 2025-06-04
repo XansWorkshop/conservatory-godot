@@ -60,6 +60,11 @@
 			[b]Note:[/b] This only applies to [StandardMaterial3D]s and [ShaderMaterial]s with type "Spatial".
 			[b]Note:[/b] This will not impact how transparent objects are sorted relative to opaque objects or how dynamic meshes will be sorted relative to other opaque meshes. This is because all transparent objects are drawn after all opaque objects and all dynamic opaque meshes are drawn before other opaque meshes.
 		</member>
+		<member name="material_rid" type="RID" setter="change_material_rid" getter="_get_material">
+			Sets or returns the RID of this [Material].
+			[b]Danger:[/b] In C#, this is protected via the use of the [code]init[/code] keyword. In GDScript, no such feature exists. You should never set this at any time except for immediately after creating your material, before doing anything else. 
+			In general, you should not be using GDScript in mods. Setting this after the material is in use will wreak havoc on the state of the material and cause a resource memory leak. You have been warned.
+		</member>
 	</members>
 	<constants>
 		<constant name="RENDER_PRIORITY_MAX" value="127">

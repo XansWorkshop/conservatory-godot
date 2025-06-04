@@ -36,6 +36,10 @@
 #include "core/version.h"
 #include "scene/main/scene_tree.h"
 
+void Material::change_material(RID p_material) const {
+	material = p_material;
+}
+
 void Material::set_next_pass(const Ref<Material> &p_pass) {
 	for (Ref<Material> pass_child = p_pass; pass_child.is_valid(); pass_child = pass_child->get_next_pass()) {
 		ERR_FAIL_COND_MSG(pass_child == this, "Can't set as next_pass one of its parents to prevent crashes due to recursive loop.");
@@ -162,7 +166,7 @@ void Material::_bind_methods() {
 	ClassDB::set_method_flags(get_class_static(), StringName("inspect_native_shader_code"), METHOD_FLAGS_DEFAULT | METHOD_FLAG_EDITOR);
 
 	ClassDB::bind_method(D_METHOD("create_placeholder"), &Material::create_placeholder);
-	ClassDB::bind_method(D_METHOD("set_material_rid", "material"), &Material::_set_material);
+	ClassDB::bind_method(D_METHOD("change_material_rid", "material"), &Material::change_material);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "render_priority", PROPERTY_HINT_RANGE, itos(RENDER_PRIORITY_MIN) + "," + itos(RENDER_PRIORITY_MAX) + ",1"), "set_render_priority", "get_render_priority");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "next_pass", PROPERTY_HINT_RESOURCE_TYPE, "Material"), "set_next_pass", "get_next_pass");
