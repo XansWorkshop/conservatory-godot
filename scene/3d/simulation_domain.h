@@ -41,9 +41,9 @@
 #include "scene/3d/world_environment.h"
 #include "scene/main/node.h"
 #include "scene/main/viewport.h"
+#include "scene/main/window.h"
 #include "scene/resources/3d/world_3d.h"
 #include "scene/resources/world_2d.h"
-#include "scene/main/window.h"
 
 // #define USE_WORLD_PTR_NOT_REF
 
@@ -71,6 +71,78 @@ class WorldEnvirionment;
 class SimulationDomain : public Viewport {
 	friend class Viewport;
 	GDCLASS(SimulationDomain, Viewport);
+
+	enum TheConservatoryExitCodes {
+
+		/// <summary>
+		/// This exit code is used when all is well.
+		/// </summary>
+		OK,
+
+		/// <summary>
+		/// The crash handler has triggered an exception. Detailed information will be
+		/// in a crash dump in the game's directory.
+		/// </summary>
+		FATAL_GENERIC,
+
+		/// <summary>
+		/// This exit code is used when the user has hardware which is not supported.
+		/// </summary>
+		FATAL_UNSUPPORTED_HARDWARE,
+
+		/// <summary>
+		/// This exit code is used when the user has software which is not supported. This is primarily
+		/// oriented to things like the Windows version, for example.
+		/// </summary>
+		FATAL_UNSUPPORTED_SOFTWARE,
+
+		/// <summary>
+		/// A mod has errored during initialization, which has resulted in a catastrophic failure
+		/// that cannot be ignored (either due to the mod's instruction to hard-fail, or due to
+		/// a corrupting issue caused by the mod).
+		/// </summary>
+		FATAL_MOD_INIT_ERROR,
+
+		/// <summary>
+		/// The game was launched and --modpack was set to some nonsensical or disallowed value.
+		/// </summary>
+		FATAL_GARBAGE_MODPACK_NAME,
+
+		/// <summary>
+		/// Something misused resources that are explicitly required to be used in a very specific and well-documented way,
+		/// for example letting something get garbage collected that shouldn't have been garbage collected.
+		/// </summary>
+		FATAL_INCORRECT_RESOURCE_USAGE,
+
+		/// <summary>
+		/// This exit code is used when the user has attempted to allocate more resources than what their hardware can handle.
+		/// </summary>
+		FATAL_HARDWARE_LIMITS_EXCEEDED,
+
+		/// <summary>
+		/// Two or more pieces of information that were expected to have parity between each other did not have this required
+		/// parity, indicating data was mishandled or another fault occurred, likely through a multithreaded environment.
+		/// </summary>
+		FATAL_UNEXPECTED_DATA_MISMATCH,
+
+		/// <summary>
+		/// A piece of vital information was corrupted. This crash primarily exists to prevent damage by trying to operate on
+		/// broken data, preventing further (and possibly irrecoverable) corruption.
+		/// </summary>
+		FATAL_CORRUPTED_DATA,
+
+		/// <summary>
+		/// Some piece of code was implemented incorrectly. Typically if this error occurs, something is well-documented or has
+		/// explicit instructions of how to implement it, and these instructions were not followed.
+		/// </summary>
+		FATAL_IMPLEMENTATION_ERROR,
+
+		/// <summary>
+		/// This is an int flag that can be added to an error code to denote it should not be reported.
+		/// </summary>
+		FLAG_DISALLOW_REPORTING = 0x8000,
+
+	};
 
 	bool predeleted = false;
 	bool is_locked = false;
@@ -145,7 +217,7 @@ public:
 	_FORCE_INLINE_ void _gui_grab_click_focus(Control *p_control) override { get_parent_viewport()->_gui_grab_click_focus(p_control); }
 	_FORCE_INLINE_ void _post_gui_grab_click_focus() override { get_parent_viewport()->_post_gui_grab_click_focus(); }
 	_FORCE_INLINE_ void _gui_accept_event() override { get_parent_viewport()->_gui_accept_event(); }
-	_FORCE_INLINE_ bool _gui_drop(Control *p_at_control, Point2 p_at_pos, bool p_just_check) override{ return get_parent_viewport() -> _gui_drop(p_at_control, p_at_pos, p_just_check); }
+	_FORCE_INLINE_ bool _gui_drop(Control *p_at_control, Point2 p_at_pos, bool p_just_check) override { return get_parent_viewport()->_gui_drop(p_at_control, p_at_pos, p_just_check); }
 	_FORCE_INLINE_ void _canvas_layer_add(CanvasLayer *p_canvas_layer) override { get_parent_viewport()->_canvas_layer_add(p_canvas_layer); }
 	_FORCE_INLINE_ void _canvas_layer_remove(CanvasLayer *p_canvas_layer) override { get_parent_viewport()->_canvas_layer_remove(p_canvas_layer); }
 	_FORCE_INLINE_ void _drop_mouse_over(Control *p_until_control = nullptr) override { get_parent_viewport()->_drop_mouse_over(p_until_control); }
@@ -538,7 +610,7 @@ public:
 
 	CONSERVATORY_VIRTUAL void set_canvas_cull_mask_bit(uint32_t p_layer, bool p_enable) CONSERVATORY_OVERRIDE;
 	CONSERVATORY_VIRTUAL bool get_canvas_cull_mask_bit(uint32_t p_layer) const CONSERVATORY_OVERRIDE;
-		
+
 	CONSERVATORY_VIRTUAL AudioListener2D *get_audio_listener_2d() const CONSERVATORY_OVERRIDE;
 	CONSERVATORY_VIRTUAL void set_as_audio_listener_2d(bool p_enable) CONSERVATORY_OVERRIDE;
 	CONSERVATORY_VIRTUAL bool is_audio_listener_2d() const CONSERVATORY_OVERRIDE;

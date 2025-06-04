@@ -34,6 +34,8 @@
 #if !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
 #include "simulation_domain.h"
 
+#define CONSERVATORY_UNREPORTABLE_IMPL_ERROR (TheConservatoryExitCodes::FATAL_IMPLEMENTATION_ERROR | TheConservatoryExitCodes::FLAG_DISALLOW_REPORTING)
+
 bool SimulationDomain::declared;
 SimulationDomain* SimulationDomain::current;
 void (*SimulationDomain::tc_crash)(const unsigned char *, int, const unsigned char *, int, int);
@@ -54,7 +56,7 @@ bool SimulationDomain::_tc_destroy_validator(const SimulationDomain *p_instance)
 	if (tc_destroy_validator) {
 		return tc_destroy_validator((int64_t)p_instance);
 	} else {
-		_tc_crash("The destroy method was not previously supplied correctly.", "Attempting to verify the destruction of a SimulationDomain", 0x8005);
+		_tc_crash("The destroy method was not previously supplied correctly.", "Attempting to verify the destruction of a SimulationDomain", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return false;
 	}
 }
@@ -63,14 +65,14 @@ bool SimulationDomain::_tc_should_take_main_viewport() {
 	if (tc_should_take_main_viewport) {
 		return tc_should_take_main_viewport();
 	} else {
-		_tc_crash("The IsClient method was not previously supplied correctly.", "Attempting to determine the function of a SimulationDomain", 0x8005);
+		_tc_crash("The IsClient method was not previously supplied correctly.", "Attempting to determine the function of a SimulationDomain", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return false;
 	}
 }
 
 int64_t SimulationDomain::set_conservatory_callbacks(const int64_t p_crash, const int64_t p_destroy, const int64_t p_should_take_main_viewport) {
 	if (declared) {
-		_tc_crash("Invalid attempt to call SimulationDomain.SetConservatoryCallbacks more than once.", "Verifying the integrity of the simulation", 0x8005);
+		_tc_crash("Invalid attempt to call SimulationDomain.SetConservatoryCallbacks more than once.", "Verifying the integrity of the simulation", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return 0;
 	}
 	ERR_FAIL_COND_V(p_crash == 0, 0);
@@ -94,22 +96,22 @@ void SimulationDomain::_notification(int p_what) {
 			if (!created_properly) {
 				malformed = true;
 				if (declared) {
-					_tc_crash("This SimulationDomain was not created using the correct technique.", "Verifying correct construction procedure (in-engine).", 0x8005);
+					_tc_crash("This SimulationDomain was not created using the correct technique.", "Verifying correct construction procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 				} else {
-					_tc_crash("Xan forgot to statically initialize the simulation class.", "Verifying correct construction procedure (in-engine).", 0x8005);
+					_tc_crash("Xan forgot to statically initialize the simulation class.", "Verifying correct construction procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 				}
 			} else {
 				Node *my_parent = get_parent();
 				Viewport *parent_viewport = Node::cast_to<Viewport>(my_parent);
 				if (!parent_viewport || (parent_viewport != get_tree()->get_root()->get_viewport())) {
-					_tc_crash("SimulationDomain must be parented to the root viewport.", "Verifying correct construction procedure (in-engine).", 0x8005);
+					_tc_crash("SimulationDomain must be parented to the root viewport.", "Verifying correct construction procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 					return;
 				}
 				if (TC_IS_NULL(world2d)) {
-					_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+					_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 				}
 				if (TC_IS_NULL(world3d)) {
-					_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+					_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 				}
 				is_locked = true;
 
@@ -129,7 +131,7 @@ void SimulationDomain::_notification(int p_what) {
 				if (current == this) {
 					current = nullptr;
 				}
-				_tc_crash("Illegal attempt to destroy SimulationDomain using Free(), or before its WorldInstance was destroyed.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+				_tc_crash("Illegal attempt to destroy SimulationDomain using Free(), or before its WorldInstance was destroyed.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 
 				// This might still run due to how exiting works so we should just clean it up anyway.
 				if (TC_IS_VALID(world2d)) {
@@ -143,7 +145,7 @@ void SimulationDomain::_notification(int p_what) {
 			break;
 		case Node::NOTIFICATION_EXIT_TREE:
 			if (!predeleted) {
-				_tc_crash("Attempt to unparent a SimulationDomain. It cannot be removed from the scene tree; it MUST be deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+				_tc_crash("Attempt to unparent a SimulationDomain. It cannot be removed from the scene tree; it MUST be deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 			}
 			break;
 		case Node::NOTIFICATION_INTERNAL_PROCESS:
@@ -153,7 +155,7 @@ void SimulationDomain::_notification(int p_what) {
 					|| TC_IS_NULL(world2d->get_canvas()) || TC_IS_NULL(world2d->get_space());
 			}
 			if (fail && get_is_valid()) {
-				_tc_crash("The World2D or World3D of a SimulationDomain was unexpectedly deleted, or the space/scenario/canvas of one or more of these objects was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+				_tc_crash("The World2D or World3D of a SimulationDomain was unexpectedly deleted, or the space/scenario/canvas of one or more of these objects was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 			}
 			break;
 	}
@@ -175,7 +177,7 @@ bool SimulationDomain::get_is_active() const {
 
 RID SimulationDomain::get_physics_space_2d() const {
 	if (TC_IS_NULL(world2d)) {
-		_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+		_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return RID();
 	}
 	return world2d->get_space();
@@ -183,7 +185,7 @@ RID SimulationDomain::get_physics_space_2d() const {
 
 RID SimulationDomain::get_physics_space_3d() const {
 	if (TC_IS_NULL(world3d)) {
-		_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+		_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return RID();
 	}
 	return world3d->get_space();
@@ -191,7 +193,7 @@ RID SimulationDomain::get_physics_space_3d() const {
 
 RID SimulationDomain::get_render_canvas() const {
 	if (TC_IS_NULL(world2d)) {
-		_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+		_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return RID();
 	}
 	return world2d->get_canvas();
@@ -199,7 +201,7 @@ RID SimulationDomain::get_render_canvas() const {
 
 RID SimulationDomain::get_render_scenario() const {
 	if (TC_IS_NULL(world3d)) {
-		_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+		_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return RID();
 	}
 	return world3d->get_scenario();
@@ -225,14 +227,14 @@ void SimulationDomain::set_world_2d(const Ref<World2D> &p_world_2d) {
 }
 Ref<World2D> SimulationDomain::get_world_2d() const {
 	if (TC_IS_NULL(world2d)) {
-		_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+		_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return Ref<World2D>();
 	}
 	return world2d;
 }
 Ref<World2D> SimulationDomain::find_world_2d() const {
 	if (TC_IS_NULL(world2d)) {
-		_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+		_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return Ref<World2D>();
 	}
 	return world2d;
@@ -250,14 +252,14 @@ void SimulationDomain::set_world_3d(const Ref<World3D> &p_world_3d) {
 }
 Ref<World3D> SimulationDomain::get_world_3d() const {
 	if (TC_IS_NULL(world3d)) {
-		_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+		_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return Ref<World3D>();
 	}
 	return world3d;
 }
 Ref<World3D> SimulationDomain::find_world_3d() const {
 	if (TC_IS_NULL(world3d)) {
-		_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", 0x8005);
+		_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return Ref<World3D>();
 	}
 	return world3d;
