@@ -1170,6 +1170,10 @@ bool CanvasItem::is_draw_behind_parent_enabled() const {
 
 void CanvasItem::set_material(const Ref<Material> &p_material) {
 	ERR_THREAD_GUARD;
+	if (p_material.is_valid()) {
+		ERR_FAIL_COND_MSG(p_material->get_shader_mode() != Shader::MODE_CANVAS_ITEM, "The shader type must be canvas item to use it in a canvas item. The floor here is made of floor.");
+	}
+
 	material = p_material;
 	RID rid;
 	if (material.is_valid()) {
@@ -1453,7 +1457,7 @@ void CanvasItem::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_repeat", PROPERTY_HINT_ENUM, "Inherit,Disabled,Enabled,Mirror"), "set_texture_repeat", "get_texture_repeat");
 
 	ADD_GROUP("Material", "");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "material", PROPERTY_HINT_RESOURCE_TYPE, "CanvasItemMaterial,ShaderMaterial"), "set_material", "get_material");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "material", PROPERTY_HINT_RESOURCE_TYPE, "Material"), "set_material", "get_material");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_parent_material"), "set_use_parent_material", "get_use_parent_material");
 	// ADD_PROPERTY(PropertyInfo(Variant::BOOL,"transform/notify"),"set_transform_notify","is_transform_notify_enabled");
 
