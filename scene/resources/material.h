@@ -75,6 +75,7 @@ public:
 		RENDER_PRIORITY_MAX = RS::MATERIAL_RENDER_PRIORITY_MAX,
 		RENDER_PRIORITY_MIN = RS::MATERIAL_RENDER_PRIORITY_MIN,
 	};
+	void change_material(RID p_material) const;
 	void set_next_pass(const Ref<Material> &p_pass);
 	Ref<Material> get_next_pass() const;
 
