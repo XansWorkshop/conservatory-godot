@@ -61,8 +61,8 @@ private:
 	HashSet<Ref<ShaderInclude>> include_dependencies;
 	String code;
 	String include_path;
-	List<String> valid_features;
-	HashMap<String, List<String>> valid_variants;
+	List<String> valid_features = List<String>();
+	HashMap<String, List<String>> valid_variants = HashMap<String, List<String>>();
 
 	HashMap<StringName, HashMap<int, Ref<Texture>>> default_textures;
 
