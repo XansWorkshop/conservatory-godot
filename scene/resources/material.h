@@ -129,7 +129,7 @@ protected:
 	virtual bool _can_use_render_priority() const override;
 
 	void _shader_changed();
-	void _check_material_rid() const;
+	void _check_material_rid(const bool p_apply_features_and_variants = false) const;
 
 public:
 	void set_shader(const Ref<Shader> &p_shader);
