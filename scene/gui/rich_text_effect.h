@@ -32,6 +32,7 @@
 
 #include "core/io/resource.h"
 #include "core/object/gdvirtual.gen.inc"
+#include "scene/gui/rich_text_label.h"
 
 class CharFXTransform : public RefCounted {
 	GDCLASS(CharFXTransform, RefCounted);
@@ -53,29 +54,34 @@ public:
 	uint8_t glyph_count = 0;
 	int32_t relative_index = 0;
 	RID font;
+	RichTextLabel *label;
+	int font_size = 0;
 
 	CharFXTransform();
 	~CharFXTransform();
 
+	void set_label(const RichTextLabel *p_label) { label = (RichTextLabel *)p_label; }
+	RichTextLabel *get_label() const { return label; }
+
 	void set_transform(const Transform2D &p_transform) { transform = p_transform; }
 	const Transform2D &get_transform() { return transform; }
 
-	Vector2i get_range() { return range; }
+	Vector2i get_range() const { return range; }
 	void set_range(const Vector2i &p_range) { range = p_range; }
 
-	double get_elapsed_time() { return elapsed_time; }
+	double get_elapsed_time() const { return elapsed_time; }
 	void set_elapsed_time(double p_elapsed_time) { elapsed_time = p_elapsed_time; }
 
-	bool is_visible() { return visibility; }
+	bool is_visible() const { return visibility; }
 	void set_visibility(bool p_visibility) { visibility = p_visibility; }
 
-	bool is_outline() { return outline; }
+	bool is_outline() const { return outline; }
 	void set_outline(bool p_outline) { outline = p_outline; }
 
 	Point2 get_offset() { return offset; }
 	void set_offset(Point2 p_offset) { offset = p_offset; }
 
-	Color get_color() { return color; }
+	Color get_color() const { return color; }
 	void set_color(Color p_color) { color = p_color; }
 
 	uint32_t get_glyph_index() const { return glyph_index; }
@@ -92,8 +98,29 @@ public:
 
 	RID get_font() const { return font; }
 	void set_font(RID p_font) { font = p_font; }
+	int get_font_size() const { return font_size; }
+	void set_font_size(int p_font_size) { font_size = p_font_size; }
 
-	Dictionary get_environment() { return environment; }
+	int64_t get_glyph_codepoint() const {
+		ERR_FAIL_COND_V(font.is_null(), -1);
+		ERR_FAIL_COND_V(font_size <= 0, -1);
+		return TS->font_get_char_from_glyph_index(font, font_size, glyph_index);
+	}
+	void set_glyph_codepoint(int64_t p_codepoint, int64_t p_variation_selector) {
+		ERR_FAIL_COND(font.is_null());
+		ERR_FAIL_COND(font_size <= 0);
+		ERR_FAIL_COND(p_codepoint < 0);
+		ERR_FAIL_COND(p_variation_selector < 0);
+		glyph_index = TS->font_get_glyph_index(font, font_size, p_codepoint, p_variation_selector);
+	}
+	void set_glyph_codepoint_novariant(int64_t p_codepoint) {
+		ERR_FAIL_COND(font.is_null());
+		ERR_FAIL_COND(font_size <= 0);
+		ERR_FAIL_COND(p_codepoint < 0);
+		glyph_index = TS->font_get_glyph_index(font, font_size, p_codepoint, 0);
+	}
+
+	Dictionary get_environment() const { return environment; }
 	void set_environment(Dictionary p_environment) { environment = p_environment; }
 };
 

@@ -25,12 +25,14 @@
 			<return type="World2D" />
 			<description>
 				Returns the first valid [World2D] for this viewport, searching the [member world_2d] property of itself and any Viewport ancestor.
+				[b]Notice:[/b] [i]The Conservatory[/i]'s fork of the engine causes this method's result to be overridden if (and ONLY if) this is the root viewport. If this requirement is satisfied, this method will always return the world belonging to the current game client's [SimulationDomain].
 			</description>
 		</method>
 		<method name="find_world_3d" qualifiers="const">
 			<return type="World3D" />
 			<description>
 				Returns the first valid [World3D] for this viewport, searching the [member world_3d] property of itself and any Viewport ancestor.
+				[b]Notice:[/b] [i]The Conservatory[/i]'s fork of the engine causes this method's result to be overridden if (and ONLY if) this is the root viewport. If this requirement is satisfied, this method will always return the world belonging to the current game client's [SimulationDomain].
 			</description>
 		</method>
 		<method name="get_audio_listener_2d" qualifiers="const">

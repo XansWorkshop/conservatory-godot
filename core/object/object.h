@@ -130,6 +130,7 @@ enum PropertyUsageFlags {
 	PROPERTY_USAGE_EDITOR_BASIC_SETTING = 1 << 27, //for project or editor settings, show when basic settings are selected.
 	PROPERTY_USAGE_READ_ONLY = 1 << 28, // Mark a property as read-only in the inspector.
 	PROPERTY_USAGE_SECRET = 1 << 29, // Export preset credentials that should be stored separately from the rest of the export config.
+	PROPERTY_USAGE_FORCE_RAW_DISPLAY_NAME = 1 << 30, // The name given to the property always displays verbatim, overriding editor formatting.
 
 	PROPERTY_USAGE_DEFAULT = PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_EDITOR,
 	PROPERTY_USAGE_NO_EDITOR = PROPERTY_USAGE_STORAGE,
@@ -157,6 +158,16 @@ enum PropertyUsageFlags {
 #define ADD_ARRAY_COUNT(m_label, m_count_property, m_count_property_setter, m_count_property_getter, m_prefix) ClassDB::add_property_array_count(get_class_static(), m_label, m_count_property, StringName(m_count_property_setter), StringName(m_count_property_getter), m_prefix)
 #define ADD_ARRAY_COUNT_WITH_USAGE_FLAGS(m_label, m_count_property, m_count_property_setter, m_count_property_getter, m_prefix, m_property_usage_flags) ClassDB::add_property_array_count(get_class_static(), m_label, m_count_property, StringName(m_count_property_setter), StringName(m_count_property_getter), m_prefix, m_property_usage_flags)
 #define ADD_ARRAY(m_array_path, m_prefix) ClassDB::add_property_array(get_class_static(), m_array_path, m_prefix)
+
+// The Conservatory
+// Add a new property which has a getter but not a setter.
+#define ADD_READONLY_PROPERTY(m_property, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(), StringName(m_getter), -1, false, false)
+// Add a new property which uses the C# init keyword. This is not supported in GDScript and can be set regardless.
+#define ADD_INITONLY_PROPERTY(m_property, m_initer, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(m_initer), StringName(m_getter), -1, true, false)
+// Add a new property which uses the C# init keyword. This is not supported in GDScript and can be set regardless.
+#define ADD_REQUIRED_PROPERTY(m_property, m_initer, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(m_initer), StringName(m_getter), -1, false, true)
+// Add a new property which uses the C# init keyword. This is not supported in GDScript and can be set regardless.
+#define ADD_REQUIRED_INITONLY_PROPERTY(m_property, m_initer, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(m_initer), StringName(m_getter), -1, true, true)
 
 // Helper macro to use with PROPERTY_HINT_ARRAY_TYPE for arrays of specific resources:
 // PropertyInfo(Variant::ARRAY, "fallbacks", PROPERTY_HINT_ARRAY_TYPE, MAKE_RESOURCE_TYPE_HINT("Font")

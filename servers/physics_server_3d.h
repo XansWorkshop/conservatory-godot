@@ -156,6 +156,7 @@ public:
 		Object *collider = nullptr;
 		int shape = 0;
 		int face_index = -1;
+		int type = 0;
 	};
 
 	virtual bool intersect_ray(const RayParameters &p_parameters, RayResult &r_result) = 0;

@@ -97,6 +97,8 @@ public:
 		MethodBind *_setptr = nullptr;
 		MethodBind *_getptr = nullptr;
 		Variant::Type type;
+		bool init_only;
+		bool required;
 	};
 
 	struct ClassInfo {
@@ -451,7 +453,7 @@ public:
 	static void add_property_subgroup(const StringName &p_class, const String &p_name, const String &p_prefix = "", int p_indent_depth = 0);
 	static void add_property_array_count(const StringName &p_class, const String &p_label, const StringName &p_count_property, const StringName &p_count_setter, const StringName &p_count_getter, const String &p_array_element_prefix, uint32_t p_count_usage = PROPERTY_USAGE_DEFAULT);
 	static void add_property_array(const StringName &p_class, const StringName &p_path, const String &p_array_element_prefix);
-	static void add_property(const StringName &p_class, const PropertyInfo &p_pinfo, const StringName &p_setter, const StringName &p_getter, int p_index = -1);
+	static void add_property(const StringName &p_class, const PropertyInfo &p_pinfo, const StringName &p_setter, const StringName &p_getter, int p_index = -1, bool p_cs_initonly = false, bool p_cs_required = false);
 	static void set_property_default_value(const StringName &p_class, const StringName &p_name, const Variant &p_default);
 	static void add_linked_property(const StringName &p_class, const String &p_property, const String &p_linked_property);
 	static void get_property_list(const StringName &p_class, List<PropertyInfo> *p_list, bool p_no_inheritance = false, const Object *p_validator = nullptr);
@@ -462,7 +464,7 @@ public:
 	static bool has_property(const StringName &p_class, const StringName &p_property, bool p_no_inheritance = false);
 	static int get_property_index(const StringName &p_class, const StringName &p_property, bool *r_is_valid = nullptr);
 	static Variant::Type get_property_type(const StringName &p_class, const StringName &p_property, bool *r_is_valid = nullptr);
-	static StringName get_property_setter(const StringName &p_class, const StringName &p_property);
+	static StringName get_property_setter(const StringName &p_class, const StringName &p_property, bool *r_is_initonly = nullptr, bool *r_is_required = nullptr);
 	static StringName get_property_getter(const StringName &p_class, const StringName &p_property);
 
 	static bool has_method(const StringName &p_class, const StringName &p_method, bool p_no_inheritance = false);
