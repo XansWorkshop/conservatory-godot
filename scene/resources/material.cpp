@@ -598,6 +598,45 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 
 }
 
+		p_list->push_back(NEW_PROPERTY_GROUP("Static Shader Variants", "variant"));
+		Dictionary variants = shader->get_shader_variants();
+		valid_shader_variants.clear();
+		for (const KeyValue<Variant, Variant> &variant : variants) {
+			List<StringName> valid = List<StringName>();
+			StringName variant_name = (StringName)variant.key;
+			Array options = (Array)variant.value;
+
+			StringBuilder result;
+			int size = options.size();
+			for (int i = 0; i < size; ++i) {
+				Variant option = options[i];
+				result.append(option);
+				valid.push_back(option);
+				if (i <= size - 1) {
+					result.append(",");
+				}
+			}
+
+			valid_shader_variants.insert(variant_name, valid);
+
+			p_list->push_back(PropertyInfo(
+					Variant::Type::STRING_NAME,
+					"variant/" + ((String)variant.key),
+					PROPERTY_HINT_ENUM,
+					result.as_string(),
+					PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_FORCE_RAW_DISPLAY_NAME | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED));
+
+			if (!shader_variants.has(variant_name)) {
+				StringName first_variant = (StringName)options[0];
+				shader_variants.insert(variant_name, first_variant);
+			}
+		}
+
+#undef NEW_PROPERTY_GROUP
+
+	}
+}
+
 bool ShaderMaterial::_property_can_revert(const StringName &p_name) const {
 	if (shader.is_valid()) {
 		if (uniform_name_cache.has(p_name) || feature_name_cache.has(p_name) || variant_name_cache.has(p_name)) {

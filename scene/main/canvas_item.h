@@ -193,6 +193,7 @@ protected:
 
 	_FORCE_INLINE_ void set_hide_clip_children(bool p_value) { hide_clip_children = p_value; }
 
+	GDVIRTUAL0(_draw_early)
 	GDVIRTUAL0(_draw)
 
 public:

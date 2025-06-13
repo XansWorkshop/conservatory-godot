@@ -174,6 +174,18 @@ void RayCast3DDirect::store_in_result(const Ref<RayCastResult> &p_result) const 
 	p_result->set_success(collided);
 }
 
+void RayCast3DDirect::store_in_result_unsafe(const int64_t p_result) const {
+	RayCastResult::RayCastResultStruct *castResult = (RayCastResult::RayCastResultStruct *)p_result;
+	castResult->position = collision_point;
+	castResult->normal = collision_normal;
+	castResult->rid = against_rid;
+	castResult->hit_object_id = against;
+	castResult->type = type;
+	castResult->shape = against_shape;
+	castResult->face_index = collision_face_index;
+	castResult->success = collided;
+}
+
 bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQueryParameters3D> &p_parameters, const Ref<RayCastResult> &p_result) {
 	PhysicsDirectSpaceState3D *dss = PhysicsServer3D::get_singleton()->space_get_direct_state(p_space);
 	ERR_FAIL_NULL_V_MSG(dss, false, "There is no direct space state associated with the provided space.");
@@ -182,6 +194,7 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 
 	
 	PhysicsDirectSpaceState3D::RayResult rr;
+
 	if (dss->intersect_ray(p_parameters->get_parameters(), rr)) {
 		p_result->set_hit_position(rr.position);
 		p_result->set_hit_normal(rr.normal);
@@ -198,6 +211,7 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 		return false;
 	}
 }
+*/
 
 void RayCast3DDirect::set_from_parameters(const Ref<PhysicsRayQueryParameters3D> &p_parameters) {
 	ERR_FAIL_COND_MSG(p_parameters.is_null(), "The provided parameters are null.");

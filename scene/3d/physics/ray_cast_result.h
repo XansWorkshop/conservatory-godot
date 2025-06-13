@@ -59,6 +59,18 @@ public:
 		SOFT_BODY
 	};
 
+	// This struct is shared by The Conservatory.
+	struct RayCastResultStruct {
+		bool success;
+		Vector3 position;
+		Vector3 normal;
+		RID rid;
+		uint64_t hit_object_id;
+		int32_t shape;
+		int32_t face_index;
+		PhysicsObjectType type;
+	};
+
 private:
 	bool success = false;
 	Vector3 position;
@@ -73,7 +85,7 @@ private:
 
 	static bool can_index_face() {
 		if (_can_index_face == 0) {
-			if (IS_USING_JOLT) {
+		if (IS_USING_JOLT) {
 				if (JOLT_ALLOWS_RAYCAST_FACE_INDEX) {
 					_can_index_face = 2;
 				} else {
@@ -119,8 +131,13 @@ public:
 	int get_face_index() const;
 	void set_face_index(int p_face_index);
 
+	bool get_success() const;
+	void set_success(bool p_success);
+
 	void clear();
+
 	void copy_to(const Ref<RayCastResult> &p_destination) const;
+	// void copy_to_unsafe(const int64_t p_ptr) const;
 
 	RayCastResult();
 };
@@ -130,4 +147,5 @@ VARIANT_ENUM_CAST(RayCastResult::PhysicsObjectType);
 #undef JOLT_ALLOWS_RAYCAST_FACE_INDEX
 #undef IS_USING_JOLT
 
+#endif // RAY_CAST_RESULT_H
 #endif // PHYSICS_3D_DISABLED
