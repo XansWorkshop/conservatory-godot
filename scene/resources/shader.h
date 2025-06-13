@@ -35,10 +35,14 @@
 #include "core/io/resource_saver.h"
 #include "scene/resources/texture.h"
 #include "shader_include.h"
+#include "core/variant/typed_array.h"
+#include "core/variant/typed_dictionary.h"
 
 class Shader : public Resource {
+	// friend class ShaderVariantCollection;
 	GDCLASS(Shader, Resource);
 	OBJ_SAVE_TYPE(Shader);
+
 
 public:
 	enum Mode {
@@ -59,6 +63,8 @@ private:
 	HashSet<Ref<ShaderInclude>> include_dependencies;
 	String code;
 	String include_path;
+	List<String> valid_features;
+	HashMap<String, List<String>> valid_variants;
 
 	HashMap<StringName, HashMap<int, Ref<Texture>>> default_textures;
 
@@ -90,6 +96,8 @@ public:
 	void inspect_native_shader_code();
 
 	void get_shader_uniform_list(List<PropertyInfo> *p_params, bool p_get_groups = false) const;
+	Array get_shader_features() const;
+	Dictionary get_shader_variants() const;
 
 	void set_default_texture_parameter(const StringName &p_name, const Ref<Texture> &p_texture, int p_index = 0);
 	Ref<Texture> get_default_texture_parameter(const StringName &p_name, int p_index = 0) const;

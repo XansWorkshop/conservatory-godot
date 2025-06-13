@@ -797,16 +797,84 @@ void ShaderPreprocessor::process_pragma(Tokenizer *p_tokenizer) {
 	// If more pragma options are created, then refactor into a more defined structure.
 	if (label == "disable_preprocessor") {
 		state->disabled = true;
-	} else if (label == "features" || label == "exclusive_variants") {
-		String body = tokens_to_string(p_tokenizer->advance('\n')).strip_edges();
-		if (body.is_empty()) {
-			if (label == "features") {
-				set_error(RTR("At least one MACRO_CASE feature name should be written after #pragma features"), line);
-			} else {
-				set_error(RTR("At least one MACRO_CASE variant name should be written after #pragma exclusive_variants"), line);
-			}
+	} else if (label == "features") {
+		String following_word = p_tokenizer->get_identifier();
+		if (following_word.is_empty()) {
+			set_error(RTR("At least one MACRO_CASE feature name should be written after #pragma features"), line);
+			return;
 		}
-		return;
+		do {
+			String to_add = following_word.strip_edges();
+			if (state->features.find(to_add)) {
+				set_error(vformat(RTR("Duplicate shader feature '%s'"), to_add), line);
+				return;
+			}
+			for (KeyValue<String, List<String>> variant_binding : state->variants) {
+				if (variant_binding.value.find(to_add)) {
+					set_error(vformat(RTR("Cannot declare '%s' as a feature; this name is already in use by an exclusive variant ('%s')."), to_add, variant_binding.key), line);
+					return;
+				}
+			}
+			state->features.push_back(to_add);
+			following_word = p_tokenizer->get_identifier();
+			if (following_word.is_empty()) {
+				break;
+			}
+		} while (true);
+		
+	} else if (label == "exclusive_variants") {
+		String variant_ctr_name = p_tokenizer->get_identifier();
+		if (variant_ctr_name.is_empty()) {
+			set_error(RTR("#pragma exclusive_variants must have a MACRO_CASE_NAME after it, followed a colon then one or more variant names. Example: #pragma exclusive_variants MY_VARIANT : AAA BBB CCC"), line);
+			return;
+		}
+		p_tokenizer->skip_whitespace();
+		if (p_tokenizer->get_token().text != ':') {
+			set_error(RTR("#pragma exclusive_variants must have a MACRO_CASE_NAME after it, followed a colon then one or more variant names. Example: #pragma exclusive_variants MY_VARIANT : AAA BBB CCC"), line);
+			return;
+		}
+		p_tokenizer->skip_whitespace();
+
+		String following_word = p_tokenizer->get_identifier();
+		if (following_word.is_empty()) {
+			set_error(RTR("#pragma exclusive_variants must have a MACRO_CASE_NAME after it, followed a colon then one or more variant names. Example: #pragma exclusive_variants MY_VARIANT : AAA BBB CCC"), line);
+			return;
+		}
+
+		List<String> *these_variants = state->variants.getptr(variant_ctr_name);
+		List<String> variants;
+		if (these_variants) {
+			// set_error(vformat(RTR("Duplicate exclusive variant key: %s"), variant_ctr_name), line);
+			variants = *these_variants;
+		}
+
+		do {
+			String to_add = following_word.strip_edges();
+			if (variants.find(to_add)) {
+				set_error(vformat(RTR("Duplicate shader variant in '%s': '%s'"), variant_ctr_name, to_add), line);
+				return;
+			}
+			if (state->features.find(to_add)) {
+				set_error(vformat(RTR("Cannot declare '%s' as a variant; this name is already in use by a shader feature."), to_add), line);
+				return;
+			}
+			for (KeyValue<String, List<String>> variant_binding : state->variants) {
+				if (variant_binding.key == variant_ctr_name) {
+					continue;
+				}
+				if (variant_binding.value.find(to_add)) {
+					set_error(vformat(RTR("Cannot declare '%s' as a variant in '%s'; this name is already in use by another exclusive variant ('%s')."), to_add, variant_ctr_name, variant_binding.key), line);
+					return;
+				}
+			}
+			variants.push_back(to_add);
+			following_word = p_tokenizer->get_identifier();
+			if (following_word.is_empty()) {
+				break;
+			}
+		} while (true);
+		state->variants.insert(variant_ctr_name, variants);
+		
 	} else {
 		set_error(vformat(RTR("Invalid '%s' directive."), "pragma"), line);
 		return;
@@ -1342,7 +1410,7 @@ Error ShaderPreprocessor::preprocess(State *p_state, const String &p_code, Strin
 	return OK;
 }
 
-Error ShaderPreprocessor::preprocess(const String &p_code, const String &p_filename, String &r_result, String *r_error_text, List<FilePosition> *r_error_position, List<Region> *r_regions, HashSet<Ref<ShaderInclude>> *r_includes, List<ScriptLanguage::CodeCompletionOption> *r_completion_options, List<ScriptLanguage::CodeCompletionOption> *r_completion_defines, IncludeCompletionFunction p_include_completion_func) {
+Error ShaderPreprocessor::preprocess(const String &p_code, const String &p_filename, String &r_result, String *r_error_text, List<FilePosition> *r_error_position, List<Region> *r_regions, HashSet<Ref<ShaderInclude>> *r_includes, List<ScriptLanguage::CodeCompletionOption> *r_completion_options, List<ScriptLanguage::CodeCompletionOption> *r_completion_defines, IncludeCompletionFunction p_include_completion_func, List<String> *p_features, HashMap<String, List<String>> *p_variants) {
 	State pp_state;
 	if (!p_filename.is_empty()) {
 		pp_state.current_filename = p_filename;
@@ -1427,6 +1495,28 @@ Error ShaderPreprocessor::preprocess(const String &p_code, const String &p_filen
 		}
 	}
 
+	if (p_features) {
+		*p_features = state->features;
+
+		if (r_completion_defines) {
+			for (String feature : state->features) {
+				ScriptLanguage::CodeCompletionOption option(feature, ScriptLanguage::CODE_COMPLETION_KIND_CONSTANT);
+				r_completion_defines->push_back(option);
+			}
+		}
+	}
+	if (p_variants) {
+		*p_variants = state->variants;
+
+		if (r_completion_defines) {
+			for (const KeyValue<String, List<String>> variant_group : state->variants) {
+				for (const String keyword : variant_group.value) {
+					ScriptLanguage::CodeCompletionOption option(keyword, ScriptLanguage::CODE_COMPLETION_KIND_CONSTANT);
+					r_completion_defines->push_back(option);
+				}
+			}
+		}
+	}
 	clear_state();
 
 	return err;

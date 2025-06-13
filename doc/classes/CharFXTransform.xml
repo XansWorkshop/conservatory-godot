@@ -57,7 +57,7 @@
 			Consider using [member glyph_codepoint] for convenience, which allows inputting a Unicode codepoint. In C# environments, the [code]System.Text.Rune[/code] struct is especially useful for this purpose (cast to [code]uint[/code]).
 		</member>
 		<member name="glyph_codepoint" type="int" setter="set_glyph_codepoint_novariant" getter="get_glyph_codepoint" default="0">
-			Unicode codepoint of this character as it appears in the text.
+			Unicode codepoint of this character as it appears in the text. [b]Note that this does not support compound Unicode characters, and so complex joined characters, such as flag emojis, will not be affected.[/b]
 			In C# environments, the [code]System.Text.Rune[/code] struct is especially useful for this purpose. Changing this value will change the value of [member glyph_index] automatically.
 			Returns [code]-1[/code] if the font or font size is invalid and thus getting a codepoint is impossible.
 		</member>
