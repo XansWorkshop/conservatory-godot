@@ -123,33 +123,33 @@
 		<member name="target_position" type="Vector3" setter="set_target_position" getter="get_target_position" default="Vector3(0, 0, 0)">
 			The target, in world space, of this ray. The cast will end at this point.
 		</member>
-		<member name="last_hit_something" setter="" getter="get_hit_something" default="false">
+		<member name="last_hit_something" type="bool" setter="" getter="get_hit_something" default="false">
 			[code]true[/code] if the most recent call to [method cast] collided with something.
 		</member>
-		<member name="last_hit_position" setter="" getter="get_collision_point" default="Vector3(0, 0, 0)">
+		<member name="last_hit_position" type="Vector3" setter="" getter="get_collision_point" default="Vector3(0, 0, 0)">
 			If the last ray that was cast (see [member last_hit_something]) was successful, this is the position at which the collision was detected.
 		</member>
-		<member name="last_hit_normal" setter="" getter="get_collision_normal" default="Vector3(0, 0, 0)">
+		<member name="last_hit_normal" type="Vector3" setter="" getter="get_collision_normal" default="Vector3(0, 0, 0)">
 			If the last ray that was cast (see [member last_hit_something]) was successful, this is the direction of the surface that was hit. If the ray was an interior collision (see [member hit_from_inside]), this will be a zero vector.
 		</member>
-		<member name="last_hit_rid" setter="" getter="get_collider_rid" default="RID(0)">
+		<member name="last_hit_rid" type="RID" setter="" getter="get_collider_rid" default="RID(0)">
 			If the last ray that was cast (see [member last_hit_something]) was successful, this is the RID of the physics body or area that was hit.
 		</member>
-		<member name="last_hit_object_id" setter="" getter="get_object_id" default="0">
+		<member name="last_hit_object_id" type="int" setter="" getter="get_object_id" default="0">
 			If the last ray that was cast (see [member last_hit_something]) was successful, this is the arbitrary object ID of the physics body or area that was hit.
 			In particular, this is vital to [i]The Conservatory[/i] which uses it to associate collisions with game objects like entities. See [code]ConservatoryObject.GetObject[/code] in C#.
 		</member>
-		<member name="last_hit_godot_object" setter="" getter="get_godot_object" default="null">
+		<member name="last_hit_godot_object" type="Object" setter="" getter="get_godot_object" default="null">
 			If the last ray that was cast (see [member last_hit_something]) was successful, this is the associated [Object] that was hit.
 			[b]Important:[/b] In [i]The Conservatory[/i] this will be [code]null[/code] for a large amount of objects, simply because they don't actually [i]use[/i] Godot's [Object] type. Prefer using [member last_hit_rid] or [member last_hit_object_id].
 		</member>
-		<member name="last_hit_object_type" setter="" getter="get_collider_type" default="INVALID" enum="RayCastResult.PhysicsObjectType">
+		<member name="last_hit_object_type" type="int" setter="" getter="get_collider_type" default="INVALID" enum="RayCastResult.PhysicsObjectType">
 			If the last ray that was cast (see [member last_hit_something]) was successful, this is the type of physics object that got hit.
 		</member>
-		<member name="last_hit_shape_index" setter="" getter="get_collider_shape" default="-1">
+		<member name="last_hit_shape_index" type="int" setter="" getter="get_collider_shape" default="-1">
 			If the last ray that was cast (see [member last_hit_something]) was successful, this is the numeric index of the shape within the collider that was hit, or [code]-1[/code] if nothing was hit.
 		</member>
-		<member name="last_hit_face_index" setter="" getter="get_collider_face_index" default="-1">
+		<member name="last_hit_face_index" type="int" setter="" getter="get_collider_face_index" default="-1">
 			If the last ray that was cast (see [member last_hit_something]) was successful, this is the index of the specific face on the collision object that was hit. This will only ever be set when colliding with a [ConcavePolygonShape3D], and will be set to [code]-1[/code] otherwise.
 			[b]Important:[/b] In [i]The Conservatory[/i], this property won't work unless you use [code]override.cfg[/code] in the game directory to edit [code]physics/jolt_physics_3d/queries/enable_ray_cast_face_index[/code]. Please note that this has a nontrivial memory cost, and is thus not recommended.
 		</member>
