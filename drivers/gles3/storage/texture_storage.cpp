@@ -2571,7 +2571,7 @@ void TextureStorage::render_target_set_override(RID p_render_target, RID p_color
 
 	rt->overridden.color = p_color_texture;
 	rt->overridden.depth = p_depth_texture;
-	rt->overridden.depth_has_stencil = false;
+	rt->overridden.depth_has_stencil = p_depth_texture.is_null();
 	rt->overridden.is_overridden = true;
 
 	uint32_t hash_key = hash_murmur3_one_64(p_color_texture.get_id());
