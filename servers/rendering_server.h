@@ -1999,3 +1999,4 @@ VARIANT_ENUM_CAST(RenderingServer::Features);
 
 // Alias to make it easier to use.
 #define RS RenderingServer
+#define RSI RS::get_singleton()

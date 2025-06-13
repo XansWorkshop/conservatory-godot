@@ -129,6 +129,7 @@ enum PropertyUsageFlags {
 	PROPERTY_USAGE_EDITOR_BASIC_SETTING = 1 << 27, //for project or editor settings, show when basic settings are selected.
 	PROPERTY_USAGE_READ_ONLY = 1 << 28, // Mark a property as read-only in the inspector.
 	PROPERTY_USAGE_SECRET = 1 << 29, // Export preset credentials that should be stored separately from the rest of the export config.
+	PROPERTY_USAGE_FORCE_RAW_DISPLAY_NAME = 1 << 30, // The name given to the property always displays verbatim, overriding editor formatting.
 
 	PROPERTY_USAGE_DEFAULT = PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_EDITOR,
 	PROPERTY_USAGE_NO_EDITOR = PROPERTY_USAGE_STORAGE,
@@ -180,7 +181,7 @@ struct PropertyInfo {
 	uint32_t usage = PROPERTY_USAGE_DEFAULT;
 
 	// If you are thinking about adding another member to this class, ask the maintainer (Juan) first.
-
+	
 	_FORCE_INLINE_ PropertyInfo added_usage(uint32_t p_fl) const {
 		PropertyInfo pi = *this;
 		pi.usage |= p_fl;

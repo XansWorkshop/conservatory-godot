@@ -195,7 +195,7 @@ Material::~Material() {
 
 bool ShaderMaterial::_set(const StringName &p_name, const Variant &p_value) {
 	if (shader.is_valid()) {
-		const StringName *sn = remap_cache.getptr(p_name);
+		const StringName *sn = uniform_name_cache.getptr(p_name);
 		if (sn) {
 			set_shader_parameter(*sn, p_value);
 			return true;
@@ -203,9 +203,15 @@ bool ShaderMaterial::_set(const StringName &p_name, const Variant &p_value) {
 		String s = p_name;
 		if (s.begins_with("shader_parameter/")) {
 			String param = s.replace_first("shader_parameter/", "");
-			remap_cache[s] = param;
+			uniform_name_cache[s] = param;
 			set_shader_parameter(param, p_value);
 			return true;
+		} else if (s.begins_with("feature/")) {
+			String feature = s.replace_first("feature/", "");
+
+		} else if (s.begins_with("variant/")) {
+			String variant = s.replace_first("variant/", "");
+
 		}
 #ifndef DISABLE_DEPRECATED
 		// Compatibility remaps are only needed here.
@@ -221,7 +227,7 @@ bool ShaderMaterial::_set(const StringName &p_name, const Variant &p_value) {
 
 		WARN_PRINT("This material (containing shader with path: '" + shader->get_path() + "') uses an old deprecated parameter names. Consider re-saving this resource (or scene which contains it) in order for it to continue working in future versions.");
 		String param = s.replace_first("shader_parameter/", "");
-		remap_cache[s] = param;
+		uniform_name_cache[s] = param;
 		set_shader_parameter(param, p_value);
 		return true;
 #endif
@@ -232,13 +238,15 @@ bool ShaderMaterial::_set(const StringName &p_name, const Variant &p_value) {
 
 bool ShaderMaterial::_get(const StringName &p_name, Variant &r_ret) const {
 	if (shader.is_valid()) {
-		const StringName *sn = remap_cache.getptr(p_name);
+		const StringName *sn = uniform_name_cache.getptr(p_name);
 		if (sn) {
 			// Only return a parameter if it was previously set.
 			r_ret = get_shader_parameter(*sn);
 			return true;
 		}
 	}
+
+#error TODO
 
 	return false;
 }
@@ -327,12 +335,12 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 				vgroups.push_back(Pair<String, LocalVector<String>>("<None>", { "<None>" }));
 			}
 
-			const bool is_uniform_cached = param_cache.has(pi.name);
+			const bool is_uniform_cached = shader_uniforms.has(pi.name);
 			bool is_uniform_type_compatible = true;
 
 			if (is_uniform_cached) {
 				// Check if the uniform Variant type changed, for example vec3 to vec4.
-				const Variant &cached = param_cache.get(pi.name);
+				const Variant &cached = shader_uniforms.get(pi.name);
 
 				if (cached.is_array()) {
 					// Allow some array conversions for backwards compatibility.
@@ -351,7 +359,7 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 						varray.push_back(Vector4(array[i], array[i + 1], array[i + 2], array[i + 3]));
 					}
 
-					param_cache.insert(pi.name, varray);
+					shader_uniforms.insert(pi.name, varray);
 					is_uniform_type_compatible = true;
 				}
 #endif
@@ -371,8 +379,8 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 			if (!is_uniform_cached || !is_uniform_type_compatible) {
 				// Property has never been edited or its type changed, retrieve with default value.
 				Variant default_value = RenderingServer::get_singleton()->shader_get_parameter_default(shader->get_rid(), pi.name);
-				param_cache.insert(pi.name, default_value);
-				remap_cache.insert(info.name, pi.name);
+				shader_uniforms.insert(pi.name, default_value);
+				uniform_name_cache.insert(info.name, pi.name);
 			}
 			groups[last_group][last_subgroup].push_back(info);
 		}
@@ -386,30 +394,52 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 				}
 			}
 		}
+#error TODO
 	}
 }
 
 bool ShaderMaterial::_property_can_revert(const StringName &p_name) const {
 	if (shader.is_valid()) {
-		if (remap_cache.has(p_name)) {
+		if (uniform_name_cache.has(p_name)) {
 			return true;
 		}
 		const String sname = p_name;
 		return sname == "render_priority" || sname == "next_pass";
 	}
+#error TODO
 	return false;
 }
 
 bool ShaderMaterial::_property_get_revert(const StringName &p_name, Variant &r_property) const {
 	if (shader.is_valid()) {
-		const StringName *pr = remap_cache.getptr(p_name);
+		StringName *pr = uniform_name_cache.getptr(p_name);
 		if (pr) {
 			r_property = RenderingServer::get_singleton()->shader_get_parameter_default(shader->get_rid(), *pr);
 			return true;
-		} else if (p_name == "render_priority") {
+		}
+		pr = feature_name_cache.getptr(p_name);
+		if (pr) {
+			if (shader_features.getptr(*pr)) {
+				r_property = false;
+				return true;
+			}
+			return false;
+		}
+		pr = variant_name_cache.getptr(p_name);
+		if (pr) {
+			List<StringName> *options = valid_shader_variants.getptr(*pr);
+			if (options) {
+				r_property = options->get(0);
+				return true;
+			}
+			return false;
+		}
+
+		if (p_name == "render_priority") {
 			r_property = 0;
 			return true;
-		} else if (p_name == "next_pass") {
+		}
+		if (p_name == "next_pass") {
 			r_property = Variant();
 			return true;
 		}
@@ -452,16 +482,16 @@ Ref<Shader> ShaderMaterial::get_shader() const {
 void ShaderMaterial::set_shader_parameter(const StringName &p_param, const Variant &p_value) {
 	RID material_rid = _get_material();
 	if (p_value.get_type() == Variant::NIL) {
-		param_cache.erase(p_param);
+		shader_uniforms.erase(p_param);
 		if (material_rid.is_valid()) {
 			RS::get_singleton()->material_set_param(material_rid, p_param, Variant());
 		}
 	} else {
-		Variant *v = param_cache.getptr(p_param);
+		Variant *v = shader_uniforms.getptr(p_param);
 		if (!v) {
 			// Never assigned, also update the remap cache.
-			remap_cache["shader_parameter/" + p_param.operator String()] = p_param;
-			param_cache.insert(p_param, p_value);
+			uniform_name_cache["shader_parameter/" + p_param.operator String()] = p_param;
+			shader_uniforms.insert(p_param, p_value);
 		} else {
 			*v = p_value;
 		}
@@ -469,7 +499,7 @@ void ShaderMaterial::set_shader_parameter(const StringName &p_param, const Varia
 		if (p_value.get_type() == Variant::OBJECT) {
 			RID tex_rid = p_value;
 			if (tex_rid == RID()) {
-				param_cache.erase(p_param);
+				shader_uniforms.erase(p_param);
 
 				if (material_rid.is_valid()) {
 					RS::get_singleton()->material_set_param(material_rid, p_param, Variant());
@@ -484,11 +514,36 @@ void ShaderMaterial::set_shader_parameter(const StringName &p_param, const Varia
 }
 
 Variant ShaderMaterial::get_shader_parameter(const StringName &p_param) const {
-	if (param_cache.has(p_param)) {
-		return param_cache[p_param];
+	if (shader_uniforms.has(p_param)) {
+		return shader_uniforms[p_param];
 	} else {
 		return Variant();
 	}
+}
+
+bool ShaderMaterial::set_shader_feature(const StringName &p_feature, const bool p_enabled) {
+#error TODO
+
+}
+
+bool ShaderMaterial::get_shader_feature(const StringName &p_feature) const {
+#error TODO
+
+}
+
+bool ShaderMaterial::set_shader_variant(const StringName &p_variant, const StringName &p_value) {
+#error TODO
+
+}
+
+const StringName ShaderMaterial::get_shader_variant(const StringName &p_variant) const {
+#error TODO
+
+}
+
+void ShaderMaterial::apply_features_and_variants() {
+#error TODO
+
 }
 
 void ShaderMaterial::_shader_changed() {
@@ -506,7 +561,7 @@ void ShaderMaterial::_check_material_rid() const {
 
 		_set_material(RS::get_singleton()->material_create_from_shader(next_pass_rid, get_render_priority(), shader_rid));
 
-		for (KeyValue<StringName, Variant> param : param_cache) {
+		for (KeyValue<StringName, Variant> param : shader_uniforms) {
 			if (param.value.get_type() == Variant::OBJECT) {
 				RID tex_rid = param.value;
 				if (tex_rid.is_valid()) {
@@ -518,14 +573,24 @@ void ShaderMaterial::_check_material_rid() const {
 				RS::get_singleton()->material_set_param(_get_material(), param.key, param.value);
 			}
 		}
+
+#error TODO
+
 	}
 }
 
 void ShaderMaterial::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_shader", "shader"), &ShaderMaterial::set_shader);
 	ClassDB::bind_method(D_METHOD("get_shader"), &ShaderMaterial::get_shader);
+
 	ClassDB::bind_method(D_METHOD("set_shader_parameter", "param", "value"), &ShaderMaterial::set_shader_parameter);
 	ClassDB::bind_method(D_METHOD("get_shader_parameter", "param"), &ShaderMaterial::get_shader_parameter);
+
+	ClassDB::bind_method(D_METHOD("set_shader_feature", "feature", "value"), &ShaderMaterial::set_shader_feature);
+	ClassDB::bind_method(D_METHOD("get_shader_feature", "feature"), &ShaderMaterial::get_shader_feature);
+
+	ClassDB::bind_method(D_METHOD("set_shader_variant", "variant", "value"), &ShaderMaterial::set_shader_variant);
+	ClassDB::bind_method(D_METHOD("get_shader_variant", "variant"), &ShaderMaterial::get_shader_variant);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "shader", PROPERTY_HINT_RESOURCE_TYPE, "Shader"), "set_shader", "get_shader");
 }
@@ -533,15 +598,39 @@ void ShaderMaterial::_bind_methods() {
 #ifdef TOOLS_ENABLED
 void ShaderMaterial::get_argument_options(const StringName &p_function, int p_idx, List<String> *r_options) const {
 	const String pf = p_function;
-	if (p_idx == 0 && (pf == "get_shader_parameter" || pf == "set_shader_parameter")) {
+	if (p_idx == 0) {
 		if (shader.is_valid()) {
-			List<PropertyInfo> pl;
-			shader->get_shader_uniform_list(&pl);
-			for (const PropertyInfo &E : pl) {
-				r_options->push_back(E.name.replace_first("shader_parameter/", "").quote());
+			if (pf == "get_shader_parameter" || pf == "set_shader_parameter") {
+				List<PropertyInfo> pl;
+				shader->get_shader_uniform_list(&pl);
+				for (const PropertyInfo &E : pl) {
+					r_options->push_back(E.name.replace_first("shader_parameter/", "").quote());
+				}
+			} else if (pf == "get_shader_feature" || pf == "set_shader_feature") {
+				for (const Variant &feature : shader->get_shader_features()) {
+					r_options->push_back(((String)feature).quote());
+				}
+			} else if (pf == "get_shader_variant" || pf == "set_shader_variant") {
+				for (const KeyValue<Variant, Variant> &variant : shader->get_shader_variants()) {
+					// This is spectacularly fucked but
+					for (const Variant &option : (Array)variant.value) {
+						r_options->push_back(((String)variant.key).quote() + ", " + ((String)option).quote());
+					}
+					//r_options->push_back(((String)variant.key).quote());
+				}
 			}
 		}
 	}
+	// No way to discern which variant it exists for, this is not as useful.
+	/* else if (p_idx == 1) {
+		if (pf == "get_shader_variant" || pf == "set_shader_variant") {
+			for (const KeyValue<Variant, Variant> &variant : shader->get_shader_variants()) {
+				for (const Variant &option : (Array)variant.value) {
+					r_options->push_back(((String)option).quote());
+				}
+			}
+		}
+	}*/ 
 	Material::get_argument_options(p_function, p_idx, r_options);
 }
 #endif
@@ -812,35 +901,6 @@ void BaseMaterial3D::_update_shader() {
 			code += ", depth_draw_never";
 			break;
 		case DEPTH_DRAW_MAX:
-			break; // Internal value, skip.
-	}
-
-	switch (depth_function) {
-		case DEPTH_FUNCTION_GREATER_OR_EQUAL:
-			code += ", depth_function_greater_or_equal";
-			break;
-		case DEPTH_FUNCTION_LESS_OR_EQUAL:
-			code += ", depth_function_less_or_equal";
-			break;
-		case DEPTH_FUNCTION_LESS:
-			code += ", depth_function_less";
-			break;
-		case DEPTH_FUNCTION_EQUAL:
-			code += ", depth_function_equal";
-			break;
-		case DEPTH_FUNCTION_GREATER:
-			code += ", depth_function_greater";
-			break;
-		case DEPTH_FUNCTION_NOT_EQUAL:
-			code += ", depth_function_not_equal";
-			break;
-		case DEPTH_FUNCTION_ALWAYS:
-			code += ", depth_function_always";
-			break;
-		case DEPTH_FUNCTION_NEVER:
-			code += ", depth_function_never";
-			break;
-		case DEPTH_FUNCTION_MAX:
 			break; // Internal value, skip.
 	}
 
@@ -3591,7 +3651,6 @@ void BaseMaterial3D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "blend_mode", PROPERTY_HINT_ENUM, "Mix,Add,Subtract,Multiply,Premultiplied Alpha"), "set_blend_mode", "get_blend_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "cull_mode", PROPERTY_HINT_ENUM, "Back,Front,Disabled"), "set_cull_mode", "get_cull_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "depth_draw_mode", PROPERTY_HINT_ENUM, "Opaque Only,Always,Never"), "set_depth_draw_mode", "get_depth_draw_mode");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "depth_function", PROPERTY_HINT_ENUM, "Greater or Equal,Less or Equal,Less,Equal,Greater,Not Equal,Always,Never"), "set_depth_function", "get_depth_function");
 	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "no_depth_test"), "set_flag", "get_flag", FLAG_DISABLE_DEPTH_TEST);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "depth_test", PROPERTY_HINT_ENUM, "Default,Inverted"), "set_depth_test", "get_depth_test");
 

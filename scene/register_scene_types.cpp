@@ -128,6 +128,7 @@
 #include "scene/resources/immediate_mesh.h"
 #include "scene/resources/label_settings.h"
 #include "scene/resources/material.h"
+// #include "scene/resources/shader_variant_material.h"
 #include "scene/resources/mesh_data_tool.h"
 #include "scene/resources/mesh_texture.h"
 #include "scene/resources/multimesh.h"
@@ -854,6 +855,7 @@ void register_scene_types() {
 	GDREGISTER_VIRTUAL_CLASS(Material);
 	GDREGISTER_CLASS(PlaceholderMaterial);
 	GDREGISTER_CLASS(ShaderMaterial);
+	// GDREGISTER_CLASS(ShaderVariantMaterial);
 	GDREGISTER_ABSTRACT_CLASS(CanvasItem);
 	GDREGISTER_CLASS(CanvasTexture);
 	GDREGISTER_CLASS(CanvasItemMaterial);
