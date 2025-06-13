@@ -82,6 +82,14 @@ void Shader::set_include_path(const String &p_path) {
 	include_path = p_path;
 }
 
+const String Shader::get_path_or_include_path() const {
+	String path = get_path();
+	if (path.is_empty()) {
+		path = include_path;
+	}
+	return path;
+}
+
 void Shader::set_code(const String &p_code) {
 	for (const Ref<ShaderInclude> &E : include_dependencies) {
 		E->disconnect_changed(callable_mp(this, &Shader::_dependency_changed));
@@ -314,7 +322,11 @@ void Shader::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("inspect_native_shader_code"), &Shader::inspect_native_shader_code);
 	ClassDB::set_method_flags(get_class_static(), StringName("inspect_native_shader_code"), METHOD_FLAGS_DEFAULT | METHOD_FLAG_EDITOR);
 
+	ClassDB::bind_method(D_METHOD("set_include_path", "path"), &Shader::set_include_path);
+	ClassDB::bind_method(D_METHOD("get_include_path", "path"), &Shader::get_path_or_include_path);
+
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "code", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_code", "get_code");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "include_path", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_include_path", "get_include_path");
 
 	BIND_ENUM_CONSTANT(MODE_SPATIAL);
 	BIND_ENUM_CONSTANT(MODE_CANVAS_ITEM);

@@ -35,6 +35,7 @@
 #include "scene/resources/shader.h"
 #include "scene/resources/texture.h"
 #include "servers/rendering_server.h"
+#include "core/string/string_builder.h"
 
 class Material : public Resource {
 	GDCLASS(Material, Resource);
@@ -97,7 +98,7 @@ class ShaderMaterial : public Material {
 	GDCLASS(ShaderMaterial, Material);
 
 	// The current shader variant, turned into an instance of a Shader type.
-	Ref<Shader> shader;
+	mutable Ref<Shader> shader;
 
 	Ref<Shader> base_shader;
 
@@ -142,7 +143,7 @@ public:
 	bool set_shader_variant(const StringName &p_variant, const StringName &p_value);
 	const StringName get_shader_variant(const StringName &p_variant) const;
 
-	void apply_features_and_variants();
+	void apply_features_and_variants() const;
 
 	virtual Shader::Mode get_shader_mode() const override;
 
