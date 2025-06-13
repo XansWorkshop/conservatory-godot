@@ -803,9 +803,15 @@ const StringName ShaderMaterial::get_shader_variant(const StringName &p_variant)
 void ShaderMaterial::apply_features_and_variants(const bool p_notify) const {
 	if (base_shader.is_null()) {
 		shader = nullptr;
-		RID material = _get_material();
-		if (material.is_valid()) {
-			RS::get_singleton()->material_set_shader(material, RID());
+		RID material_rid = _get_material();
+		if (material_rid.is_valid()) {
+			RS::get_singleton()->material_set_shader(material_rid, RID());
+		}
+
+		if (p_notify) {
+			ShaderMaterial *mutable_this = (ShaderMaterial *)(this);
+			mutable_this->_shader_changed();
+			mutable_this->emit_changed();
 		}
 		return;
 	}
@@ -940,13 +946,11 @@ void ShaderMaterial::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_shader_parameter", "param", "value"), &ShaderMaterial::set_shader_parameter);
 	ClassDB::bind_method(D_METHOD("get_shader_parameter", "param"), &ShaderMaterial::get_shader_parameter);
 
-	/*
 	ClassDB::bind_method(D_METHOD("set_shader_feature", "feature", "value"), &ShaderMaterial::set_shader_feature);
 	ClassDB::bind_method(D_METHOD("get_shader_feature", "feature"), &ShaderMaterial::get_shader_feature);
 
 	ClassDB::bind_method(D_METHOD("set_shader_variant", "variant", "value"), &ShaderMaterial::set_shader_variant);
 	ClassDB::bind_method(D_METHOD("get_shader_variant", "variant"), &ShaderMaterial::get_shader_variant);
-	*/
 
 	ClassDB::bind_method(D_METHOD("reset_features_and_variants"), &ShaderMaterial::reset_features_and_variants);
 
