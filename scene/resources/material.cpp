@@ -189,22 +189,60 @@ Material::~Material() {
 ///////////////////////////////////
 
 bool ShaderMaterial::_set(const StringName &p_name, const Variant &p_value) {
+	if (p_name == SNAME("_features") && p_value.get_type() == Variant::Type::DICTIONARY) {
+		for (const KeyValue<Variant, Variant> &setting : (Dictionary)p_value) {
+			if (setting.key.is_string() && setting.value.get_type() == Variant::Type::BOOL) {
+				shader_features[(StringName)setting.key] = (bool)setting.value;
+			}
+		}
+		if (shader.is_valid()) {
+			apply_features_and_variants();
+		}
+	} else if (p_name == SNAME("_variants") && p_value.get_type() == Variant::Type::DICTIONARY) {
+		for (const KeyValue<Variant, Variant> &setting : (Dictionary)p_value) {
+			if (setting.key.is_string() && setting.value.is_string()) {
+				shader_variants[(StringName)setting.key] = (StringName)setting.value;
+			}
+		}
+		if (shader.is_valid()) {
+			apply_features_and_variants();
+		}
+	}
 	if (shader.is_valid()) {
-		const StringName *sn = uniform_name_cache.getptr(p_name);
+		StringName *sn = uniform_name_cache.getptr(p_name);
 		if (sn) {
 			set_shader_parameter(*sn, p_value);
 			return true;
 		}
+		sn = feature_name_cache.getptr(p_name);
+		if (sn) {
+			if (p_value.get_type() == Variant::Type::BOOL) {
+				set_shader_feature(*sn, (bool)p_value);
+				return true;
+			} else {
+				return false;
+			}
+		}
+		sn = variant_name_cache.getptr(p_name);
+		if (sn) {
+			if (p_value.is_string()) {
+				set_shader_variant(*sn, (StringName)p_value);
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 		String s = p_name;
 		if (s.begins_with("shader_parameter/")) {
 			String param = s.replace_first("shader_parameter/", "");
-			uniform_name_cache[s] = param;
+			uniform_name_cache[p_name] = param;
 			set_shader_parameter(param, p_value);
 			return true;
 		} else if (s.begins_with("feature/")) {
 			String feature = s.replace_first("feature/", "");
 			if (p_value.get_type() == Variant::Type::BOOL) {
-				feature_name_cache[s] = feature;
+				feature_name_cache[p_name] = feature;
 				set_shader_feature(feature, (bool)p_value);
 				return true;
 			} else {
@@ -213,7 +251,7 @@ bool ShaderMaterial::_set(const StringName &p_name, const Variant &p_value) {
 		} else if (s.begins_with("variant/")) {
 			String variant = s.replace_first("variant/", "");
 			if (p_value.is_string()) {
-				variant_name_cache[s] = variant;
+				variant_name_cache[p_name] = variant;
 				set_shader_variant(variant, (StringName)p_value);
 				return true;
 			} else {
@@ -238,6 +276,27 @@ bool ShaderMaterial::_set(const StringName &p_name, const Variant &p_value) {
 		set_shader_parameter(param, p_value);
 		return true;
 #endif
+	} else {
+		String s = p_name;
+		if (s.begins_with("feature/")) {
+			String feature = s.replace_first("feature/", "");
+			if (p_value.get_type() == Variant::Type::BOOL) {
+				feature_name_cache[p_name] = feature;
+				shader_features[feature] = (bool)p_value;
+				return true;
+			} else {
+				return false;
+			}
+		} else if (s.begins_with("variant/")) {
+			String variant = s.replace_first("variant/", "");
+			if (p_value.is_string()) {
+				variant_name_cache[p_name] = variant;
+				shader_variants[variant] = (StringName)p_value;
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 
 	return false;
@@ -252,6 +311,20 @@ bool ShaderMaterial::_get(const StringName &p_name, Variant &r_ret) const {
 			r_ret = Variant();
 			return true;
 		}
+	} else if (p_name == SNAME("_features")) {
+		Dictionary result;
+		for (const KeyValue<StringName, bool> &setting : shader_features) {
+			result[setting.key] = setting.value;
+		}
+		r_ret = result;
+		return true;
+	} else if (p_name == SNAME("_variants")) {
+		Dictionary result;
+		for (const KeyValue<StringName, StringName> &setting : shader_variants) {
+			result[setting.key] = setting.value;
+		}
+		r_ret = result;
+		return true;
 	}
 	if (shader.is_valid()) {
 		StringName *sn = uniform_name_cache.getptr(p_name);
@@ -436,16 +509,23 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 		p_list->push_back(NEW_PROPERTY_GROUP("Static Shader Features", "feature"));
 		Array features = base_shader->get_shader_features();
 		for (const Variant &feature : features) {
+			const StringName joined_name = "feature/" + ((String)feature);
+			// clang-format off
 			p_list->push_back(PropertyInfo(
-					Variant::Type::BOOL,
-					"feature/" + ((String)feature),
-					PROPERTY_HINT_NONE,
-					"",
-					PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_FORCE_RAW_DISPLAY_NAME | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED));
+				Variant::Type::BOOL,
+				joined_name,
+				PROPERTY_HINT_NONE,
+				"",
+				PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_FORCE_RAW_DISPLAY_NAME | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
+			));
+			// clang-format on
 
-			StringName feature_sname = (StringName)feature;
+			const StringName feature_sname = (StringName)feature;
 			if (!shader_features.has(feature_sname)) {
 				shader_features.insert(feature_sname, false);
+			}
+			if (!feature_name_cache.has(joined_name)) {
+				feature_name_cache.insert(joined_name, feature_sname);
 			}
 		}
 
@@ -470,27 +550,52 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 
 			valid_shader_variants.insert(variant_name, valid);
 
+			const StringName joined_name = "variant/" + ((String)variant.key);
+			// clang-format off
 			p_list->push_back(PropertyInfo(
-					Variant::Type::STRING_NAME,
-					"variant/" + ((String)variant.key),
-					PROPERTY_HINT_ENUM,
-					result.as_string(),
-					PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_FORCE_RAW_DISPLAY_NAME | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED));
+				Variant::Type::STRING_NAME,
+				joined_name,
+				PROPERTY_HINT_ENUM,
+				result.as_string(),
+				PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_FORCE_RAW_DISPLAY_NAME | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
+			));
+			// clang-format on
 
 			if (!shader_variants.has(variant_name)) {
 				StringName first_variant = (StringName)options[0];
 				shader_variants.insert(variant_name, first_variant);
+			}
+			if (!variant_name_cache.has(joined_name)) {
+				variant_name_cache.insert(joined_name, variant_name);
 			}
 		}
 
 #undef NEW_PROPERTY_GROUP
 
 	}
+
+	// clang-format off
+	p_list->push_back(PropertyInfo(
+		Variant::Type::DICTIONARY,
+		"_features",
+		PROPERTY_HINT_NONE,
+		"",
+		PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
+	));
+	p_list->push_back(PropertyInfo(
+		Variant::Type::DICTIONARY,
+		"_variants",
+		PROPERTY_HINT_NONE,
+		"",
+		PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
+	));
+	// clang-format on
+
 }
 
 bool ShaderMaterial::_property_can_revert(const StringName &p_name) const {
 	if (shader.is_valid()) {
-		if (uniform_name_cache.has(p_name) || shader_features.has(p_name) || valid_shader_variants.has(p_name)) {
+		if (uniform_name_cache.has(p_name) || feature_name_cache.has(p_name) || variant_name_cache.has(p_name)) {
 			return true;
 		}
 		const String sname = p_name;
@@ -545,13 +650,14 @@ void ShaderMaterial::set_shader(const Ref<Shader> &p_shader) {
 	}
 
 	base_shader = p_shader;
-	apply_features_and_variants(true); // Sets 'shader'
 
 	if (base_shader.is_valid()) {
 		if (Engine::get_singleton()->is_editor_hint()) {
 			base_shader->connect_changed(callable_mp(this, &ShaderMaterial::_shader_changed));
 		}
 	}
+
+	apply_features_and_variants(false); // Sets 'shader'
 
 	// Not useful: apply_features_and_variants handles this.
 	/*
@@ -693,6 +799,7 @@ void ShaderMaterial::apply_features_and_variants(const bool p_notify) const {
 	result.append(base_code);
 
 	shader.instantiate();
+	shader->set_local_to_scene(true);
 	shader->set_name("Generated Shader");
 	shader->set_include_path(base_shader->get_path_or_include_path());
 	shader->set_code(result.as_string());
@@ -707,7 +814,6 @@ void ShaderMaterial::apply_features_and_variants(const bool p_notify) const {
 	if (p_notify) {
 		ShaderMaterial *mutable_this = (ShaderMaterial *)(this);
 		mutable_this->_shader_changed();
-		// mutable_this->notify_property_list_changed();
 		mutable_this->emit_changed();
 	}
 }
@@ -1989,7 +2095,7 @@ void fragment() {)";
 		}
 
 		code += R"(	ROUGHNESS = orm_tex.g;
- 	METALLIC = orm_tex.b;
+	METALLIC = orm_tex.b;
 )";
 	}
 
