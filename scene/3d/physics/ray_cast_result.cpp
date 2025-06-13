@@ -35,6 +35,8 @@
 
 #include "ray_cast_result.h"
 
+uint8_t RayCastResult::_can_index_face = 0;
+
 Vector3 RayCastResult::get_hit_position() const {
 	return position;
 }
@@ -134,21 +136,6 @@ void RayCastResult::copy_to(const Ref<RayCastResult> &p_destination) const {
 	other->success = success;
 }
 
-/*
-void RayCastResult::copy_to_unsafe(const int64_t p_ptr) const {
-	// Hence the "unsafe"...
-	RayCastResultStruct *structPtr = (RayCastResultStruct*)p_ptr;
-	structPtr->success = success;
-	structPtr->position = position;
-	structPtr->normal = normal;
-	structPtr->rid = rid;
-	structPtr->hit_object_id = (uint64_t)collider_id;
-	structPtr->shape = (int32_t)shape;
-	structPtr->face_index = (int32_t)face_index;
-	structPtr->type = type;
-}
-*/
-
 void RayCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_success"), &RayCastResult::get_success);
 	ClassDB::bind_method(D_METHOD("get_hit_position"), &RayCastResult::get_hit_position);
@@ -171,7 +158,6 @@ void RayCastResult::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("clear"), &RayCastResult::clear);
 	ClassDB::bind_method(D_METHOD("copy_to", "destination"), &RayCastResult::copy_to);
-	// ClassDB::bind_method(D_METHOD("copy_to_unsafe", "destination_ptr"), &RayCastResult::copy_to_unsafe);
 
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::BOOL, "success", PROPERTY_HINT_NONE), "set_success", "get_success");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "hit_position", PROPERTY_HINT_NONE, "suffix:m"), "set_hit_position", "get_hit_position");
