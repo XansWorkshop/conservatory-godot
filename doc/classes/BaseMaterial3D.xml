@@ -392,7 +392,7 @@
 		<member name="stencil_compare" type="int" setter="set_stencil_compare" getter="get_stencil_compare" enum="BaseMaterial3D.StencilCompare" default="0" experimental="May be affected by future rendering pipeline changes.">
 			The comparison operator to use for stencil masking operations. See [enum StencilCompare].
 		</member>
-		<member name="stencil_flags" type="int" setter="set_stencil_flags" getter="get_stencil_flags" default="0" experimental="May be affected by future rendering pipeline changes.">
+		<member name="stencil_flags" type="int" setter="set_stencil_flags" getter="get_stencil_flags" default="1" experimental="May be affected by future rendering pipeline changes.">
 			The flags dictating how the stencil operation behaves. See [enum StencilFlags].
 		</member>
 		<member name="stencil_mode" type="int" setter="set_stencil_mode" getter="get_stencil_mode" enum="BaseMaterial3D.StencilMode" default="0" experimental="May be affected by future rendering pipeline changes.">

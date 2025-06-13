@@ -410,6 +410,47 @@ void SceneShaderForwardClustered::ShaderData::_create_pipeline(PipelineKey p_pip
 		depth_stencil_state.back_op = op;
 	}
 
+	depth_stencil_state.enable_stencil = stencil_enabled;
+	if (stencil_enabled) {
+		static const RD::CompareOperator stencil_compare_rd_table[STENCIL_COMPARE_MAX] = {
+			RD::COMPARE_OP_LESS,
+			RD::COMPARE_OP_EQUAL,
+			RD::COMPARE_OP_LESS_OR_EQUAL,
+			RD::COMPARE_OP_GREATER,
+			RD::COMPARE_OP_NOT_EQUAL,
+			RD::COMPARE_OP_GREATER_OR_EQUAL,
+			RD::COMPARE_OP_ALWAYS,
+		};
+
+		uint32_t stencil_mask = 255;
+
+		RD::PipelineDepthStencilState::StencilOperationState op;
+		op.fail = RD::STENCIL_OP_KEEP;
+		op.pass = RD::STENCIL_OP_KEEP;
+		op.depth_fail = RD::STENCIL_OP_KEEP;
+		op.compare = stencil_compare_rd_table[stencil_compare];
+		op.compare_mask = 0;
+		op.write_mask = 0;
+		op.reference = stencil_reference;
+
+		if (stencil_flags & STENCIL_FLAG_READ) {
+			op.compare_mask = stencil_mask;
+		}
+
+		if (stencil_flags & STENCIL_FLAG_WRITE) {
+			op.pass = RD::STENCIL_OP_REPLACE;
+			op.write_mask = stencil_mask;
+		}
+
+		if (stencil_flags & STENCIL_FLAG_WRITE_DEPTH_FAIL) {
+			op.depth_fail = RD::STENCIL_OP_REPLACE;
+			op.write_mask = stencil_mask;
+		}
+
+		depth_stencil_state.front_op = op;
+		depth_stencil_state.back_op = op;
+	}
+
 	bool depth_pre_pass_enabled = bool(GLOBAL_GET_CACHED(bool, "rendering/driver/depth_prepass/enable"));
 
 	RD::RenderPrimitive primitive_rd_table[RS::PRIMITIVE_MAX] = {
