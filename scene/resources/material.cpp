@@ -620,21 +620,44 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 			valid_shader_variants.insert(variant_name, valid);
 
 			p_list->push_back(PropertyInfo(
-					Variant::Type::STRING_NAME,
-					"variant/" + ((String)variant.key),
-					PROPERTY_HINT_ENUM,
-					result.as_string(),
-					PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_FORCE_RAW_DISPLAY_NAME | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED));
+				Variant::Type::STRING_NAME,
+				joined_name,
+				PROPERTY_HINT_ENUM,
+				result.as_string(),
+				PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_FORCE_RAW_DISPLAY_NAME | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
+			));
+			// clang-format on
 
 			if (!shader_variants.has(variant_name)) {
 				StringName first_variant = (StringName)options[0];
 				shader_variants.insert(variant_name, first_variant);
+			}
+			if (!variant_name_cache.has(joined_name)) {
+				variant_name_cache.insert(joined_name, variant_name);
 			}
 		}
 
 #undef NEW_PROPERTY_GROUP
 
 	}
+
+	// clang-format off
+	p_list->push_back(PropertyInfo(
+		Variant::Type::DICTIONARY,
+		"_features",
+		PROPERTY_HINT_NONE,
+		"",
+		PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
+	));
+	p_list->push_back(PropertyInfo(
+		Variant::Type::DICTIONARY,
+		"_variants",
+		PROPERTY_HINT_NONE,
+		"",
+		PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
+	));
+	// clang-format on
+
 }
 
 bool ShaderMaterial::_property_can_revert(const StringName &p_name) const {
