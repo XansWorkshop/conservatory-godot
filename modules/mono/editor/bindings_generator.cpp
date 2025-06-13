@@ -2376,7 +2376,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 					   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 			} else {
 				// Hide the constructor
-				output << MEMBER_BEGIN << sets_required_members << MEMBER_BEGIN "internal " << itype.proxy_name << "() : this("
+				output << sets_required_members << MEMBER_BEGIN "internal " << itype.proxy_name << "() : this("
 					   << (itype.memory_own ? "true" : "false") << ")\n" OPEN_BLOCK_L1
 					   << INDENT2 "unsafe\n" INDENT2 OPEN_BLOCK
 					   << INDENT3 "ConstructAndInitialize(null, "
@@ -2385,7 +2385,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 					   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 			}
 
-			output << MEMBER_BEGIN << sets_required_members << MEMBER_BEGIN "internal " << itype.proxy_name << "(IntPtr " CS_PARAM_INSTANCE ") : this("
+			output << sets_required_members << MEMBER_BEGIN "internal " << itype.proxy_name << "(IntPtr " CS_PARAM_INSTANCE ") : this("
 				   << (itype.memory_own ? "true" : "false") << ")\n" OPEN_BLOCK_L1
 				   << INDENT2 "NativePtr = " CS_PARAM_INSTANCE ";\n"
 				   << INDENT2 "unsafe\n" INDENT2 OPEN_BLOCK
@@ -2395,7 +2395,6 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 				   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 
 			// Add.. em.. trick constructor. Sort of.
-			output.append(MEMBER_BEGIN);
 			output.append(sets_required_members);
 			output.append(MEMBER_BEGIN "internal ");
 			output.append(itype.proxy_name);

@@ -1011,7 +1011,9 @@ void Viewport::_process_picking() {
 		}
 #endif // PHYSICS_3D_DISABLED
 
-		Input::get_singleton()->emit_signal(SNAME("global_input"), ev.ptr(), is_input_handled(), true);
+#ifdef CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
+		Input::get_singleton()->emit_signal(SNAME("global_input"), ev, is_input_handled(), true);
+#endif
 	}
 }
 #endif // !defined(PHYSICS_2D_DISABLED) || !defined(PHYSICS_3D_DISABLED)
@@ -3854,7 +3856,9 @@ void Viewport::set_input_as_handled() {
 	}
 
 	local_input_handled = true;
+#ifdef CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
 	Input::get_singleton()->last_dispatched_input_was_handled = true;
+#endif
 }
 
 bool Viewport::is_input_handled() const {

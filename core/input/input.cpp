@@ -1247,7 +1247,7 @@ void Input::event_dispatch_function(const Ref<InputEvent> &p_event) const {
 		event_dispatch_function_instance(p_event);
 	}
 
-	singleton->emit_signal(SNAME("global_input"), p_event.ptr(), singleton->last_dispatched_input_was_handled, false);
+	singleton->emit_signal(SNAME("global_input"), p_event, singleton->last_dispatched_input_was_handled, false);
 }
 #endif
 
