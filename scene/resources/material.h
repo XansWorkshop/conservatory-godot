@@ -144,7 +144,7 @@ public:
 	bool set_shader_variant(const StringName &p_variant, const StringName &p_value);
 	const StringName get_shader_variant(const StringName &p_variant) const;
 
-	void apply_features_and_variants() const;
+	void apply_features_and_variants(const bool p_notify = true) const;
 
 	virtual Shader::Mode get_shader_mode() const override;
 
