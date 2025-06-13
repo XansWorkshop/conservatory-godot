@@ -59,18 +59,6 @@ public:
 		SOFT_BODY
 	};
 
-	// This struct is shared by The Conservatory.
-	struct RayCastResultStruct {
-		bool success;
-		Vector3 position;
-		Vector3 normal;
-		RID rid;
-		uint64_t hit_object_id;
-		int32_t shape;
-		int32_t face_index;
-		PhysicsObjectType type;
-	};
-
 private:
 	bool success = false;
 	Vector3 position;
