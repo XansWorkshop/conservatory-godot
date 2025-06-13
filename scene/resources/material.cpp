@@ -208,10 +208,22 @@ bool ShaderMaterial::_set(const StringName &p_name, const Variant &p_value) {
 			return true;
 		} else if (s.begins_with("feature/")) {
 			String feature = s.replace_first("feature/", "");
-
+			if (p_value.get_type() == Variant::Type::BOOL) {
+				feature_name_cache[s] = feature;
+				set_shader_feature(feature, (bool)p_value);
+				return true;
+			} else {
+				return false;
+			}
 		} else if (s.begins_with("variant/")) {
 			String variant = s.replace_first("variant/", "");
-
+			if (p_value.is_string()) {
+				variant_name_cache[s] = variant;
+				set_shader_variant(variant, (StringName)p_value);
+				return true;
+			} else {
+				return false;
+			}
 		}
 #ifndef DISABLE_DEPRECATED
 		// Compatibility remaps are only needed here.
@@ -238,16 +250,23 @@ bool ShaderMaterial::_set(const StringName &p_name, const Variant &p_value) {
 
 bool ShaderMaterial::_get(const StringName &p_name, Variant &r_ret) const {
 	if (shader.is_valid()) {
-		const StringName *sn = uniform_name_cache.getptr(p_name);
+		StringName *sn = uniform_name_cache.getptr(p_name);
 		if (sn) {
 			// Only return a parameter if it was previously set.
 			r_ret = get_shader_parameter(*sn);
 			return true;
 		}
+		sn = feature_name_cache.getptr(p_name);
+		if (sn) {
+			r_ret = get_shader_feature(*sn);
+			return true;
+		}
+		sn = variant_name_cache.getptr(p_name);
+		if (sn) {
+			r_ret = get_shader_variant(*sn);
+			return true;
+		}
 	}
-
-#error TODO
-
 	return false;
 }
 
@@ -394,19 +413,74 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 				}
 			}
 		}
-#error TODO
+
+#define NEW_PROPERTY_GROUP(display, prefix) (PropertyInfo(Variant::Type::NIL, display, PROPERTY_HINT_NONE, prefix##"/", PROPERTY_USAGE_GROUP, StringName()))
+
+		p_list->push_back(NEW_PROPERTY_GROUP("Static Shader Features", "feature"));
+		Array features = shader->get_shader_features();
+		for (const Variant& feature : features) {
+			p_list->push_back(PropertyInfo(
+				Variant::Type::BOOL,
+				"feature/" + ((String)feature),
+				PROPERTY_HINT_NONE,
+				"",
+				PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_FORCE_RAW_DISPLAY_NAME | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
+			));
+
+			StringName feature_sname = (StringName)feature;
+			if (!shader_features.has(feature_sname)) {
+				shader_features.insert(feature_sname, false);
+			}
+		}
+
+		p_list->push_back(NEW_PROPERTY_GROUP("Static Shader Variants", "variant"));
+		Dictionary variants = shader->get_shader_variants();
+		valid_shader_variants.clear();
+		for (const KeyValue<Variant, Variant>& variant : variants) {
+			List<StringName> valid = List<StringName>();
+			StringName variant_name = (StringName)variant.key;
+			Array options = (Array)variant.value;
+
+			StringBuilder result;
+			int size = options.size();
+			for (int i = 0; i < size; ++i) {
+				Variant option = options[i];
+				result.append(option);
+				valid.push_back(option);
+				if (i <= size - 1) {
+					result.append(",");
+				}
+			}
+
+			valid_shader_variants.insert(variant_name, valid);
+
+			p_list->push_back(PropertyInfo(
+				Variant::Type::STRING_NAME,
+				"variant/" + ((String)variant.key),
+				PROPERTY_HINT_ENUM,
+				result.as_string(),
+				PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_FORCE_RAW_DISPLAY_NAME | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
+			));
+
+			if (!shader_variants.has(variant_name)) {
+				StringName first_variant = (StringName)options[0];
+				shader_variants.insert(variant_name, first_variant);
+			}
+		}
+
+#undef NEW_PROPERTY_GROUP
+
 	}
 }
 
 bool ShaderMaterial::_property_can_revert(const StringName &p_name) const {
 	if (shader.is_valid()) {
-		if (uniform_name_cache.has(p_name)) {
+		if (uniform_name_cache.has(p_name) || shader_features.has(p_name) || valid_shader_variants.has(p_name)) {
 			return true;
 		}
 		const String sname = p_name;
 		return sname == "render_priority" || sname == "next_pass";
 	}
-#error TODO
 	return false;
 }
 
@@ -471,8 +545,11 @@ void ShaderMaterial::set_shader(const Ref<Shader> &p_shader) {
 		RS::get_singleton()->material_set_shader(material_rid, rid);
 	}
 
+	apply_features_and_variants(); // Achieves the same purpose as below.
+	/*
 	notify_property_list_changed(); //properties for shader exposed
 	emit_changed();
+	*/
 }
 
 Ref<Shader> ShaderMaterial::get_shader() const {
@@ -522,28 +599,86 @@ Variant ShaderMaterial::get_shader_parameter(const StringName &p_param) const {
 }
 
 bool ShaderMaterial::set_shader_feature(const StringName &p_feature, const bool p_enabled) {
-#error TODO
-
+	bool *feature = shader_features.getptr(p_feature);
+	if (feature) {
+		bool changed = *feature != p_enabled;
+		*feature = p_enabled;
+		if (changed) {
+			apply_features_and_variants();
+		}
+		return changed;
+	}
+	return false;
 }
 
 bool ShaderMaterial::get_shader_feature(const StringName &p_feature) const {
-#error TODO
-
+	bool *feature = shader_features.getptr(p_feature);
+	if (feature) {
+		return *feature;
+	}
+	return false;
 }
 
 bool ShaderMaterial::set_shader_variant(const StringName &p_variant, const StringName &p_value) {
-#error TODO
-
+	StringName *variant = shader_variants.getptr(p_variant);
+	if (variant) {
+		List<StringName> *valids = valid_shader_variants.getptr(p_variant);
+		if (!valids->find(p_value)) {
+			return false;
+		}
+		bool changed = *variant != p_value;
+		*variant = p_value;
+		if (changed) {
+			apply_features_and_variants();
+		}
+		return changed;
+	}
+	return false;
 }
 
 const StringName ShaderMaterial::get_shader_variant(const StringName &p_variant) const {
-#error TODO
-
+	const StringName *variant = shader_variants.getptr(p_variant);
+	if (variant) {
+		return *variant;
+	}
+	return StringName();
 }
 
-void ShaderMaterial::apply_features_and_variants() {
-#error TODO
+void ShaderMaterial::apply_features_and_variants() const {
+	StringBuilder result;
+	String base_code = base_shader->get_code();
 
+	result.append("// NOTE: This shader code is a procedurally generated variant.");
+	for (const KeyValue<StringName, bool> &feature : shader_features) {
+		if (feature.value) {
+			result.append("#define ");
+			result.append(feature.key);
+			result.append("\n");
+		}
+	}
+
+	for (const KeyValue<StringName, StringName>& variant : shader_variants) {
+		result.append("#define ");
+		result.append(variant.value);
+		result.append("\n");
+	}
+
+	result.append("\n");
+	result.append(base_code);
+
+	Shader *new_instance = memnew(Shader);
+	new_instance->set_include_path(base_shader->get_path_or_include_path());
+	new_instance->set_code(result.as_string());
+
+	if (shader.is_valid()) {
+		// Clear old reference.
+		memdelete(shader.ptr());
+	}
+	shader.reference_ptr(new_instance);
+
+	ShaderMaterial *mutable_this = (ShaderMaterial *)(this);
+	mutable_this->notify_property_list_changed();
+	mutable_this->emit_changed();
 }
 
 void ShaderMaterial::_shader_changed() {
@@ -574,8 +709,7 @@ void ShaderMaterial::_check_material_rid() const {
 			}
 		}
 
-#error TODO
-
+		apply_features_and_variants();
 	}
 }
 
