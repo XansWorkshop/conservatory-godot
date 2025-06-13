@@ -175,18 +175,6 @@ void RayCast3DDirect::store_in_result(const Ref<RayCastResult> &p_result) const 
 	castResult->set_success(collided);
 }
 
-void RayCast3DDirect::store_in_result_unsafe(const int64_t p_result) const {
-	RayCastResult::RayCastResultStruct *castResult = (RayCastResult::RayCastResultStruct *)p_result;
-	castResult->position = collision_point;
-	castResult->normal = collision_normal;
-	castResult->rid = against_rid;
-	castResult->hit_object_id = against;
-	castResult->type = type;
-	castResult->shape = against_shape;
-	castResult->face_index = collision_face_index;
-	castResult->success = collided;
-}
-
 bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQueryParameters3D> &p_parameters, const Ref<RayCastResult> &p_result) {
 	PhysicsDirectSpaceState3D *dss = PhysicsServer3D::get_singleton()->space_get_direct_state(p_space);
 	ERR_FAIL_NULL_V_MSG(dss, false, "There is no direct space state associated with the provided space.");
@@ -214,41 +202,6 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 		return false;
 	}
 }
-
-/*
-bool RayCast3DDirect::cast_statically_unsafe(const RID &p_space, const Ref<PhysicsRayQueryParameters3D> &p_parameters, const int64_t p_result) {
-	PhysicsDirectSpaceState3D *dss = PhysicsServer3D::get_singleton()->space_get_direct_state(p_space);
-	ERR_FAIL_NULL_V_MSG(dss, false, "There is no direct space state associated with the provided space.");
-	ERR_FAIL_COND_V_MSG(p_parameters.is_null(), false, "The PhysicsRayQueryParameters3D instance is not valid.");
-	ERR_FAIL_COND_V_MSG(p_result, false, "The pointer to the result struct is not valid.");
-
-	PhysicsDirectSpaceState3D::RayResult rr;
-
-	if (dss->intersect_ray(p_parameters->get_parameters(), rr)) {
-		RayCastResult::RayCastResultStruct *castResult = (RayCastResult::RayCastResultStruct *)p_result;
-		castResult->position = rr.position;
-		castResult->normal = rr.normal;
-		castResult->rid = rr.rid;
-		castResult->hit_object_id = (uint64_t)rr.collider_id;
-		castResult->type = (RayCastResult::PhysicsObjectType)rr.type;
-		castResult->shape = rr.shape;
-		castResult->face_index = rr.face_index;
-		castResult->success = true;
-		return true;
-	} else {
-		RayCastResult::RayCastResultStruct *castResult = (RayCastResult::RayCastResultStruct *)p_result;
-		castResult->position = Vector3();
-		castResult->normal = Vector3();
-		castResult->rid = RID();
-		castResult->hit_object_id = 0;
-		castResult->type = RayCastResult::PhysicsObjectType::INVALID;
-		castResult->shape = -1;
-		castResult->face_index = -1;
-		castResult->success = false;
-		return false;
-	}
-}
-*/
 
 void RayCast3DDirect::set_from_parameters(const Ref<PhysicsRayQueryParameters3D> &p_parameters) {
 	ERR_FAIL_COND_MSG(p_parameters.is_null(), "The provided parameters are null.");

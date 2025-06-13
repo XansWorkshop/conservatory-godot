@@ -99,9 +99,7 @@ public:
 	void set_from_parameters(const Ref<PhysicsRayQueryParameters3D> &p_parameters);
 	bool cast(const RID &p_space);
 	static bool cast_statically(const RID &p_space, const Ref<PhysicsRayQueryParameters3D> &p_parameters, const Ref<RayCastResult> &p_result);
-	// static bool cast_statically_unsafe(const RID &p_space, const Ref<PhysicsRayQueryParameters3D> &p_parameters, const int64_t p_result);
 	void store_in_result(const Ref<RayCastResult> &p_result) const;
-	void store_in_result_unsafe(const int64_t p_result) const;
 
 	bool get_hit_something() const;
 	Object *get_hit_object() const;

@@ -18,8 +18,6 @@ This fork of the Godot Engine is based on **Godot 4.5**, and features several ch
   * Added `version` field, which is a stringified version following GD's display rules i.e. "4.5" instead of "4.5.0".
   * Added `commit` field mimicking the git commit, 6 characters long. It's the same as the `hash` field. Set to `??????` if an error occurs.
   * Added `modules` field, which includes stuff like `mono`, `double`, etc. as a string array, separated out by the `.` character.
-* `CanvasItem::DrawEarly` event and virtual method, which invokes **before** `NOTIFICATION_DRAW`.
-  * Also comes with `NOTIFICATION_DRAW_EARLY`.
 * `CharFXTransform` upgrades, including:
   * A reference to the current label being rendered at the time of the effect call (init-only)
   * The font size at the currently rendered glyph (init-only)

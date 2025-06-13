@@ -132,6 +132,7 @@ Dictionary Engine::get_version_info() const {
 	dict["status"] = GODOT_VERSION_STATUS;
 	dict["build"] = GODOT_VERSION_BUILD;
 	dict["version"] = GODOT_VERSION_NUMBER;
+	dict["timestamp"] = GODOT_VERSION_TIMESTAMP;
 
 	String modules = String(GODOT_VERSION_MODULE_CONFIG);
 	dict["modules"] = modules.split(".", false);
