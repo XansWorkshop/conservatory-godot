@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<class name="RayCast3DDirect" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		A ray in 3D space, used to find the first object it intersects.
+	</brief_description>
+	<description>
+		A ray in 3D space, used to find the first object it intersects. Unlike its sibling, [RayCast3D], this is not a [Node] and does not go into the scene tree. Instead, you must provide the [RID] for the physics space to query yourself, and then manually invoke the cast. This can be done statically, or through an instance. This can provide its results in a [RayCastResult].
+	</description>
+	<tutorials>
+		<link title="Ray-casting">$DOCS_URL/tutorials/physics/ray-casting.html</link>
+		<link title="3D Voxel Demo">https://godotengine.org/asset-library/asset/2755</link>
+	</tutorials>
+	<methods>
+		<method name="cast">
+			<return type="bool" />
+			<param index="0" name="space" type="RID" />
+			<description>
+				Performs a raycast in the provided [param space], updating the state of this object to store the result of the raycast.
+			</description>
+		</method>
+		<method name="store_in_result">
+			<return type="void" />
+			<param index="0" name="result" type="RayCastResult" />
+			<description>
+				Copies the current results stored within this object into the provided [param result].
+			</description>
+		</method>
+		<method name="cast_statically">
+			<return type="bool" />
+			<param index="0" name="space" type="RID" />
+			<param index="1" name="parameters" type="PhysicsRayQueryParameters3D" />
+			<param index="2" name="result" type="RayCastResult" />
+			<description>
+				A static variation of [method cast] which, provided with a [param space], [param parameters], and [param result] to store the result into, will raycast without requiring a new instance of this type to be created.
+			</description>
+		</method>
+		<method name="set_transform_and_distance">
+			<return type="void" />
+			<param index="0" name="transform" type="Transform3D" />
+			<param index="1" name="distance" type="float" />
+			<description>
+				A convenience method to setting [member source_position] and [member target_position], which allows setting an origin transform (in world space), and the maximum distance that the ray can travel.
+			</description>
+		</method>
+		<method name="set_from_parameters">
+			<return type="void" />
+			<param index="0" name="parameters" type="PhysicsRayQueryParameters3D" />
+			<description>
+				Edits the state of this object such that the stored settings (such as its exceptions and layers) are identical to that of the provided [param parameters].
+			</description>
+		</method>
+		<method name="add_exception">
+			<return type="void" />
+			<param index="0" name="node" type="CollisionObject3D" />
+			<description>
+				Adds a collision exception so the ray does not report collisions with the specified [CollisionObject3D] node.
+			</description>
+		</method>
+		<method name="add_exception_rid">
+			<return type="void" />
+			<param index="0" name="rid" type="RID" />
+			<description>
+				Adds a collision exception so the ray does not report collisions with the specified [RID].
+			</description>
+		</method>
+		<method name="clear_exceptions">
+			<return type="void" />
+			<description>
+				Removes all collision exceptions for this ray.
+			</description>
+		</method>
+		<method name="remove_exception">
+			<return type="void" />
+			<param index="0" name="node" type="CollisionObject3D" />
+			<description>
+				Removes a collision exception so the ray does report collisions with the specified [CollisionObject3D] node.
+			</description>
+		</method>
+		<method name="remove_exception_rid">
+			<return type="void" />
+			<param index="0" name="rid" type="RID" />
+			<description>
+				Removes a collision exception so the ray does report collisions with the specified [RID].
+			</description>
+		</method>
+		<method name="set_collision_mask_value">
+			<return type="void" />
+			<param index="0" name="layer_number" type="int" />
+			<param index="1" name="value" type="bool" />
+			<description>
+				Based on [param value], enables or disables the specified layer in the [member collision_mask], given a [param layer_number] between 1 and 32.
+			</description>
+		</method>
+		<method name="get_collision_mask_value">
+			<return type="bool" />
+			<param index="0" name="layer_number" type="int" />
+			<description>
+				Returns whether or not the [member collision_mask] has its given [param layer_number] set.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="collide_with_areas" type="bool" setter="set_collide_with_areas" getter="is_collide_with_areas_enabled" default="false">
+			If [code]true[/code], collisions with physics areas (like [Area3D]) will be reported.
+		</member>
+		<member name="collide_with_bodies" type="bool" setter="set_collide_with_bodies" getter="is_collide_with_bodies_enabled" default="true">
+			If [code]true[/code], collisions with physics bodies (like [PhysicsBody3D]) will be reported.
+		</member>
+		<member name="hit_back_faces" type="bool" setter="set_hit_back_faces" getter="is_hit_back_faces_enabled" default="true">
+			[b]Only[/b] applies to [ConcavePolygonShape3D] instances (when it has backfaces enabled), and to [HeightMapShape3D] instances.
+			If [code]true[/code], the ray will intersect with faces backwards, for example in heightmap terrain, a ray originating from under the ground will intersect with the ground geometry if shot upward.
+		</member>
+		<member name="hit_from_inside" type="bool" setter="set_hit_from_inside" getter="is_hit_from_inside_enabled" default="false">
+			[b]Does not apply to[/b] [ConcavePolygonShape3D] instances nor to [HeightMapShape3D] instances, as there is no such thing as an "inside" to these shapes.
+			If [code]true[/code], the ray will detect a hit when starting inside shapes. In this case the collision normal will be [code]Vector3(0, 0, 0)[/code].
+		</member>
+		<member name="collision_mask" type="int" setter="set_collision_mask" getter="get_collision_mask" default="1">
+			The ray's collision mask. Only objects in at least one collision layer enabled in the mask will be detected. See [url=$DOCS_URL/tutorials/physics/physics_introduction.html#collision-layers-and-masks]Collision layers and masks[/url] in the documentation for more information.
+		</member>
+		<member name="source_position" type="Vector3" setter="set_source_position" getter="get_source_position" default="Vector3(0, 0, 0)">
+			The origin, in world space, of this ray. The cast will begin at this point.
+		</member>
+		<member name="target_position" type="Vector3" setter="set_target_position" getter="get_target_position" default="Vector3(0, 0, 0)">
+			The target, in world space, of this ray. The cast will end at this point.
+		</member>
+		<member name="last_hit_something" setter="" getter="get_hit_something" default="false">
+			[code]true[/code] if the most recent call to [method cast] collided with something.
+		</member>
+		<member name="last_hit_position" setter="" getter="get_collision_point" default="Vector3(0, 0, 0)">
+			If the last ray that was cast (see [member last_hit_something]) was successful, this is the position at which the collision was detected.
+		</member>
+		<member name="last_hit_normal" setter="" getter="get_collision_normal" default="Vector3(0, 0, 0)">
+			If the last ray that was cast (see [member last_hit_something]) was successful, this is the direction of the surface that was hit. If the ray was an interior collision (see [member hit_from_inside]), this will be a zero vector.
+		</member>
+		<member name="last_hit_rid" setter="" getter="get_collider_rid" default="RID(0)">
+			If the last ray that was cast (see [member last_hit_something]) was successful, this is the RID of the physics body or area that was hit.
+		</member>
+		<member name="last_hit_object_id" setter="" getter="get_object_id" default="0">
+			If the last ray that was cast (see [member last_hit_something]) was successful, this is the arbitrary object ID of the physics body or area that was hit.
+			In particular, this is vital to [i]The Conservatory[/i] which uses it to associate collisions with game objects like entities. See [code]ConservatoryObject.GetObject[/code] in C#.
+		</member>
+		<member name="last_hit_godot_object" setter="" getter="get_godot_object" default="null">
+			If the last ray that was cast (see [member last_hit_something]) was successful, this is the associated [Object] that was hit.
+			[b]Important:[/b] In [i]The Conservatory[/i] this will be [code]null[/code] for a large amount of objects, simply because they don't actually [i]use[/i] Godot's [Object] type. Prefer using [member last_hit_rid] or [member last_hit_object_id].
+		</member>
+		<member name="last_hit_object_type" setter="" getter="get_collider_type" default="INVALID" enum="RayCastResult.PhysicsObjectType">
+			If the last ray that was cast (see [member last_hit_something]) was successful, this is the type of physics object that got hit.
+		</member>
+		<member name="last_hit_shape_index" setter="" getter="get_collider_shape" default="-1">
+			If the last ray that was cast (see [member last_hit_something]) was successful, this is the numeric index of the shape within the collider that was hit, or [code]-1[/code] if nothing was hit.
+		</member>
+		<member name="last_hit_face_index" setter="" getter="get_collider_face_index" default="-1">
+			If the last ray that was cast (see [member last_hit_something]) was successful, this is the index of the specific face on the collision object that was hit. This will only ever be set when colliding with a [ConcavePolygonShape3D], and will be set to [code]-1[/code] otherwise.
+			[b]Important:[/b] In [i]The Conservatory[/i], this property won't work unless you use [code]override.cfg[/code] in the game directory to edit [code]physics/jolt_physics_3d/queries/enable_ray_cast_face_index[/code]. Please note that this has a nontrivial memory cost, and is thus not recommended.
+		</member>
+	</members>
+</class>

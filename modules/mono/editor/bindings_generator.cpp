@@ -1909,6 +1909,7 @@ Error BindingsGenerator::generate_cs_core_project(const String &p_proj_dir) {
 		includes_props_content.append("    <Compile Include=\"" + include + "\" />\n");
 	}
 
+	includes_props_content.append(" <Compile Include=\"Core/XansWorkshop/ConservatoryInjections.cs\" />\n");
 	includes_props_content.append("  </ItemGroup>\n"
 								  "</Project>\n");
 
@@ -2305,7 +2306,9 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 
 	// Add properties
 
+	bool has_any_required_properties = false;
 	for (const PropertyInterface &iprop : itype.properties) {
+		has_any_required_properties |= iprop.is_required;
 		Error prop_err = _generate_cs_property(itype, iprop, output);
 		ERR_FAIL_COND_V_MSG(prop_err != OK, prop_err,
 				"Failed to generate property '" + iprop.cname.operator String() +
@@ -2360,6 +2363,8 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 		}
 
 		if (is_derived_type) {
+			String sets_required_members = has_any_required_properties ? (MEMBER_BEGIN "[System.Diagnostics.CodeAnalysis.SetsRequiredMembers]\n") : "";
+
 			// Add default constructor
 			if (itype.is_instantiable) {
 				output << MEMBER_BEGIN "public " << itype.proxy_name << "() : this("
@@ -2371,7 +2376,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 					   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 			} else {
 				// Hide the constructor
-				output << MEMBER_BEGIN "internal " << itype.proxy_name << "() : this("
+				output << MEMBER_BEGIN << sets_required_members << MEMBER_BEGIN "internal " << itype.proxy_name << "() : this("
 					   << (itype.memory_own ? "true" : "false") << ")\n" OPEN_BLOCK_L1
 					   << INDENT2 "unsafe\n" INDENT2 OPEN_BLOCK
 					   << INDENT3 "ConstructAndInitialize(null, "
@@ -2380,7 +2385,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 					   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 			}
 
-			output << MEMBER_BEGIN "internal " << itype.proxy_name << "(IntPtr " CS_PARAM_INSTANCE ") : this("
+			output << MEMBER_BEGIN << sets_required_members << MEMBER_BEGIN "internal " << itype.proxy_name << "(IntPtr " CS_PARAM_INSTANCE ") : this("
 				   << (itype.memory_own ? "true" : "false") << ")\n" OPEN_BLOCK_L1
 				   << INDENT2 "NativePtr = " CS_PARAM_INSTANCE ";\n"
 				   << INDENT2 "unsafe\n" INDENT2 OPEN_BLOCK
@@ -2390,6 +2395,8 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 				   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 
 			// Add.. em.. trick constructor. Sort of.
+			output.append(MEMBER_BEGIN);
+			output.append(sets_required_members);
 			output.append(MEMBER_BEGIN "internal ");
 			output.append(itype.proxy_name);
 			output.append("(bool " CS_PARAM_MEMORYOWN ") : base(" CS_PARAM_MEMORYOWN ") { }\n");
@@ -2790,6 +2797,9 @@ Error BindingsGenerator::_generate_cs_property(const BindingsGenerator::TypeInte
 	}
 
 	String prop_cs_type = prop_itype->cs_type + _get_generic_type_parameters(*prop_itype, proptype_name.generic_type_parameters);
+	if (setter && p_iprop.is_required) {
+		p_output.append("required ");
+	}
 
 	p_output.append(prop_cs_type);
 	p_output.append(" ");
@@ -2816,7 +2826,11 @@ Error BindingsGenerator::_generate_cs_property(const BindingsGenerator::TypeInte
 	}
 
 	if (setter) {
-		p_output.append(INDENT2 "set\n" OPEN_BLOCK_L2 INDENT3);
+		if (p_iprop.is_init_only) {
+			p_output.append(INDENT2 "init\n" OPEN_BLOCK_L2 INDENT3);
+		} else {
+			p_output.append(INDENT2 "set\n" OPEN_BLOCK_L2 INDENT3);
+		}
 
 		p_output.append(setter->proxy_name + "(");
 		if (p_iprop.index != -1) {
@@ -3949,8 +3963,12 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 
 			PropertyInterface iprop;
 			iprop.cname = property.name;
-			iprop.setter = ClassDB::get_property_setter(type_cname, iprop.cname);
+			iprop.setter = ClassDB::get_property_setter(type_cname, iprop.cname, &iprop.is_init_only, &iprop.is_required);
 			iprop.getter = ClassDB::get_property_getter(type_cname, iprop.cname);
+
+			if (iprop.setter == StringName() && iprop.is_required) {
+				ERR_FAIL_V_MSG(false, "Invalid property: '" + itype.name + "." + String(iprop.cname) + "'. A property cannot be marked as required and read-only at the same time.");
+			}
 
 			// If the property is internal hide it; otherwise, hide the getter and setter.
 			if (property.usage & PROPERTY_USAGE_INTERNAL) {

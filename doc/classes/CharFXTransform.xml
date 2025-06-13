@@ -9,7 +9,21 @@
 	<tutorials>
 		<link title="BBCode in RichTextLabel">$DOCS_URL/tutorials/ui/bbcode_in_richtextlabel.html</link>
 	</tutorials>
+	<methods>
+		<method name="set_glyph_codepoint_novariant">
+			<return type="float" />
+			<param index="0" name="codepoint" type="int" default="0" />
+			<param index="1" name="variation_selector" type="int" default="0" />
+			<description>
+				The same as setting [member glyph_codepoint], but this allows setting a variation selector, which changes how the font renders the character.
+				The actual meaning of the variation depends on the font itself. Any glyph can have any number of variations at the discretion of the font's creator, and so there is no useful way to document what effect this setting has.
+			</description>
+		</method>
+	</methods>
 	<members>
+		<member name="text_label" type="RichTextLabel" setter="set_text_label" getter="get_text_label" default="nil">
+			The [RichTextLabel] that this effect is currently drawing for.
+		</member>
 		<member name="color" type="Color" setter="set_color" getter="get_color" default="Color(0, 0, 0, 1)" keywords="colour">
 			The color the character will be drawn with.
 		</member>
@@ -28,6 +42,10 @@
 			[TextServer] RID of the font used to render glyph, this value can be used with [code]TextServer.font_*[/code] methods to retrieve font information.
 			[b]Note:[/b] Read-only. Setting this property won't affect drawing.
 		</member>
+		<member name="font_size" type="RID" setter="set_font_size" getter="get_font_size" default="1">
+			The size of the font as it is being rendered for this specific character.
+			[b]Note:[/b] Read-only. Setting this property won't affect drawing.
+		</member>
 		<member name="glyph_count" type="int" setter="set_glyph_count" getter="get_glyph_count" default="0">
 			Number of glyphs in the grapheme cluster. This value is set in the first glyph of a cluster.
 			[b]Note:[/b] Read-only. Setting this property won't affect drawing.
@@ -38,6 +56,12 @@
 		</member>
 		<member name="glyph_index" type="int" setter="set_glyph_index" getter="get_glyph_index" default="0">
 			Glyph index specific to the [member font]. If you want to replace this glyph, use [method TextServer.font_get_glyph_index] with [member font] to get a new glyph index for a single character.
+			Consider using [member glyph_codepoint] for convenience, which allows inputting a Unicode codepoint. In C# environments, the [code]System.Text.Rune[/code] struct is especially useful for this purpose (cast to [code]uint[/code]).
+		</member>
+		<member name="glyph_codepoint" type="int" setter="set_glyph_codepoint_novariant" getter="get_glyph_codepoint" default="0">
+			Unicode codepoint of this character as it appears in the text. [b]Note that this does not support compound Unicode characters, and so complex joined characters, such as flag emojis, will not be affected.[/b]
+			In C# environments, the [code]System.Text.Rune[/code] struct is especially useful for this purpose. Changing this value will change the value of [member glyph_index] automatically.
+			Returns [code]-1[/code] if the font or font size is invalid and thus getting a codepoint is impossible.
 		</member>
 		<member name="offset" type="Vector2" setter="set_offset" getter="get_offset" default="Vector2(0, 0)">
 			The position offset the character will be drawn with (in pixels).
@@ -58,7 +82,7 @@
 			The current transform of the current glyph. It can be overridden (for example, by driving the position and rotation from a curve). You can also alter the existing value to apply transforms on top of other effects.
 		</member>
 		<member name="visible" type="bool" setter="set_visibility" getter="is_visible" default="true">
-			If [code]true[/code], the character will be drawn. If [code]false[/code], the character will be hidden. Characters around hidden characters will reflow to take the space of hidden characters. If this is not desired, set their [member color] to [code]Color(1, 1, 1, 0)[/code] instead.
+			If [code]true[/code], the character will be drawn. If [code]false[/code], the character will be hidden. This will not cause text to reflow, leaving a gap in the character's place.
 		</member>
 	</members>
 </class>

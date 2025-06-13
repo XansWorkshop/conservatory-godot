@@ -1216,6 +1216,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 
 					Point2 fx_offset = Vector2(glyphs[i].x_off, glyphs[i].y_off);
 					RID frid = glyphs[i].font_rid;
+					int fsize = glyphs[i].font_size;
 					uint32_t gl = glyphs[i].index;
 					uint16_t gl_fl = glyphs[i].flags;
 					uint8_t gl_cn = glyphs[i].count;
@@ -1264,6 +1265,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 								charfx->visibility = txt_visible;
 								charfx->outline = (step == DRAW_STEP_SHADOW_OUTLINE) || (step == DRAW_STEP_SHADOW) || (step == DRAW_STEP_OUTLINE);
 								charfx->font = frid;
+								charfx->font_size = fsize;
 								charfx->glyph_index = gl;
 								charfx->glyph_flags = gl_fl;
 								charfx->glyph_count = gl_cn;
@@ -1271,7 +1273,9 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 								charfx->color = font_color;
 								charfx->transform = char_xform;
 
+								charfx->label = this;
 								bool effect_status = custom_effect->_process_effect_impl(charfx);
+								charfx->label = nullptr;
 								custom_fx_ok = effect_status;
 
 								char_xform = charfx->transform;

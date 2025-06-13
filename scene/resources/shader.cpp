@@ -82,6 +82,14 @@ void Shader::set_include_path(const String &p_path) {
 	include_path = p_path;
 }
 
+const String Shader::get_path_or_include_path() const {
+	String path = get_path();
+	if (path.is_empty()) {
+		path = include_path;
+	}
+	return path;
+}
+
 void Shader::set_code(const String &p_code) {
 	for (const Ref<ShaderInclude> &E : include_dependencies) {
 		E->disconnect_changed(callable_mp(this, &Shader::_dependency_changed));
@@ -99,11 +107,15 @@ void Shader::set_code(const String &p_code) {
 		// 1) Need to keep track of include dependencies at resource level
 		// 2) Server does not do interaction with Resource filetypes, this is a scene level feature.
 		HashSet<Ref<ShaderInclude>> new_include_dependencies;
+		List<String> new_features;
+		HashMap<String, List<String>> new_variants;
 		ShaderPreprocessor preprocessor;
-		Error result = preprocessor.preprocess(p_code, path, preprocessed_code, nullptr, nullptr, nullptr, &new_include_dependencies);
+		Error result = preprocessor.preprocess(p_code, path, preprocessed_code, nullptr, nullptr, nullptr, &new_include_dependencies, nullptr, nullptr, nullptr, &new_features, &new_variants);
 		if (result == OK) {
 			// This ensures previous include resources are not freed and then re-loaded during parse (which would make compiling slower)
 			include_dependencies = new_include_dependencies;
+			valid_features = new_features;
+			valid_variants = new_variants;
 		}
 	}
 
@@ -204,6 +216,34 @@ void Shader::get_shader_uniform_list(List<PropertyInfo> *p_params, bool p_get_gr
 #endif
 }
 
+Array Shader::get_shader_features() const {
+	_update_shader();
+	_check_shader_rid();
+
+	int count = valid_features.size();
+	Array result;
+	result.resize(count);
+	for (int i = 0; i < count; ++i) {
+		result[i] = valid_features.get(i);
+	}
+	return result;
+}
+
+Dictionary Shader::get_shader_variants() const {
+	Dictionary result;
+	result.clear();
+	for (KeyValue<String, List<String>> kvp : valid_variants) {
+		Array options;
+		int count = kvp.value.size();
+		options.resize(count);
+		for (int i = 0; i < count; ++i) {
+			options[i] = kvp.value.get(i);
+		}
+		result.get_or_add(kvp.key, options);
+	}
+	return result;
+}
+
 RID Shader::get_rid() const {
 	_update_shader();
 	_check_shader_rid();
@@ -275,11 +315,17 @@ void Shader::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_default_texture_parameter", "name", "index"), &Shader::get_default_texture_parameter, DEFVAL(0));
 
 	ClassDB::bind_method(D_METHOD("get_shader_uniform_list", "get_groups"), &Shader::_get_shader_uniform_list, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("get_shader_features"), &Shader::get_shader_features);
+	ClassDB::bind_method(D_METHOD("get_shader_variants"), &Shader::get_shader_variants);
 
 	ClassDB::bind_method(D_METHOD("inspect_native_shader_code"), &Shader::inspect_native_shader_code);
 	ClassDB::set_method_flags(get_class_static(), StringName("inspect_native_shader_code"), METHOD_FLAGS_DEFAULT | METHOD_FLAG_EDITOR);
 
+	ClassDB::bind_method(D_METHOD("set_include_path", "path"), &Shader::set_include_path);
+	ClassDB::bind_method(D_METHOD("get_include_path"), &Shader::get_path_or_include_path);
+
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "code", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_code", "get_code");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "include_path", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_include_path", "get_include_path");
 
 	BIND_ENUM_CONSTANT(MODE_SPATIAL);
 	BIND_ENUM_CONSTANT(MODE_CANVAS_ITEM);
