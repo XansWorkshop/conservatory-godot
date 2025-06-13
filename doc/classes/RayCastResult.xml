@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<class name="RayCastResult" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		The result of a raycast operation.
+	</brief_description>
+	<description>
+		The result of a raycast operation, typically one dispatched by [RayCast3DDirect]. This is significantly faster than the typical [Dictionary] returned by [method PhysicsDirectSpaceState3D::interset_ray].
+	</description>
+	<tutorials>
+		<link title="Ray-casting">$DOCS_URL/tutorials/physics/ray-casting.html</link>
+		<link title="3D Voxel Demo">https://godotengine.org/asset-library/asset/2755</link>
+	</tutorials>
+	<methods>
+		<method name="get_success" qualifiers="const">
+			<return type="bool" />
+			<description>
+				[code]true[/code] if the ray hit something, [code]false[/code] otherwise.
+			</description>
+		</method>
+		<method name="get_hit_position" qualifiers="const">
+			<return type="Vector3" />
+			<description>
+				The position that the ray intersected with something, or zero if nothing was hit.
+			</description>
+		</method>
+		<method name="get_hit_normal" qualifiers="const">
+			<return type="Vector3" />
+			<description>
+				The direction of the surface that the ray intersected with, or zero if nothing was hit.
+			</description>
+		</method>
+		<method name="get_rid" qualifiers="const">
+			<return type="RID" />
+			<description>
+				The [RID] of the collider that was hit, or 0 if nothing was hit.
+			</description>
+		</method>
+		<method name="get_hit_object_id" qualifiers="const">
+			<return type="int" />
+			<description>
+				The object identifier of the thing that was hit. [b]Note that this may correspond to a Godot object, or it may respond to a Conservatory object.[/b]
+				You can use [code]ConservatoryObject.GetObject[/code] to query for this ID, or use one of the extension methods provided in C#.
+			</description>
+		</method>
+		<method name="get_hit_godot_object" qualifiers="const">
+			<return type="Object" />
+			<description>
+				Returns the first [b]Godot[/b] object that the ray intersects, or [code]null[/code] if no object is intersecting the ray, [b]or if the object is from The Conservatory (and does not extend a Godot object type).[/b]
+				The Conservatory injects into the Godot namespace to provide extension methods that make it more convenient to get game objects that are not translatable to Godot types.
+			</description>
+		</method>
+		<method name="get_collider_type" qualifiers="const">
+			<return type="PhysicsObjectType" />
+			<description>
+				Returns the type of physics object that was hit.
+			</description>
+		</method>
+		<method name="get_shape_index" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the numeric index of the shape within the collider that was hit, or [code]-1[/code] if nothing was hit.
+			</description>
+		</method>
+		<method name="get_face_index" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the collision object's face index at the collision point, or [code]-1[/code] if the shape intersecting the ray is not a [ConcavePolygonShape3D].
+				[b]Note:[/b] If the current physics engine is set to Jolt Physics, you must enable [code]physics/jolt_physics_3d/queries/enable_ray_cast_face_index[/code], which has a nontrivial memory cost (and is thus not recommended). If this setting is not enabled, an error will be raised when reading this property, unless it has been overridden on initialization.
+			</description>
+		</method>
+		<method name="copy_to" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="destination" type="RayCastResult" />
+			<description>
+				Copies the current result's information into another [RayCastResult] exactly.
+			</description>
+		</method>
+		<method name="copy_to_unsafe" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="destination" type="RayCastResult" />
+			<description>
+				[b]DANGER /// UNSAFE POINTER LOGIC[/b]
+				This expects a pinned pointer (from C#) of a very specific struct to be passed in by address. The C++ side of this code will write to the struct.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="success" type="bool" setter="set_success" getter="get_success" default="false">
+			[code]true[/code] if the ray hit something, [code]false[/code] otherwise.
+		</member>
+		<member name="hit_position" type="Vector3" setter="set_hit_position" getter="get_hit_position" default="Vector3(0, 0, 0)">
+			The location that the ray intersected with something, or zero otherwise.
+		</member>
+		<member name="hit_normal" type="Vector3" setter="set_hit_normal" getter="get_hit_normal" default="Vector3(0, 0, 0)">
+			The direction of the face that the ray intersected with, or zero otherwise.
+		</member>
+		<member name="hit_rid" type="RID" setter="set_rid" getter="get_rid" default="RID()">
+			The [RID] of the physics object that was detected.
+		</member>
+		<member name="hit_object_id" type="int" setter="set_hit_object_id" getter="get_hit_object_id" default="0">
+			The object identifier of the thing that was hit. [b]Note that this may correspond to a Godot object, or it may respond to a Conservatory object.[/b]
+			You can use [code]ConservatoryObject.GetObject[/code] to query for this ID, or use one of the extension methods provided in C#.
+		</member>
+		<member name="hit_godot_object" type="Object" setter="" getter="get_hit_godot_object" default="false">
+			Returns the first [b]Godot[/b] object that the ray intersects, or [code]null[/code] if no object is intersecting the ray, [b]or if the object is from The Conservatory (and does not extend a Godot object type).[/b]
+			The Conservatory injects into the Godot namespace to provide extension methods that make it more convenient to get game objects that are not translatable to Godot types.
+		</member>
+		<member name="hit_type" type="PhysicsObjectType" setter="set_collider_type" getter="get_collider_type" default="INVALID">
+			The type of physics object that was detected, for use with [member hit_rid].
+		</member>
+		<member name="hit_shape_index" type="int" setter="set_shape_index" getter="get_shape_index" default="-1">
+			Returns the numeric index of the shape within the collider that was hit, or [code]-1[/code] if nothing was hit.
+		</member>
+		<member name="hit_face_index" type="int" setter="set_face_index" getter="get_face_index" default="-1">
+			Returns the collision object's face index at the collision point, or [code]-1[/code] if the shape intersecting the ray is not a [ConcavePolygonShape3D].
+			[b]Note:[/b] If the current physics engine is set to Jolt Physics, you must enable [code]physics/jolt_physics_3d/queries/enable_ray_cast_face_index[/code], which has a nontrivial memory cost (and is thus not recommended). If this setting is not enabled, an error will be raised when reading this property, unless it has been overridden on initialization.
+		</member>
+	</members>
+</class>

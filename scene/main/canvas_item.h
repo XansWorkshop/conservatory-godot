@@ -193,6 +193,7 @@ protected:
 
 	_FORCE_INLINE_ void set_hide_clip_children(bool p_value) { hide_clip_children = p_value; }
 
+	GDVIRTUAL0(_draw_early)
 	GDVIRTUAL0(_draw)
 
 public:
@@ -204,6 +205,7 @@ public:
 		NOTIFICATION_EXIT_CANVAS = 33,
 		NOTIFICATION_LOCAL_TRANSFORM_CHANGED = 35,
 		NOTIFICATION_WORLD_2D_CHANGED = 36,
+		NOTIFICATION_DRAW_EARLY = 37,
 	};
 
 	/* EDITOR AND DEBUGGING */

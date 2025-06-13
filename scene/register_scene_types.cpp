@@ -327,6 +327,8 @@
 #include "scene/3d/physics/physical_bone_simulator_3d.h"
 #include "scene/3d/physics/physics_body_3d.h"
 #include "scene/3d/physics/ray_cast_3d.h"
+#include "scene/3d/physics/ray_cast_result.h"
+#include "scene/3d/physics/ray_cast_3d_direct.h"
 #include "scene/3d/physics/rigid_body_3d.h"
 #include "scene/3d/physics/shape_cast_3d.h"
 #include "scene/3d/physics/soft_body_3d.h"
@@ -348,6 +350,10 @@
 #include "scene/resources/3d/sphere_shape_3d.h"
 #include "scene/resources/3d/world_boundary_shape_3d.h"
 #endif // PHYSICS_3D_DISABLED
+
+#if !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
+#include "scene/3d/simulation_domain.h"
+#endif // !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
 
 static Ref<ResourceFormatSaverText> resource_saver_text;
 static Ref<ResourceFormatLoaderText> resource_loader_text;
@@ -691,6 +697,8 @@ void register_scene_types() {
 	GDREGISTER_CLASS(CollisionShape3D);
 	GDREGISTER_CLASS(CollisionPolygon3D);
 	GDREGISTER_CLASS(RayCast3D);
+	GDREGISTER_CLASS(RayCastResult);
+	GDREGISTER_CLASS(RayCast3DDirect);
 	GDREGISTER_CLASS(ShapeCast3D);
 #endif // PHYSICS_3D_DISABLED
 	GDREGISTER_CLASS(MultiMeshInstance3D);
@@ -1042,6 +1050,10 @@ void register_scene_types() {
 	GDREGISTER_CLASS(SVGTexture);
 #ifndef DISABLE_DEPRECATED
 	GDREGISTER_CLASS(AnimatedTexture);
+#endif
+
+#if !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
+	GDREGISTER_ABSTRACT_CLASS(SimulationDomain);
 #endif
 
 	// These classes are part of renderer_rd
