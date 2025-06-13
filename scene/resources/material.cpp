@@ -519,27 +519,28 @@ void ShaderMaterial::set_shader(const Ref<Shader> &p_shader) {
 	// Only connect/disconnect the signal when running in the editor.
 	// This can be a slow operation, and `notify_property_list_changed()` (which is called by `_shader_changed()`)
 	// does nothing in non-editor builds anyway. See GH-34741 for details.
-	if (shader.is_valid() && Engine::get_singleton()->is_editor_hint()) {
-		shader->disconnect_changed(callable_mp(this, &ShaderMaterial::_shader_changed));
+	if (base_shader.is_valid() && Engine::get_singleton()->is_editor_hint()) {
+		base_shader->disconnect_changed(callable_mp(this, &ShaderMaterial::_shader_changed));
 	}
 
-	shader = p_shader;
+	base_shader = p_shader;
+	apply_features_and_variants(false); // Sets 'shader'
 
-	RID rid;
-	if (shader.is_valid()) {
-		rid = shader->get_rid();
-
+	if (base_shader.is_valid()) {
 		if (Engine::get_singleton()->is_editor_hint()) {
-			shader->connect_changed(callable_mp(this, &ShaderMaterial::_shader_changed));
+			base_shader->connect_changed(callable_mp(this, &ShaderMaterial::_shader_changed));
 		}
 	}
 
-	RID material_rid = _get_material();
-	if (material_rid.is_valid()) {
-		RS::get_singleton()->material_set_shader(material_rid, rid);
+	// Not useful: apply_features_and_variants handles this.
+	/*
+	if (shader.is_valid()) {
+		RID material_rid = _get_material();
+		if (material_rid.is_valid()) {
+			RS::get_singleton()->material_set_shader(material_rid, shader->get_rid());
+		}
 	}
-
-	apply_features_and_variants();
+	*/
 }
 
 Ref<Shader> ShaderMaterial::get_shader() const {
@@ -634,10 +635,18 @@ const StringName ShaderMaterial::get_shader_variant(const StringName &p_variant)
 	return StringName();
 }
 
-void ShaderMaterial::apply_features_and_variants() const {
-	StringBuilder result;
-	String base_code = base_shader->get_code();
+void ShaderMaterial::apply_features_and_variants(const bool p_notify) const {
+	if (base_shader.is_null()) {
+		shader = nullptr;
+		RID material = _get_material();
+		if (material.is_valid()) {
+			RS::get_singleton()->material_set_shader(material, RID());
+		}
+		return;
+	}
 
+	String base_code = base_shader->get_code();
+	StringBuilder result;
 	result.append("// NOTE: This shader code is a procedurally generated variant.");
 	for (const KeyValue<StringName, bool> &feature : shader_features) {
 		if (feature.value) {
@@ -656,19 +665,20 @@ void ShaderMaterial::apply_features_and_variants() const {
 	result.append("\n");
 	result.append(base_code);
 
-	Shader *new_instance = memnew(Shader);
-	new_instance->set_include_path(base_shader->get_path_or_include_path());
-	new_instance->set_code(result.as_string());
+	shader.instantiate();
+	shader->set_include_path(base_shader->get_path_or_include_path());
+	shader->set_code(result.as_string());
 
-	if (shader.is_valid()) {
-		// Clear old reference.
-		memdelete(shader.ptr());
+	RID material = _get_material();
+	if (material.is_valid()) {
+		RS::get_singleton()->material_set_shader(material, shader->get_rid());
 	}
-	shader.reference_ptr(new_instance);
 
-	ShaderMaterial *mutable_this = (ShaderMaterial *)(this);
-	mutable_this->notify_property_list_changed();
-	mutable_this->emit_changed();
+	if (p_notify) {
+		ShaderMaterial *mutable_this = (ShaderMaterial *)(this);
+		mutable_this->notify_property_list_changed();
+		mutable_this->emit_changed();
+	}
 }
 
 void ShaderMaterial::_shader_changed() {
@@ -710,11 +720,13 @@ void ShaderMaterial::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_shader_parameter", "param", "value"), &ShaderMaterial::set_shader_parameter);
 	ClassDB::bind_method(D_METHOD("get_shader_parameter", "param"), &ShaderMaterial::get_shader_parameter);
 
+	/*
 	ClassDB::bind_method(D_METHOD("set_shader_feature", "feature", "value"), &ShaderMaterial::set_shader_feature);
 	ClassDB::bind_method(D_METHOD("get_shader_feature", "feature"), &ShaderMaterial::get_shader_feature);
 
 	ClassDB::bind_method(D_METHOD("set_shader_variant", "variant", "value"), &ShaderMaterial::set_shader_variant);
 	ClassDB::bind_method(D_METHOD("get_shader_variant", "variant"), &ShaderMaterial::get_shader_variant);
+	*/
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "shader", PROPERTY_HINT_RESOURCE_TYPE, "Shader"), "set_shader", "get_shader");
 }
@@ -737,10 +749,12 @@ void ShaderMaterial::get_argument_options(const StringName &p_function, int p_id
 			} else if (pf == "get_shader_variant" || pf == "set_shader_variant") {
 				for (const KeyValue<Variant, Variant> &variant : shader->get_shader_variants()) {
 					// This is spectacularly fucked but
+					/*
 					for (const Variant &option : (Array)variant.value) {
 						r_options->push_back(((String)variant.key).quote() + ", " + ((String)option).quote());
 					}
-					//r_options->push_back(((String)variant.key).quote());
+					*/
+					r_options->push_back(((String)variant.key).quote());
 				}
 			}
 		}
