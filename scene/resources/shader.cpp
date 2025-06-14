@@ -244,6 +244,77 @@ Dictionary Shader::get_shader_variants() const {
 	return result;
 }
 
+void Shader::enforce_valid_only_in(HashMap<StringName, bool> *p_features, HashMap<StringName, StringName> *p_variants, HashMap<StringName, List<StringName>> *p_valid_variants) const {
+	HashMap<StringName, bool> new_features;
+	HashMap<StringName, StringName> new_variants;
+	HashMap<StringName, List<StringName>> new_valid_variants;
+
+	if (p_features) {
+		int feature_count = valid_features.size();
+		for (int i = 0; i < feature_count; ++i) {
+			const String &feature = valid_features.get(i);
+			bool *is_enabled_ptr = p_features->getptr(feature);
+			if (is_enabled_ptr) {
+				// Present, so copy the existing value.
+				new_features[feature] = *is_enabled_ptr;
+			} else {
+				// Not present, add it.
+				new_features[feature] = false;
+			}
+		}
+		*p_features = new_features;
+	}
+	if (p_variants || p_valid_variants) {
+		for (const KeyValue<String, List<String>> &valid_variant : valid_variants) {
+			List<String> options = valid_variant.value;
+
+			if (p_valid_variants) {
+				List<StringName> replacement_list;
+				int valid_count = options.size();
+				for (int i = 0; i < valid_count; ++i) {
+					replacement_list.push_back(valid_variant.value.get(i));
+				}
+				new_valid_variants[valid_variant.key] = replacement_list;
+			}
+
+			if (p_variants) {
+				StringName *current = p_variants->getptr(valid_variant.key);
+				if (current) {
+					if (options.find(*current)) {
+						// Present and valid, copy the existing value.
+						new_variants[valid_variant.key] = *current;
+						continue; // Go to next iteration.
+					}
+				}
+				// Fallback behavior if not found, or not valid: Set to the first (default) option.
+				new_variants[valid_variant.key] = options.get(0);
+			}
+		}
+		if (p_variants) {
+			*p_variants = new_variants;
+		}
+		if (p_valid_variants) {
+			*p_valid_variants = new_valid_variants;
+		}
+	}
+
+	*p_variants = new_variants;
+	*p_valid_variants = new_valid_variants;
+}
+
+void Shader::fast_enforce_parity(HashMap<StringName, bool> *p_features, HashMap<StringName, StringName> *p_variants, HashMap<StringName, List<StringName>> *p_valid_variants) const {
+	if (unlikely(p_features && p_features->size() == 0)) {
+		if (valid_features.size() != 0) {
+			enforce_valid_only_in(p_features, nullptr, nullptr);
+		}
+	}
+	if (unlikely((p_variants && p_variants->size() == 0) || (p_valid_variants && p_valid_variants->size() == 0))) {
+		if (valid_variants.size() != 0) {
+			enforce_valid_only_in(nullptr, p_variants, p_valid_variants);
+		}
+	}
+}
+
 RID Shader::get_rid() const {
 	_update_shader();
 	_check_shader_rid();
