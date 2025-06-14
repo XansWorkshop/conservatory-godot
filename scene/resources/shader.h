@@ -97,6 +97,8 @@ public:
 	void get_shader_uniform_list(List<PropertyInfo> *p_params, bool p_get_groups = false) const;
 	Array get_shader_features() const;
 	Dictionary get_shader_variants() const;
+	void enforce_valid_only_in(HashMap<StringName, bool> *p_features, HashMap<StringName, StringName> *p_variants, HashMap<StringName, List<StringName>> *p_valid_variants) const;
+	void fast_enforce_parity(HashMap<StringName, bool> *p_features, HashMap<StringName, StringName> *p_variants, HashMap<StringName, List<StringName>> *p_valid_variants) const;
 
 	void set_default_texture_parameter(const StringName &p_name, const Ref<Texture> &p_texture, int p_index = 0);
 	Ref<Texture> get_default_texture_parameter(const StringName &p_name, int p_index = 0) const;
