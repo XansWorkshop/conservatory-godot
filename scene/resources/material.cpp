@@ -823,18 +823,28 @@ const StringName ShaderMaterial::get_shader_variant(const StringName &p_variant)
 	return StringName();
 }
 
-void ShaderMaterial::apply_features_and_variants(const bool p_notify) const {
+void ShaderMaterial::apply_features_and_variants(const int p_refresh) {
+	MutexLock lock(feature_and_variant_lock);
+
 	if (base_shader.is_null()) {
-		shader = nullptr;
-		RID material_rid = _get_material();
-		if (material_rid.is_valid()) {
-			RS::get_singleton()->material_set_shader(material_rid, RID());
+		if (p_refresh & VariantRefreshType::ENFORCE_VALID_FEATURES_AND_VARIANTS) {
+			shader_features.clear();
+			shader_variants.clear();
+			valid_shader_variants.clear();
 		}
 
-		if (p_notify) {
-			ShaderMaterial *mutable_this = (ShaderMaterial *)(this);
-			mutable_this->_shader_changed();
-			mutable_this->emit_changed();
+		if (p_refresh & VariantRefreshType::UPDATE_SHADER) {
+			shader = nullptr;
+			RID material_rid = _get_material();
+			if (material_rid.is_valid()) {
+				RS::get_singleton()->material_set_shader(material_rid, RID());
+			}
+
+			if (p_refresh & VariantRefreshType::NOTIFY_OF_CHANGE) {
+				notify_property_list_changed();
+				emit_signal(SNAME("variant_or_feature_changed"));
+				emit_changed();
+			}
 		}
 		return;
 	}
