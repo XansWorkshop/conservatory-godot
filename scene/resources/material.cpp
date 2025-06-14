@@ -717,6 +717,8 @@ Variant ShaderMaterial::get_shader_parameter(const StringName &p_param) const {
 }
 
 bool ShaderMaterial::set_shader_feature(const StringName &p_feature, const bool p_enabled) {
+	_check_material_rid();
+
 	bool *feature = shader_features.getptr(p_feature);
 	if (feature) {
 		bool changed = *feature != p_enabled;
@@ -738,6 +740,8 @@ bool ShaderMaterial::get_shader_feature(const StringName &p_feature) const {
 }
 
 bool ShaderMaterial::set_shader_variant(const StringName &p_variant, const StringName &p_value) {
+	_check_material_rid();
+
 	StringName *variant = shader_variants.getptr(p_variant);
 	if (variant) {
 		List<StringName> *valids = valid_shader_variants.getptr(p_variant);
