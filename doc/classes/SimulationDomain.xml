@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<class name="SimulationDomain" inherits="Viewport" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		An isolated container representing a physics space, scenario, and canvas.
+	</brief_description>
+	<description>
+		[b]This class is [i]strictly managed.[/i][/b] User code can not create new instances of this object; this functionality is reserved for [i]The Fabric of Reality[/i] in [i]The Conservatory[/i]'s code.
+		An isolated container representing both a 2D and 3D physics space, a render scenario, and a canvas. This is different than a [SubViewport] in that it cannot be rendered to a target; instead, it is intended to be representative of a loaded game world with its own isolated rendering and physics.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="set_conservatory_callbacks">
+			<return type="int" />
+			<param index="0" name="crash" type="int" />
+			<param index="1" name="destroy" type="int" />
+			<param index="2" name="is_client" type="int" />
+			<description>
+				Sets the low level references to the game's code needed to crash the game, verify the destruction of [SimulationDomain]s, and check if the current program is the game client.
+				[b]Note:[/b] As a modder, you should never call this. This is closely managed by the game and requires extremely specific conditions to use, otherwise the game will crash.
+			</description>
+		</method>
+		<method name="destroy">
+			<return type="void" />
+			<description>
+				The equivalent of [code]Free[/code] for this instance. This [b]MUST[/b] be called; using [code]Free[/code] will crash the game.
+				[b]Note:[/b] As a modder, you should never call this. This is closely managed by the game and requires extremely specific conditions to use, otherwise the game will crash.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="is_valid" type="bool" setter="" getter="get_is_valid" default="true">
+			If [code]true[/code], this instance is valid and can be used. Only [code]false[/code] if destroyed and a reference to it is kept, which should never happen.
+		</member>
+		<member name="is_active" type="bool" setter="" getter="get_is_active" default="false">
+			If [code]true[/code], this instance is the current one being rendered to the game client's screen.
+			This is always [code]true[/code] on the server no matter what, because on servers every [SimulationDomain] is always active.
+		</member>
+		<member name="physics_space_2d" type="RID" setter="" getter="get_physics_space_2d" default="RID(0)">
+			The [RID] of the physics space used for 2D physics in this [SimulationDomain].
+		</member>
+		<member name="physics_space_3d" type="RID" setter="" getter="get_physics_space_3d" default="RID(0)">
+			The [RID] of the physics space used for 3D physics in this [SimulationDomain].
+		</member>
+		<member name="render_canvas" type="RID" setter="" getter="get_render_canvas" default="RID(0)">
+			The [RID] of the canvas used for 2D rendering in this [SimulationDomain]. Not likely to be used in [i]The Conservatory[/i], but here for completeness.
+		</member>
+		<member name="render_scenario" type="RID" setter="" getter="get_render_scenario" default="RID(0)">
+			The [RID] of the scenario used for 3D rendering in this [SimulationDomain].
+		</member>
+	</members>
+</class>
