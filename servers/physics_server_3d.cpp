@@ -724,6 +724,7 @@ void PhysicsServer3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("area_set_shape", "area", "shape_idx", "shape"), &PhysicsServer3D::area_set_shape);
 	ClassDB::bind_method(D_METHOD("area_set_shape_transform", "area", "shape_idx", "transform"), &PhysicsServer3D::area_set_shape_transform);
 	ClassDB::bind_method(D_METHOD("area_set_shape_disabled", "area", "shape_idx", "disabled"), &PhysicsServer3D::area_set_shape_disabled);
+	ClassDB::bind_method(D_METHOD("area_get_shape_disabled", "area", "shape_idx"), &PhysicsServer3D::area_get_shape_disabled);
 
 	ClassDB::bind_method(D_METHOD("area_get_shape_count", "area"), &PhysicsServer3D::area_get_shape_count);
 	ClassDB::bind_method(D_METHOD("area_get_shape", "area", "shape_idx"), &PhysicsServer3D::area_get_shape);
@@ -774,6 +775,7 @@ void PhysicsServer3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("body_set_shape", "body", "shape_idx", "shape"), &PhysicsServer3D::body_set_shape);
 	ClassDB::bind_method(D_METHOD("body_set_shape_transform", "body", "shape_idx", "transform"), &PhysicsServer3D::body_set_shape_transform);
 	ClassDB::bind_method(D_METHOD("body_set_shape_disabled", "body", "shape_idx", "disabled"), &PhysicsServer3D::body_set_shape_disabled);
+	ClassDB::bind_method(D_METHOD("body_get_shape_disabled", "body", "shape_idx"), &PhysicsServer3D::body_get_shape_disabled);
 
 	ClassDB::bind_method(D_METHOD("body_get_shape_count", "body"), &PhysicsServer3D::body_get_shape_count);
 	ClassDB::bind_method(D_METHOD("body_get_shape", "body", "shape_idx"), &PhysicsServer3D::body_get_shape);
@@ -1091,6 +1093,7 @@ void PhysicsServer3D::_bind_methods() {
 	BIND_ENUM_CONSTANT(BODY_PARAM_ANGULAR_DAMP_MODE);
 	BIND_ENUM_CONSTANT(BODY_PARAM_LINEAR_DAMP);
 	BIND_ENUM_CONSTANT(BODY_PARAM_ANGULAR_DAMP);
+	BIND_ENUM_CONSTANT(BODY_PARAM_INVERSE_INERTIA_TENSOR);
 	BIND_ENUM_CONSTANT(BODY_PARAM_MAX);
 
 	BIND_ENUM_CONSTANT(BODY_DAMP_MODE_COMBINE);

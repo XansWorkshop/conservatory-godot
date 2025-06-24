@@ -198,6 +198,7 @@ public:
 		ObjectID collider_id;
 		int shape = 0;
 		Vector3 linear_velocity; // Velocity at contact point.
+		int type = 0;
 	};
 
 	virtual int intersect_shape(const ShapeParameters &p_parameters, ShapeResult *r_results, int p_result_max) = 0;
@@ -356,6 +357,7 @@ public:
 	virtual void area_clear_shapes(RID p_area) = 0;
 
 	virtual void area_set_shape_disabled(RID p_area, int p_shape_idx, bool p_disabled) = 0;
+	virtual bool area_get_shape_disabled(RID p_area, int p_shape_idx) const = 0;
 
 	virtual void area_attach_object_instance_id(RID p_area, ObjectID p_id) = 0;
 	virtual ObjectID area_get_object_instance_id(RID p_area) const = 0;
@@ -415,6 +417,7 @@ public:
 	virtual void body_clear_shapes(RID p_body) = 0;
 
 	virtual void body_set_shape_disabled(RID p_body, int p_shape_idx, bool p_disabled) = 0;
+	virtual bool body_get_shape_disabled(RID p_body, int p_shape_idx) const = 0;
 
 	virtual void body_attach_object_instance_id(RID p_body, ObjectID p_id) = 0;
 	virtual ObjectID body_get_object_instance_id(RID p_body) const = 0;
@@ -446,6 +449,7 @@ public:
 		BODY_PARAM_ANGULAR_DAMP_MODE,
 		BODY_PARAM_LINEAR_DAMP,
 		BODY_PARAM_ANGULAR_DAMP,
+		BODY_PARAM_INVERSE_INERTIA_TENSOR,
 		BODY_PARAM_MAX,
 	};
 

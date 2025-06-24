@@ -401,6 +401,13 @@ void JoltPhysicsServer3D::area_set_shape_disabled(RID p_area, int p_shape_idx, b
 	area->set_shape_disabled(p_shape_idx, p_disabled);
 }
 
+bool JoltPhysicsServer3D::area_get_shape_disabled(RID p_area, int p_shape_idx) const {
+	JoltArea3D *area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_V(area, false);
+
+	return area->is_shape_disabled(p_shape_idx);
+}
+
 void JoltPhysicsServer3D::area_attach_object_instance_id(RID p_area, ObjectID p_id) {
 	RID area_rid = p_area;
 
@@ -645,6 +652,13 @@ void JoltPhysicsServer3D::body_set_shape_disabled(RID p_body, int p_shape_idx, b
 	ERR_FAIL_NULL(body);
 
 	body->set_shape_disabled(p_shape_idx, p_disabled);
+}
+
+bool JoltPhysicsServer3D::body_get_shape_disabled(RID p_body, int p_shape_idx) const {
+	JoltBody3D *body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_V(body, false);
+
+	return body->is_shape_disabled(p_shape_idx);
 }
 
 void JoltPhysicsServer3D::body_attach_object_instance_id(RID p_body, ObjectID p_id) {

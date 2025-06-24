@@ -176,6 +176,7 @@ public:
 	virtual Transform3D area_get_shape_transform(RID p_area, int p_shape_idx) const override;
 
 	virtual void area_set_shape_disabled(RID p_area, int p_shape_idx, bool p_disabled) override;
+	virtual bool area_get_shape_disabled(RID p_area, int p_shape_idx) const override;
 
 	virtual int area_get_shape_count(RID p_area) const override;
 
@@ -221,6 +222,7 @@ public:
 	virtual Transform3D body_get_shape_transform(RID p_body, int p_shape_idx) const override;
 
 	virtual void body_set_shape_disabled(RID p_body, int p_shape_idx, bool p_disabled) override;
+	virtual bool body_get_shape_disabled(RID p_area, int p_shape_idx) const override;
 
 	virtual int body_get_shape_count(RID p_body) const override;
 
