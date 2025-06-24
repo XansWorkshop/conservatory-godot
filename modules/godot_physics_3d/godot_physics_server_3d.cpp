@@ -44,6 +44,9 @@
 #define FLUSH_QUERY_CHECK(m_object) \
 	ERR_FAIL_COND_MSG(m_object->get_space() && flushing_queries, "Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.");
 
+#define FLUSH_QUERY_CHECK_V(m_object, m_retval) \
+	ERR_FAIL_COND_V_MSG(m_object->get_space() && flushing_queries, m_retval, "Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.");
+
 RID GodotPhysicsServer3D::world_boundary_shape_create() {
 	GodotShape3D *shape = memnew(GodotWorldBoundaryShape3D);
 	RID rid = shape_owner.make_rid(shape);
@@ -326,6 +329,14 @@ void GodotPhysicsServer3D::area_set_shape_disabled(RID p_area, int p_shape_idx, 
 	area->set_shape_disabled(p_shape_idx, p_disabled);
 }
 
+bool GodotPhysicsServer3D::area_get_shape_disabled(RID p_area, int p_shape_idx) const {
+	GodotArea3D *area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL_V(area, false);
+	ERR_FAIL_INDEX_V(p_shape_idx, area->get_shape_count(), false);
+	FLUSH_QUERY_CHECK_V(area, false);
+	return area->is_shape_disabled(p_shape_idx);
+}
+
 void GodotPhysicsServer3D::area_attach_object_instance_id(RID p_area, ObjectID p_id) {
 	if (space_owner.owns(p_area)) {
 		GodotSpace3D *space = space_owner.get_or_null(p_area);
@@ -538,8 +549,15 @@ void GodotPhysicsServer3D::body_set_shape_disabled(RID p_body, int p_shape_idx, 
 	ERR_FAIL_NULL(body);
 	ERR_FAIL_INDEX(p_shape_idx, body->get_shape_count());
 	FLUSH_QUERY_CHECK(body);
-
 	body->set_shape_disabled(p_shape_idx, p_disabled);
+}
+
+bool GodotPhysicsServer3D::body_get_shape_disabled(RID p_body, int p_shape_idx) const {
+	GodotBody3D *body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL_V(body, false);
+	ERR_FAIL_INDEX_V(p_shape_idx, body->get_shape_count(), false);
+	FLUSH_QUERY_CHECK_V(body, false);
+	return body->is_shape_disabled(p_shape_idx);
 }
 
 Transform3D GodotPhysicsServer3D::body_get_shape_transform(RID p_body, int p_shape_idx) const {

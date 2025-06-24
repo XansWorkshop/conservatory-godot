@@ -135,6 +135,7 @@ public:
 	virtual void area_clear_shapes(RID p_area) override;
 
 	virtual void area_set_shape_disabled(RID p_area, int p_shape_idx, bool p_disabled) override;
+	virtual bool area_get_shape_disabled(RID p_area, int p_shape_idx) const override;
 
 	virtual void area_attach_object_instance_id(RID p_area, ObjectID p_id) override;
 	virtual ObjectID area_get_object_instance_id(RID p_area) const override;
@@ -178,6 +179,7 @@ public:
 	virtual Transform3D body_get_shape_transform(RID p_body, int p_shape_idx) const override;
 
 	virtual void body_set_shape_disabled(RID p_body, int p_shape_idx, bool p_disabled) override;
+	virtual bool body_get_shape_disabled(RID p_body, int p_shape_idx) const override;
 
 	virtual void body_remove_shape(RID p_body, int p_shape_idx) override;
 	virtual void body_clear_shapes(RID p_body) override;

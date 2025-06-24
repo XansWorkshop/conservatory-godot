@@ -247,6 +247,9 @@ void GodotBody3D::set_param(PhysicsServer3D::BodyParameter p_param, const Varian
 		case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP: {
 			angular_damp = p_value;
 		} break;
+		case PhysicsServer3D::BODY_PARAM_INVERSE_INERTIA_TENSOR: {
+			ERR_FAIL_MSG("The inverse inertia tensor is read-only and cannot be changed.");
+		} break;
 		default: {
 		}
 	}
@@ -288,7 +291,13 @@ Variant GodotBody3D::get_param(PhysicsServer3D::BodyParameter p_param) const {
 		case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP: {
 			return angular_damp;
 		} break;
-
+		case PhysicsServer3D::BODY_PARAM_INVERSE_INERTIA_TENSOR: {
+			if (mode == PhysicsServer3D::BODY_MODE_RIGID) {
+				return _inv_inertia_tensor;
+			} else {
+				return Vector3();
+			}
+		} break;
 		default: {
 		}
 	}
