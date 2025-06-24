@@ -793,6 +793,21 @@ bool JoltPhysicsDirectSpaceState3D::rest_info(const ShapeParameters &p_parameter
 	r_info->collider_id = object->get_instance_id();
 	r_info->linear_velocity = object->get_velocity_at_position(hit_point);
 
+	switch (object->get_type()) {
+		case JoltObject3D::ObjectType::OBJECT_TYPE_INVALID:
+			r_info->type = 0;
+			break;
+		case JoltObject3D::ObjectType::OBJECT_TYPE_AREA:
+			r_info->type = 1;
+			break;
+		case JoltObject3D::ObjectType::OBJECT_TYPE_BODY:
+			r_info->type = 2;
+			break;
+		case JoltObject3D::ObjectType::OBJECT_TYPE_SOFT_BODY:
+			r_info->type = 3;
+			break;
+	}
+
 	return true;
 }
 

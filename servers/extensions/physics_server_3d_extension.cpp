@@ -178,6 +178,7 @@ void PhysicsServer3DExtension::_bind_methods() {
 	GDVIRTUAL_BIND(_area_set_shape, "area", "shape_idx", "shape");
 	GDVIRTUAL_BIND(_area_set_shape_transform, "area", "shape_idx", "transform");
 	GDVIRTUAL_BIND(_area_set_shape_disabled, "area", "shape_idx", "disabled");
+	GDVIRTUAL_BIND(_area_get_shape_disabled, "area", "shape_idx");
 
 	GDVIRTUAL_BIND(_area_get_shape_count, "area");
 	GDVIRTUAL_BIND(_area_get_shape, "area", "shape_idx");
@@ -224,6 +225,7 @@ void PhysicsServer3DExtension::_bind_methods() {
 	GDVIRTUAL_BIND(_body_set_shape, "body", "shape_idx", "shape");
 	GDVIRTUAL_BIND(_body_set_shape_transform, "body", "shape_idx", "transform");
 	GDVIRTUAL_BIND(_body_set_shape_disabled, "body", "shape_idx", "disabled");
+	GDVIRTUAL_BIND(_body_get_shape_disabled, "body", "shape_idx");
 
 	GDVIRTUAL_BIND(_body_get_shape_count, "body");
 	GDVIRTUAL_BIND(_body_get_shape, "body", "shape_idx");

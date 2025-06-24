@@ -185,6 +185,7 @@ public:
 	virtual void area_clear_shapes(RID p_area) override {}
 
 	virtual void area_set_shape_disabled(RID p_area, int p_shape_idx, bool p_disabled) override {}
+	virtual bool area_get_shape_disabled(RID p_area, int p_shape_idx) const override { return false; }
 
 	virtual void area_attach_object_instance_id(RID p_area, ObjectID p_id) override {}
 	virtual ObjectID area_get_object_instance_id(RID p_area) const override { return ObjectID(); }
@@ -230,6 +231,7 @@ public:
 	virtual void body_clear_shapes(RID p_body) override {}
 
 	virtual void body_set_shape_disabled(RID p_body, int p_shape_idx, bool p_disabled) override {}
+	virtual bool body_get_shape_disabled(RID p_body, int p_shape_idx) const override { return false; }
 
 	virtual void body_attach_object_instance_id(RID p_body, ObjectID p_id) override {}
 	virtual ObjectID body_get_object_instance_id(RID p_body) const override { return ObjectID(); }
