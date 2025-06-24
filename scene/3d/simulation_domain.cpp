@@ -121,15 +121,6 @@ void SimulationDomain::_notification(int p_what) {
 				PhysicsServer2D::get_singleton()->space_set_active(world2d->get_space(), true);
 				PhysicsServer3D::get_singleton()->space_set_active(world3d->get_space(), true);
 				is_locked = true;
-
-				if (_tc_should_take_main_viewport()) {
-					// We know for a fact that it's in the root viewport already.
-					// Also we don't need to call setworld methods on this (via base), as its built in version of this signal
-					// (NOTIFICATION_ENTER_TREE) does all of the code exeuction that doing ^ would achieve.
-					parent_viewport->set_world_2d(world2d);
-					parent_viewport->set_world_3d(world3d);
-					current = this;
-				}
 			}
 			break;
 		case Node::NOTIFICATION_PREDELETE:
@@ -278,13 +269,6 @@ Ref<World2D> SimulationDomain::find_world_2d() const {
 	}
 	return world2d;
 }
-
-/*
-DisplayServer::WindowID SimulationDomain::get_window_id() const {
-	ERR_READ_THREAD_GUARD_V(DisplayServer::INVALID_WINDOW_ID);
-	return DisplayServer::INVALID_WINDOW_ID;
-}
-*/
 
 void SimulationDomain::set_world_3d(const Ref<World3D> &p_world_3d) {
 	ERR_FAIL_MSG("set_world_3d is not supported on SimulationDomain.");
