@@ -33,6 +33,9 @@
 #include "core/config/project_settings.h"
 #include "core/object/class_db.h"
 #include "core/os/os.h"
+
+#include "resources/conservatory_debug_bridge.h"
+
 #include "scene/animation/animation_blend_space_1d.h"
 #include "scene/animation/animation_blend_space_2d.h"
 #include "scene/animation/animation_blend_tree.h"
@@ -331,6 +334,8 @@
 #include "scene/3d/physics/ray_cast_3d_direct.h"
 #include "scene/3d/physics/rigid_body_3d.h"
 #include "scene/3d/physics/shape_cast_3d.h"
+#include "scene/3d/physics/shape_cast_result.h"
+#include "scene/3d/physics/shape_cast_3d_direct.h"
 #include "scene/3d/physics/soft_body_3d.h"
 #include "scene/3d/physics/spring_arm_3d.h"
 #include "scene/3d/physics/static_body_3d.h"
@@ -417,6 +422,7 @@ void register_scene_types() {
 	OS::get_singleton()->yield(); // may take time to init
 
 	GDREGISTER_CLASS(Object);
+	GDREGISTER_CLASS(ConservatoryDebugBridge);
 
 	GDREGISTER_CLASS(Node);
 	GDREGISTER_VIRTUAL_CLASS(MissingNode);
@@ -700,6 +706,9 @@ void register_scene_types() {
 	GDREGISTER_CLASS(RayCastResult);
 	GDREGISTER_CLASS(RayCast3DDirect);
 	GDREGISTER_CLASS(ShapeCast3D);
+	GDREGISTER_CLASS(ShapeCastResult);
+	GDREGISTER_CLASS(ShapeCastResultExtras);
+	GDREGISTER_CLASS(ShapeCast3DDirect);
 #endif // PHYSICS_3D_DISABLED
 	GDREGISTER_CLASS(MultiMeshInstance3D);
 
