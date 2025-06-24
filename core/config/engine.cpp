@@ -129,18 +129,18 @@ Dictionary Engine::get_version_info() const {
 	dict["minor"] = GODOT_VERSION_MINOR;
 	dict["patch"] = GODOT_VERSION_PATCH;
 	dict["hex"] = GODOT_VERSION_HEX;
-	dict["status"] = GODOT_VERSION_STATUS;
+	dict["status"] = GODOT_VERSION_STATUS; 
 	dict["build"] = GODOT_VERSION_BUILD;
 	dict["version"] = GODOT_VERSION_NUMBER;
 	dict["timestamp"] = GODOT_VERSION_TIMESTAMP;
 
 	String modules = String(GODOT_VERSION_MODULE_CONFIG);
-	dict["modules"] = modules.split(".", false);
+	dict["modules"] = modules.split(".", false); 
 
 	String hash = String(GODOT_VERSION_HASH);
 	if (hash.is_empty()) {
 		dict["hash"] = "unknown";
-		dict["commit"] = "??????";
+		dict["commit"] = "000000";
 	} else {
 		dict["hash"] = hash;
 		dict["commit"] = hash.substr(0, 6);
