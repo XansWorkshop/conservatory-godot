@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  ray_cast_result.h                                                     */
+/*  shape_cast_3d_direct.h                                                */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                 GODOT ENGINE /// THE CONSERVATORY FORK                 */
@@ -31,103 +31,79 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef PHYSICS_3D_DISABLED
-
 #pragma once
 
-#include "core/typedefs.h"
-#include "core/object/class_db.h"
-#include "core/object/object.h"
-#include "core/object/ref_counted.h"
-#include "core/object/object_id.h"
-#include "core/templates/rid.h"
-#include "core/math/vector3.h"
-#include "core/variant/binder_common.h"
-#include "core/config/project_settings.h"
+#include "scene/3d/node_3d.h"
+#include "scene/resources/3d/shape_3d.h"
+#include "scene/3d/physics/shape_cast_result.h"
 
-#define JOLT_ALLOWS_RAYCAST_FACE_INDEX (GLOBAL_GET("physics/jolt_physics_3d/queries/enable_ray_cast_face_index").booleanize())
-#define IS_USING_JOLT ((String)GLOBAL_GET("physics/3d/physics_engine") == "Jolt Physics")
+class CollisionObject3D;
 
-class RayCastResult : public RefCounted {
-	GDCLASS(RayCastResult, RefCounted);
+class ShapeCast3DDirect : public RefCounted {
+	GDCLASS(ShapeCast3DDirect, RefCounted);
 
-public:
-	enum PhysicsObjectType {
-		INVALID,
-		AREA,
-		BODY,
-		SOFT_BODY
-	};
+	RID shape_rid;
+	Transform3D source_transform = Transform3D();
+	Vector3 motion = Vector3();
 
-private:
-	bool success = false;
-	Vector3 position;
-	Vector3 normal;
-	RID rid;
-	ObjectID hit_object_id;
-	Object *hit_object = nullptr;
-	int shape = -1;
-	int face_index = -1;
-	PhysicsObjectType type = INVALID;
-	static uint8_t _can_index_face;
+	HashSet<RID> exclude;
+	real_t margin = 0.0;
+	uint32_t collision_mask = 1;
+	bool collide_with_areas = false;
+	bool collide_with_bodies = true;
 
-	static bool can_index_face() {
-		if (_can_index_face == 0) {
-			if (IS_USING_JOLT) {
-				if (JOLT_ALLOWS_RAYCAST_FACE_INDEX) {
-					_can_index_face = 2;
-				} else {
-					_can_index_face = 1;
-				}
-			} else {
-				_can_index_face = 1;
-			}
-		}
-		return _can_index_face == 2;
-	}
+	// Result
+	int max_results = 32;
+	int last_result_count = 0;
+	Vector<PhysicsDirectSpaceState3D::ShapeRestInfo> result;
+	bool hit_something = false;
+	real_t collision_safe_fraction = 1.0;
+	real_t collision_unsafe_fraction = 1.0;
 
 protected:
 	static void _bind_methods();
 
 public:
-	bool get_success() const;
-	void set_success(bool p_success);
+	void set_collide_with_areas(bool p_clip);
+	bool is_collide_with_areas_enabled() const;
 
-	Vector3 get_hit_position() const;
-	void set_hit_position(const Vector3 &p_position);
+	void set_collide_with_bodies(bool p_clip);
+	bool is_collide_with_bodies_enabled() const;
 
-	Vector3 get_hit_normal() const;
-	void set_hit_normal(const Vector3 &p_normal);
+	void set_shape_rid(const RID &p_rid);
+	RID get_shape_rid() const;
 
-	RID get_rid() const;
-	void set_rid(const RID &p_rid);
+	void set_source_transform(const Transform3D &p_transform);
+	Transform3D get_source_transform() const;
 
-	ObjectID _get_hit_object_id() const;
-	int64_t get_hit_object_id() const;
-	void _set_hit_object_id(const ObjectID &p_id);
-	void set_hit_object_id_and_instance(const int64_t p_id);
+	void set_motion(const Vector3 &p_motion);
+	Vector3 get_motion() const;
 
-	Object *get_hit_object() const;
-	void _set_hit_object(const Object *p_collider);
+	void set_margin(real_t p_margin);
+	real_t get_margin() const;
 
-	PhysicsObjectType get_collider_type() const;
-	void set_collider_type(PhysicsObjectType p_type);
+	void set_max_results(int p_max_results);
+	int get_max_results() const;
 
-	int get_shape_index() const;
-	void set_shape_index(int p_shape);
+	void set_collision_mask(uint32_t p_mask);
+	uint32_t get_collision_mask() const;
 
-	int get_face_index() const;
-	void set_face_index(int p_face_index);
+	void set_collision_mask_value(int p_layer_number, bool p_value);
+	bool get_collision_mask_value(int p_layer_number) const;
 
-	void clear();
-	void copy_to(const Ref<RayCastResult> &p_destination) const;
+	bool get_hit_anything() const;
+	int get_hit_count() const;
+	TypedArray<ShapeCastResult> get_results() const;
+	real_t get_closest_collision_safe_fraction() const;
+	real_t get_closest_collision_unsafe_fraction() const;
 
-	RayCastResult();
+	void set_from_parameters(const Ref<PhysicsShapeQueryParameters3D> &p_parameters);
+	int cast(const RID &p_space);
+	static TypedArray<ShapeCastResult> cast_statically(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, const int p_max_results, const Ref<ShapeCastResultExtras> &p_extra_context);
+
+	void add_exception_rid(const RID &p_rid);
+	void add_exception(const CollisionObject3D *p_node);
+	void remove_exception_rid(const RID &p_rid);
+	void remove_exception(const CollisionObject3D *p_node);
+	void clear_exceptions();
 };
-
-VARIANT_ENUM_CAST(RayCastResult::PhysicsObjectType);
-
-#undef JOLT_ALLOWS_RAYCAST_FACE_INDEX
-#undef IS_USING_JOLT
-
-#endif // PHYSICS_3D_DISABLED
