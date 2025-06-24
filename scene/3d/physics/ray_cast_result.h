@@ -119,13 +119,8 @@ public:
 	int get_face_index() const;
 	void set_face_index(int p_face_index);
 
-	bool get_success() const;
-	void set_success(bool p_success);
-
 	void clear();
-
 	void copy_to(const Ref<RayCastResult> &p_destination) const;
-	// void copy_to_unsafe(const int64_t p_ptr) const;
 
 	RayCastResult();
 };
@@ -135,5 +130,4 @@ VARIANT_ENUM_CAST(RayCastResult::PhysicsObjectType);
 #undef JOLT_ALLOWS_RAYCAST_FACE_INDEX
 #undef IS_USING_JOLT
 
-#endif // RAY_CAST_RESULT_H
 #endif // PHYSICS_3D_DISABLED

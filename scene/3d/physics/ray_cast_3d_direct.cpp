@@ -182,7 +182,6 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 
 	
 	PhysicsDirectSpaceState3D::RayResult rr;
-
 	if (dss->intersect_ray(p_parameters->get_parameters(), rr)) {
 		p_result->set_hit_position(rr.position);
 		p_result->set_hit_normal(rr.normal);
