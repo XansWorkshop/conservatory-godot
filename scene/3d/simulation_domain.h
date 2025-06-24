@@ -47,9 +47,6 @@
 
 // #define USE_WORLD_PTR_NOT_REF
 
-#define CONSERVATORY_VIRTUAL
-#define CONSERVATORY_OVERRIDE override
-
 #ifdef USE_WORLD_PTR_NOT_REF
 #error "This causes the world pointer to be destroyed."
 #define TC_DECLARE_PTR(type, name) type *name
@@ -159,23 +156,27 @@ class SimulationDomain : public Viewport {
 	static bool (*tc_destroy_validator)(const int64_t);
 
 	// Parameters: None
-	static bool (*tc_should_take_main_viewport)(void);
+	static bool (*tc_is_client)(void);
 
-	static bool declared;
+	static bool declared_cs_methods;
+	//static bool simulate_physics_for_inactive;
+	static List<SimulationDomain *> instances;
 
 protected:
 	void _notification(int p_what);
 	static void _tc_crash(const String &p_msg, const String &p_context, int p_tc_error_code);
 	static bool _tc_destroy_validator(const SimulationDomain *p_instance);
-	static bool _tc_should_take_main_viewport();
+	static bool _tc_is_client();
 	static void _bind_methods();
 
 public:
-	static int64_t set_conservatory_callbacks(const int64_t p_crash, const int64_t p_destroy, const int64_t p_is_client);
 	static SimulationDomain *current;
 
+	static int64_t set_conservatory_callbacks(const int64_t p_crash, const int64_t p_destroy, const int64_t p_is_client);
+
 	bool get_is_valid() const;
-	bool get_is_active() const;
+	bool get_active() const;
+	void set_active();
 	RID get_physics_space_2d() const;
 	RID get_physics_space_3d() const;
 	RID get_render_canvas() const;
@@ -438,203 +439,6 @@ public:
 	_FORCE_INLINE_ void set_use_xr(bool p_use_xr) override { get_parent_viewport()->set_use_xr(p_use_xr); }
 	_FORCE_INLINE_ bool is_using_xr() override { return get_parent_viewport()->is_using_xr(); }
 
-	/*
-
-	CONSERVATORY_VIRTUAL void _gui_remove_focus_for_window(Node *p_window) CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void _process_picking() CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void canvas_parent_mark_dirty(Node *p_node) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL void canvas_item_top_level_changed() CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL uint64_t get_processed_events_count() const CONSERVATORY_OVERRIDE { return event_count; }
-
-	CONSERVATORY_VIRTUAL void cancel_tooltip() CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL void show_tooltip(Control *p_control) CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL Rect2 get_visible_rect() const CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL RID get_viewport_rid() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_world_2d(const Ref<World2D> &p_world_2d) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL Ref<World2D> get_world_2d() const CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL Ref<World2D> find_world_2d() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_canvas_transform(const Transform2D &p_transform) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL Transform2D get_canvas_transform() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_global_canvas_transform(const Transform2D &p_transform) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL Transform2D get_global_canvas_transform() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL Transform2D get_stretch_transform() const CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL virtual Transform2D get_final_transform() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_transparent_background(bool p_enable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool has_transparent_background() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_use_hdr_2d(bool p_enable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_using_hdr_2d() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL Ref<ViewportTexture> get_texture() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_positional_shadow_atlas_size(int p_size) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL int get_positional_shadow_atlas_size() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_positional_shadow_atlas_16_bits(bool p_16_bits) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool get_positional_shadow_atlas_16_bits() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_positional_shadow_atlas_quadrant_subdiv(int p_quadrant, PositionalShadowAtlasQuadrantSubdiv p_subdiv) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL PositionalShadowAtlasQuadrantSubdiv get_positional_shadow_atlas_quadrant_subdiv(int p_quadrant) const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_msaa_2d(MSAA p_msaa) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL MSAA get_msaa_2d() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_msaa_3d(MSAA p_msaa) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL MSAA get_msaa_3d() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_screen_space_aa(ScreenSpaceAA p_screen_space_aa) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL ScreenSpaceAA get_screen_space_aa() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_use_taa(bool p_use_taa) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_using_taa() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_use_oversampling(bool p_oversampling) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_using_oversampling() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_oversampling_override(float p_oversampling) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL float get_oversampling_override() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL float get_oversampling() const CONSERVATORY_OVERRIDE { return Viewport::font_oversampling; }
-
-	CONSERVATORY_VIRTUAL void set_scaling_3d_mode(Scaling3DMode p_scaling_3d_mode) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL Scaling3DMode get_scaling_3d_mode() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_scaling_3d_scale(float p_scaling_3d_scale) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL float get_scaling_3d_scale() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_fsr_sharpness(float p_fsr_sharpness) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL float get_fsr_sharpness() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_texture_mipmap_bias(float p_texture_mipmap_bias) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL float get_texture_mipmap_bias() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_anisotropic_filtering_level(AnisotropicFiltering p_anisotropic_filtering_level) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL AnisotropicFiltering get_anisotropic_filtering_level() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_use_debanding(bool p_use_debanding) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_using_debanding() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_mesh_lod_threshold(float p_pixels) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL float get_mesh_lod_threshold() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_use_occlusion_culling(bool p_us_occlusion_culling) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_using_occlusion_culling() const CONSERVATORY_OVERRIDE;
-
-
-
-	CONSERVATORY_VIRTUAL void push_text_input(const String &p_text) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL void push_input(const Ref<InputEvent> &p_event, bool p_local_coords = false) CONSERVATORY_OVERRIDE;
-#ifndef DISABLE_DEPRECATED
-	CONSERVATORY_VIRTUAL void push_unhandled_input(const Ref<InputEvent> &p_event, bool p_local_coords = false) CONSERVATORY_OVERRIDE;
-#endif // DISABLE_DEPRECATED
-	CONSERVATORY_VIRTUAL void notify_mouse_entered() CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL void notify_mouse_exited() CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_disable_input(bool p_disable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_input_disabled() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_physics_object_picking(bool p_enable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool get_physics_object_picking() CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL void set_physics_object_picking_sort(bool p_enable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool get_physics_object_picking_sort() CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL void set_physics_object_picking_first_only(bool p_enable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool get_physics_object_picking_first_only() CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL Variant gui_get_drag_data() const CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL String gui_get_drag_description() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void gui_release_focus() CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL Control *gui_get_focus_owner() const CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL Control *gui_get_hovered_control() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_debug_draw(DebugDraw p_debug_draw) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL DebugDraw get_debug_draw() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL int get_render_info(RenderInfoType p_type, RenderInfo p_info) CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_snap_controls_to_pixels(bool p_enable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_snap_controls_to_pixels_enabled() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_snap_2d_transforms_to_pixel(bool p_enable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_snap_2d_transforms_to_pixel_enabled() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_snap_2d_vertices_to_pixel(bool p_enable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_snap_2d_vertices_to_pixel_enabled() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_input_as_handled() CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_input_handled() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_handle_input_locally(bool p_enable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_handling_input_locally() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL bool gui_is_dragging() const CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool gui_is_drag_successful() const CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL void gui_cancel_drag() CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_sdf_oversize(SDFOversize p_sdf_oversize) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL SDFOversize get_sdf_oversize() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_sdf_scale(SDFScale p_sdf_scale) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL SDFScale get_sdf_scale() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_default_canvas_item_texture_filter(DefaultCanvasItemTextureFilter p_filter) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL DefaultCanvasItemTextureFilter get_default_canvas_item_texture_filter() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_default_canvas_item_texture_repeat(DefaultCanvasItemTextureRepeat p_repeat) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL DefaultCanvasItemTextureRepeat get_default_canvas_item_texture_repeat() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_vrs_mode(VRSMode p_vrs_mode) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL VRSMode get_vrs_mode() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_vrs_update_mode(VRSUpdateMode p_vrs_update_mode) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL VRSUpdateMode get_vrs_update_mode() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_vrs_texture(Ref<Texture2D> p_texture) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL Ref<Texture2D> get_vrs_texture() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_embedding_subwindows(bool p_embed) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_embedding_subwindows() const CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL TypedArray<Window> get_embedded_subwindows() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_canvas_cull_mask(uint32_t p_layers) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL uint32_t get_canvas_cull_mask() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_canvas_cull_mask_bit(uint32_t p_layer, bool p_enable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool get_canvas_cull_mask_bit(uint32_t p_layer) const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL AudioListener2D *get_audio_listener_2d() const CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL void set_as_audio_listener_2d(bool p_enable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_audio_listener_2d() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL Camera2D *get_camera_2d() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL AudioListener3D *get_audio_listener_3d() const CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL void set_as_audio_listener_3d(bool p_enable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_audio_listener_3d() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL Camera3D *get_camera_3d() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_disable_3d(bool p_disable) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_3d_disabled() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_world_3d(const Ref<World3D> &p_world_3d) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL Ref<World3D> get_world_3d() const CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL Ref<World3D> find_world_3d() const CONSERVATORY_OVERRIDE;
-
-	CONSERVATORY_VIRTUAL void set_use_own_world_3d(bool p_use_own_world_3d) CONSERVATORY_OVERRIDE;
-	CONSERVATORY_VIRTUAL bool is_using_own_world_3d() const CONSERVATORY_OVERRIDE;
-
-	*/
-
 	_FORCE_INLINE_ static const int64_t static_construct() {
 		SimulationDomain *instance = memnew(SimulationDomain);
 		return (int64_t)instance;
@@ -643,9 +447,6 @@ public:
 	SimulationDomain();
 	~SimulationDomain();
 };
-
-#undef CONSERVATORY_VIRTUAL
-#undef CONSERVATORY_OVERRIDE
 
 #endif // !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
 #endif // SIMULATION_3D_H
