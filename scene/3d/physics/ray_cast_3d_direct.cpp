@@ -164,15 +164,14 @@ bool RayCast3DDirect::cast(const RID &p_space) {
 }
 
 void RayCast3DDirect::store_in_result(const Ref<RayCastResult> &p_result) const {
-	RayCastResult *castResult = p_result.ptr();
-	castResult->set_hit_position(collision_point);
-	castResult->set_hit_normal(collision_normal);
-	castResult->set_rid(against_rid);
-	castResult->set_hit_object_id_and_instance(against);
-	castResult->set_collider_type(type);
-	castResult->set_shape_index(against_shape);
-	castResult->set_face_index(collision_face_index);
-	castResult->set_success(collided);
+	p_result->set_hit_position(collision_point);
+	p_result->set_hit_normal(collision_normal);
+	p_result->set_rid(against_rid);
+	p_result->set_hit_object_id_and_instance(against);
+	p_result->set_collider_type(type);
+	p_result->set_shape_index(against_shape);
+	p_result->set_face_index(collision_face_index);
+	p_result->set_success(collided);
 }
 
 bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQueryParameters3D> &p_parameters, const Ref<RayCastResult> &p_result) {
@@ -183,22 +182,19 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 
 	
 	PhysicsDirectSpaceState3D::RayResult rr;
-
 	if (dss->intersect_ray(p_parameters->get_parameters(), rr)) {
-		RayCastResult *castResult = p_result.ptr();
-		castResult->set_hit_position(rr.position);
-		castResult->set_hit_normal(rr.normal);
-		castResult->set_rid(rr.rid);
-		castResult->_set_hit_object_id(rr.collider_id);
-		castResult->set_hit_object(rr.collider);
-		castResult->set_collider_type((RayCastResult::PhysicsObjectType)rr.type);
-		castResult->set_shape_index(rr.shape);
-		castResult->set_face_index(rr.face_index);
-		castResult->set_success(true);
+		p_result->set_hit_position(rr.position);
+		p_result->set_hit_normal(rr.normal);
+		p_result->set_rid(rr.rid);
+		p_result->_set_hit_object_id(rr.collider_id);
+		p_result->_set_hit_object(rr.collider);
+		p_result->set_collider_type((RayCastResult::PhysicsObjectType)rr.type);
+		p_result->set_shape_index(rr.shape);
+		p_result->set_face_index(rr.face_index);
+		p_result->set_success(true);
 		return true;
 	} else {
-		RayCastResult *castResult = p_result.ptr();
-		castResult->clear();
+		p_result->clear();
 		return false;
 	}
 }
