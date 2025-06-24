@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  ray_cast_result.h                                                     */
+/*  shape_cast_result.h                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                 GODOT ENGINE /// THE CONSERVATORY FORK                 */
@@ -45,11 +45,8 @@
 #include "core/variant/binder_common.h"
 #include "core/config/project_settings.h"
 
-#define JOLT_ALLOWS_RAYCAST_FACE_INDEX (GLOBAL_GET("physics/jolt_physics_3d/queries/enable_ray_cast_face_index").booleanize())
-#define IS_USING_JOLT ((String)GLOBAL_GET("physics/3d/physics_engine") == "Jolt Physics")
-
-class RayCastResult : public RefCounted {
-	GDCLASS(RayCastResult, RefCounted);
+class ShapeCastResult : public RefCounted {
+	GDCLASS(ShapeCastResult, RefCounted);
 
 public:
 	enum PhysicsObjectType {
@@ -60,31 +57,15 @@ public:
 	};
 
 private:
-	bool success = false;
-	Vector3 position;
+	bool success;
+	Vector3 point;
 	Vector3 normal;
 	RID rid;
+	PhysicsObjectType type = INVALID;
 	ObjectID hit_object_id;
 	Object *hit_object = nullptr;
-	int shape = -1;
-	int face_index = -1;
-	PhysicsObjectType type = INVALID;
-	static uint8_t _can_index_face;
-
-	static bool can_index_face() {
-		if (_can_index_face == 0) {
-			if (IS_USING_JOLT) {
-				if (JOLT_ALLOWS_RAYCAST_FACE_INDEX) {
-					_can_index_face = 2;
-				} else {
-					_can_index_face = 1;
-				}
-			} else {
-				_can_index_face = 1;
-			}
-		}
-		return _can_index_face == 2;
-	}
+	int shape_index = 0;
+	Vector3 linear_velocity_at_contact;
 
 protected:
 	static void _bind_methods();
@@ -93,11 +74,11 @@ public:
 	bool get_success() const;
 	void set_success(bool p_success);
 
-	Vector3 get_hit_position() const;
-	void set_hit_position(const Vector3 &p_position);
+	Vector3 get_intersection_point() const;
+	void set_intersection_point(const Vector3 &p_point);
 
-	Vector3 get_hit_normal() const;
-	void set_hit_normal(const Vector3 &p_normal);
+	Vector3 get_intersection_normal() const;
+	void set_intersection_normal(const Vector3 &p_normal);
 
 	RID get_rid() const;
 	void set_rid(const RID &p_rid);
@@ -114,20 +95,34 @@ public:
 	void set_collider_type(PhysicsObjectType p_type);
 
 	int get_shape_index() const;
-	void set_shape_index(int p_shape);
+	void set_shape_index(int p_shape_index);
 
-	int get_face_index() const;
-	void set_face_index(int p_face_index);
+	Vector3 get_linear_velocity_at_contact() const;
+	void set_linear_velocity_at_contact(const Vector3 &p_velocity);
 
 	void clear();
-	void copy_to(const Ref<RayCastResult> &p_destination) const;
+	void copy_to(const Ref<ShapeCastResult> &p_destination) const;
 
-	RayCastResult();
+	ShapeCastResult();
 };
 
-VARIANT_ENUM_CAST(RayCastResult::PhysicsObjectType);
+class ShapeCastResultExtras : public RefCounted {
+	GDCLASS(ShapeCastResultExtras, RefCounted);
 
-#undef JOLT_ALLOWS_RAYCAST_FACE_INDEX
-#undef IS_USING_JOLT
+	real_t collision_safe_fraction = 0;
+	real_t collision_unsafe_fraction = 0;
+
+protected:
+	static void _bind_methods();
+
+public:
+	void set_collision_safe_fraction(real_t p_value);
+	real_t get_collision_safe_fraction() const;
+
+	void set_collision_unsafe_fraction(real_t p_value);
+	real_t get_collision_unsafe_fraction() const;
+};
+
+VARIANT_ENUM_CAST(ShapeCastResult::PhysicsObjectType);
 
 #endif // PHYSICS_3D_DISABLED

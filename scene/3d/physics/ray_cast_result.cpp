@@ -47,13 +47,13 @@ RID RayCastResult::get_rid() const {
 	return rid;
 }
 ObjectID RayCastResult::_get_hit_object_id() const {
-	return collider_id;
+	return hit_object_id;
 }
 int64_t RayCastResult::get_hit_object_id() const {
-	return (int64_t)collider_id;
+	return (int64_t)hit_object_id;
 }
 Object *RayCastResult::get_hit_object() const {
-	return collider;
+	return hit_object;
 }
 RayCastResult::PhysicsObjectType RayCastResult::get_collider_type() const {
 	return type;
@@ -83,19 +83,19 @@ void RayCastResult::set_rid(const RID &p_rid) {
 	rid = p_rid;
 }
 void RayCastResult::_set_hit_object_id(const ObjectID &p_id) {
-	collider_id = p_id;
+	hit_object_id = p_id;
 }
 void RayCastResult::set_hit_object_id_and_instance(const int64_t p_id) {
 	// The public version
-	collider_id = ObjectID(p_id);
-	if (!collider_id.is_null()) {
-		collider = ObjectDB::get_instance(collider_id);
+	hit_object_id = ObjectID(p_id);
+	if (!hit_object_id.is_null()) {
+		hit_object = ObjectDB::get_instance(hit_object_id);
 	} else {
-		collider = nullptr;
+		hit_object = nullptr;
 	}
 }
-void RayCastResult::set_hit_object(const Object *p_collider) {
-	collider = (Object*)p_collider;
+void RayCastResult::_set_hit_object(const Object *p_collider) {
+	hit_object = (Object *)p_collider;
 }
 void RayCastResult::set_collider_type(RayCastResult::PhysicsObjectType p_type) {
 	type = p_type;
@@ -114,8 +114,8 @@ void RayCastResult::clear() {
 	position = Vector3();
 	normal = Vector3();
 	rid = RID();
-	collider_id = ObjectID();
-	collider = nullptr;
+	hit_object_id = ObjectID();
+	hit_object = nullptr;
 	shape = -1;
 	face_index = -1;
 	type = INVALID;
@@ -128,8 +128,8 @@ void RayCastResult::copy_to(const Ref<RayCastResult> &p_destination) const {
 	other->position = position;
 	other->normal = normal;
 	other->rid = rid;
-	other->collider_id = collider_id;
-	other->collider = collider;
+	other->hit_object_id = hit_object_id;
+	other->hit_object = hit_object;
 	other->shape = shape;
 	other->face_index = face_index;
 	other->type = type;
@@ -147,14 +147,14 @@ void RayCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_shape_index"), &RayCastResult::get_shape_index);
 	ClassDB::bind_method(D_METHOD("get_face_index"), &RayCastResult::get_face_index);
 
-	ClassDB::bind_method(D_METHOD("set_success"), &RayCastResult::set_success);
-	ClassDB::bind_method(D_METHOD("set_hit_position"), &RayCastResult::set_hit_position);
-	ClassDB::bind_method(D_METHOD("set_hit_normal"), &RayCastResult::set_hit_normal);
-	ClassDB::bind_method(D_METHOD("set_rid"), &RayCastResult::set_rid);
-	ClassDB::bind_method(D_METHOD("set_hit_object_id"), &RayCastResult::set_hit_object_id_and_instance);
-	ClassDB::bind_method(D_METHOD("set_collider_type"), &RayCastResult::set_collider_type);
-	ClassDB::bind_method(D_METHOD("set_shape_index"), &RayCastResult::set_shape_index);
-	ClassDB::bind_method(D_METHOD("set_face_index"), &RayCastResult::set_face_index);
+	ClassDB::bind_method(D_METHOD("set_success", "success"), &RayCastResult::set_success);
+	ClassDB::bind_method(D_METHOD("set_hit_position", "position"), &RayCastResult::set_hit_position);
+	ClassDB::bind_method(D_METHOD("set_hit_normal", "normal"), &RayCastResult::set_hit_normal);
+	ClassDB::bind_method(D_METHOD("set_rid", "rid"), &RayCastResult::set_rid);
+	ClassDB::bind_method(D_METHOD("set_hit_object_id", "id"), &RayCastResult::set_hit_object_id_and_instance);
+	ClassDB::bind_method(D_METHOD("set_collider_type", "type"), &RayCastResult::set_collider_type);
+	ClassDB::bind_method(D_METHOD("set_shape_index", "shape_index"), &RayCastResult::set_shape_index);
+	ClassDB::bind_method(D_METHOD("set_face_index", "face_index"), &RayCastResult::set_face_index);
 
 	ClassDB::bind_method(D_METHOD("clear"), &RayCastResult::clear);
 	ClassDB::bind_method(D_METHOD("copy_to", "destination"), &RayCastResult::copy_to);
@@ -176,5 +176,7 @@ void RayCastResult::_bind_methods() {
 }
 
 RayCastResult::RayCastResult() {
+	clear();
 }
+
 #endif // PHYSICS_3D_DISABLED
