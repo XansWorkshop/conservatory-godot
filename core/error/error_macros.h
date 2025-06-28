@@ -103,7 +103,7 @@ void _physics_interpolation_warning(const char *p_function, const char *p_file, 
  * Don't use GENERATE_TRAP() directly, should only be used be the macros below.
  */
 #define GENERATE_TRAP() __fastfail(7 /* FAST_FAIL_FATAL_APP_EXIT */)
-#if defined(DEV_ENABLED) || defined(TC_ALLOW_BREAK_ON_ERROR)
+#if  defined(TC_ALLOW_BREAK_ON_ERROR)
 _FORCE_INLINE_ bool tc_break_on_err();
 #define TC_BREAK() if (tc_break_on_err()) { __debugbreak(); } else ((void)0)
 #endif
@@ -112,6 +112,9 @@ _FORCE_INLINE_ bool tc_break_on_err();
  * Don't use GENERATE_TRAP() directly, should only be used be the macros below.
  */
 #define GENERATE_TRAP() __builtin_trap()
+#if defined(TC_ALLOW_BREAK_ON_ERROR)
+#error MSC is not available and so the allow_break_on_error scons argument is not able to function.
+#endif
 #endif
 
 #ifndef TC_BREAK
