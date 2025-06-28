@@ -73,7 +73,7 @@ namespace Godot {
         /// <inheritdoc cref="ConservatoryDebugBridge.SetPtrs(long, long)"/>
         public static unsafe void SetPtrs(bool* breakOnError, delegate*<bool> isDebuggerAttached) {
             SetPtrs((nint)breakOnError, (nint)isDebuggerAttached);
-	}
+        }
 
-}
+    }
 }

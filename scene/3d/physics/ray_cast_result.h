@@ -73,7 +73,7 @@ private:
 
 	static bool can_index_face() {
 		if (_can_index_face == 0) {
-		if (IS_USING_JOLT) {
+			if (IS_USING_JOLT) {
 				if (JOLT_ALLOWS_RAYCAST_FACE_INDEX) {
 					_can_index_face = 2;
 				} else {
