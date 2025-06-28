@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Runtime.CompilerServices;
 
 #nullable disable
 namespace Godot {
@@ -41,6 +42,29 @@ namespace Godot {
         /// </summary>
         [Obsolete("SimulationDomain disallows the use of QueueFree(). This will crash the game.", true)]
         public new void QueueFree() { }
+
+
+        [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_memoryOwn")]
+        internal static extern bool MemoryOwn(GodotObject godotObject);
+
+        /// <summary>
+        /// A customized implementation of <see cref="GodotObject.Dispose(bool)"/> which prevents a crash caused by how the engine handles
+        /// the <see cref="SimulationDomain"/> type internally.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing) {
+            if (MemoryOwn(this)) {
+                const string ERR_MSG = $"A managed (C#) {nameof(SimulationDomain)} instance was not a wrapper around an existing internal engine object. This is indicative of outright disregard for the usage guidelines of {nameof(SimulationDomain)}; if you need an isolated render scenario and/or physics space, please see: https://docs.godotengine.org/en/stable/classes/class_subviewport.html";
+                GD.PushError(ERR_MSG);
+            } else if (NativeInstance != IntPtr.Zero) {
+                string errMsg = $"An unmanaged (C++) {nameof(SimulationDomain)} instance's wrapper (the C# instance) was {(disposing ? "disposed of" : "garbage collected")} before being deleted by the engine. This is indicative of outright disregard for the usage guidelines of {nameof(SimulationDomain)}; under no circumstances should you ever manually destroy an instance of this class using disposal, garbage collection, or the {nameof(Free)}/{nameof(QueueFree)} methods.";
+                GD.PushError(errMsg);
+            } else {
+                return; // Actually acceptable.
+            }
+            GD.PushError("The game will likely crash after this message as a result of this mistake.");
+            base.Dispose(disposing);
+        }
 
     }
 
