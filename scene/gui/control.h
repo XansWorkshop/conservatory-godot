@@ -133,7 +133,10 @@ public:
 		PRESET_BOTTOM_WIDE,
 		PRESET_VCENTER_WIDE,
 		PRESET_HCENTER_WIDE,
-		PRESET_FULL_RECT
+		PRESET_FULL_RECT,
+
+		// Alternate naming of PRESET_VCENTER_WIDE for better mnemonic value
+		PRESET_VCENTER_TALL = PRESET_VCENTER_WIDE,
 	};
 
 	enum LayoutPresetMode {
@@ -220,6 +223,7 @@ private:
 		Size2 last_minimum_size;
 		bool updating_last_minimum_size = false;
 		bool block_minimum_size_adjust = false;
+		bool apply_scale_first = false;
 
 		bool size_warning = true;
 
@@ -549,6 +553,9 @@ public:
 	BitField<SizeFlags> get_v_size_flags() const;
 	void set_stretch_ratio(real_t p_ratio);
 	real_t get_stretch_ratio() const;
+
+	void set_apply_scale_first(const bool p_apply);
+	bool get_apply_scale_first() const;
 
 	// Input events.
 

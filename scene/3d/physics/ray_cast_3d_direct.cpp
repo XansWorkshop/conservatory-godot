@@ -198,7 +198,6 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 		return false;
 	}
 }
-*/
 
 void RayCast3DDirect::set_from_parameters(const Ref<PhysicsRayQueryParameters3D> &p_parameters) {
 	ERR_FAIL_COND_MSG(p_parameters.is_null(), "The provided parameters are null.");

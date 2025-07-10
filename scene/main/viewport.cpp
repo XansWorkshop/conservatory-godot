@@ -683,6 +683,18 @@ void Viewport::_notification(int p_what) {
 		} break;
 #endif // !defined(PHYSICS_2D_DISABLED) || !defined(PHYSICS_3D_DISABLED)
 
+		/*
+		case NOTIFICATION_INTERNAL_PROCESS: {
+			if (!get_tree()) {
+				return;
+			}
+			if (gui.tooltip_follow_cursor && gui.tooltip_popup) {
+				Point2 tooltip_offset = GLOBAL_GET_CACHED(Point2, "display/mouse_cursor/tooltip_position_offset");
+				_gui_move_tooltip(get_mouse_position() + tooltip_offset, Size2i(), true);
+			}
+		} break;
+		*/
+
 		case NOTIFICATION_VP_MOUSE_ENTER: {
 			gui.mouse_in_viewport = true;
 		} break;
@@ -1713,13 +1725,69 @@ void Viewport::_gui_show_tooltip_at(const Point2i &p_pos) {
 	} else if (r.position.y < vr.position.y) {
 		r.position.y = vr.position.y;
 	}
-
+	
 	DisplayServer::WindowID active_popup = DisplayServer::get_singleton()->window_get_active_popup();
 	if (active_popup == DisplayServer::INVALID_WINDOW_ID || active_popup == window->get_window_id()) {
 		gui.tooltip_popup->popup(r);
 	}
 	gui.tooltip_popup->child_controls_changed();
 }
+
+Window* Viewport::_gui_get_tooltip_popup_panel() const {
+	return gui.tooltip_popup;
+}
+
+/*
+Rect2 Viewport::_gui_move_tooltip(const Point2i &p_pos, Size2i p_size, bool p_move_popup) {
+	if (!p_size.x && !p_size.y) {
+		p_size = gui.tooltip_popup->get_contents_minimum_size();
+	}
+	gui.tooltip_pos = p_pos;
+	Window *window = Object::cast_to<Window>(gui.tooltip_popup->get_embedder());
+	if (!window) { // Not embedded.
+		window = gui.tooltip_popup->get_parent_visible_window();
+	}
+	Size2 scale = get_popup_base_transform().get_scale();
+	real_t popup_scale = MIN(scale.x, scale.y);
+	Rect2 r(gui.tooltip_pos, p_size);
+	Rect2i vr;
+	if (gui.tooltip_popup->is_embedded()) {
+		vr = gui.tooltip_popup->get_embedder()->get_visible_rect();
+	} else {
+		vr = window->get_usable_parent_rect();
+	}
+	r.size *= popup_scale;
+	r.size = r.size.ceil();
+	r.size = r.size.min(gui.tooltip_popup->get_max_size());
+
+	if (r.size.x + r.position.x > vr.size.x + vr.position.x) {
+		// Place it in the opposite direction. If it fails, just hug the border.
+		r.position.x = gui.tooltip_pos.x - r.size.x;
+
+		if (r.position.x < vr.position.x) {
+			r.position.x = vr.position.x + vr.size.x - r.size.x;
+		}
+	} else if (r.position.x < vr.position.x) {
+		r.position.x = vr.position.x;
+	}
+
+	if (r.size.y + r.position.y > vr.size.y + vr.position.y) {
+		// Same as above.
+		r.position.y = gui.tooltip_pos.y - r.size.y;
+
+		if (r.position.y < vr.position.y) {
+			r.position.y = vr.position.y + vr.size.y - r.size.y;
+		}
+	} else if (r.position.y < vr.position.y) {
+		r.position.y = vr.position.y;
+	}
+	if (p_move_popup) {
+		gui.tooltip_popup->position = r.position;
+		gui.tooltip_popup->size = r.size;
+	}
+	return r;
+}
+*/
 
 void Viewport::_gui_call_input(Control *p_control, const Ref<InputEvent> &p_input) {
 	Ref<InputEvent> ev = p_input;
@@ -5036,6 +5104,8 @@ void Viewport::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("gui_release_focus"), &Viewport::gui_release_focus);
 	ClassDB::bind_method(D_METHOD("gui_get_focus_owner"), &Viewport::gui_get_focus_owner);
 	ClassDB::bind_method(D_METHOD("gui_get_hovered_control"), &Viewport::gui_get_hovered_control);
+
+	ClassDB::bind_method(D_METHOD("gui_get_tooltip_popup_panel"), &Viewport::_gui_get_tooltip_popup_panel);
 
 	ClassDB::bind_method(D_METHOD("set_disable_input", "disable"), &Viewport::set_disable_input);
 	ClassDB::bind_method(D_METHOD("is_input_disabled"), &Viewport::is_input_disabled);

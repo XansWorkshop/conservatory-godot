@@ -42,7 +42,7 @@
 #include "scene/main/node.h"
 #endif
 
-#if defined(_MSC_VER) && (defined(DEV_ENABLED) || defined(TC_ALLOW_BREAK_ON_ERROR))
+#if defined(_MSC_VER) && defined(TC_ALLOW_BREAK_ON_ERROR)
 #include "scene/resources/conservatory_debug_bridge.h"
 _FORCE_INLINE_ bool tc_break_on_err() {
 	return ConservatoryDebugBridge::should_break_on_engine_error();

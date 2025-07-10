@@ -39,9 +39,10 @@
 bool SimulationDomain::declared_cs_methods;
 SimulationDomain *SimulationDomain::current;
 List<SimulationDomain *> SimulationDomain::instances;
-void (*SimulationDomain::tc_crash)(const unsigned char *, int, const unsigned char *, int, int);
-bool (*SimulationDomain::tc_destroy_validator)(const int64_t);
+void (*SimulationDomain::tc_crash)(const unsigned char *p_message, int p_message_length, const unsigned char *p_context, int p_context_length, int p_error_code);
+bool (*SimulationDomain::tc_destroy_validator)(const int64_t p_ptr);
 bool (*SimulationDomain::tc_is_client)(void);
+void (*SimulationDomain::tc_active_changed)(const int64_t p_ptr);
 
 void SimulationDomain::_tc_crash(const String &p_msg, const String &p_context, int p_tc_error_code) {
 	if (tc_crash) {
@@ -71,7 +72,15 @@ bool SimulationDomain::_tc_is_client() {
 	}
 }
 
-int64_t SimulationDomain::set_conservatory_callbacks(const int64_t p_crash, const int64_t p_destroy, const int64_t p_is_client) {
+void SimulationDomain::_tc_active_changed(const SimulationDomain* p_instance) {
+	if (tc_active_changed) {
+		tc_active_changed((int64_t)p_instance);
+	} else {
+		_tc_crash("The IsClient method was not previously supplied correctly.", "Attempting to determine the function of a SimulationDomain", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
+	}
+}
+
+int64_t SimulationDomain::set_conservatory_callbacks(const int64_t p_crash, const int64_t p_destroy, const int64_t p_is_client, const int64_t p_active_changed) {
 	if (SimulationDomain::declared_cs_methods) {
 		_tc_crash("Invalid attempt to call SimulationDomain.SetConservatoryCallbacks more than once.", "Verifying the integrity of the simulation", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return 0;
@@ -79,11 +88,14 @@ int64_t SimulationDomain::set_conservatory_callbacks(const int64_t p_crash, cons
 	ERR_FAIL_COND_V(p_crash == 0, 0);
 	ERR_FAIL_COND_V(p_destroy == 0, 0);
 	ERR_FAIL_COND_V(p_is_client == 0, 0);
+	ERR_FAIL_COND_V(p_active_changed == 0, 0);
 
 	// This is so fucked
 	tc_crash = (void (*)(const unsigned char *, int, const unsigned char *, int, int))p_crash;
 	tc_destroy_validator = (bool (*)(const int64_t))p_destroy;
 	tc_is_client = (bool (*)(void))p_is_client;
+	tc_active_changed = (void (*)(const int64_t))p_active_changed;
+
 	SimulationDomain::declared_cs_methods = true;
 	size_t addr = (size_t)(&SimulationDomain::static_construct);
 	return (int64_t)addr;
@@ -206,6 +218,7 @@ void SimulationDomain::set_active() {
 		PhysicsServer2D::get_singleton()->space_set_active(world2d->get_space(), true);
 		PhysicsServer3D::get_singleton()->space_set_active(world3d->get_space(), true);
 		SimulationDomain::current = this;
+		_tc_active_changed(this);
 	} else {
 		_tc_crash("Illegal attempt to set a SimulationDomain as the current gameplay target on a server.", "Verifying correct state when making a SimulationDomain active. (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 	}
@@ -295,7 +308,7 @@ bool SimulationDomain::is_using_own_world_3d() const {
 }
 
 void SimulationDomain::_bind_methods() {
-	ClassDB::bind_static_method("SimulationDomain", D_METHOD("set_conservatory_callbacks", "crash", "destroy_callback", "is_client"), &SimulationDomain::set_conservatory_callbacks);
+	ClassDB::bind_static_method("SimulationDomain", D_METHOD("set_conservatory_callbacks", "crash", "destroy_callback", "is_client", "active_changed"), &SimulationDomain::set_conservatory_callbacks);
 
 	ClassDB::bind_method(D_METHOD("get_is_valid"), &SimulationDomain::get_is_valid);
 	ClassDB::bind_method(D_METHOD("get_is_active"), &SimulationDomain::get_active);

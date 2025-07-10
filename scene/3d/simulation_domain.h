@@ -149,17 +149,14 @@ class SimulationDomain : public Viewport {
 	TC_DECLARE_PTR(World3D, world3d);
 	TC_DECLARE_PTR(World2D, world2d);
 
-	// Parameters: message, message length, context, context length, error code
-	static void (*tc_crash)(const unsigned char *, int, const unsigned char *, int, int);
+	static void (*tc_crash)(const unsigned char *p_message, int p_message_length, const unsigned char *p_context, int p_context_length, int p_error_code);
 
-	// Parameters: SimulationDomain address, returns true if deletion is OK, false if not.
-	static bool (*tc_destroy_validator)(const int64_t);
-
-	// Parameters: None
+	// Returns true if deletion is OK, false if not.
+	static bool (*tc_destroy_validator)(const int64_t p_ptr);
 	static bool (*tc_is_client)(void);
+	static void (*tc_active_changed)(const int64_t p_ptr);
 
 	static bool declared_cs_methods;
-	//static bool simulate_physics_for_inactive;
 	static List<SimulationDomain *> instances;
 
 protected:
@@ -167,12 +164,13 @@ protected:
 	static void _tc_crash(const String &p_msg, const String &p_context, int p_tc_error_code);
 	static bool _tc_destroy_validator(const SimulationDomain *p_instance);
 	static bool _tc_is_client();
+	static void _tc_active_changed(const SimulationDomain *p_instance);
 	static void _bind_methods();
 
 public:
 	static SimulationDomain *current;
 
-	static int64_t set_conservatory_callbacks(const int64_t p_crash, const int64_t p_destroy, const int64_t p_is_client);
+	static int64_t set_conservatory_callbacks(const int64_t p_crash, const int64_t p_destroy, const int64_t p_is_client, const int64_t p_active_changed);
 
 	bool get_is_valid() const;
 	bool get_active() const;
@@ -203,6 +201,7 @@ public:
 	_FORCE_INLINE_ void _gui_cancel_tooltip() override { get_parent_viewport()->_gui_cancel_tooltip(); }
 	_FORCE_INLINE_ void _gui_show_tooltip() override { get_parent_viewport()->_gui_show_tooltip(); }
 	_FORCE_INLINE_ void _gui_show_tooltip_at(const Point2i &p_pos) override { get_parent_viewport()->_gui_show_tooltip_at(p_pos); }
+	_FORCE_INLINE_ Window *_gui_get_tooltip_popup_panel() const override { return get_parent_viewport()->_gui_get_tooltip_popup_panel(); }
 	_FORCE_INLINE_ void _gui_remove_control(Control *p_control) override { get_parent_viewport()->_gui_remove_control(p_control); }
 	_FORCE_INLINE_ void _gui_hide_control(Control *p_control) override { get_parent_viewport()->_gui_hide_control(p_control); }
 	_FORCE_INLINE_ void _gui_update_mouse_over() override { get_parent_viewport()->_gui_update_mouse_over(); }

@@ -22,9 +22,9 @@ namespace Godot {
 
     partial class SimulationDomain {
 
-        /// <inheritdoc cref="SimulationDomain.SetConservatoryCallbacks(long, long, long)"/>
-        public static unsafe delegate*<nint> SetConservatoryCallbacks(delegate*<byte*, int, byte*, int, int, void> crash, delegate*<long, bool> tryDestroy, delegate*<bool> isClient) {
-            return (delegate*<nint>)((nint)SetConservatoryCallbacks((nint)crash, (nint)tryDestroy, (nint)isClient));
+        /// <inheritdoc cref="SimulationDomain.SetConservatoryCallbacks(long, long, long, long)"/>
+        public static unsafe delegate*<nint> SetConservatoryCallbacks(delegate*<byte*, int, byte*, int, int, void> crash, delegate*<long, bool> tryDestroy, delegate*<bool> isClient, delegate*<long, void> onActiveChanged) {
+            return (delegate*<nint>)((nint)SetConservatoryCallbacks((nint)crash, (nint)tryDestroy, (nint)isClient, (nint)onActiveChanged));
         }
 
         /// <summary>
@@ -73,6 +73,11 @@ namespace Godot {
         /// <inheritdoc cref="ConservatoryDebugBridge.SetPtrs(long, long)"/>
         public static unsafe void SetPtrs(bool* breakOnError, delegate*<bool> isDebuggerAttached) {
             SetPtrs((nint)breakOnError, (nint)isDebuggerAttached);
+        }
+
+        /// <inheritdoc cref="ConservatoryDebugBridge.InterceptGodotLoggingUsing(long)"/>
+        public static unsafe void InterceptGodotLoggingUsing(delegate*<void*, byte*, int, byte*, int, byte*, int, byte*, int, int, byte, bool, void> callback) {
+            InterceptGodotLoggingUsing((nint)callback);
         }
 
     }

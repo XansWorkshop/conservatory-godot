@@ -391,6 +391,7 @@ private:
 		Window *tooltip_popup = nullptr;
 		Label *tooltip_label = nullptr;
 		String tooltip_text;
+		bool tooltip_follow_cursor;
 		Point2 tooltip_pos;
 		Point2 last_mouse_pos;
 		Point2 drag_accum;
@@ -453,6 +454,7 @@ private:
 	CONSERVATORY_VIRTUAL void _gui_cancel_tooltip();
 	CONSERVATORY_VIRTUAL void _gui_show_tooltip();
 	CONSERVATORY_VIRTUAL void _gui_show_tooltip_at(const Point2i &p_pos);
+	CONSERVATORY_VIRTUAL Window *_gui_get_tooltip_popup_panel() const;
 
 	CONSERVATORY_VIRTUAL void _gui_remove_control(Control *p_control);
 	CONSERVATORY_VIRTUAL void _gui_hide_control(Control *p_control);

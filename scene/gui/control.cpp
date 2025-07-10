@@ -1734,11 +1734,133 @@ void Control::_size_changed() {
 		edge_pos[i] = data.offset[i] + (data.anchor[i] * area);
 	}
 
+	Point2 tl = Point2(edge_pos[0], edge_pos[1]);
+	Point2 br = Point2(edge_pos[2], edge_pos[3]);
+
+	/*
 	Point2 new_pos_cache = Point2(edge_pos[0], edge_pos[1]);
-	Size2 new_size_cache = Point2(edge_pos[2], edge_pos[3]) - new_pos_cache;
+	Size2 raw_size = Size2(edge_pos[2], edge_pos[3]);
+	Size2 new_size_cache;
+	*/
+	/*
+	if (get_apply_scale_first()) {
+		int preset = _get_anchors_layout_preset();
+		// 0: min (left, top), 1: center (or no change), 2: max (right, bottom)
+		Size2 size = br - tl;
 
+		// To compute a movement factor from scale, the difference must be scaled first, and then we find the
+		// difference of the scale difference to the unscaled size above:
+		Size2 factor = (size * data.scale) - size;
+
+		// This gives some added factor. For example if the scale is 2x, this is a value equal to size. If it's 3x, it's a value equal to 2x size.
+		// Now we can divide this across various axes (see CENTER_LEFT below for an example).
+
+		//Size2 movementFactor = size
+		int x_type = 1;
+		int y_type = 1;
+		switch (preset) {
+			// Future Xan: As a reminder, it's always relative to the top left of the unscaled GUI element.
+
+			case Control::PRESET_TOP_LEFT:
+				// No change to pos
+				br *= data.scale;
+				x_type = 0;
+				y_type = 0;
+				break;
+			case Control::PRESET_CENTER_LEFT:
+				tl.y -= size.y * factor.y * 0.5f;
+				br.y += size.y * factor.y * 0.5f;
+				x_type = 0;
+				y_type = 1;
+				break;
+			case Control::PRESET_BOTTOM_LEFT:
+				tl.y -= size.y * factor.y;
+				// Pull it upwards.
+				x_type = 0;
+				y_type = 2;
+				break;
+			case Control::PRESET_CENTER_TOP:
+				tl.x -= size.x * factor.x * 0.5f;
+				br.x += size.x * factor.x * 0.5f;
+				x_type = 1;
+				y_type = 0;
+				break;
+			case Control::PRESET_CENTER:
+				tl -= size * factor * 0.5f;
+				br += size * factor * 0.5f;
+				x_type = 1;
+				y_type = 1;
+				break;
+			case Control::PRESET_CENTER_BOTTOM:
+				tl.x -= size.x * factor.x * 0.5f;
+				tl.y -= size.y * factor.y;
+				br.x += size.x * factor.x * 0.5f;
+				x_type = 1;
+				y_type = 2;
+				break;
+			case Control::PRESET_TOP_RIGHT:
+				tl.x -= size.x * factor.x;
+				x_type = 2;
+				y_type = 0;
+				break;
+			case Control::PRESET_CENTER_RIGHT:
+				tl.x -= size.x * factor.x;
+				tl.y -= size.y * factor.y * 0.5f;
+				br.y += size.y * factor.y * 0.5f;
+				x_type = 2;
+				y_type = 1;
+				break;
+			case Control::PRESET_BOTTOM_RIGHT:
+				tl -= size * factor;
+				x_type = 2;
+				y_type = 2;
+				break;
+
+			// FUTURE XAN: HCENTER is Horizontally Wide. NOT "centered horizontally."
+			// VCENTER is Vertical, Tall. NOT "centered vertically".
+			case Control::PRESET_TOP_WIDE:
+				// No change again
+				x_type = 1;
+				y_type = 0;
+				break;
+			case Control::PRESET_VCENTER_TALL:
+				tl.x -= size.x * factor.x * 0.5f;
+				br.x += size.x * factor.x * 0.5f;
+				x_type = 1;
+				y_type = 1;
+				break;
+			case Control::PRESET_BOTTOM_WIDE:
+				tl.y -= size.y * factor.y;
+				x_type = 1;
+				y_type = 2;
+				break;
+			case Control::PRESET_LEFT_WIDE:
+				// No change here
+				x_type = 0;
+				y_type = 1;
+				break;
+			case Control::PRESET_HCENTER_WIDE:
+				tl.y -= size.y * factor.y * 0.5f;
+				br.y += size.y * factor.y * 0.5f;
+				x_type = 1;
+				y_type = 1;
+				break;
+			case Control::PRESET_RIGHT_WIDE:
+				tl.x -= size.x * factor.x;
+				x_type = 2;
+				y_type = 1;
+				break;
+			default:
+				x_type = 1;
+				y_type = 1;
+				break;
+		}
+	}
+	*/
+	Point2 new_pos_cache = tl;
+	Size2 new_size_cache = br - tl;
+		
 	Size2 minimum_size = get_combined_minimum_size();
-
 	if (minimum_size.width > new_size_cache.width) {
 		if (data.h_grow == GROW_DIRECTION_BEGIN) {
 			new_pos_cache.x += new_size_cache.width - minimum_size.width;
@@ -1845,6 +1967,18 @@ void Control::set_stretch_ratio(real_t p_ratio) {
 real_t Control::get_stretch_ratio() const {
 	ERR_READ_THREAD_GUARD_V(0);
 	return data.expand;
+}
+
+void Control::set_apply_scale_first(const bool p_apply) {
+	if (data.apply_scale_first != p_apply) {
+		data.apply_scale_first = p_apply;
+		queue_redraw();
+		_size_changed();
+	}
+}
+
+bool Control::get_apply_scale_first() const {
+	return data.apply_scale_first;
 }
 
 // Input events.
@@ -4025,6 +4159,9 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_v_size_flags", "flags"), &Control::set_v_size_flags);
 	ClassDB::bind_method(D_METHOD("get_v_size_flags"), &Control::get_v_size_flags);
 
+	//ClassDB::bind_method(D_METHOD("set_apply_scale_first", "apply"), &Control::set_apply_scale_first);
+	//ClassDB::bind_method(D_METHOD("get_apply_scale_first"), &Control::get_apply_scale_first);
+
 	ClassDB::bind_method(D_METHOD("set_theme", "theme"), &Control::set_theme);
 	ClassDB::bind_method(D_METHOD("get_theme"), &Control::get_theme);
 
@@ -4225,6 +4362,7 @@ void Control::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rotation_degrees", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_rotation_degrees", "get_rotation_degrees");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "scale"), "set_scale", "get_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "pivot_offset", PROPERTY_HINT_NONE, "suffix:px"), "set_pivot_offset", "get_pivot_offset");
+	//ADD_PROPERTY(PropertyInfo(Variant::BOOL, "apply_scale_first"), "set_apply_scale_first", "get_apply_scale_first");
 
 	ADD_SUBGROUP("Container Sizing", "size_flags_");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "size_flags_horizontal", PROPERTY_HINT_FLAGS, "Fill:1,Expand:2,Shrink Center:4,Shrink End:8"), "set_h_size_flags", "get_h_size_flags");

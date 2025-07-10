@@ -354,13 +354,12 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 		shader->get_shader_uniform_list(&list, true);
 
 		p_list->push_back(PropertyInfo(
-			Variant::Type::OBJECT,
-			"effective_shader",
-			PROPERTY_HINT_RESOURCE_TYPE,
-			"Shader",
-			PROPERTY_USAGE_READ_ONLY | PROPERTY_USAGE_EDITOR,
-			"Shader"
-		));
+				Variant::Type::OBJECT,
+				"effective_shader",
+				PROPERTY_HINT_RESOURCE_TYPE,
+				"Shader",
+				PROPERTY_USAGE_READ_ONLY | PROPERTY_USAGE_EDITOR,
+				"Shader"));
 
 		HashMap<String, HashMap<String, List<PropertyInfo>>> groups;
 		LocalVector<Pair<String, LocalVector<String>>> vgroups;
@@ -576,7 +575,6 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 		feature_and_variant_lock.unlock();
 
 #undef NEW_PROPERTY_GROUP
-
 	}
 
 	// clang-format off
@@ -595,69 +593,6 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 		PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
 	));
 	// clang-format on
-
-}
-
-		p_list->push_back(NEW_PROPERTY_GROUP("Static Shader Variants", "variant"));
-		Dictionary variants = shader->get_shader_variants();
-		valid_shader_variants.clear();
-		for (const KeyValue<Variant, Variant> &variant : variants) {
-			List<StringName> valid = List<StringName>();
-			StringName variant_name = (StringName)variant.key;
-			Array options = (Array)variant.value;
-
-			StringBuilder result;
-			int size = options.size();
-			for (int i = 0; i < size; ++i) {
-				Variant option = options[i];
-				result.append(option);
-				valid.push_back(option);
-				if (i <= size - 1) {
-					result.append(",");
-				}
-			}
-
-			valid_shader_variants.insert(variant_name, valid);
-
-			p_list->push_back(PropertyInfo(
-				Variant::Type::STRING_NAME,
-				joined_name,
-				PROPERTY_HINT_ENUM,
-				result.as_string(),
-				PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_FORCE_RAW_DISPLAY_NAME | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
-			));
-			// clang-format on
-
-			if (!shader_variants.has(variant_name)) {
-				StringName first_variant = (StringName)options[0];
-				shader_variants.insert(variant_name, first_variant);
-			}
-			if (!variant_name_cache.has(joined_name)) {
-				variant_name_cache.insert(joined_name, variant_name);
-			}
-		}
-
-#undef NEW_PROPERTY_GROUP
-
-	}
-
-	// clang-format off
-	p_list->push_back(PropertyInfo(
-		Variant::Type::DICTIONARY,
-		"_features",
-		PROPERTY_HINT_NONE,
-		"",
-		PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
-	));
-	p_list->push_back(PropertyInfo(
-		Variant::Type::DICTIONARY,
-		"_variants",
-		PROPERTY_HINT_NONE,
-		"",
-		PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED
-	));
-	// clang-format on
-
 }
 
 bool ShaderMaterial::_property_can_revert(const StringName &p_name) const {
@@ -822,32 +757,6 @@ const StringName ShaderMaterial::get_shader_variant(const StringName &p_variant)
 	}
 	return StringName();
 }
-
-void ShaderMaterial::apply_features_and_variants(const int p_refresh) {
-	MutexLock lock(feature_and_variant_lock);
-
-	if (base_shader.is_null()) {
-		if (p_refresh & VariantRefreshType::ENFORCE_VALID_FEATURES_AND_VARIANTS) {
-			shader_features.clear();
-			shader_variants.clear();
-			valid_shader_variants.clear();
-		}
-
-		if (p_refresh & VariantRefreshType::UPDATE_SHADER) {
-			shader = nullptr;
-			RID material_rid = _get_material();
-			if (material_rid.is_valid()) {
-				RS::get_singleton()->material_set_shader(material_rid, RID());
-			}
-
-			if (p_refresh & VariantRefreshType::NOTIFY_OF_CHANGE) {
-				notify_property_list_changed();
-				emit_signal(SNAME("variant_or_feature_changed"));
-				emit_changed();
-			}
-		}
-		return;
-	}
 
 void ShaderMaterial::apply_features_and_variants(const int p_refresh) {
 	MutexLock lock(feature_and_variant_lock);
@@ -3660,7 +3569,7 @@ void BaseMaterial3D::_prepare_stencil_effect() {
 		case STENCIL_MODE_OUTLINE:
 			set_stencil_flags(STENCIL_FLAG_WRITE);
 			set_stencil_compare(STENCIL_COMPARE_ALWAYS);
-			stencil_next_pass->set_render_priority(get_render_priority() + 1);
+			stencil_next_pass->set_render_priority(-1);
 			stencil_next_pass->set_shading_mode(SHADING_MODE_UNSHADED);
 			stencil_next_pass->set_transparency(TRANSPARENCY_ALPHA);
 			stencil_next_pass->set_flag(FLAG_DISABLE_DEPTH_TEST, false);
@@ -3668,14 +3577,14 @@ void BaseMaterial3D::_prepare_stencil_effect() {
 			stencil_next_pass->set_grow(stencil_effect_outline_thickness);
 			stencil_next_pass->set_albedo(stencil_effect_color);
 			stencil_next_pass->set_stencil_mode(STENCIL_MODE_CUSTOM);
-			stencil_next_pass->set_stencil_flags(STENCIL_FLAG_READ);
+			stencil_next_pass->set_stencil_flags(STENCIL_FLAG_READ | STENCIL_FLAG_WRITE);
 			stencil_next_pass->set_stencil_compare(STENCIL_COMPARE_NOT_EQUAL);
 			stencil_next_pass->set_stencil_reference(stencil_reference);
 			break;
 		case STENCIL_MODE_XRAY:
 			set_stencil_flags(STENCIL_FLAG_WRITE);
 			set_stencil_compare(STENCIL_COMPARE_ALWAYS);
-			stencil_next_pass->set_render_priority(get_render_priority() + 1);
+			stencil_next_pass->set_render_priority(-1);
 			stencil_next_pass->set_shading_mode(SHADING_MODE_UNSHADED);
 			stencil_next_pass->set_transparency(TRANSPARENCY_ALPHA);
 			stencil_next_pass->set_flag(FLAG_DISABLE_DEPTH_TEST, true);
@@ -3683,7 +3592,7 @@ void BaseMaterial3D::_prepare_stencil_effect() {
 			stencil_next_pass->set_grow(0);
 			stencil_next_pass->set_albedo(stencil_effect_color);
 			stencil_next_pass->set_stencil_mode(STENCIL_MODE_CUSTOM);
-			stencil_next_pass->set_stencil_flags(STENCIL_FLAG_READ);
+			stencil_next_pass->set_stencil_flags(STENCIL_FLAG_READ | STENCIL_FLAG_WRITE);
 			stencil_next_pass->set_stencil_compare(STENCIL_COMPARE_NOT_EQUAL);
 			stencil_next_pass->set_stencil_reference(stencil_reference);
 			break;
@@ -3725,19 +3634,12 @@ void BaseMaterial3D::set_stencil_flags(int p_stencil_flags) {
 		return;
 	}
 
-	// If enabling read while already writing, switch to read only.
 	if ((p_stencil_flags & STENCIL_FLAG_READ) && (stencil_flags & (STENCIL_FLAG_WRITE | STENCIL_FLAG_WRITE_DEPTH_FAIL))) {
 		p_stencil_flags = p_stencil_flags & STENCIL_FLAG_READ;
 	}
 
-	// If enabling write while already reading, switch to write or write_depth_fail.
 	if ((p_stencil_flags & (STENCIL_FLAG_WRITE | STENCIL_FLAG_WRITE_DEPTH_FAIL)) && (stencil_flags & STENCIL_FLAG_READ)) {
 		p_stencil_flags = p_stencil_flags & (STENCIL_FLAG_WRITE | STENCIL_FLAG_WRITE_DEPTH_FAIL);
-	}
-
-	// If enabling read+write while already doing neither, only allow read.
-	if ((p_stencil_flags & STENCIL_FLAG_READ) && (p_stencil_flags & (STENCIL_FLAG_WRITE | STENCIL_FLAG_WRITE_DEPTH_FAIL))) {
-		p_stencil_flags = p_stencil_flags & STENCIL_FLAG_READ;
 	}
 
 	stencil_flags = p_stencil_flags;
@@ -4101,7 +4003,7 @@ void BaseMaterial3D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "roughness_texture_channel", PROPERTY_HINT_ENUM, "Red,Green,Blue,Alpha,Gray"), "set_roughness_texture_channel", "get_roughness_texture_channel");
 
 	ADD_GROUP("Emission", "emission_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "emission_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_EMISSION);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "emission_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_EMISSION);
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "emission", PROPERTY_HINT_COLOR_NO_ALPHA), "set_emission", "get_emission");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "emission_energy_multiplier", PROPERTY_HINT_RANGE, "0,16,0.01,or_greater"), "set_emission_energy_multiplier", "get_emission_energy_multiplier");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "emission_intensity", PROPERTY_HINT_RANGE, "0,100000.0,0.01,or_greater,suffix:nt"), "set_emission_intensity", "get_emission_intensity");
@@ -4111,40 +4013,40 @@ void BaseMaterial3D::_bind_methods() {
 	ADD_PROPERTYI(PropertyInfo(Variant::OBJECT, "emission_texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture", TEXTURE_EMISSION);
 
 	ADD_GROUP("Normal Map", "normal_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "normal_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_NORMAL_MAPPING);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "normal_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_NORMAL_MAPPING);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "normal_scale", PROPERTY_HINT_RANGE, "-16,16,0.01"), "set_normal_scale", "get_normal_scale");
 	ADD_PROPERTYI(PropertyInfo(Variant::OBJECT, "normal_texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture", TEXTURE_NORMAL);
 
 	ADD_GROUP("Bent Normal Map", "bent_normal_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "bent_normal_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_BENT_NORMAL_MAPPING);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "bent_normal_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_BENT_NORMAL_MAPPING);
 	ADD_PROPERTYI(PropertyInfo(Variant::OBJECT, "bent_normal_texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture", TEXTURE_BENT_NORMAL);
 
 	ADD_GROUP("Rim", "rim_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "rim_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_RIM);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "rim_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_RIM);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rim", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_rim", "get_rim");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rim_tint", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_rim_tint", "get_rim_tint");
 	ADD_PROPERTYI(PropertyInfo(Variant::OBJECT, "rim_texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture", TEXTURE_RIM);
 
 	ADD_GROUP("Clearcoat", "clearcoat_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "clearcoat_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_CLEARCOAT);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "clearcoat_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_CLEARCOAT);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "clearcoat", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_clearcoat", "get_clearcoat");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "clearcoat_roughness", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_clearcoat_roughness", "get_clearcoat_roughness");
 	ADD_PROPERTYI(PropertyInfo(Variant::OBJECT, "clearcoat_texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture", TEXTURE_CLEARCOAT);
 
 	ADD_GROUP("Anisotropy", "anisotropy_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "anisotropy_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_ANISOTROPY);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "anisotropy_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_ANISOTROPY);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "anisotropy", PROPERTY_HINT_RANGE, "-1,1,0.01"), "set_anisotropy", "get_anisotropy");
 	ADD_PROPERTYI(PropertyInfo(Variant::OBJECT, "anisotropy_flowmap", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture", TEXTURE_FLOWMAP);
 
 	ADD_GROUP("Ambient Occlusion", "ao_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "ao_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_AMBIENT_OCCLUSION);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "ao_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_AMBIENT_OCCLUSION);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "ao_light_affect", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_ao_light_affect", "get_ao_light_affect");
 	ADD_PROPERTYI(PropertyInfo(Variant::OBJECT, "ao_texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture", TEXTURE_AMBIENT_OCCLUSION);
 	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "ao_on_uv2"), "set_flag", "get_flag", FLAG_AO_ON_UV2);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "ao_texture_channel", PROPERTY_HINT_ENUM, "Red,Green,Blue,Alpha,Gray"), "set_ao_texture_channel", "get_ao_texture_channel");
 
 	ADD_GROUP("Height", "heightmap_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "heightmap_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_HEIGHT_MAPPING);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "heightmap_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_HEIGHT_MAPPING);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "heightmap_scale", PROPERTY_HINT_RANGE, "-16,16,0.001"), "set_heightmap_scale", "get_heightmap_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "heightmap_deep_parallax"), "set_heightmap_deep_parallax", "is_heightmap_deep_parallax_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "heightmap_min_layers", PROPERTY_HINT_RANGE, "1,64,1"), "set_heightmap_deep_parallax_min_layers", "get_heightmap_deep_parallax_min_layers");
@@ -4155,31 +4057,31 @@ void BaseMaterial3D::_bind_methods() {
 	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "heightmap_flip_texture"), "set_flag", "get_flag", FLAG_INVERT_HEIGHTMAP);
 
 	ADD_GROUP("Subsurf Scatter", "subsurf_scatter_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "subsurf_scatter_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_SUBSURFACE_SCATTERING);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "subsurf_scatter_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_SUBSURFACE_SCATTERING);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "subsurf_scatter_strength", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_subsurface_scattering_strength", "get_subsurface_scattering_strength");
 	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "subsurf_scatter_skin_mode"), "set_flag", "get_flag", FLAG_SUBSURFACE_MODE_SKIN);
 	ADD_PROPERTYI(PropertyInfo(Variant::OBJECT, "subsurf_scatter_texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture", TEXTURE_SUBSURFACE_SCATTERING);
 
 	ADD_SUBGROUP("Transmittance", "subsurf_scatter_transmittance_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "subsurf_scatter_transmittance_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_SUBSURFACE_TRANSMITTANCE);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "subsurf_scatter_transmittance_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_SUBSURFACE_TRANSMITTANCE);
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "subsurf_scatter_transmittance_color"), "set_transmittance_color", "get_transmittance_color");
 	ADD_PROPERTYI(PropertyInfo(Variant::OBJECT, "subsurf_scatter_transmittance_texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture", TEXTURE_SUBSURFACE_TRANSMITTANCE);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "subsurf_scatter_transmittance_depth", PROPERTY_HINT_RANGE, "0.001,8,0.001,or_greater"), "set_transmittance_depth", "get_transmittance_depth");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "subsurf_scatter_transmittance_boost", PROPERTY_HINT_RANGE, "0.00,1.0,0.01"), "set_transmittance_boost", "get_transmittance_boost");
 
 	ADD_GROUP("Back Lighting", "backlight_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "backlight_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_BACKLIGHT);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "backlight_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_BACKLIGHT);
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "backlight", PROPERTY_HINT_COLOR_NO_ALPHA), "set_backlight", "get_backlight");
 	ADD_PROPERTYI(PropertyInfo(Variant::OBJECT, "backlight_texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture", TEXTURE_BACKLIGHT);
 
 	ADD_GROUP("Refraction", "refraction_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "refraction_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_REFRACTION);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "refraction_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_REFRACTION);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "refraction_scale", PROPERTY_HINT_RANGE, "-1,1,0.01"), "set_refraction", "get_refraction");
 	ADD_PROPERTYI(PropertyInfo(Variant::OBJECT, "refraction_texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture", TEXTURE_REFRACTION);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "refraction_texture_channel", PROPERTY_HINT_ENUM, "Red,Green,Blue,Alpha,Gray"), "set_refraction_texture_channel", "get_refraction_texture_channel");
 
 	ADD_GROUP("Detail", "detail_");
-	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "detail_enabled", PROPERTY_HINT_GROUP_ENABLE), "set_feature", "get_feature", FEATURE_DETAIL);
+	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "detail_enabled", PROPERTY_HINT_GROUP_ENABLE, "feature"), "set_feature", "get_feature", FEATURE_DETAIL);
 	ADD_PROPERTYI(PropertyInfo(Variant::OBJECT, "detail_mask", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture", TEXTURE_DETAIL_MASK);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "detail_blend_mode", PROPERTY_HINT_ENUM, "Mix,Add,Subtract,Multiply"), "set_detail_blend_mode", "get_detail_blend_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "detail_uv_layer", PROPERTY_HINT_ENUM, "UV1,UV2"), "set_detail_uv", "get_detail_uv");
