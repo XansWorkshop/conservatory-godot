@@ -22,10 +22,11 @@ This fork of the Godot Engine is based on **Godot 4.5**, and features several ch
   * This system ensures `__debugbreak()` only gets fired when allowed to by the engine (for code cleanliness in release builds) and when a managed debugger is attached.
 * Non-node-based `RayCast3DDirect` and `ShapeCast3DDirect` types, which allow for fast, compartmentalized raycasting and shapecasting on demand.
   * This operates much faster than the `PhysicsServer3D.intersect_ray` and `PhysicsServer3D.intersect_shape` methods, by avoiding the `Dictionary` return type.
-  * This is "compartmentalized" in that these types still have the properties needed to store both parameters for the cast, and the result of said cast.
+  * This is "compartmentalized" in that these types still have the properties needed to store both parameters for the cast, and the result of said cast, making them isolated objects that can be dispatched to represent a single operation.
   * If desired, static methods to cast also exist that accept parameters and return a result.
-* `SimulationDomain` as a non-rendering alternative to `SubViewport`, for isolated world simulation in both 3D and 2D.
-  * "non-rendering" means that it does not need to be told to render to a specific target; it overrides the main viewport when marked as active, and like a camera, only one can be active at a time. All instances still physically simulate regardless of activity. Only rendering is exclusive.
+* `SimulationDomain` is a class extending `Viewport` designed for the sole purpose of isolated simulation of both a 3D and 2D world.
+  * Unlike `SubViewport`, this type *can not* render to a target. Instead, on the game client, it must be made active. This will cause it to override the rendering of the main window by setting the worlds (both 3D and 2D) of the game's root viewport to that of the `SimulationDomain`.
+  * While `SimulationDomain` does inherit all properties and methods of `Viewport`, using these methods will always redirect the call to the active viewport. This ensures that the rather hacky nature of its existence remains compatible.
 * Support for `#pragma features` and `#pragma exclusive_variants` in the shader language, to allow static variant support.
 * Expose `set_include_path` and `get_include_path` in `Shader` (includes C# property `IncludePath`).
   * This property's usage is shared with the engine: It can be used to make `#include` statements work when the shader is created during runtime, without requiring its resource path to be set.
