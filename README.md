@@ -13,7 +13,7 @@ This fork of the Godot Engine is based on **Godot 4.5**, and features several ch
 
 ### Public API Changes
 
-> ![NOTE]
+> [!NOTE]
 > Some changes are C#-only, and have no analogue nor enforcement in GDScript, making them impossible to use in GDScript or unfeasible. This is because this fork of the engine is specifically made for The Conservatory. While some features could likely be merged in with the main engine, not all of them can be (nor should they be).
 
 * New `ConservatoryDebugBridge` type for development builds of the engine.
