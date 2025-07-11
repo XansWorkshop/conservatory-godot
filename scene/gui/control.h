@@ -214,6 +214,7 @@ private:
 		real_t rotation = 0.0;
 		Vector2 scale = Vector2(1, 1);
 		Vector2 pivot_offset;
+		bool relative_pivot = false;
 
 		Point2 pos_cache;
 		Size2 size_cache;
@@ -223,7 +224,6 @@ private:
 		Size2 last_minimum_size;
 		bool updating_last_minimum_size = false;
 		bool block_minimum_size_adjust = false;
-		bool apply_scale_first = false;
 
 		bool size_warning = true;
 
@@ -500,6 +500,7 @@ public:
 	void set_end(const Point2 &p_point);
 	Point2 get_end() const;
 
+
 	void set_h_grow_direction(GrowDirection p_direction);
 	GrowDirection get_h_grow_direction() const;
 	void set_v_grow_direction(GrowDirection p_direction);
@@ -535,6 +536,9 @@ public:
 	void set_pivot_offset(const Vector2 &p_pivot);
 	Vector2 get_pivot_offset() const;
 
+	void set_pivot_is_relative(bool p_is_relative);
+	bool get_pivot_is_relative() const;
+
 	void update_minimum_size();
 
 	void set_block_minimum_size_adjust(bool p_block);
@@ -553,9 +557,6 @@ public:
 	BitField<SizeFlags> get_v_size_flags() const;
 	void set_stretch_ratio(real_t p_ratio);
 	real_t get_stretch_ratio() const;
-
-	void set_apply_scale_first(const bool p_apply);
-	bool get_apply_scale_first() const;
 
 	// Input events.
 

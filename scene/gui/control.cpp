@@ -147,14 +147,28 @@ bool Control::_edit_use_rotation() const {
 }
 
 void Control::_edit_set_pivot(const Point2 &p_pivot) {
-	Vector2 delta_pivot = p_pivot - get_pivot_offset();
+	Vector2 pivot_offset = get_pivot_offset();
+	const Vector2 size = get_size();
+	if (data.relative_pivot) {
+		pivot_offset *= size;
+	}
+	Vector2 delta_pivot = p_pivot - pivot_offset;
 	Vector2 move = Vector2((std::cos(data.rotation) - 1.0) * delta_pivot.x - std::sin(data.rotation) * delta_pivot.y, std::sin(data.rotation) * delta_pivot.x + (std::cos(data.rotation) - 1.0) * delta_pivot.y);
 	set_position(get_position() + move);
-	set_pivot_offset(p_pivot);
+
+	if (data.relative_pivot) {
+		set_pivot_offset(p_pivot / size);
+	} else {
+		set_pivot_offset(p_pivot);
+	}
 }
 
 Point2 Control::_edit_get_pivot() const {
-	return get_pivot_offset();
+	Vector2 pivot_offset = get_pivot_offset();
+	if (data.relative_pivot) {
+		pivot_offset *= get_size();
+	}
+	return pivot_offset;
 }
 
 bool Control::_edit_use_pivot() const {
@@ -535,7 +549,7 @@ void Control::_validate_property(PropertyInfo &p_property) const {
 		// If the parent is a container, display only container-related properties.
 		if (p_property.name.begins_with("anchor_") || p_property.name.begins_with("offset_") || p_property.name.begins_with("grow_") || p_property.name == "anchors_preset") {
 			p_property.usage ^= PROPERTY_USAGE_DEFAULT;
-		} else if (p_property.name == "position" || p_property.name == "rotation" || p_property.name == "scale" || p_property.name == "size" || p_property.name == "pivot_offset") {
+		} else if (p_property.name == "position" || p_property.name == "rotation" || p_property.name == "scale" || p_property.name == "size" || p_property.name == "pivot_offset" || p_property.name == "pivot_is_relative") {
 			p_property.usage = PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY;
 		} else if (Engine::get_singleton()->is_editor_hint() && p_property.name == "layout_mode") {
 			// Set the layout mode to be disabled with the proper value.
@@ -708,8 +722,14 @@ Size2 Control::get_parent_area_size() const {
 
 Transform2D Control::_get_internal_transform() const {
 	// T(pivot_offset) * R(rotation) * S(scale) * T(-pivot_offset)
-	Transform2D xform(data.rotation, data.scale, 0.0f, data.pivot_offset);
-	xform.translate_local(-data.pivot_offset);
+	const Size2 size = data.size_cache;
+	Vector2 pivot = data.pivot_offset;
+	if (data.relative_pivot) {
+		pivot *= size;
+	}
+
+	Transform2D xform(data.rotation, data.scale, 0.0f, pivot);
+	xform.translate_local(-pivot);
 	return xform;
 }
 
@@ -1622,6 +1642,29 @@ Vector2 Control::get_pivot_offset() const {
 	return data.pivot_offset;
 }
 
+void Control::set_pivot_is_relative(bool p_is_relative) {
+	ERR_MAIN_THREAD_GUARD;
+	if (data.relative_pivot == p_is_relative) {
+		return;
+	}
+
+	const Vector2 size = get_size();
+	data.relative_pivot = p_is_relative;
+	if (p_is_relative) {
+		data.pivot_offset /= size;
+	} else {
+		data.pivot_offset *= size;
+	}
+	queue_redraw();
+	_notify_transform();
+	queue_accessibility_update();
+}
+
+bool Control::get_pivot_is_relative() const {
+	ERR_READ_THREAD_GUARD_V(false);
+	return data.relative_pivot;
+}
+
 /// Sizes.
 
 void Control::_update_minimum_size() {
@@ -1737,126 +1780,6 @@ void Control::_size_changed() {
 	Point2 tl = Point2(edge_pos[0], edge_pos[1]);
 	Point2 br = Point2(edge_pos[2], edge_pos[3]);
 
-	/*
-	Point2 new_pos_cache = Point2(edge_pos[0], edge_pos[1]);
-	Size2 raw_size = Size2(edge_pos[2], edge_pos[3]);
-	Size2 new_size_cache;
-	*/
-	/*
-	if (get_apply_scale_first()) {
-		int preset = _get_anchors_layout_preset();
-		// 0: min (left, top), 1: center (or no change), 2: max (right, bottom)
-		Size2 size = br - tl;
-
-		// To compute a movement factor from scale, the difference must be scaled first, and then we find the
-		// difference of the scale difference to the unscaled size above:
-		Size2 factor = (size * data.scale) - size;
-
-		// This gives some added factor. For example if the scale is 2x, this is a value equal to size. If it's 3x, it's a value equal to 2x size.
-		// Now we can divide this across various axes (see CENTER_LEFT below for an example).
-
-		//Size2 movementFactor = size
-		int x_type = 1;
-		int y_type = 1;
-		switch (preset) {
-			// Future Xan: As a reminder, it's always relative to the top left of the unscaled GUI element.
-
-			case Control::PRESET_TOP_LEFT:
-				// No change to pos
-				br *= data.scale;
-				x_type = 0;
-				y_type = 0;
-				break;
-			case Control::PRESET_CENTER_LEFT:
-				tl.y -= size.y * factor.y * 0.5f;
-				br.y += size.y * factor.y * 0.5f;
-				x_type = 0;
-				y_type = 1;
-				break;
-			case Control::PRESET_BOTTOM_LEFT:
-				tl.y -= size.y * factor.y;
-				// Pull it upwards.
-				x_type = 0;
-				y_type = 2;
-				break;
-			case Control::PRESET_CENTER_TOP:
-				tl.x -= size.x * factor.x * 0.5f;
-				br.x += size.x * factor.x * 0.5f;
-				x_type = 1;
-				y_type = 0;
-				break;
-			case Control::PRESET_CENTER:
-				tl -= size * factor * 0.5f;
-				br += size * factor * 0.5f;
-				x_type = 1;
-				y_type = 1;
-				break;
-			case Control::PRESET_CENTER_BOTTOM:
-				tl.x -= size.x * factor.x * 0.5f;
-				tl.y -= size.y * factor.y;
-				br.x += size.x * factor.x * 0.5f;
-				x_type = 1;
-				y_type = 2;
-				break;
-			case Control::PRESET_TOP_RIGHT:
-				tl.x -= size.x * factor.x;
-				x_type = 2;
-				y_type = 0;
-				break;
-			case Control::PRESET_CENTER_RIGHT:
-				tl.x -= size.x * factor.x;
-				tl.y -= size.y * factor.y * 0.5f;
-				br.y += size.y * factor.y * 0.5f;
-				x_type = 2;
-				y_type = 1;
-				break;
-			case Control::PRESET_BOTTOM_RIGHT:
-				tl -= size * factor;
-				x_type = 2;
-				y_type = 2;
-				break;
-
-			// FUTURE XAN: HCENTER is Horizontally Wide. NOT "centered horizontally."
-			// VCENTER is Vertical, Tall. NOT "centered vertically".
-			case Control::PRESET_TOP_WIDE:
-				// No change again
-				x_type = 1;
-				y_type = 0;
-				break;
-			case Control::PRESET_VCENTER_TALL:
-				tl.x -= size.x * factor.x * 0.5f;
-				br.x += size.x * factor.x * 0.5f;
-				x_type = 1;
-				y_type = 1;
-				break;
-			case Control::PRESET_BOTTOM_WIDE:
-				tl.y -= size.y * factor.y;
-				x_type = 1;
-				y_type = 2;
-				break;
-			case Control::PRESET_LEFT_WIDE:
-				// No change here
-				x_type = 0;
-				y_type = 1;
-				break;
-			case Control::PRESET_HCENTER_WIDE:
-				tl.y -= size.y * factor.y * 0.5f;
-				br.y += size.y * factor.y * 0.5f;
-				x_type = 1;
-				y_type = 1;
-				break;
-			case Control::PRESET_RIGHT_WIDE:
-				tl.x -= size.x * factor.x;
-				x_type = 2;
-				y_type = 1;
-				break;
-			default:
-				x_type = 1;
-				y_type = 1;
-				break;
-		}
-	}
-	*/
 	Point2 new_pos_cache = tl;
 	Size2 new_size_cache = br - tl;
 		
@@ -1967,18 +1890,6 @@ void Control::set_stretch_ratio(real_t p_ratio) {
 real_t Control::get_stretch_ratio() const {
 	ERR_READ_THREAD_GUARD_V(0);
 	return data.expand;
-}
-
-void Control::set_apply_scale_first(const bool p_apply) {
-	if (data.apply_scale_first != p_apply) {
-		data.apply_scale_first = p_apply;
-		queue_redraw();
-		_size_changed();
-	}
-}
-
-bool Control::get_apply_scale_first() const {
-	return data.apply_scale_first;
 }
 
 // Input events.
@@ -4151,6 +4062,9 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("find_next_valid_focus"), &Control::find_next_valid_focus);
 	ClassDB::bind_method(D_METHOD("find_valid_focus_neighbor", "side"), &Control::find_valid_focus_neighbor);
 
+	ClassDB::bind_method(D_METHOD("get_pivot_is_relative"), &Control::get_pivot_is_relative);
+	ClassDB::bind_method(D_METHOD("set_pivot_is_relative", "is_relative"), &Control::set_pivot_is_relative);
+
 	ClassDB::bind_method(D_METHOD("set_h_size_flags", "flags"), &Control::set_h_size_flags);
 	ClassDB::bind_method(D_METHOD("get_h_size_flags"), &Control::get_h_size_flags);
 
@@ -4159,9 +4073,6 @@ void Control::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_v_size_flags", "flags"), &Control::set_v_size_flags);
 	ClassDB::bind_method(D_METHOD("get_v_size_flags"), &Control::get_v_size_flags);
-
-	//ClassDB::bind_method(D_METHOD("set_apply_scale_first", "apply"), &Control::set_apply_scale_first);
-	//ClassDB::bind_method(D_METHOD("get_apply_scale_first"), &Control::get_apply_scale_first);
 
 	ClassDB::bind_method(D_METHOD("set_theme", "theme"), &Control::set_theme);
 	ClassDB::bind_method(D_METHOD("get_theme"), &Control::get_theme);
@@ -4362,8 +4273,8 @@ void Control::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rotation", PROPERTY_HINT_RANGE, "-360,360,0.1,or_less,or_greater,radians_as_degrees"), "set_rotation", "get_rotation");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rotation_degrees", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_rotation_degrees", "get_rotation_degrees");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "scale"), "set_scale", "get_scale");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "pivot_offset", PROPERTY_HINT_NONE, "suffix:px"), "set_pivot_offset", "get_pivot_offset");
-	//ADD_PROPERTY(PropertyInfo(Variant::BOOL, "apply_scale_first"), "set_apply_scale_first", "get_apply_scale_first");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "pivot_offset"), "set_pivot_offset", "get_pivot_offset");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "pivot_is_relative"), "set_pivot_is_relative", "get_pivot_is_relative");
 
 	ADD_SUBGROUP("Container Sizing", "size_flags_");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "size_flags_horizontal", PROPERTY_HINT_FLAGS, "Fill:1,Expand:2,Shrink Center:4,Shrink End:8"), "set_h_size_flags", "get_h_size_flags");
