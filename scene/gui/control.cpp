@@ -722,9 +722,10 @@ Size2 Control::get_parent_area_size() const {
 
 Transform2D Control::_get_internal_transform() const {
 	// T(pivot_offset) * R(rotation) * S(scale) * T(-pivot_offset)
-	const Size2 size = data.size_cache;
-	Vector2 pivot = data.pivot_offset;
-	if (data.relative_pivot) {
+	const Size2 size = get_size();
+	const bool pivot_is_relative = get_pivot_is_relative();
+	Vector2 pivot = get_pivot_offset();
+	if (pivot_is_relative) {
 		pivot *= size;
 	}
 
@@ -1649,16 +1650,6 @@ void Control::set_pivot_is_relative(bool p_is_relative) {
 	}
 
 	data.relative_pivot = p_is_relative;
-
-	// This bugs when loading from disk.
-	/*
-	const Vector2 size = get_size();
-	if (p_is_relative) {
-		data.pivot_offset /= size;
-	} else {
-		data.pivot_offset *= size;
-	}
-	*/
 	queue_redraw();
 	_notify_transform();
 	queue_accessibility_update();
