@@ -1648,13 +1648,17 @@ void Control::set_pivot_is_relative(bool p_is_relative) {
 		return;
 	}
 
-	const Vector2 size = get_size();
 	data.relative_pivot = p_is_relative;
+
+	// This bugs when loading from disk.
+	/*
+	const Vector2 size = get_size();
 	if (p_is_relative) {
 		data.pivot_offset /= size;
 	} else {
 		data.pivot_offset *= size;
 	}
+	*/
 	queue_redraw();
 	_notify_transform();
 	queue_accessibility_update();
