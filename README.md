@@ -40,8 +40,9 @@ This fork of the Godot Engine is based on **Godot 4.5**, and features several ch
   * The unicode codepoint of the currently rendered glyph, which should be significantly easier to use instead of `get_glyph_index`.
     * A C#-only property exists in this type, implementing [`System.Text.Rune`](https://learn.microsoft.com/en-us/dotnet/api/system.text.rune?view=net-9.0)
 * `MaterialStorage::global_shader_parameter_get` is no longer an error case. The Conservatory uses this to initialize global shader parameters in a manager class.
-* `PhysicsServer3D::body_get_shape_disabled` and `PhysicsServer3D::area_get_shape_disabled` API members added.
-* `PhysicsServer3D::BODY_PARAM_INVERSE_INERTIA_TENSOR` is a new parameter for `PhysicsServer3D::body_get_param`.
+* Added `PhysicsServer3D::body_get_shape_disabled` and `PhysicsServer3D::area_get_shape_disabled` methods.
+* Added `PhysicsServer3D::BODY_PARAM_INVERSE_INERTIA_TENSOR` as a new parameter for `PhysicsServer3D::body_get_param`.
+* Added `Control.pivot_is_relative` which allows the `pivot_offset` property of a `Control` to be declared as a percentage (a range from 0.0f to 1.0f) of the size, rather than in pixels, for dynamically resized nodes.
 
 ### Internal API Changes
 
