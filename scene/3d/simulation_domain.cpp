@@ -108,11 +108,7 @@ void SimulationDomain::_notification(int p_what) {
 		case Node::NOTIFICATION_ENTER_TREE:
 			if (!created_properly) {
 				malformed = true;
-				if (SimulationDomain::declared_cs_methods) {
-					_tc_crash("This SimulationDomain was not created using the correct technique.", "Verifying correct construction procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-				} else {
-					_tc_crash("Xan forgot to statically initialize the simulation class.", "Verifying correct construction procedure (in-engine).", TheConservatoryExitCodes::FATAL_IMPLEMENTATION_ERROR);
-				}
+				_tc_crash("This SimulationDomain was not created using the correct technique.", "Verifying correct construction procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 			} else {
 				Node *my_parent = get_parent();
 				Viewport *parent_viewport = Node::cast_to<Viewport>(my_parent);
@@ -210,7 +206,7 @@ void SimulationDomain::set_active() {
 		}
 		// We know for a fact that it's in the root viewport already.
 		// Also we don't need to call setworld methods on this (via base), as its built in version of this signal
-		// (NOTIFICATION_ENTER_TREE) does all of the code exeuction that doing ^ would achieve.
+		// (NOTIFICATION_ENTER_TREE) does all of the code exeuction that doing so would achieve.
 
 		SimulationDomain::current = nullptr; // This is required for set_world_* to work.
 		parent_viewport->set_world_2d(world2d);
@@ -334,10 +330,12 @@ SimulationDomain::SimulationDomain() {
 	TC_INSTANTIATE(World3D, world3d);
 	set_process_internal(true);
 }
+
 SimulationDomain::~SimulationDomain() {
 	instances.erase(this);
 	if (current == this) {
 		current = nullptr;
+		_tc_active_changed(nullptr);
 	}
 	if (TC_IS_VALID(world2d)) {
 		TC_DELETE(world2d);
