@@ -1,7 +1,3 @@
-NOTE: This license applies to the OFFICIAL Godot engine at https://godotengine.org
-Godot Engine /// The Conservatory Fork does not use the MIT license. Please refer
-to LICENSE.MD for this fork's licensing.
-
 Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md).
 Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.
 
