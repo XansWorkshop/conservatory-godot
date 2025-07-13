@@ -35,6 +35,11 @@ namespace Godot
         /// </summary>
         public const real_t NaN = real_t.NaN;
 
+        /// <summary>
+        /// Constant that represents the number <c>1</c>.
+        /// </summary>
+        public const real_t One = (real_t)1;
+
         // 0.0174532924f and 0.0174532925199433
         private const float DegToRadConstF = (float)0.0174532925199432957692369077M;
         private const double DegToRadConstD = (double)0.0174532925199432957692369077M;
@@ -73,6 +78,32 @@ namespace Godot
         public static double Abs(double s)
         {
             return Math.Abs(s);
+        }
+
+        /// <summary>
+        /// Uses a bitwise test to see if a value is exactly equal to <c>1.0f</c>.
+        /// This can be faster in certain rare circumstances, but is otherwise a micro-optimization
+        /// that may not be entirely useful.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsExactlyOne(float s)
+        {
+            return BitConverter.SingleToUInt32Bits(s) == 0x3F800000u;
+        }
+
+        /// <summary>
+        /// Uses a bitwise test to see if a value is exactly equal to <c>1.0D</c>.
+        /// This can be faster in certain rare circumstances, but is otherwise a micro-optimization
+        /// that may not be entirely useful.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsExactlyOne(double s)
+        {
+            return BitConverter.DoubleToUInt64Bits(s) == 0x3FF00000_00000000UL;
         }
 
         /// <summary>
@@ -1086,6 +1117,27 @@ namespace Godot
         {
             return Math.Abs(s) < EpsilonD;
         }
+
+
+        /// <summary>
+        /// Returns <see langword="true"/> if <paramref name="s"/> is one or almost one.
+        /// The comparison is done by subtracting <c>1</c> from <paramref name="s"/>
+        /// and then calling <see cref="IsZeroApprox(float)"/> on the result.
+        /// </summary>
+        /// <param name="s">The value to check.</param>
+        /// <returns>A <see langword="bool"/> for whether or not the value is nearly zero.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOneApprox(float s) => IsZeroApprox(s - 1.0f);
+
+        /// <summary>
+        /// Returns <see langword="true"/> if <paramref name="s"/> is one or almost one.
+        /// The comparison is done by subtracting <c>1</c> from <paramref name="s"/>
+        /// and then calling <see cref="IsZeroApprox(double)"/> on the result.
+        /// </summary>
+        /// <param name="s">The value to check.</param>
+        /// <returns>A <see langword="bool"/> for whether or not the value is nearly zero.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOneApprox(double s) => IsZeroApprox(s - 1.0D);
 
         /// <summary>
         /// Linearly interpolates between two values by a normalized value.
