@@ -47,7 +47,12 @@ void RichTextEffect::_bind_methods(){
 Variant RichTextEffect::get_bbcode() const {
 	Variant r;
 	if (get_script_instance()) {
-		if (!get_script_instance()->get("bbcode", r)) {
+		const ScriptInstance *script = get_script_instance();
+		bool got_bbcode = script->get("bbcode", r);
+		if (!got_bbcode) {
+			got_bbcode = script->get("BBCode", r);
+		}
+		if (!got_bbcode) {
 			String path = get_script_instance()->get_script()->get_path();
 			r = path.get_file().get_basename();
 		}

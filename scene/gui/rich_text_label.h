@@ -710,6 +710,7 @@ private:
 
 	bool internal_stack_editing = false;
 	bool stack_externally_modified = false;
+	bool is_signaling_parse = false;
 
 	void _accessibility_action_menu(const Variant &p_data);
 	void _accessibility_scroll_down(const Variant &p_data);

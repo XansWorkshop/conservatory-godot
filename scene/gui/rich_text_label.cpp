@@ -5075,8 +5075,18 @@ bool RichTextLabel::is_scroll_following_visible_characters() const {
 }
 
 void RichTextLabel::parse_bbcode(const String &p_bbcode) {
+	if (is_signaling_parse) return;
 	clear();
+
+	is_signaling_parse = true;
+	emit_signal(SNAME("parsing"), false);
+	is_signaling_parse = false;
+
 	append_text(p_bbcode);
+
+	is_signaling_parse = true;
+	emit_signal(SNAME("parsing"), true);
+	is_signaling_parse = false;
 }
 
 String RichTextLabel::_get_tag_value(const String &p_tag) {
@@ -7608,6 +7618,7 @@ void RichTextLabel::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("meta_hover_started", PropertyInfo(Variant::NIL, "meta", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)));
 	ADD_SIGNAL(MethodInfo("meta_hover_ended", PropertyInfo(Variant::NIL, "meta", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)));
 
+	ADD_SIGNAL(MethodInfo("parsing", PropertyInfo(Variant::BOOL, "is_calling_after_parsing")));
 	ADD_SIGNAL(MethodInfo("finished"));
 
 	BIND_ENUM_CONSTANT(LIST_NUMBERS);
