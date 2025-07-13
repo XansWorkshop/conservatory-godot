@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Runtime.CompilerServices;
 
-#nullable disable
+#nullable enable
 namespace Godot {
 
 	partial class CharFXTransform {
@@ -43,7 +43,7 @@ namespace Godot {
         [Obsolete("SimulationDomain disallows the use of QueueFree(). This will crash the game.", true)]
         public new void QueueFree() { }
 
-
+        /*
         [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_memoryOwn")]
         internal static extern bool MemoryOwn(GodotObject godotObject);
 
@@ -65,7 +65,7 @@ namespace Godot {
             GD.PushError("The game will likely crash after this message as a result of this mistake.");
             base.Dispose(disposing);
         }
-
+        */
     }
 
     partial class ConservatoryDebugBridge {
@@ -79,6 +79,66 @@ namespace Godot {
         public static unsafe void InterceptGodotLoggingUsing(delegate*<void*, byte*, int, byte*, int, byte*, int, byte*, int, int, byte, bool, void> callback) {
             InterceptGodotLoggingUsing((nint)callback);
         }
+
+    }
+
+    partial class RichTextLabel {
+
+        /// <summary>
+        /// <strong>Added by The Conservatory; this API is not available in base Godot nor is it available in GDScript.</strong>
+        /// <para/>
+        /// Install a rich text effect by generic type. This just constructs the generic type and calls <see cref="InstallEffect(Variant)"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of effect to install.</typeparam>
+        public void InstallEffect<T>() where T : RichTextEffect, new() {
+            InstallEffect(new T());
+        }
+
+        /// <summary>
+        /// <strong>Added by The Conservatory; this API is not available in base Godot nor is it available in GDScript.</strong>
+        /// <para/>
+        /// Push a custom effect onto the tag stack, for use in procedurally building text. This is an alias that constructs the generic type,
+        /// then calls <see cref="PushCustomfx(Variant, Godot.Collections.Dictionary)"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of effect to install.</typeparam>
+        public void PushCustomfx<T>(Godot.Collections.Dictionary? environment = null) where T : RichTextEffect, new() {
+            PushCustomfx(new T(), environment ?? []);
+        }
+
+        /// <summary>
+        /// <strong>Added by The Conservatory; this API is not available in base Godot nor is it available in GDScript.</strong>
+        /// <para/>
+        /// Push a custom effect onto the tag stack, for use in procedurally building text. This is an alias that constructs the generic type,
+        /// then calls <see cref="PushCustomfx(Variant, Godot.Collections.Dictionary)"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of effect to install.</typeparam>
+        public void PushCustomfx<T>(System.Collections.Generic.IEnumerable<ValueTuple<Variant, Variant>>? environment = null) where T : RichTextEffect, new() {
+            Godot.Collections.Dictionary dict = [];
+            if (environment != null) {
+                foreach ((Variant key, Variant value) in environment) {
+                    dict[key] = value;
+                }
+            }
+
+            PushCustomfx(new T(), dict);
+        }
+
+    }
+
+    partial class RichTextEffect {
+
+        private static readonly StringName BBCODE_NAME = "bbcode";
+
+        /// <summary>
+        /// <strong>Added by The Conservatory; this API is not available in base Godot nor is it available in GDScript.</strong>
+        /// <para/>
+        /// The name of the BBCode tag that must be used.
+        /// </summary>
+        /// <remarks>
+        /// This supersedes Godot's previous requirement for a "bbcode" field, but its default implementation
+        /// will read this field for backwards compatibility.
+        /// </remarks>
+        public virtual string BBCode => (string)Get(BBCODE_NAME);
 
     }
 }
