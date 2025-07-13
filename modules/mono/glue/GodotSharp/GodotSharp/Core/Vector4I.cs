@@ -12,7 +12,7 @@ namespace Godot
     /// </summary>
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Vector4I : IEquatable<Vector4I>
+    public struct Vector4I : IEquatable<Vector4I>, IComparable<Vector4I>
     {
         /// <summary>
         /// Enumerated index values for the axes.
@@ -192,6 +192,19 @@ namespace Godot
         }
 
         /// <summary>
+        /// Returns the Manhattan distance between this vector and <paramref name="to"/>. Manhattan distance is
+        /// also sometimes referred to as "city block distance" in that it measures a grid-based distance
+        /// with no diagonal lines. This is useful for some forms of pathfinding, and is the most optimal
+        /// technique for sorting by distance.
+        /// </summary>
+        /// <param name="to">The other vector to use.</param>
+        /// <returns>The manhattan distance between the two vectors.</returns>
+        public readonly int ManhattanDistanceTo(Vector4I to)
+        {
+            return (to - this).ManhattanLength();
+        }
+
+        /// <summary>
         /// Returns the length (magnitude) of this vector.
         /// </summary>
         /// <seealso cref="LengthSquared"/>
@@ -220,6 +233,19 @@ namespace Godot
             int w2 = W * W;
 
             return x2 + y2 + z2 + w2;
+        }
+
+        /// <summary>
+        /// Returns the Manhattan length of this vector. Manhattan length is also sometimes referred to as "city block distance"
+        /// in that it measures a grid-based distance without diagonal lines.
+        /// This is by far the most optimized technique for finding length. Note that if this is used as a radius in Euler space,
+        /// the shape is not circular, but rather a diamond. This is the best method to use for distance comparison, but note that
+        /// to be accurate, <em>both distances</em> must be measured using this method.
+        /// </summary>
+        /// <returns>The Manhattan length of this vector.</returns>
+        public readonly int ManhattanLength()
+        {
+            return int.Abs(X) + int.Abs(Y) + int.Abs(Z) + int.Abs(W);
         }
 
         /// <summary>
@@ -772,6 +798,18 @@ namespace Godot
         public readonly bool Equals(Vector4I other)
         {
             return X == other.X && Y == other.Y && Z == other.Z && W == other.W;
+        }
+
+        /// <summary>
+        /// Compares the length of this vector to that of <paramref name="other"/>.
+        /// </summary>
+        /// <param name="other">The vector to compare to.</param>
+        /// <returns>-1 if this is shorter than <paramref name="other"/>, 0 if equal, 1 if this is longer than <paramref name="other"/>.</returns>
+        public readonly int CompareTo(Vector4I other)
+        {
+            int myLength = ManhattanLength();
+            int otherLength = other.ManhattanLength();
+            return myLength.CompareTo(otherLength);
         }
 
         /// <summary>
