@@ -80,6 +80,13 @@ void SimulationDomain::_tc_active_changed(const SimulationDomain* p_instance) {
 	}
 }
 
+SimulationDomain *SimulationDomain::get_instance(const int64_t p_native_instance) {
+	if (instances.find((SimulationDomain *)p_native_instance)) {
+		return (SimulationDomain *)p_native_instance;
+	}
+	return nullptr;
+}
+
 int64_t SimulationDomain::set_conservatory_callbacks(const int64_t p_crash, const int64_t p_destroy, const int64_t p_is_client, const int64_t p_active_changed) {
 	if (SimulationDomain::declared_cs_methods) {
 		_tc_crash("Invalid attempt to call SimulationDomain.SetConservatoryCallbacks more than once.", "Verifying the integrity of the simulation", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
@@ -305,6 +312,7 @@ bool SimulationDomain::is_using_own_world_3d() const {
 
 void SimulationDomain::_bind_methods() {
 	ClassDB::bind_static_method("SimulationDomain", D_METHOD("set_conservatory_callbacks", "crash", "destroy_callback", "is_client", "active_changed"), &SimulationDomain::set_conservatory_callbacks);
+	ClassDB::bind_static_method("SimulationDomain", D_METHOD("get_instance", "native_instance"), &SimulationDomain::get_instance);
 
 	ClassDB::bind_method(D_METHOD("get_is_valid"), &SimulationDomain::get_is_valid);
 	ClassDB::bind_method(D_METHOD("get_is_active"), &SimulationDomain::get_active);
