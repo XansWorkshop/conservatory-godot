@@ -48,6 +48,14 @@ This fork of the Godot Engine is based on **Godot 4.5**, and features several ch
 * Added `RichTextLabel.InstallEffect<T>` for C#.
 * Added `RichTextLabel.PushCustomfx<T>` for C#.
 * Added `RichTextLabel.Parsing` signal with one boolean argument, indicating if the call is before or after parsing.
+* `Vector2`, `Vector3`, and `Vector4`:
+  * Are now `IComparable`, which will sort them by length very quickly.
+  * Now have a safer version of `Normalized` which prevents near-but-not-quite zero vectors from returning values that aren't normal (it's niche but was a problem).
+  * Now have a `ManhattanLength` and `ManhattanDistanceTo` method.
+  * Now have an optimized `IsExactlyZero` method.
+* Added `Mathf.IsOneApprox` and `Mathf.IsExactlyOne`. These methods are specially optimized for their exact use cases.
+  * `IsOneApprox` just subtracts 1 before calling `IsZeroApprox`. It's a convenience method.
+  * `IsExactlyOne` uses bitwise representations and the JIT compiler to create fast assembly to compare equality with `1.0f` or `1.0D`.
 
 ### Internal API Changes
 
