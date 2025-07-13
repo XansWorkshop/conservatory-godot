@@ -112,7 +112,7 @@ namespace Godot {
         /// then calls <see cref="PushCustomfx(Variant, Godot.Collections.Dictionary)"/>.
         /// </summary>
         /// <typeparam name="T">The type of effect to install.</typeparam>
-        public void PushCustomfx<T>(System.Collections.Generic.IEnumerable<ValueTuple<Variant, Variant>>? environment = null) where T : RichTextEffect, new() {
+        public void PushCustomfx<T>(System.Collections.Generic.IEnumerable<ValueTuple<Variant, Variant>>? environment) where T : RichTextEffect, new() {
             Godot.Collections.Dictionary dict = [];
             if (environment != null) {
                 foreach ((Variant key, Variant value) in environment) {
@@ -127,18 +127,22 @@ namespace Godot {
 
     partial class RichTextEffect {
 
-        private static readonly StringName BBCODE_NAME = "bbcode";
-
         /// <summary>
-        /// <strong>Added by The Conservatory; this API is not available in base Godot nor is it available in GDScript.</strong>
+        /// <strong>Added by The Conservatory for the .NET Extended API; this API is not available in official Godot builds, nor is it available from GDScript.</strong>
         /// <para/>
         /// The name of the BBCode tag that must be used.
         /// </summary>
         /// <remarks>
-        /// This supersedes Godot's previous requirement for a "bbcode" field, but its default implementation
-        /// will read this field for backwards compatibility.
+        /// Note: This supersedes Godot's previous requirement for a field named <c>bbcode</c>, as additional code has been added
+        /// to find this specific case of the property as well for C# naming convention compliance.
         /// </remarks>
-        public virtual string BBCode => (string)Get(BBCODE_NAME);
+        public virtual string BBCode => (string)Get(PrivateStringNames.BBCODE_NAME);
+
+    }
+
+    file static class PrivateStringNames {
+
+        private static readonly StringName BBCODE_NAME = "bbcode";
 
     }
 }
