@@ -43,6 +43,11 @@ This fork of the Godot Engine is based on **Godot 4.5**, and features several ch
 * Added `PhysicsServer3D::body_get_shape_disabled` and `PhysicsServer3D::area_get_shape_disabled` methods.
 * Added `PhysicsServer3D::BODY_PARAM_INVERSE_INERTIA_TENSOR` as a new parameter for `PhysicsServer3D::body_get_param`.
 * Added `Control.pivot_is_relative` which allows the `pivot_offset` property of a `Control` to be declared as a percentage (a range from 0.0f to 1.0f) of the size, rather than in pixels, for dynamically resized nodes.
+* Added `RichTextEffect.BBCode` virtual property which can be overridden. Its default implementation calls `Get("bbcode")`.
+  * `BBCode` is now a valid member name for Godot's magic field. `bbcode` is still valid but this violates C# naming convention.
+* Added `RichTextLabel.InstallEffect<T>` for C#.
+* Added `RichTextLabel.PushCustomfx<T>` for C#.
+* Added `RichTextLabel.Parsing` signal with one boolean argument, indicating if the call is before or after parsing.
 
 ### Internal API Changes
 
