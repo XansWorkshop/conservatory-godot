@@ -4,7 +4,18 @@
 		An isolated container representing a physics space, scenario, and canvas.
 	</brief_description>
 	<description>
-		[b]This class is [i]strictly managed.[/i][/b] User code can not create new instances of this object; this functionality is reserved for [i]The Fabric of Reality[/i] in [i]The Conservatory[/i]'s code.
+		[admonition type="note" collapsible="true" open="false"]
+			[b]Part of [i]Godot Engine: Conservatory Edition[/i][/b]
+			This is not available in the official build of Godot.
+		[/admonition]
+
+		[admonition type="crucial"]
+			[b]This type is strictly managed and must NEVER be created or destroyed by user code![/b]
+			[SimulationDomain]s are extremely stringent about their operating conditions as they expect to be tied closely to a [manualcref=T:Star3D.World.Galaxy.WorldInstance] and, in the event that a [SimulationDomain] is destroyed or disconnected from a still-operating [manualcref=T:Star3D.World.Galaxy.WorldInstance], it will forcibly crash the game to prevent the inevitable data corruption that will result from you doing this.
+
+			You have been warned!
+		[/admonition]
+
 		An isolated container representing both a 2D and 3D physics space, a render scenario, and a canvas. This is different than a [SubViewport] in that it cannot be rendered to a target; instead, it is intended to be representative of a loaded game world with its own isolated rendering and physics.
 	</description>
 	<tutorials>
