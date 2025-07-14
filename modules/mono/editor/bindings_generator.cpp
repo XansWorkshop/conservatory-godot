@@ -429,6 +429,15 @@ String BindingsGenerator::bbcode_to_text(const String &p_bbcode, const TypeInter
 			// Not supported.
 			pos = brk_end + 1;
 			tag_stack.push_front("font");
+		} else if (tag.begins_with("admonition")) {
+			// Not supported.
+			pos = brk_end + 1;
+			tag_stack.push_front("admonition");
+		} else if (tag.begins_with("manualcref=")) {
+			String cref = tag.substr(11);
+			// Not supported.
+			pos = brk_end + 1;
+			output.append(cref.substr(2));
 		} else {
 			// Ignore unrecognized tag.
 			output.append("[");
@@ -543,14 +552,16 @@ String BindingsGenerator::bbcode_to_xml(const String &p_bbcode, const TypeInterf
 			} else if (tag == "/codeblock") {
 				xml_output.append("</code>");
 			} else if (tag == "/b") {
-				xml_output.append("</b>");
+				xml_output.append("</strong>");
 			} else if (tag == "/i") {
-				xml_output.append("</i>");
+				xml_output.append("</em>");
 			} else if (tag == "/csharp") {
 				xml_output.append("</code>");
 				line_del = true;
 			} else if (tag == "/codeblocks") {
 				line_del = false;
+			} else if (tag == "/admonition") {
+				xml_output.append("</admonition>");
 			}
 		} else if (code_tag) {
 			xml_output.append("[");
@@ -685,12 +696,12 @@ String BindingsGenerator::bbcode_to_xml(const String &p_bbcode, const TypeInterf
 
 			pos = brk_end + 1;
 		} else if (tag == "b") {
-			xml_output.append("<b>");
+			xml_output.append("<strong>");
 
 			pos = brk_end + 1;
 			tag_stack.push_front(tag);
 		} else if (tag == "i") {
-			xml_output.append("<i>");
+			xml_output.append("<em>");
 
 			pos = brk_end + 1;
 			tag_stack.push_front(tag);
@@ -792,6 +803,18 @@ String BindingsGenerator::bbcode_to_xml(const String &p_bbcode, const TypeInterf
 			// Not supported.
 			pos = brk_end + 1;
 			tag_stack.push_front("font");
+		} else if (tag.begins_with("admonition")) {
+			xml_output.append("<");
+			xml_output.append(tag);
+			xml_output.append(">");
+			pos = brk_end + 1;
+			tag_stack.push_front("admonition");
+		} else if (tag.begins_with("manualcref=")) {
+			String cref = tag.substr(11);
+			pos = brk_end + 1;
+			xml_output.append("<see cref=\"");
+			xml_output.append(cref.replace_char('{', '[').replace_char('}', ']'));
+			xml_output.append("\"/>");
 		} else {
 			if (!line_del) {
 				// Ignore unrecognized tag.
