@@ -299,17 +299,17 @@ EditorThemeManager::ThemeConfiguration EditorThemeManager::_create_theme_config(
 				preset_draw_extra_borders = true;
 				preset_relationship_line_opacity = 0.25;
 			} else if (config.preset == "The Iterator Project") {
-				preset_accent_color = Color::from_rgba8(43, 46, 43);
-				preset_base_color = Color::from_rgba8(120, 5, 18);
+				preset_accent_color = Color::from_rgba8(116, 232, 152);
+				preset_base_color = Color::from_rgba8(43, 46, 43);
 				preset_contrast = 0.2;
 				preset_draw_extra_borders = true;
 				preset_relationship_line_opacity = 0.25;
-			} else if (config.preset == "Cultural Analysis: Gaian (Light)") {
+			} else if (config.preset == "Cultural Analysis: Gaian") {
 				preset_accent_color = Color::from_rgba8(78, 161, 255);
-				preset_base_color = Color::from_rgba8(161, 172, 177);
-				preset_contrast = -0.5;
+				preset_base_color = Color::from_rgba8(113, 122, 126);
+				preset_contrast = 0.3;
 				preset_draw_extra_borders = true;
-				preset_relationship_line_opacity = 0.25;
+				preset_relationship_line_opacity = 0.2;
 			} else if (config.preset == "Cultural Analysis: Avelian") {
 				preset_accent_color = Color::from_rgba8(206, 182, 95);
 				preset_base_color = Color::from_rgba8(92, 92, 92);
