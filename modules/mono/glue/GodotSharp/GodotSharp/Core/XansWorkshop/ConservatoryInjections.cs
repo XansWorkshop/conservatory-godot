@@ -5,7 +5,22 @@ using System.Runtime.CompilerServices;
 #nullable enable
 namespace Godot {
 
-	partial class CharFXTransform {
+    #region Interfaces
+
+    /// <summary>
+    /// Container class for interoperability layers between the engine's generated C# types and The Conservatory.
+    /// </summary>
+    public static class ConservatoryInterop {
+
+        
+
+    }
+
+    #endregion
+
+    #region Class Modifications
+
+    partial class CharFXTransform {
 
 		/// <summary>
 		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
@@ -142,6 +157,8 @@ namespace Godot {
 		public virtual string BBCode => (string)Get(PrivateStringNames.BBCODE_NAME);
 
 	}
+
+    #endregion
 
 	file static class PrivateStringNames {
 
