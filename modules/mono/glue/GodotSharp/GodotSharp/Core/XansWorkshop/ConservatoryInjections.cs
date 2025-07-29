@@ -38,8 +38,8 @@ namespace Godot {
 	partial class SimulationDomain {
 
 		/// <inheritdoc cref="SimulationDomain.SetConservatoryCallbacks(long, long, long, long)"/>
-		public static unsafe delegate*<nint> SetConservatoryCallbacks(delegate*<byte*, int, byte*, int, int, void> crash, delegate*<long, bool> tryDestroy, delegate*<bool> isClient, delegate*<long, void> onActiveChanged) {
-			return (delegate*<nint>)((nint)SetConservatoryCallbacks((nint)crash, (nint)tryDestroy, (nint)isClient, (nint)onActiveChanged));
+		public static unsafe delegate*<long> SetConservatoryCallbacks(delegate*<byte*, int, byte*, int, int, void> crash, delegate*<long, bool> tryDestroy, delegate*<bool> isClient, delegate*<long, void> onActiveChanged) {
+			return (delegate*<long>)((nint)SetConservatoryCallbacks((nint)crash, (nint)tryDestroy, (nint)isClient, (nint)onActiveChanged));
 		}
 
 		/// <summary>
