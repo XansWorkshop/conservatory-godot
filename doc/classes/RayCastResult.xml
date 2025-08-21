@@ -5,7 +5,7 @@
 	</brief_description>
 	<description>
 		[admonition type="note" collapsible="true" open="false"]
-			[b]Part of [i]Godot Engine: Conservatory Edition[/i][/b]
+			[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
 			This is not available in the official build of Godot.
 		[/admonition]
 		The result of a raycast operation, typically one dispatched by [RayCast3DDirect]. This is significantly faster than the typical [Dictionary] returned by [method PhysicsDirectSpaceState3D::intersect_ray].

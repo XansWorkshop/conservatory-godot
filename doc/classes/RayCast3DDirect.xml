@@ -5,7 +5,7 @@
 	</brief_description>
 	<description>
 		[admonition type="note" collapsible="true" open="false"]
-			[b]Part of [i]Godot Engine: Conservatory Edition[/i][/b]
+			[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
 			This is not available in the official build of Godot.
 		[/admonition]
 		A ray in 3D space, used to find the first object it intersects. Unlike its sibling, [RayCast3D], this is not a [Node] and does not go into the scene tree. Instead, you must provide the [RID] for the physics space to query yourself, and then manually invoke the cast. This can be done statically, or through an instance. This can provide its results in a [RayCastResult].

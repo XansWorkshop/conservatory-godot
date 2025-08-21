@@ -496,11 +496,18 @@
 		</member>
 	</members>
 	<signals>
-		<signal name="gui_focus_changed">
+		<signal name="gui_focus_changed" is_deprecated="true" deprecated="The Conservatory encourages use of the newer gui_focus_transferred signal.">
 			<param index="0" name="node" type="Control" />
 			<description>
 				Emitted when a Control node grabs keyboard focus.
 				[b]Note:[/b] A Control node losing focus doesn't cause this signal to be emitted.
+			</description>
+		</signal>
+		<signal name="gui_focus_transferred">
+			<param index="0" name="previous" type="Control" />
+			<param index="1" name="current" type="Control" />
+			<description>
+				Emitted when focus changes to a different node, or is removed entirely.
 			</description>
 		</signal>
 		<signal name="size_changed">
