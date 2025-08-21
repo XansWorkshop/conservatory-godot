@@ -2032,6 +2032,7 @@ void LineEdit::set_text(String p_text) {
 	queue_redraw();
 	caret_column = 0;
 	scroll_offset = 0.0;
+	emit_signal(SNAME("text_set"), p_text);
 }
 
 void LineEdit::set_text_with_selection(const String &p_text) {
@@ -2127,6 +2128,7 @@ void LineEdit::clear() {
 	clear_internal();
 	_clear_redo();
 	if (!was_empty) {
+		emit_signal(SNAME("text_set"), "");
 		_emit_text_change();
 	}
 
@@ -3240,6 +3242,7 @@ void LineEdit::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_select_all_on_focus"), &LineEdit::is_select_all_on_focus);
 
 	ADD_SIGNAL(MethodInfo("text_changed", PropertyInfo(Variant::STRING, "new_text")));
+	ADD_SIGNAL(MethodInfo("text_set", PropertyInfo(Variant::STRING, "new_text")));
 	ADD_SIGNAL(MethodInfo("text_change_rejected", PropertyInfo(Variant::STRING, "rejected_substring")));
 	ADD_SIGNAL(MethodInfo("text_submitted", PropertyInfo(Variant::STRING, "new_text")));
 	ADD_SIGNAL(MethodInfo("editing_toggled", PropertyInfo(Variant::BOOL, "toggled_on")));
