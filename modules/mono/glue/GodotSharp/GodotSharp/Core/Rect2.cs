@@ -516,7 +516,7 @@ namespace Godot
         /// <returns></returns>
         public static Rect2 FromSize(real_t sizeX, real_t sizeY)
         {
-            return new Rect2(default, default, size);
+            return new Rect2(default, default, sizeX, sizeY);
         }
 
         /// <summary>

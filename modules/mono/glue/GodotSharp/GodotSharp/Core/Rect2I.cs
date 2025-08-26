@@ -458,7 +458,7 @@ namespace Godot
         /// <returns></returns>
         public static Rect2I FromSize(int sizeX, int sizeY)
         {
-            return new Rect2I(default, default, size);
+            return new Rect2I(default, default, sizeX, sizeY);
         }
 
         /// <summary>
