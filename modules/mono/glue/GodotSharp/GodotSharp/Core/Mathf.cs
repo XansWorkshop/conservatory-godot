@@ -1125,7 +1125,7 @@ namespace Godot
         /// and then calling <see cref="IsZeroApprox(float)"/> on the result.
         /// </summary>
         /// <param name="s">The value to check.</param>
-        /// <returns>A <see langword="bool"/> for whether or not the value is nearly zero.</returns>
+        /// <returns>A <see langword="bool"/> for whether or not the value is nearly one.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsOneApprox(float s) => IsZeroApprox(s - 1.0f);
 
@@ -1135,7 +1135,7 @@ namespace Godot
         /// and then calling <see cref="IsZeroApprox(double)"/> on the result.
         /// </summary>
         /// <param name="s">The value to check.</param>
-        /// <returns>A <see langword="bool"/> for whether or not the value is nearly zero.</returns>
+        /// <returns>A <see langword="bool"/> for whether or not the value is nearly one.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsOneApprox(double s) => IsZeroApprox(s - 1.0D);
 
