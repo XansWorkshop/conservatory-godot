@@ -5479,7 +5479,9 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			Color color = Color(0, 0, 0, 0);
 			OptionMap::Iterator color_option = bbcode_options.find("color");
 			if (color_option) {
-				color = Color::from_string(color_option->value, color);
+				if (!GDVIRTUAL_CALL(_resolve_custom_color, color_option->value, color)) {
+					color = Color::from_string(color_option->value, color);
+				}
 			}
 
 			push_underline(color);
@@ -5493,7 +5495,10 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			Color color = Color(0, 0, 0, 0);
 			OptionMap::Iterator color_option = bbcode_options.find("color");
 			if (color_option) {
-				color = Color::from_string(color_option->value, color);
+				//color = Color::from_string(color_option->value, color);
+				if (!GDVIRTUAL_CALL(_resolve_custom_color, color_option->value, color)) {
+					color = Color::from_string(color_option->value, color);
+				}
 			}
 
 			push_strikethrough(color);
@@ -5813,11 +5818,17 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			}
 			OptionMap::Iterator color_option = bbcode_options.find("color");
 			if (color_option) {
-				color = Color::from_string(color_option->value, color);
+				//color = Color::from_string(color_option->value, color);
+				if (!GDVIRTUAL_CALL(_resolve_custom_color, color_option->value, color)) {
+					color = Color::from_string(color_option->value, color);
+				}
 			}
 			OptionMap::Iterator outline_color_option = bbcode_options.find("outline_color");
 			if (outline_color_option) {
-				outline_color = Color::from_string(outline_color_option->value, outline_color);
+				//outline_color = Color::from_string(outline_color_option->value, outline_color);
+				if (!GDVIRTUAL_CALL(_resolve_custom_color, outline_color_option->value, outline_color)) {
+					outline_color = Color::from_string(outline_color_option->value, outline_color);
+				}
 			}
 
 			int end = bbcode.find_char('[', brk_end);
@@ -5847,7 +5858,10 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			Color color = theme_cache.default_color;
 			OptionMap::Iterator color_option = bbcode_options.find("color");
 			if (color_option) {
-				color = Color::from_string(color_option->value, color);
+				//color = Color::from_string(color_option->value, color);
+				if (!GDVIRTUAL_CALL(_resolve_custom_color, color_option->value, color)) {
+					color = Color::from_string(color_option->value, color);
+				}
 			}
 			int width = 90;
 			bool width_in_percent = true;
@@ -5927,7 +5941,10 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 				Color color = Color(1.0, 1.0, 1.0);
 				OptionMap::Iterator color_option = bbcode_options.find("color");
 				if (color_option) {
-					color = Color::from_string(color_option->value, color);
+					//color = Color::from_string(color_option->value, color);
+					if (!GDVIRTUAL_CALL(_resolve_custom_color, color_option->value, color)) {
+						color = Color::from_string(color_option->value, color);
+					}
 				}
 
 				OptionMap::Iterator alt_text_option = bbcode_options.find("alt");
@@ -6016,14 +6033,21 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			tag_stack.push_front(bbcode_name);
 		} else if (tag.begins_with("color=")) {
 			String color_str = _get_tag_value(tag).unquote();
-			Color color = Color::from_string(color_str, theme_cache.default_color);
+			Color color = theme_cache.default_color;
+			if (!GDVIRTUAL_CALL(_resolve_custom_color, color_str, color)) {
+				color = Color::from_string(color_str, theme_cache.default_color);
+			}
 			push_color(color);
 			pos = brk_end + 1;
 			tag_stack.push_front("color");
 
 		} else if (tag.begins_with("outline_color=")) {
 			String color_str = _get_tag_value(tag).unquote();
-			Color color = Color::from_string(color_str, theme_cache.default_color);
+			//Color color = Color::from_string(color_str, theme_cache.default_color);
+			Color color = theme_cache.default_color;
+			if (!GDVIRTUAL_CALL(_resolve_custom_color, color_str, color)) {
+				color = Color::from_string(color_str, theme_cache.default_color);
+			}
 			push_outline_color(color);
 			pos = brk_end + 1;
 			tag_stack.push_front("outline_color");
@@ -6358,7 +6382,10 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			Color color = Color(1, 1, 1, 0.25);
 			OptionMap::Iterator color_option = bbcode_options.find("color");
 			if (color_option) {
-				color = Color::from_string(color_option->value, color);
+				//color = Color::from_string(color_option->value, color);
+				if (!GDVIRTUAL_CALL(_resolve_custom_color, color_option->value, color)) {
+					color = Color::from_string(color_option->value, color);
+				}
 			}
 
 			float frequency = 1.0;
@@ -7619,6 +7646,8 @@ void RichTextLabel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_menu"), &RichTextLabel::get_menu);
 	ClassDB::bind_method(D_METHOD("is_menu_visible"), &RichTextLabel::is_menu_visible);
 	ClassDB::bind_method(D_METHOD("menu_option", "option"), &RichTextLabel::menu_option);
+
+	GDVIRTUAL_BIND(_resolve_custom_color, "color_name");
 
 	// Note: set "bbcode_enabled" first, to avoid unnecessary "text" resets.
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "bbcode_enabled"), "set_use_bbcode", "is_using_bbcode");

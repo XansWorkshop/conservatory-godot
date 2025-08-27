@@ -711,6 +711,17 @@
 				Updates the existing images with the key [param key]. Only properties specified by [param mask] bits are updated. See [method add_image].
 			</description>
 		</method>
+		<method name="_resolve_custom_color" qualifiers="virtual const">
+			<return type="Color"/>
+			<param index="0" name="color_name" type="String"/>
+			<description>
+				[admonition type="note" collapsible="true" open="false"]
+					[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+					This is not available in the official build of Godot.
+				[/admonition]
+				This virtual method can be overridden to intercept the color lookup when parsing things like the [lb]color[rb] tag. This processes all strings, including hex color codes.
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="autowrap_mode" type="int" setter="set_autowrap_mode" getter="get_autowrap_mode" enum="TextServer.AutowrapMode" default="3">

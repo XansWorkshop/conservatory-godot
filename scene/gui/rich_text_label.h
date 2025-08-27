@@ -985,6 +985,8 @@ public:
 
 	virtual Size2 get_minimum_size() const override;
 
+	GDVIRTUAL1RC(Color, _resolve_custom_color, String)
+
 	RichTextLabel(const String &p_text = String());
 	~RichTextLabel();
 };
