@@ -499,6 +499,8 @@ namespace Godot
         #region The Conservatory
 
         /// <summary>
+		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
+        /// <para/>
         /// Create a new <see cref="Rect2"/> at (0, 0) with the provided size for its width and height.
         /// </summary>
         /// <param name="size"></param>
@@ -509,6 +511,8 @@ namespace Godot
         }
 
         /// <summary>
+		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
+        /// <para/>
         /// Create a new <see cref="Rect2"/> at (0, 0) with the provided <paramref name="sizeX"/> for its width and <paramref name="sizeY"/> for its height.
         /// </summary>
         /// <param name="sizeX"></param>
