@@ -719,7 +719,7 @@
 					[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
 					This is not available in the official build of Godot.
 				[/admonition]
-				This virtual method can be overridden to intercept the color lookup when parsing things like the [lb]color[rb] tag. This processes all strings, including hex color codes.
+				This virtual method can be overridden to intercept the color lookup when parsing things like the \[color] tag. This processes all strings, including hex color codes.
 			</description>
 		</method>
 	</methods>
