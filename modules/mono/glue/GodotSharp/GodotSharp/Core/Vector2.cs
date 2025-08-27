@@ -1149,7 +1149,7 @@ namespace Godot
 #if REAL_T_IS_DOUBLE
             ulong x = BitConverter.DoubleToUInt64Bits(X);
             ulong y = BitConverter.DoubleToUInt64Bits(Y);
-            return ((x | y) & 0x7FFFFFFFFFFFFFFFUL) == 0u
+            return ((x | y) & 0x7FFFFFFFFFFFFFFFUL) == 0u;
 #else
             uint x = BitConverter.SingleToUInt32Bits(X);
             uint y = BitConverter.SingleToUInt32Bits(Y);

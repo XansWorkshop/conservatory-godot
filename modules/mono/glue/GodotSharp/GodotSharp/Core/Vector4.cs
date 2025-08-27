@@ -1042,7 +1042,7 @@ namespace Godot
             ulong y = BitConverter.DoubleToUInt64Bits(Y);
             ulong z = BitConverter.DoubleToUInt64Bits(Z);
             ulong w = BitConverter.DoubleToUInt64Bits(W);
-            return ((x | y | z | w) & 0x7FFFFFFFFFFFFFFFUL) == 0u
+            return ((x | y | z | w) & 0x7FFFFFFFFFFFFFFFUL) == 0u;
 #else
             uint x = BitConverter.SingleToUInt32Bits(X);
             uint y = BitConverter.SingleToUInt32Bits(Y);
