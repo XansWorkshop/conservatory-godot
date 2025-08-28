@@ -293,6 +293,18 @@ namespace Godot
         }
 
         /// <summary>
+        /// Clamps both axes of the provided <paramref name="point"/> such that the point is contained within this
+        /// <see cref="Rect2"/>. If the original <paramref name="point"/> is outside, the resulting position returned
+        /// by this method will be the point nearest to the original
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public readonly Vector2 ConstrainPoint(Vector2 point)
+        {
+            return point.Clamp(Position, End);
+        }
+
+        /// <summary>
         /// Returns <see langword="true"/> if the <see cref="Rect2"/> overlaps with <paramref name="b"/>
         /// (i.e. they have at least one point in common).
         ///
