@@ -265,18 +265,6 @@ namespace Godot
         }
 
         /// <summary>
-        /// Clamps both axes of the provided <paramref name="point"/> such that the point is contained within this
-        /// <see cref="Rect2I"/>. If the original <paramref name="point"/> is outside, the resulting position returned
-        /// by this method will be the point nearest to the original
-        /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        public readonly Vector2I ConstrainPoint(Vector2I point)
-        {
-            return point.Clamp(Position, End);
-        }
-
-        /// <summary>
         /// Returns <see langword="true"/> if the <see cref="Rect2I"/> overlaps with <paramref name="b"/>
         /// (i.e. they have at least one point in common).
         /// </summary>
@@ -475,6 +463,20 @@ namespace Godot
         public static Rect2I FromSize(int sizeX, int sizeY)
         {
             return new Rect2I(default, default, sizeX, sizeY);
+        }
+
+        /// <summary>
+		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
+        /// <para/>
+        /// Clamps both axes of the provided <paramref name="point"/> such that the point is contained within this
+        /// <see cref="Rect2I"/>. If the original <paramref name="point"/> is outside, the resulting position returned
+        /// by this method will be the point nearest to the original
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public readonly Vector2I ConstrainPoint(Vector2I point)
+        {
+            return point.Clamp(Position, End);
         }
 
         /// <summary>
