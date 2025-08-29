@@ -61,6 +61,7 @@ public:
 
 private:
 	bool success = false;
+	Vector3 origin;
 	Vector3 position;
 	Vector3 normal;
 	RID rid;
@@ -92,6 +93,9 @@ protected:
 public:
 	bool get_success() const;
 	void set_success(bool p_success);
+
+	Vector3 get_origin() const;
+	void set_origin(const Vector3 &p_origin);
 
 	Vector3 get_hit_position() const;
 	void set_hit_position(const Vector3 &p_position);

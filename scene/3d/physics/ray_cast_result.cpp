@@ -72,6 +72,9 @@ int RayCastResult::get_face_index() const {
 bool RayCastResult::get_success() const {
 	return success;
 }
+Vector3 RayCastResult::get_origin() const {
+	return origin;
+}
 
 void RayCastResult::set_hit_position(const Vector3 &p_position) {
 	position = p_position;
@@ -109,8 +112,12 @@ void RayCastResult::set_face_index(int p_face_index) {
 void RayCastResult::set_success(bool p_success) {
 	success = p_success;
 }
+void RayCastResult::set_origin(const Vector3 &p_origin) {
+	origin = p_origin;
+}
 
 void RayCastResult::clear() {
+	origin = Vector3();
 	position = Vector3();
 	normal = Vector3();
 	rid = RID();
@@ -124,16 +131,16 @@ void RayCastResult::clear() {
 
 void RayCastResult::copy_to(const Ref<RayCastResult> &p_destination) const {
 	ERR_FAIL_COND_MSG(p_destination.is_null(), "The provided destination object is null.");
-	RayCastResult *other = p_destination.ptr();
-	other->position = position;
-	other->normal = normal;
-	other->rid = rid;
-	other->hit_object_id = hit_object_id;
-	other->hit_object = hit_object;
-	other->shape = shape;
-	other->face_index = face_index;
-	other->type = type;
-	other->success = success;
+	p_destination->origin = origin;
+	p_destination->position = position;
+	p_destination->normal = normal;
+	p_destination->rid = rid;
+	p_destination->hit_object_id = hit_object_id;
+	p_destination->hit_object = hit_object;
+	p_destination->shape = shape;
+	p_destination->face_index = face_index;
+	p_destination->type = type;
+	p_destination->success = success;
 }
 
 void RayCastResult::_bind_methods() {
@@ -146,6 +153,7 @@ void RayCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_collider_type"), &RayCastResult::get_collider_type);
 	ClassDB::bind_method(D_METHOD("get_shape_index"), &RayCastResult::get_shape_index);
 	ClassDB::bind_method(D_METHOD("get_face_index"), &RayCastResult::get_face_index);
+	ClassDB::bind_method(D_METHOD("get_origin"), &RayCastResult::get_origin);
 
 	ClassDB::bind_method(D_METHOD("set_success", "success"), &RayCastResult::set_success);
 	ClassDB::bind_method(D_METHOD("set_hit_position", "position"), &RayCastResult::set_hit_position);
@@ -155,6 +163,7 @@ void RayCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_collider_type", "type"), &RayCastResult::set_collider_type);
 	ClassDB::bind_method(D_METHOD("set_shape_index", "shape_index"), &RayCastResult::set_shape_index);
 	ClassDB::bind_method(D_METHOD("set_face_index", "face_index"), &RayCastResult::set_face_index);
+	ClassDB::bind_method(D_METHOD("set_origin", "origin"), &RayCastResult::set_origin);
 
 	ClassDB::bind_method(D_METHOD("clear"), &RayCastResult::clear);
 	ClassDB::bind_method(D_METHOD("copy_to", "destination"), &RayCastResult::copy_to);
@@ -168,6 +177,7 @@ void RayCastResult::_bind_methods() {
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_type", PROPERTY_HINT_ENUM, "invalid,area,body,soft_body"), "set_collider_type", "get_collider_type");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_shape_index", PROPERTY_HINT_NONE), "set_shape_index", "get_shape_index");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_face_index", PROPERTY_HINT_NONE), "set_face_index", "get_face_index");
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "origin", PROPERTY_HINT_NONE), "set_origin", "get_origin");
 
 	BIND_ENUM_CONSTANT(INVALID);
 	BIND_ENUM_CONSTANT(AREA);

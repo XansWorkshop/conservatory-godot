@@ -164,6 +164,7 @@ bool RayCast3DDirect::cast(const RID &p_space) {
 }
 
 void RayCast3DDirect::store_in_result(const Ref<RayCastResult> &p_result) const {
+	p_result->set_origin(source_position);
 	p_result->set_hit_position(collision_point);
 	p_result->set_hit_normal(collision_normal);
 	p_result->set_rid(against_rid);
@@ -183,6 +184,7 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 	
 	PhysicsDirectSpaceState3D::RayResult rr;
 	if (dss->intersect_ray(p_parameters->get_parameters(), rr)) {
+		p_result->set_origin(p_parameters->get_from());
 		p_result->set_hit_position(rr.position);
 		p_result->set_hit_normal(rr.normal);
 		p_result->set_rid(rr.rid);
