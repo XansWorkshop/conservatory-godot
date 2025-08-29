@@ -287,50 +287,19 @@ namespace Godot
         }
 
         /// <summary>
-        /// Returns the dot product of this vector and <paramref name="with"/>.
+        /// Returns the Chebyshev distance between this vector and <paramref name="to"/>. Chebyshev distance is
+        /// almost the same as Manhattan distance, but diagonal grid spaces are considered to be 1 unit away as well.
+        /// Think of a Queen on a chessboard moving 1 tile; this "1 tile" is any of the 8 directly around the Queen,
+        /// including the diagonals.
         /// </summary>
-        /// <param name="with">The other vector to use.</param>
-        /// <returns>The dot product of the two vectors.</returns>
-        public readonly real_t Dot(Vector4 with)
+        /// <remarks>
+        /// For a visual example, refer to this image: <see href="https://en.wikipedia.org/wiki/File:Minkowski_distance_examples.svg"/>
+        /// </remarks>
+        /// <param name="to">The other vector to use.</param>
+        /// <returns>The Chebyshev distance between the two vectors.</returns>
+        public readonly real_t ChebyshevDistanceTo(Vector4 to)
         {
-            return (X * with.X) + (Y * with.Y) + (Z * with.Z) + (W * with.W);
-        }
-
-        /// <summary>
-        /// Returns a new vector with all components rounded down (towards negative infinity).
-        /// </summary>
-        /// <returns>A vector with <see cref="Mathf.Floor(real_t)"/> called on each component.</returns>
-        public readonly Vector4 Floor()
-        {
-            return new Vector4(Mathf.Floor(X), Mathf.Floor(Y), Mathf.Floor(Z), Mathf.Floor(W));
-        }
-
-        /// <summary>
-        /// Returns the inverse of this vector. This is the same as <c>new Vector4(1 / v.X, 1 / v.Y, 1 / v.Z, 1 / v.W)</c>.
-        /// </summary>
-        /// <returns>The inverse of this vector.</returns>
-        public readonly Vector4 Inverse()
-        {
-            return new Vector4(1 / X, 1 / Y, 1 / Z, 1 / W);
-        }
-
-        /// <summary>
-        /// Returns <see langword="true"/> if this vector is finite, by calling
-        /// <see cref="Mathf.IsFinite(real_t)"/> on each component.
-        /// </summary>
-        /// <returns>Whether this vector is finite or not.</returns>
-        public readonly bool IsFinite()
-        {
-            return Mathf.IsFinite(X) && Mathf.IsFinite(Y) && Mathf.IsFinite(Z) && Mathf.IsFinite(W);
-        }
-
-        /// <summary>
-        /// Returns <see langword="true"/> if the vector is normalized, and <see langword="false"/> otherwise.
-        /// </summary>
-        /// <returns>A <see langword="bool"/> indicating whether or not the vector is normalized.</returns>
-        public readonly bool IsNormalized()
-        {
-            return Mathf.IsOneApprox(LengthSquared());
+            return (this - to).ChebyshevLength();
         }
 
         /// <summary>
@@ -376,6 +345,70 @@ namespace Godot
         public readonly real_t ManhattanLength()
         {
             return Mathf.Abs(X) + Mathf.Abs(Y) + Mathf.Abs(Z) + Mathf.Abs(W);
+        }
+
+        /// <summary>
+        /// Returns the Chebyshev length of this vector. This is similar to Manhattan length, but diagonal grid spaces are considered
+        /// to be 1 unit of length as well (think of a Queen on a chessboard moving 1 tile; this "1 tile" is any of the 8 directly around
+        /// the Queen, including the diagonals). In 4D, the diagonals on all three axes (i.e. top front right [incomprehensible eldritch word])
+        /// are also considered to be of distance 1.
+        /// Note that if this is used as a radius in Euclidean space, the shape is not a hypersphere, but rather a tesseract.
+        /// To be accurate in comparisons, <em>both distances</em> must be measured using this method.
+        /// </summary>
+        /// <remarks>
+        /// For a visual example, refer to this image: <see href="https://en.wikipedia.org/wiki/File:Minkowski_distance_examples.svg"/>
+        /// </remarks>
+        /// <returns>The Chebyshev length of this vector.</returns>
+        public readonly real_t ChebyshevLength()
+        {
+            return Mathf.Max(Mathf.Max(Mathf.Abs(X), Mathf.Abs(Y)), Mathf.Max(Mathf.Abs(Z), Mathf.Abs(W)));
+        }
+
+        /// <summary>
+        /// Returns the dot product of this vector and <paramref name="with"/>.
+        /// </summary>
+        /// <param name="with">The other vector to use.</param>
+        /// <returns>The dot product of the two vectors.</returns>
+        public readonly real_t Dot(Vector4 with)
+        {
+            return (X * with.X) + (Y * with.Y) + (Z * with.Z) + (W * with.W);
+        }
+
+        /// <summary>
+        /// Returns a new vector with all components rounded down (towards negative infinity).
+        /// </summary>
+        /// <returns>A vector with <see cref="Mathf.Floor(real_t)"/> called on each component.</returns>
+        public readonly Vector4 Floor()
+        {
+            return new Vector4(Mathf.Floor(X), Mathf.Floor(Y), Mathf.Floor(Z), Mathf.Floor(W));
+        }
+
+        /// <summary>
+        /// Returns the inverse of this vector. This is the same as <c>new Vector4(1 / v.X, 1 / v.Y, 1 / v.Z, 1 / v.W)</c>.
+        /// </summary>
+        /// <returns>The inverse of this vector.</returns>
+        public readonly Vector4 Inverse()
+        {
+            return new Vector4(1 / X, 1 / Y, 1 / Z, 1 / W);
+        }
+
+        /// <summary>
+        /// Returns <see langword="true"/> if this vector is finite, by calling
+        /// <see cref="Mathf.IsFinite(real_t)"/> on each component.
+        /// </summary>
+        /// <returns>Whether this vector is finite or not.</returns>
+        public readonly bool IsFinite()
+        {
+            return Mathf.IsFinite(X) && Mathf.IsFinite(Y) && Mathf.IsFinite(Z) && Mathf.IsFinite(W);
+        }
+
+        /// <summary>
+        /// Returns <see langword="true"/> if the vector is normalized, and <see langword="false"/> otherwise.
+        /// </summary>
+        /// <returns>A <see langword="bool"/> indicating whether or not the vector is normalized.</returns>
+        public readonly bool IsNormalized()
+        {
+            return Mathf.IsOneApprox(LengthSquared());
         }
 
         /// <summary>
