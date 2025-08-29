@@ -52,7 +52,12 @@ This fork of the Godot Engine is based on **Godot 4.5**, and features several ch
   * Are now `IComparable`, which will sort them by length very quickly.
   * Now have a safer version of `Normalized` which prevents near-but-not-quite zero vectors from returning values that aren't normal (it's niche but was a problem).
   * Now have a `ManhattanLength` and `ManhattanDistanceTo` method.
+  * Now have a `ChebyshevLength` and `ChebyshevDistanceTo` method.
   * Now have an optimized `IsExactlyZero` method.
+* `Rect2` and `Rect2I`:
+  * Added `FromSize` methods.
+  * Added arithmetic operators `+` and `-` with `Vector2(I)` to translate, and `Rect2(I)` to translate and resize.
+  * Added arithmetic operator `&` which is the same as `Intersect()`
 * Added `Mathf.IsOneApprox` and `Mathf.IsExactlyOne`. These methods are specially optimized for their exact use cases.
   * `IsOneApprox` just subtracts 1 before calling `IsZeroApprox`. It's a convenience method.
   * `IsExactlyOne` uses bitwise representations and the JIT compiler to create fast assembly to compare equality with `1.0f` or `1.0D`.
