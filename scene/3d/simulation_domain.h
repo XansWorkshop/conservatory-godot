@@ -73,6 +73,7 @@ class SimulationDomain : public Viewport {
 
 		/// <summary>
 		/// This exit code is used when all is well.
+		/// Biohazardous excrement has not hit the three-phase rotary oscillator. This time.
 		/// </summary>
 		OK,
 
@@ -135,9 +136,27 @@ class SimulationDomain : public Viewport {
 		FATAL_IMPLEMENTATION_ERROR,
 
 		/// <summary>
+		/// Some piece of code attempted to access or call an unauthorized method or field, violating mod security constraints
+		/// that are intended to prevent malware from being stored in mods.
+		/// </summary>
+		FATAL_CODE_SECURITY_VIOLATION,
+
+		/// <summary>
 		/// This is an int flag that can be added to an error code to denote it should not be reported.
 		/// </summary>
-		FLAG_DISALLOW_REPORTING = 0x8000,
+		FLAG_DISALLOW_REPORTING = 0x8000 << 0,
+
+		/// <summary>
+		/// This is an int flag that can be added to an error code to denote the error as one of those ones that
+		/// should <em>theoretically</em> be impossible to trigger (i.e. the code will stop before it ever makes
+		/// it to this point).
+		/// <para/>
+		/// The presence of this flag is indicative of a modder using <see cref="HarmonyLib.Harmony"/> in a way
+		/// that has altered control flow unfavorably, bypassing whatever vanilla check would prevent this point
+		/// from being reached. Please consider verifying that you have written any IL patches properly before
+		/// an error with this flag.
+		/// </summary>
+		FLAG_NOT_LIKELY_VANILLA = 0x8000 << 1,
 
 	};
 
