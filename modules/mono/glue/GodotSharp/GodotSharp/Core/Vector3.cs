@@ -118,6 +118,7 @@ namespace Godot
                     real_t length = Mathf.Sqrt(lengthsq);
                     X /= length;
                     Y /= length;
+                    Z /= length;
                 }
             } while (true);
         }
