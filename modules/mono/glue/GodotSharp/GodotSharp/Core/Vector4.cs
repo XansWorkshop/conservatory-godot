@@ -276,6 +276,11 @@ namespace Godot
         }
 
         /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
         /// Returns the Manhattan distance between this vector and <paramref name="to"/>. Manhattan distance is
         /// also sometimes referred to as "city block distance" in that it measures a grid-based distance, rather
         /// than the direct line distance. This is useful for some forms of pathfinding, and is the most optimal
@@ -289,6 +294,11 @@ namespace Godot
         }
 
         /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
         /// Returns the Chebyshev distance between this vector and <paramref name="to"/>. Chebyshev distance is
         /// almost the same as Manhattan distance, but diagonal grid spaces are considered to be 1 unit away as well.
         /// Think of a Queen on a chessboard moving 1 tile; this "1 tile" is any of the 8 directly around the Queen,
@@ -337,6 +347,11 @@ namespace Godot
         }
 
         /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
         /// Returns the Manhattan length of this vector. Manhattan length is also sometimes referred to as "city block distance"
         /// in that it measures a grid-based distance without diagonal lines.
         /// This is by far the most optimized technique for finding length. Note that if this is used as a radius in Euler space,
@@ -350,6 +365,11 @@ namespace Godot
         }
 
         /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
         /// Returns the Chebyshev length of this vector. This is similar to Manhattan length, but diagonal grid spaces are considered
         /// to be 1 unit of length as well (think of a Queen on a chessboard moving 1 tile; this "1 tile" is any of the 8 directly around
         /// the Queen, including the diagonals). In 4D, the diagonals on all three axes (i.e. top front right [incomprehensible eldritch word])
