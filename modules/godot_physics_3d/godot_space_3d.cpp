@@ -203,6 +203,7 @@ bool GodotPhysicsDirectSpaceState3D::intersect_ray(const RayParameters &p_parame
 	r_result.position = res_point;
 	r_result.rid = res_obj->get_self();
 	r_result.shape = res_shape;
+	r_result.type = (int)res_obj->get_type() + 1;
 
 	return true;
 }
@@ -372,6 +373,8 @@ bool GodotPhysicsDirectSpaceState3D::cast_motion(const ShapeParameters &p_parame
 				Vector3 rel_vec = closest_B - (body->get_transform().origin + body->get_center_of_mass());
 				r_info->linear_velocity = body->get_linear_velocity() + (body->get_angular_velocity()).cross(rel_vec);
 			}
+
+			r_info->type = ((int)col_obj->get_type()) + 1;
 		}
 	}
 
@@ -567,6 +570,8 @@ bool GodotPhysicsDirectSpaceState3D::rest_info(const ShapeParameters &p_paramete
 	} else {
 		r_info->linear_velocity = Vector3();
 	}
+
+	r_info->type = ((int)rcd.best_result.object->get_type()) + 1;
 
 	return true;
 }

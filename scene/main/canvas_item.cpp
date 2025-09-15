@@ -1455,6 +1455,7 @@ void CanvasItem::_bind_methods() {
 	// ADD_PROPERTY(PropertyInfo(Variant::BOOL,"transform/notify"),"set_transform_notify","is_transform_notify_enabled");
 
 	ADD_SIGNAL(MethodInfo("draw"));
+	ADD_SIGNAL(MethodInfo("draw_early"));
 	ADD_SIGNAL(MethodInfo("visibility_changed"));
 	ADD_SIGNAL(MethodInfo("hidden"));
 	ADD_SIGNAL(MethodInfo("item_rect_changed"));

@@ -1,78 +1,69 @@
-# Godot Engine
+# Godot Engine /// The Conservatory Fork
 
-<p align="center">
-  <a href="https://godotengine.org">
-    <img src="logo_outlined.svg" width="400" alt="Godot Engine logo">
-  </a>
-</p>
+> [!NOTE]  
+> This is not the official repository of Godot. Please visit https://godotengine.org or https://github.com/godotengine/godot for the original repo.
 
-## 2D and 3D cross-platform game engine
+This fork of the Godot Engine is based on **Godot 4.5**, and features several changes made specifically for games developed by [Xan's Workshop](https://xansworkshop.com) (in particular, *The Conservatory*).
 
-**[Godot Engine](https://godotengine.org) is a feature-packed, cross-platform
-game engine to create 2D and 3D games from a unified interface.** It provides a
-comprehensive set of [common tools](https://godotengine.org/features), so that
-users can focus on making games without having to reinvent the wheel. Games can
-be exported with one click to a number of platforms, including the major desktop
-platforms (Linux, macOS, Windows), mobile platforms (Android, iOS), as well as
-Web-based platforms and [consoles](https://docs.godotengine.org/en/latest/tutorials/platform/consoles.html).
+## Changes
 
-## Free, open source and community-driven
+### Build System Changes
 
-Godot is completely free and open source under the very permissive [MIT license](https://godotengine.org/license).
-No strings attached, no royalties, nothing. The users' games are theirs, down
-to the last line of engine code. Godot's development is fully independent and
-community-driven, empowering users to help shape their engine to match their
-expectations. It is supported by the [Godot Foundation](https://godot.foundation/)
-not-for-profit.
+* New SCons parameter `allow_break_on_error` and a corresponding `TC_ALLOW_BREAK_ON_ERROR` macro that is defined when enabled (see API changes)
 
-Before being open sourced in [February 2014](https://github.com/godotengine/godot/commit/0b806ee0fc9097fa7bda7ac0109191c9c5e0a1ac),
-Godot had been developed by [Juan Linietsky](https://github.com/reduz) and
-[Ariel Manzur](https://github.com/punto-) (both still maintaining the project)
-for several years as an in-house engine, used to publish several work-for-hire
-titles.
+### Public API Changes
 
-![Screenshot of a 3D scene in the Godot Engine editor](https://raw.githubusercontent.com/godotengine/godot-design/master/screenshots/editor_tps_demo_1920x1080.jpg)
+> [!NOTE]
+> Some changes are C#-only, and have no analogue nor enforcement in GDScript, making them impossible to use in GDScript or unfeasible. This is because this fork of the engine is specifically made for The Conservatory. While some features could likely be merged in with the main engine, not all of them can be (nor should they be).
 
-## Getting the engine
+* New `ConservatoryDebugBridge` type for development builds of the engine.
+  * C++ code now contains a breakpoint in all error macros. It is only available if `TC_ALLOW_BREAK_ON_ERROR` is defined (see Build System Changes above).
+  * Initializing the debug bridge requires providing a pointer to a static field from C#, this field is a boolean value and determines whether or not the breakpoint should be triggered. It also wants a pointer to the getter for `Debugger.IsAttached`.
+  * This system ensures `__debugbreak()` only gets fired when allowed to by the engine (for code cleanliness in release builds) and when a managed debugger is attached.
+* Non-node-based `RayCast3DDirect` and `ShapeCast3DDirect` types, which allow for fast, compartmentalized raycasting and shapecasting on demand.
+  * This operates much faster than the `PhysicsServer3D.intersect_ray` and `PhysicsServer3D.intersect_shape` methods, by avoiding the `Dictionary` return type.
+  * This is "compartmentalized" in that these types still have the properties needed to store both parameters for the cast, and the result of said cast, making them isolated objects that can be dispatched to represent a single operation.
+  * If desired, static methods to cast also exist that accept parameters and return a result.
+* `SimulationDomain` is a class extending `Viewport` designed for the sole purpose of isolated simulation of both a 3D and 2D world.
+  * Unlike `SubViewport`, this type *can not* render to a target. Instead, on the game client, it must be made active. This will cause it to override the rendering of the main window by setting the worlds (both 3D and 2D) of the game's root viewport to that of the `SimulationDomain`.
+  * While `SimulationDomain` does inherit all properties and methods of `Viewport`, using these methods will always redirect the call to the active viewport. This ensures that the rather hacky nature of its existence remains compatible.
+* Support for `#pragma features` and `#pragma exclusive_variants` in the shader language, to allow static variant support.
+* Expose `set_include_path` and `get_include_path` in `Shader` (includes C# property `IncludePath`).
+  * This property's usage is shared with the engine: It can be used to make `#include` statements work when the shader is created during runtime, without requiring its resource path to be set.
+* Assorted improvements to `Engine::get_version_info`
+  * Added `version` field, which is a stringified version following GD's display rules i.e. "4.5" instead of "4.5.0".
+  * Added `commit` field mimicking the git commit, 6 characters long. It's the same as the `hash` field. Set to `000000` if an error occurs.
+  * Added `modules` field, which includes stuff like `mono`, `double`, etc. as a string array, separated out by the `.` character.
+* `CharFXTransform` upgrades, including:
+  * A reference to the current label being rendered at the time of the effect call (init-only)
+  * The font size at the currently rendered glyph (init-only)
+  * The unicode codepoint of the currently rendered glyph, which should be significantly easier to use instead of `get_glyph_index`.
+    * A C#-only property exists in this type, implementing [`System.Text.Rune`](https://learn.microsoft.com/en-us/dotnet/api/system.text.rune?view=net-9.0)
+* `MaterialStorage::global_shader_parameter_get` is no longer an error case. The Conservatory uses this to initialize global shader parameters in a manager class.
+* Added `PhysicsServer3D::body_get_shape_disabled` and `PhysicsServer3D::area_get_shape_disabled` methods.
+* Added `PhysicsServer3D::BODY_PARAM_INVERSE_INERTIA_TENSOR` as a new parameter for `PhysicsServer3D::body_get_param`.
+* Added `Control.pivot_is_relative` which allows the `pivot_offset` property of a `Control` to be declared as a percentage (a range from 0.0f to 1.0f) of the size, rather than in pixels, for dynamically resized nodes.
+* Added `RichTextEffect.BBCode` virtual property which can be overridden. Its default implementation calls `Get("bbcode")`.
+  * `BBCode` is now a valid member name for Godot's magic field. `bbcode` is still valid but this violates C# naming convention.
+* Added `RichTextLabel.InstallEffect<T>` for C#.
+* Added `RichTextLabel.PushCustomfx<T>` for C#.
+* Added `RichTextLabel.Parsing` signal with one boolean argument, indicating if the call is before or after parsing.
+* `Vector2`, `Vector3`, and `Vector4`:
+  * Are now `IComparable`, which will sort them by length very quickly.
+  * Now have a safer version of `Normalized` which prevents near-but-not-quite zero vectors from returning values that aren't normal (it's niche but was a problem).
+  * Now have a `ManhattanLength` and `ManhattanDistanceTo` method.
+  * Now have a `ChebyshevLength` and `ChebyshevDistanceTo` method.
+  * Now have an optimized `IsExactlyZero` method.
+* `Rect2` and `Rect2I`:
+  * Added `FromSize` methods.
+  * Added arithmetic operators `+` and `-` with `Vector2(I)` to translate, and `Rect2(I)` to translate and resize.
+  * Added arithmetic operator `&` which is the same as `Intersect()`
+* Added `Mathf.IsOneApprox` and `Mathf.IsExactlyOne`. These methods are specially optimized for their exact use cases.
+  * `IsOneApprox` just subtracts 1 before calling `IsZeroApprox`. It's a convenience method.
+  * `IsExactlyOne` uses bitwise representations and the JIT compiler to create fast assembly to compare equality with `1.0f` or `1.0D`.
 
-### Binary downloads
+### Internal API Changes
 
-Official binaries for the Godot editor and the export templates can be found
-[on the Godot website](https://godotengine.org/download).
-
-### Compiling from source
-
-[See the official docs](https://docs.godotengine.org/en/latest/engine_details/development/compiling)
-for compilation instructions for every supported platform.
-
-## Community and contributing
-
-Godot is not only an engine but an ever-growing community of users and engine
-developers. The main community channels are listed [on the homepage](https://godotengine.org/community).
-
-The best way to get in touch with the core engine developers is to join the
-[Godot Contributors Chat](https://chat.godotengine.org).
-
-To get started contributing to the project, see the [contributing guide](CONTRIBUTING.md).
-This document also includes guidelines for reporting bugs.
-
-## Documentation and demos
-
-The official documentation is hosted on [Read the Docs](https://docs.godotengine.org).
-It is maintained by the Godot community in its own [GitHub repository](https://github.com/godotengine/godot-docs).
-
-The [class reference](https://docs.godotengine.org/en/latest/classes/)
-is also accessible from the Godot editor.
-
-We also maintain official demos in their own [GitHub repository](https://github.com/godotengine/godot-demo-projects)
-as well as a list of [awesome Godot community resources](https://github.com/godotengine/awesome-godot).
-
-There are also a number of other
-[learning resources](https://docs.godotengine.org/en/latest/community/tutorials.html)
-provided by the community, such as text and video tutorials, demos, etc.
-Consult the [community channels](https://godotengine.org/community)
-for more information.
-
-[![Code Triagers Badge](https://www.codetriage.com/godotengine/godot/badges/users.svg)](https://www.codetriage.com/godotengine/godot)
-[![Translate on Weblate](https://hosted.weblate.org/widgets/godot-engine/-/godot/svg-badge.svg)](https://hosted.weblate.org/engage/godot-engine/?utm_source=widget)
-[![TODOs](https://badgen.net/https/api.tickgit.com/badgen/github.com/godotengine/godot)](https://www.tickgit.com/browse?repo=github.com/godotengine/godot)
+* New `ADD_READONLY_PROPERTY` macro and `ADD_INITONLY_PROPERTY` macro.
+  * Read-only properties apply to C# and GDScript by simply not having a setter.
+  * Init-only properties **Are C# Only** as they make use of the `init` keyword, which does not exist in GDScript. In GDScript they appear as normal properties.

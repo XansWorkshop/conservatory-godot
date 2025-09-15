@@ -513,6 +513,20 @@ bool JoltPhysicsDirectSpaceState3D::intersect_ray(const RayParameters &p_paramet
 	r_result.collider_id = object->get_instance_id();
 	r_result.collider = object->get_instance();
 	r_result.shape = 0;
+	switch (object->get_type()) {
+		case JoltObject3D::ObjectType::OBJECT_TYPE_INVALID:
+			r_result.type = 0;
+			break;
+		case JoltObject3D::ObjectType::OBJECT_TYPE_AREA:
+			r_result.type = 1;
+			break;
+		case JoltObject3D::ObjectType::OBJECT_TYPE_BODY:
+			r_result.type = 2;
+			break;
+		case JoltObject3D::ObjectType::OBJECT_TYPE_SOFT_BODY:
+			r_result.type = 3;
+			break;
+	}
 
 	if (const JoltShapedObject3D *shaped_object = object->as_shaped()) {
 		const int shape_index = shaped_object->find_shape_index(sub_shape_id);
@@ -778,6 +792,21 @@ bool JoltPhysicsDirectSpaceState3D::rest_info(const ShapeParameters &p_parameter
 	r_info->rid = object->get_rid();
 	r_info->collider_id = object->get_instance_id();
 	r_info->linear_velocity = object->get_velocity_at_position(hit_point);
+
+	switch (object->get_type()) {
+		case JoltObject3D::ObjectType::OBJECT_TYPE_INVALID:
+			r_info->type = 0;
+			break;
+		case JoltObject3D::ObjectType::OBJECT_TYPE_AREA:
+			r_info->type = 1;
+			break;
+		case JoltObject3D::ObjectType::OBJECT_TYPE_BODY:
+			r_info->type = 2;
+			break;
+		case JoltObject3D::ObjectType::OBJECT_TYPE_SOFT_BODY:
+			r_info->type = 3;
+			break;
+	}
 
 	return true;
 }

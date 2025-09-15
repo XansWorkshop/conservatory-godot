@@ -12,7 +12,7 @@ namespace Godot
     /// </summary>
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Vector3 : IEquatable<Vector3>
+    public struct Vector3 : IEquatable<Vector3>, IComparable<Vector3>
     {
         /// <summary>
         /// Enumerated index values for the axes.
@@ -107,19 +107,20 @@ namespace Godot
 
         internal void Normalize()
         {
-            real_t lengthsq = LengthSquared();
-
-            if (lengthsq == 0)
-            {
-                X = Y = Z = 0f;
-            }
-            else
-            {
-                real_t length = Mathf.Sqrt(lengthsq);
-                X /= length;
-                Y /= length;
-                Z /= length;
-            }
+            do { 
+                real_t lengthsq = LengthSquared();
+                if (lengthsq == 0) {
+                    X = Y = Z = 0f;
+                    return;
+                } else if (Mathf.IsNaN(lengthsq) || Mathf.IsOneApprox(lengthsq)) {
+                    return;
+                } else {
+                    real_t length = Mathf.Sqrt(lengthsq);
+                    X /= length;
+                    Y /= length;
+                    Z /= length;
+                }
+            } while (true);
         }
 
         /// <summary>
@@ -303,8 +304,8 @@ namespace Godot
 
         /// <summary>
         /// Returns the squared distance between this vector and <paramref name="to"/>.
-        /// This method runs faster than <see cref="DistanceTo"/>, so prefer it if
-        /// you need to compare vectors or need the squared distance for some formula.
+        /// This method runs faster than <see cref="DistanceTo"/>. Note that for distance
+        /// comparisons, <see cref="ManhattanDistanceTo"/> is the most optimized technique.
         /// </summary>
         /// <param name="to">The other vector to use.</param>
         /// <returns>The squared distance between the two vectors.</returns>
@@ -322,6 +323,115 @@ namespace Godot
         public readonly real_t DistanceTo(Vector3 to)
         {
             return (to - this).Length();
+        }
+
+        /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
+        /// Returns the Manhattan distance between this vector and <paramref name="to"/>. Manhattan distance is
+        /// also sometimes referred to as "city block distance" in that it measures a grid-based distance, rather
+        /// than the direct line distance. This is useful for some forms of pathfinding, and is the most optimal
+        /// technique for sorting by distance as this does only addition.
+        /// </summary>
+        /// <param name="to">The other vector to use.</param>
+        /// <returns>The manhattan distance between the two vectors.</returns>
+        public readonly real_t ManhattanDistanceTo(Vector3 to)
+        {
+            return (to - this).ManhattanLength();
+        }
+
+        /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
+        /// Returns the Chebyshev distance between this vector and <paramref name="to"/>. Chebyshev distance is
+        /// almost the same as Manhattan distance, but diagonal grid spaces are considered to be 1 unit away as well.
+        /// Think of a Queen on a chessboard moving 1 tile; this "1 tile" is any of the 8 directly around the Queen,
+        /// including the diagonals.
+        /// </summary>
+        /// <remarks>
+        /// For a visual example, refer to this image: <see href="https://en.wikipedia.org/wiki/File:Minkowski_distance_examples.svg"/>
+        /// </remarks>
+        /// <param name="to">The other vector to use.</param>
+        /// <returns>The Chebyshev distance between the two vectors.</returns>
+        public readonly real_t ChebyshevDistanceTo(Vector3 to)
+        {
+            return (this - to).ChebyshevLength();
+        }
+
+        /// <summary>
+        /// Returns the length (magnitude) of this vector.
+        /// </summary>
+        /// <seealso cref="LengthSquared"/>
+        /// <returns>The length of this vector.</returns>
+        public readonly real_t Length()
+        {
+            real_t x2 = X * X;
+            real_t y2 = Y * Y;
+            real_t z2 = Z * Z;
+
+            return Mathf.Sqrt(x2 + y2 + z2);
+        }
+
+        /// <summary>
+        /// Returns the squared length (squared magnitude) of this vector.
+        /// This method runs faster than <see cref="Length"/>, however it is not the most optimal
+        /// for comparison by distance. For this purpose, <see cref="ManhattanLength"/>
+        /// should be used, as it is the fastest.
+        /// </summary>
+        /// <returns>The squared length of this vector.</returns>
+        public readonly real_t LengthSquared()
+        {
+            real_t x2 = X * X;
+            real_t y2 = Y * Y;
+            real_t z2 = Z * Z;
+
+            return x2 + y2 + z2;
+        }
+
+        /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
+        /// Returns the Manhattan length of this vector. Manhattan length is also sometimes referred to as "city block distance"
+        /// in that it measures a grid-based distance without diagonal lines.
+        /// This is by far the most optimized technique for finding length. Note that if this is used as a radius in Euler space,
+        /// the shape is not spherical, but rather an octahedron. This is the best method to use for distance comparison, but note
+        /// that to be accurate, <em>both distances</em> must be measured using this method.
+        /// </summary>
+        /// <returns>The Manhattan length of this vector.</returns>
+        public readonly real_t ManhattanLength()
+        {
+            return Mathf.Abs(X) + Mathf.Abs(Y) + Mathf.Abs(Z);
+        }
+
+        /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
+        /// Returns the Chebyshev length of this vector. This is similar to Manhattan length, but diagonal grid spaces are considered
+        /// to be 1 unit of length as well (think of a Queen on a chessboard moving 1 tile; this "1 tile" is any of the 8 directly around
+        /// the Queen, including the diagonals). In 3D, the diagonals on all three axes (i.e. top front right) are also considered to be
+        /// of distance 1.
+        /// Note that if this is used as a radius in Euclidean space, the shape is not spherical, but rather a cube.
+        /// To be accurate in comparisons, <em>both distances</em> must be measured using this method.
+        /// </summary>
+        /// <remarks>
+        /// For a visual example, refer to this image: <see href="https://en.wikipedia.org/wiki/File:Minkowski_distance_examples.svg"/>
+        /// </remarks>
+        /// <returns>The Chebyshev length of this vector.</returns>
+        public readonly real_t ChebyshevLength()
+        {
+            return Mathf.Max(Mathf.Max(Mathf.Abs(X), Mathf.Abs(Y)), Mathf.Abs(Z));
         }
 
         /// <summary>
@@ -368,36 +478,7 @@ namespace Godot
         /// <returns>A <see langword="bool"/> indicating whether or not the vector is normalized.</returns>
         public readonly bool IsNormalized()
         {
-            return Mathf.Abs(LengthSquared() - 1.0f) < Mathf.Epsilon;
-        }
-
-        /// <summary>
-        /// Returns the length (magnitude) of this vector.
-        /// </summary>
-        /// <seealso cref="LengthSquared"/>
-        /// <returns>The length of this vector.</returns>
-        public readonly real_t Length()
-        {
-            real_t x2 = X * X;
-            real_t y2 = Y * Y;
-            real_t z2 = Z * Z;
-
-            return Mathf.Sqrt(x2 + y2 + z2);
-        }
-
-        /// <summary>
-        /// Returns the squared length (squared magnitude) of this vector.
-        /// This method runs faster than <see cref="Length"/>, so prefer it if
-        /// you need to compare vectors or need the squared length for some formula.
-        /// </summary>
-        /// <returns>The squared length of this vector.</returns>
-        public readonly real_t LengthSquared()
-        {
-            real_t x2 = X * X;
-            real_t y2 = Y * Y;
-            real_t z2 = Z * Z;
-
-            return x2 + y2 + z2;
+            return Mathf.IsOneApprox(LengthSquared());
         }
 
         /// <summary>
@@ -1238,6 +1319,18 @@ namespace Godot
         }
 
         /// <summary>
+        /// Compares the length of this vector to that of <paramref name="other"/>.
+        /// </summary>
+        /// <param name="other">The vector to compare to.</param>
+        /// <returns>-1 if this is shorter than <paramref name="other"/>, 0 if equal, 1 if this is longer than <paramref name="other"/>.</returns>
+        public readonly int CompareTo(Vector3 other)
+        {
+            real_t myLength = ManhattanLength();
+            real_t otherLength = other.ManhattanLength();
+            return myLength.CompareTo(otherLength);
+        }
+
+        /// <summary>
         /// Returns <see langword="true"/> if this vector and <paramref name="other"/> are approximately equal,
         /// by running <see cref="Mathf.IsEqualApprox(real_t, real_t)"/> on each component.
         /// </summary>
@@ -1258,6 +1351,29 @@ namespace Godot
         public readonly bool IsZeroApprox()
         {
             return Mathf.IsZeroApprox(X) && Mathf.IsZeroApprox(Y) && Mathf.IsZeroApprox(Z);
+        }
+
+        /// <summary>
+        /// Uses an integer micro-optimization to quickly return <see langword="true"/>
+        /// if this vector has all components set to <c>0</c>. This is by far the fastest option
+        /// for checking a zero vector, however floating point is scarcely accurate down
+        /// to all decimal places. If the intent is not to explicitly check for <em>exactly</em> zero,
+        /// <see cref="IsZeroApprox"/> should be preferred.
+        /// </summary>
+        /// <returns>Whether or not the vector is exactly zero.</returns>
+        public readonly bool IsExactlyZero()
+        {
+#if REAL_T_IS_DOUBLE
+            ulong x = BitConverter.DoubleToUInt64Bits(X);
+            ulong y = BitConverter.DoubleToUInt64Bits(Y);
+            ulong z = BitConverter.DoubleToUInt64Bits(Z);
+            return ((x | y | z) & 0x7FFFFFFFFFFFFFFFUL) == 0u;
+#else
+            uint x = BitConverter.SingleToUInt32Bits(X);
+            uint y = BitConverter.SingleToUInt32Bits(Y);
+            uint z = BitConverter.SingleToUInt32Bits(Z);
+            return ((x | y | z) & 0x7FFFFFFFu) == 0u;
+#endif
         }
 
         /// <summary>

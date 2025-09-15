@@ -608,6 +608,9 @@ void JoltBody3D::set_state(PhysicsServer3D::BodyState p_state, const Variant &p_
 		case PhysicsServer3D::BODY_STATE_CAN_SLEEP: {
 			set_is_sleep_allowed(p_value);
 		} break;
+		case PhysicsServer3D::BODY_PARAM_INVERSE_INERTIA_TENSOR: {
+			ERR_FAIL_MSG("The inverse inertia tensor is read-only and cannot be changed.");
+		}
 		default: {
 			ERR_FAIL_MSG(vformat("Unhandled body state: '%d'. This should not happen. Please report this.", p_state));
 		} break;
@@ -645,6 +648,9 @@ Variant JoltBody3D::get_param(PhysicsServer3D::BodyParameter p_param) const {
 		}
 		case PhysicsServer3D::BODY_PARAM_ANGULAR_DAMP: {
 			return get_angular_damp();
+		}
+		case PhysicsServer3D::BODY_PARAM_INVERSE_INERTIA_TENSOR: {
+			return get_inverse_inertia_tensor();
 		}
 		default: {
 			ERR_FAIL_V_MSG(Variant(), vformat("Unhandled body parameter: '%d'. This should not happen. Please report this.", p_param));

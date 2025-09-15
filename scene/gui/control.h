@@ -133,7 +133,10 @@ public:
 		PRESET_BOTTOM_WIDE,
 		PRESET_VCENTER_WIDE,
 		PRESET_HCENTER_WIDE,
-		PRESET_FULL_RECT
+		PRESET_FULL_RECT,
+
+		// Alternate naming of PRESET_VCENTER_WIDE for better mnemonic value
+		PRESET_VCENTER_TALL = PRESET_VCENTER_WIDE,
 	};
 
 	enum LayoutPresetMode {
@@ -211,6 +214,7 @@ private:
 		real_t rotation = 0.0;
 		Vector2 scale = Vector2(1, 1);
 		Vector2 pivot_offset;
+		bool relative_pivot = false;
 
 		Point2 pos_cache;
 		Size2 size_cache;
@@ -496,6 +500,7 @@ public:
 	void set_end(const Point2 &p_point);
 	Point2 get_end() const;
 
+
 	void set_h_grow_direction(GrowDirection p_direction);
 	GrowDirection get_h_grow_direction() const;
 	void set_v_grow_direction(GrowDirection p_direction);
@@ -530,6 +535,9 @@ public:
 	real_t get_rotation_degrees() const;
 	void set_pivot_offset(const Vector2 &p_pivot);
 	Vector2 get_pivot_offset() const;
+
+	void set_pivot_is_relative(bool p_is_relative);
+	bool get_pivot_is_relative() const;
 
 	void update_minimum_size();
 

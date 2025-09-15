@@ -1242,6 +1242,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 
 					Point2 fx_offset = Vector2(glyphs[i].x_off, glyphs[i].y_off);
 					RID frid = glyphs[i].font_rid;
+					int fsize = glyphs[i].font_size;
 					uint32_t gl = glyphs[i].index;
 					uint16_t gl_fl = glyphs[i].flags;
 					uint8_t gl_cn = glyphs[i].count;
@@ -1290,6 +1291,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 								charfx->visibility = txt_visible;
 								charfx->outline = (step == DRAW_STEP_SHADOW_OUTLINE) || (step == DRAW_STEP_SHADOW) || (step == DRAW_STEP_OUTLINE);
 								charfx->font = frid;
+								charfx->font_size = fsize;
 								charfx->glyph_index = gl;
 								charfx->glyph_flags = gl_fl;
 								charfx->glyph_count = gl_cn;
@@ -1297,7 +1299,9 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 								charfx->color = font_color;
 								charfx->transform = char_xform;
 
+								charfx->label = this;
 								bool effect_status = custom_effect->_process_effect_impl(charfx);
+								charfx->label = nullptr;
 								custom_fx_ok = effect_status;
 
 								char_xform = charfx->transform;
@@ -5097,8 +5101,18 @@ bool RichTextLabel::is_scroll_following_visible_characters() const {
 }
 
 void RichTextLabel::parse_bbcode(const String &p_bbcode) {
+	if (is_signaling_parse) return;
 	clear();
+
+	is_signaling_parse = true;
+	emit_signal(SNAME("parsing"), false);
+	is_signaling_parse = false;
+
 	append_text(p_bbcode);
+
+	is_signaling_parse = true;
+	emit_signal(SNAME("parsing"), true);
+	is_signaling_parse = false;
 }
 
 String RichTextLabel::_get_tag_value(const String &p_tag) {
@@ -5465,7 +5479,9 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			Color color = Color(0, 0, 0, 0);
 			OptionMap::Iterator color_option = bbcode_options.find("color");
 			if (color_option) {
-				color = Color::from_string(color_option->value, color);
+				if (!GDVIRTUAL_CALL(_resolve_custom_color, color_option->value, color)) {
+					color = Color::from_string(color_option->value, color);
+				}
 			}
 
 			push_underline(color);
@@ -5479,7 +5495,10 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			Color color = Color(0, 0, 0, 0);
 			OptionMap::Iterator color_option = bbcode_options.find("color");
 			if (color_option) {
-				color = Color::from_string(color_option->value, color);
+				//color = Color::from_string(color_option->value, color);
+				if (!GDVIRTUAL_CALL(_resolve_custom_color, color_option->value, color)) {
+					color = Color::from_string(color_option->value, color);
+				}
 			}
 
 			push_strikethrough(color);
@@ -5799,11 +5818,17 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			}
 			OptionMap::Iterator color_option = bbcode_options.find("color");
 			if (color_option) {
-				color = Color::from_string(color_option->value, color);
+				//color = Color::from_string(color_option->value, color);
+				if (!GDVIRTUAL_CALL(_resolve_custom_color, color_option->value, color)) {
+					color = Color::from_string(color_option->value, color);
+				}
 			}
 			OptionMap::Iterator outline_color_option = bbcode_options.find("outline_color");
 			if (outline_color_option) {
-				outline_color = Color::from_string(outline_color_option->value, outline_color);
+				//outline_color = Color::from_string(outline_color_option->value, outline_color);
+				if (!GDVIRTUAL_CALL(_resolve_custom_color, outline_color_option->value, outline_color)) {
+					outline_color = Color::from_string(outline_color_option->value, outline_color);
+				}
 			}
 
 			int end = bbcode.find_char('[', brk_end);
@@ -5833,7 +5858,10 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			Color color = theme_cache.default_color;
 			OptionMap::Iterator color_option = bbcode_options.find("color");
 			if (color_option) {
-				color = Color::from_string(color_option->value, color);
+				//color = Color::from_string(color_option->value, color);
+				if (!GDVIRTUAL_CALL(_resolve_custom_color, color_option->value, color)) {
+					color = Color::from_string(color_option->value, color);
+				}
 			}
 			int width = 90;
 			bool width_in_percent = true;
@@ -5913,7 +5941,10 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 				Color color = Color(1.0, 1.0, 1.0);
 				OptionMap::Iterator color_option = bbcode_options.find("color");
 				if (color_option) {
-					color = Color::from_string(color_option->value, color);
+					//color = Color::from_string(color_option->value, color);
+					if (!GDVIRTUAL_CALL(_resolve_custom_color, color_option->value, color)) {
+						color = Color::from_string(color_option->value, color);
+					}
 				}
 
 				OptionMap::Iterator alt_text_option = bbcode_options.find("alt");
@@ -6002,14 +6033,21 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			tag_stack.push_front(bbcode_name);
 		} else if (tag.begins_with("color=")) {
 			String color_str = _get_tag_value(tag).unquote();
-			Color color = Color::from_string(color_str, theme_cache.default_color);
+			Color color = theme_cache.default_color;
+			if (!GDVIRTUAL_CALL(_resolve_custom_color, color_str, color)) {
+				color = Color::from_string(color_str, theme_cache.default_color);
+			}
 			push_color(color);
 			pos = brk_end + 1;
 			tag_stack.push_front("color");
 
 		} else if (tag.begins_with("outline_color=")) {
 			String color_str = _get_tag_value(tag).unquote();
-			Color color = Color::from_string(color_str, theme_cache.default_color);
+			//Color color = Color::from_string(color_str, theme_cache.default_color);
+			Color color = theme_cache.default_color;
+			if (!GDVIRTUAL_CALL(_resolve_custom_color, color_str, color)) {
+				color = Color::from_string(color_str, theme_cache.default_color);
+			}
 			push_outline_color(color);
 			pos = brk_end + 1;
 			tag_stack.push_front("outline_color");
@@ -6344,7 +6382,10 @@ void RichTextLabel::append_text(const String &p_bbcode) {
 			Color color = Color(1, 1, 1, 0.25);
 			OptionMap::Iterator color_option = bbcode_options.find("color");
 			if (color_option) {
-				color = Color::from_string(color_option->value, color);
+				//color = Color::from_string(color_option->value, color);
+				if (!GDVIRTUAL_CALL(_resolve_custom_color, color_option->value, color)) {
+					color = Color::from_string(color_option->value, color);
+				}
 			}
 
 			float frequency = 1.0;
@@ -7606,6 +7647,8 @@ void RichTextLabel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_menu_visible"), &RichTextLabel::is_menu_visible);
 	ClassDB::bind_method(D_METHOD("menu_option", "option"), &RichTextLabel::menu_option);
 
+	GDVIRTUAL_BIND(_resolve_custom_color, "color_name");
+
 	// Note: set "bbcode_enabled" first, to avoid unnecessary "text" resets.
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "bbcode_enabled"), "set_use_bbcode", "is_using_bbcode");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text", PROPERTY_HINT_MULTILINE_TEXT), "set_text", "get_text");
@@ -7655,6 +7698,7 @@ void RichTextLabel::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("meta_hover_started", PropertyInfo(Variant::NIL, "meta", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)));
 	ADD_SIGNAL(MethodInfo("meta_hover_ended", PropertyInfo(Variant::NIL, "meta", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)));
 
+	ADD_SIGNAL(MethodInfo("parsing", PropertyInfo(Variant::BOOL, "is_calling_after_parsing")));
 	ADD_SIGNAL(MethodInfo("finished"));
 
 	BIND_ENUM_CONSTANT(LIST_NUMBERS);

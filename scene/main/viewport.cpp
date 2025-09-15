@@ -56,6 +56,10 @@
 #include "scene/3d/world_environment.h"
 #endif // _3D_DISABLED
 
+#if !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
+#include "scene/3d/simulation_domain.h"
+#endif // !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
+
 #ifndef PHYSICS_2D_DISABLED
 #include "scene/2d/physics/collision_object_2d.h"
 #endif // PHYSICS_2D_DISABLED
@@ -679,6 +683,18 @@ void Viewport::_notification(int p_what) {
 		} break;
 #endif // !defined(PHYSICS_2D_DISABLED) || !defined(PHYSICS_3D_DISABLED)
 
+		/*
+		case NOTIFICATION_INTERNAL_PROCESS: {
+			if (!get_tree()) {
+				return;
+			}
+			if (gui.tooltip_follow_cursor && gui.tooltip_popup) {
+				Point2 tooltip_offset = GLOBAL_GET_CACHED(Point2, "display/mouse_cursor/tooltip_position_offset");
+				_gui_move_tooltip(get_mouse_position() + tooltip_offset, Size2i(), true);
+			}
+		} break;
+		*/
+
 		case NOTIFICATION_VP_MOUSE_ENTER: {
 			gui.mouse_in_viewport = true;
 		} break;
@@ -1006,6 +1022,10 @@ void Viewport::_process_picking() {
 			}
 		}
 #endif // PHYSICS_3D_DISABLED
+
+#ifdef CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
+		Input::get_singleton()->emit_signal(SNAME("global_input"), ev, is_input_handled(), true);
+#endif
 	}
 }
 #endif // !defined(PHYSICS_2D_DISABLED) || !defined(PHYSICS_3D_DISABLED)
@@ -1292,6 +1312,9 @@ void Viewport::set_world_2d(const Ref<World2D> &p_world_2d) {
 	if (world_2d == p_world_2d) {
 		return;
 	}
+	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
+		return;
+	}
 
 	if (is_inside_tree()) {
 		RenderingServer::get_singleton()->viewport_remove_canvas(viewport, current_canvas);
@@ -1323,6 +1346,9 @@ void Viewport::set_world_2d(const Ref<World2D> &p_world_2d) {
 
 Ref<World2D> Viewport::find_world_2d() const {
 	ERR_READ_THREAD_GUARD_V(Ref<World2D>());
+	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
+		return SimulationDomain::current->get_world_2d();
+	}
 	if (world_2d.is_valid()) {
 		return world_2d;
 	} else if (parent) {
@@ -1706,13 +1732,69 @@ void Viewport::_gui_show_tooltip_at(const Point2i &p_pos) {
 			r.position.y = vr.position.y;
 		}
 	}
-
+	
 	DisplayServer::WindowID active_popup = DisplayServer::get_singleton()->window_get_active_popup();
 	if (active_popup == DisplayServer::INVALID_WINDOW_ID || active_popup == window->get_window_id()) {
 		gui.tooltip_popup->popup(r);
 	}
 	gui.tooltip_popup->child_controls_changed();
 }
+
+Window* Viewport::_gui_get_tooltip_popup_panel() const {
+	return gui.tooltip_popup;
+}
+
+/*
+Rect2 Viewport::_gui_move_tooltip(const Point2i &p_pos, Size2i p_size, bool p_move_popup) {
+	if (!p_size.x && !p_size.y) {
+		p_size = gui.tooltip_popup->get_contents_minimum_size();
+	}
+	gui.tooltip_pos = p_pos;
+	Window *window = Object::cast_to<Window>(gui.tooltip_popup->get_embedder());
+	if (!window) { // Not embedded.
+		window = gui.tooltip_popup->get_parent_visible_window();
+	}
+	Size2 scale = get_popup_base_transform().get_scale();
+	real_t popup_scale = MIN(scale.x, scale.y);
+	Rect2 r(gui.tooltip_pos, p_size);
+	Rect2i vr;
+	if (gui.tooltip_popup->is_embedded()) {
+		vr = gui.tooltip_popup->get_embedder()->get_visible_rect();
+	} else {
+		vr = window->get_usable_parent_rect();
+	}
+	r.size *= popup_scale;
+	r.size = r.size.ceil();
+	r.size = r.size.min(gui.tooltip_popup->get_max_size());
+
+	if (r.size.x + r.position.x > vr.size.x + vr.position.x) {
+		// Place it in the opposite direction. If it fails, just hug the border.
+		r.position.x = gui.tooltip_pos.x - r.size.x;
+
+		if (r.position.x < vr.position.x) {
+			r.position.x = vr.position.x + vr.size.x - r.size.x;
+		}
+	} else if (r.position.x < vr.position.x) {
+		r.position.x = vr.position.x;
+	}
+
+	if (r.size.y + r.position.y > vr.size.y + vr.position.y) {
+		// Same as above.
+		r.position.y = gui.tooltip_pos.y - r.size.y;
+
+		if (r.position.y < vr.position.y) {
+			r.position.y = vr.position.y + vr.size.y - r.size.y;
+		}
+	} else if (r.position.y < vr.position.y) {
+		r.position.y = vr.position.y;
+	}
+	if (p_move_popup) {
+		gui.tooltip_popup->position = r.position;
+		gui.tooltip_popup->size = r.size;
+	}
+	return r;
+}
+*/
 
 void Viewport::_gui_call_input(Control *p_control, const Ref<InputEvent> &p_input) {
 	Ref<InputEvent> ev = p_input;
@@ -2664,7 +2746,9 @@ void Viewport::_gui_control_grab_focus(Control *p_control) {
 	}
 	get_tree()->call_group("_viewports", "_gui_remove_focus_for_window", get_base_window());
 	if (p_control->is_inside_tree() && p_control->get_viewport() == this) {
+		Control *previous = gui.key_focus;
 		gui.key_focus = p_control;
+		emit_signal(SNAME("gui_focus_transferred"), previous, p_control);
 		emit_signal(SNAME("gui_focus_changed"), p_control);
 		p_control->notification(Control::NOTIFICATION_FOCUS_ENTER);
 		p_control->queue_redraw();
@@ -3665,8 +3749,10 @@ void Viewport::gui_release_focus() {
 	if (gui.key_focus) {
 		Control *f = gui.key_focus;
 		gui.key_focus = nullptr;
+		emit_signal(SNAME("gui_focus_transferred"), f, Variant());
 		f->notification(Control::NOTIFICATION_FOCUS_EXIT, true);
 		f->queue_redraw();
+
 	}
 }
 
@@ -3867,6 +3953,9 @@ void Viewport::set_input_as_handled() {
 	}
 
 	local_input_handled = true;
+#ifdef CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
+	Input::get_singleton()->last_dispatched_input_was_handled = true;
+#endif
 }
 
 bool Viewport::is_input_handled() const {
@@ -4669,6 +4758,9 @@ Ref<World3D> Viewport::get_world_3d() const {
 
 Ref<World3D> Viewport::find_world_3d() const {
 	ERR_READ_THREAD_GUARD_V(Ref<World3D>());
+	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
+		return SimulationDomain::current->get_world_3d();
+	}
 	if (own_world_3d.is_valid()) {
 		return own_world_3d;
 	} else if (world_3d.is_valid()) {
@@ -4683,6 +4775,9 @@ Ref<World3D> Viewport::find_world_3d() const {
 void Viewport::set_world_3d(const Ref<World3D> &p_world_3d) {
 	ERR_MAIN_THREAD_GUARD;
 	if (world_3d == p_world_3d) {
+		return;
+	}
+	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
 		return;
 	}
 
@@ -4740,6 +4835,9 @@ void Viewport::_own_world_3d_changed() {
 void Viewport::set_use_own_world_3d(bool p_use_own_world_3d) {
 	ERR_MAIN_THREAD_GUARD;
 	if (p_use_own_world_3d == own_world_3d.is_valid()) {
+		return;
+	}
+	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
 		return;
 	}
 
@@ -5036,6 +5134,8 @@ void Viewport::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("gui_get_focus_owner"), &Viewport::gui_get_focus_owner);
 	ClassDB::bind_method(D_METHOD("gui_get_hovered_control"), &Viewport::gui_get_hovered_control);
 
+	ClassDB::bind_method(D_METHOD("gui_get_tooltip_popup_panel"), &Viewport::_gui_get_tooltip_popup_panel);
+
 	ClassDB::bind_method(D_METHOD("set_disable_input", "disable"), &Viewport::set_disable_input);
 	ClassDB::bind_method(D_METHOD("is_input_disabled"), &Viewport::is_input_disabled);
 
@@ -5212,6 +5312,7 @@ void Viewport::_bind_methods() {
 
 	ADD_SIGNAL(MethodInfo("size_changed"));
 	ADD_SIGNAL(MethodInfo("gui_focus_changed", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Control")));
+	ADD_SIGNAL(MethodInfo("gui_focus_transferred", PropertyInfo(Variant::OBJECT, "from", PROPERTY_HINT_RESOURCE_TYPE, "Control"), PropertyInfo(Variant::OBJECT, "to", PROPERTY_HINT_RESOURCE_TYPE, "Control")));
 
 	BIND_ENUM_CONSTANT(SHADOW_ATLAS_QUADRANT_SUBDIV_DISABLED);
 	BIND_ENUM_CONSTANT(SHADOW_ATLAS_QUADRANT_SUBDIV_1);

@@ -473,6 +473,15 @@
 				Emitted when a joypad device has been connected or disconnected.
 			</description>
 		</signal>
+		<signal name="global_input">
+			<param index="0" name="event" type="InputEvent" />
+			<param index="1" name="handled" type="bool" />
+			<param index="2" name="is_physics_pick" type="bool" />
+			<description>
+				[b]Part of The Conservatory's Godot Fork.[/b] This member is not part of typical Godot code.
+				This event is fired [i]after[/i] the entirety of the engine has handled inputs. It includes handled and unhandled events. The scope of these events is global; all [InputEvent]s sent through the [Input] pipeline (either manually or automatically), or through a physics pick signal, will emit this signal.
+			</description>
+		</signal>
 	</signals>
 	<constants>
 		<constant name="MOUSE_MODE_VISIBLE" value="0" enum="MouseMode">

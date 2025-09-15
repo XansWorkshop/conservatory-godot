@@ -284,9 +284,50 @@ EditorThemeManager::ThemeConfiguration EditorThemeManager::_create_theme_config(
 			Color preset_base_color;
 			float preset_contrast = 0;
 			bool preset_draw_extra_borders = false;
+			float preset_relationship_line_opacity = 0.1;
 
 			// Please use alphabetical order if you're adding a new theme here.
-			if (config.preset == "Breeze Dark") {
+			// no fuck off *incinerates you*
+			// Anyway, editor_settings.cpp L580 is where you add new themes. It won't show up on ctrl+shift+f for some reason even if you have all files turned on.
+			if (config.preset == "Xan's Workshop") {
+				preset_accent_color = Color::from_rgba8(189, 88, 70);
+				preset_base_color = Color::from_rgba8(56, 51, 51);
+				preset_contrast = 0.4;
+			} else if (config.preset == "A Divine Laboratory (Light)") {
+				preset_accent_color = Color::from_rgba8(106, 165, 176);
+				preset_base_color = Color::from_rgba8(186, 199, 204);
+				preset_contrast = -0.1;
+				preset_draw_extra_borders = true;
+				preset_relationship_line_opacity = 0.25;
+			} else if (config.preset == "The Iterator Project") {
+				preset_accent_color = Color::from_rgba8(116, 232, 152);
+				preset_base_color = Color::from_rgba8(43, 46, 43);
+				preset_contrast = 0.2;
+				preset_draw_extra_borders = true;
+				preset_relationship_line_opacity = 0.25;
+			} else if (config.preset == "Cultural Analysis: Gaian") {
+				preset_accent_color = Color::from_rgba8(78, 161, 255);
+				preset_base_color = Color::from_rgba8(113, 122, 126);
+				preset_contrast = 0.3;
+				preset_draw_extra_borders = true;
+				preset_relationship_line_opacity = 0.2;
+			} else if (config.preset == "Cultural Analysis: Avelian") {
+				preset_accent_color = Color::from_rgba8(206, 182, 95);
+				preset_base_color = Color::from_rgba8(92, 92, 92);
+				preset_contrast = 0.2;
+				preset_draw_extra_borders = true;
+				preset_relationship_line_opacity = 0.2;
+			} else if (config.preset == "Cultural Analysis: Kirivian") {
+				preset_accent_color = Color::from_rgba8(112, 163, 121);
+				preset_base_color = Color::from_rgba8(66, 69, 66);
+				preset_contrast = 0.2;
+				preset_relationship_line_opacity = 0.25;
+			} else if (config.preset == "Cultural Analysis: Novan") {
+				preset_accent_color = Color::from_rgba8(78, 227, 255);
+				preset_base_color = Color::from_rgba8(35, 24, 29);
+				preset_contrast = 0.6;
+				preset_relationship_line_opacity = 0.15;
+			} else if (config.preset == "Breeze Dark") {
 				preset_accent_color = Color(0.26, 0.76, 1.00);
 				preset_base_color = Color(0.24, 0.26, 0.28);
 				preset_contrast = config.default_contrast;
@@ -328,6 +369,7 @@ EditorThemeManager::ThemeConfiguration EditorThemeManager::_create_theme_config(
 			config.base_color = preset_base_color;
 			config.contrast = preset_contrast;
 			config.draw_extra_borders = preset_draw_extra_borders;
+			config.relationship_line_opacity = preset_relationship_line_opacity;
 
 			EditorSettings::get_singleton()->set_initial_value("interface/theme/accent_color", config.accent_color);
 			EditorSettings::get_singleton()->set_initial_value("interface/theme/base_color", config.base_color);

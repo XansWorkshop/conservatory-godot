@@ -129,20 +129,25 @@ Dictionary Engine::get_version_info() const {
 	dict["minor"] = GODOT_VERSION_MINOR;
 	dict["patch"] = GODOT_VERSION_PATCH;
 	dict["hex"] = GODOT_VERSION_HEX;
-	dict["status"] = GODOT_VERSION_STATUS;
+	dict["status"] = GODOT_VERSION_STATUS; 
 	dict["build"] = GODOT_VERSION_BUILD;
-
-	String hash = String(GODOT_VERSION_HASH);
-	dict["hash"] = hash.is_empty() ? String("unknown") : hash;
-
+	dict["version"] = GODOT_VERSION_NUMBER;
 	dict["timestamp"] = GODOT_VERSION_TIMESTAMP;
 
-	String stringver = String(dict["major"]) + "." + String(dict["minor"]);
-	if ((int)dict["patch"] != 0) {
-		stringver += "." + String(dict["patch"]);
+	String modules = String(GODOT_VERSION_MODULE_CONFIG);
+	dict["modules"] = modules.split(".", false); 
+
+	String hash = String(GODOT_VERSION_HASH);
+	if (hash.is_empty()) {
+		dict["hash"] = "unknown";
+		dict["commit"] = "000000";
+	} else {
+		dict["hash"] = hash;
+		dict["commit"] = hash.substr(0, 6);
 	}
-	stringver += "-" + String(dict["status"]) + " (" + String(dict["build"]) + ")";
-	dict["string"] = stringver;
+
+	const char *text = GODOT_VERSION_NUMBER "-" GODOT_VERSION_STATUS " (" GODOT_VERSION_BUILD ")";
+	dict["string"] = String(text);
 
 	return dict;
 }

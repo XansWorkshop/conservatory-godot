@@ -405,7 +405,13 @@
 		<signal name="text_changed">
 			<param index="0" name="new_text" type="String" />
 			<description>
-				Emitted when the text changes.
+				Emitted when the text changes, though not when setting the [member text] property directly.
+			</description>
+		</signal>
+		<signal name="text_set">
+			<param index="0" name="new_text" type="String" />
+			<description>
+				Emitted when the text changes through setting the [member text] property or calling [method clear].
 			</description>
 		</signal>
 		<signal name="text_submitted">

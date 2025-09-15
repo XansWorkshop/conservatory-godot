@@ -430,6 +430,24 @@ namespace Godot
         }
 
         /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
+        /// Rotates the provided <paramref name="transform"/> by the provided <paramref name="basis"/>.
+        /// </summary>
+        /// <param name="transform"></param>
+        /// <param name="basis"></param>
+        /// <returns></returns>
+        public static Transform3D operator *(Transform3D transform, Basis basis) {
+            return transform with
+            {
+                Basis = transform.Basis * basis
+            };
+        }
+
+        /// <summary>
         /// Returns a Vector3 transformed (multiplied) by the inverse transformation matrix,
         /// under the assumption that the transformation basis is orthonormal (i.e. rotation/reflection
         /// is fine, scaling/skew is not).

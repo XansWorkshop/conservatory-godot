@@ -315,6 +315,9 @@ opts.Add("rcflags", "Custom flags for Windows resource compiler")
 opts.Add("c_compiler_launcher", "C compiler launcher (e.g. `ccache`)")
 opts.Add("cpp_compiler_launcher", "C++ compiler launcher (e.g. `ccache`)")
 
+# Xan's Customs
+opts.Add(BoolVariable("allow_break_on_error", "Debuggers will break when an error occurs. Requires special code from The Conservatory.", False))
+
 # Update the environment to have all above options defined
 # in following code (especially platform and custom_modules).
 opts.Update(env)
@@ -327,6 +330,10 @@ if env["import_env_vars"]:
     for env_var in str(env["import_env_vars"]).split(","):
         if env_var in os.environ:
             env["ENV"][env_var] = os.environ[env_var]
+
+# Xan's Customs:
+if env["allow_break_on_error"]:
+    env.Append(CPPDEFINES=["TC_ALLOW_BREAK_ON_ERROR"])
 
 # Platform selection: validate input, and add options.
 

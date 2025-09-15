@@ -711,6 +711,7 @@ private:
 
 	bool internal_stack_editing = false;
 	bool stack_externally_modified = false;
+	bool is_signaling_parse = false;
 
 	void _accessibility_action_menu(const Variant &p_data);
 	void _accessibility_scroll_down(const Variant &p_data);
@@ -983,6 +984,8 @@ public:
 	void reload_effects();
 
 	virtual Size2 get_minimum_size() const override;
+
+	GDVIRTUAL1RC(Color, _resolve_custom_color, String)
 
 	RichTextLabel(const String &p_text = String());
 	~RichTextLabel();

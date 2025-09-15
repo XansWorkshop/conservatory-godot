@@ -259,6 +259,7 @@ public:
 	EXBIND3(area_set_shape, RID, int, RID)
 	EXBIND3(area_set_shape_transform, RID, int, const Transform3D &)
 	EXBIND3(area_set_shape_disabled, RID, int, bool)
+	EXBIND2RC(bool, area_get_shape_disabled, RID, int)
 
 	EXBIND1RC(int, area_get_shape_count, RID)
 	EXBIND2RC(RID, area_get_shape, RID, int)
@@ -303,6 +304,7 @@ public:
 	EXBIND3(body_set_shape, RID, int, RID)
 	EXBIND3(body_set_shape_transform, RID, int, const Transform3D &)
 	EXBIND3(body_set_shape_disabled, RID, int, bool)
+	EXBIND2RC(bool, body_get_shape_disabled, RID, int)
 
 	EXBIND1RC(int, body_get_shape_count, RID)
 	EXBIND2RC(RID, body_get_shape, RID, int)

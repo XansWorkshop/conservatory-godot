@@ -145,6 +145,7 @@ public:
 	FUNC3(area_set_shape, RID, int, RID);
 	FUNC3(area_set_shape_transform, RID, int, const Transform3D &);
 	FUNC3(area_set_shape_disabled, RID, int, bool);
+	FUNC2RC(bool, area_get_shape_disabled, RID, int);
 
 	FUNC1RC(int, area_get_shape_count, RID);
 	FUNC2RC(RID, area_get_shape, RID, int);
@@ -193,6 +194,7 @@ public:
 	FUNC2RC(RID, body_get_shape, RID, int);
 
 	FUNC3(body_set_shape_disabled, RID, int, bool);
+	FUNC2RC(bool, body_get_shape_disabled, RID, int);
 
 	FUNC2(body_remove_shape, RID, int);
 	FUNC1(body_clear_shapes, RID);

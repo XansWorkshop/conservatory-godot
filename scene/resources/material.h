@@ -35,6 +35,7 @@
 #include "scene/resources/shader.h"
 #include "scene/resources/texture.h"
 #include "servers/rendering_server.h"
+#include "core/string/string_builder.h"
 
 class Material : public Resource {
 	GDCLASS(Material, Resource);
@@ -91,13 +92,49 @@ public:
 	virtual ~Material();
 };
 
+#define TC_SFLAG(i) (1 << i)
+
 class ShaderMaterial : public Material {
 	GDCLASS(ShaderMaterial, Material);
-	Ref<Shader> shader;
+	// clang-format off
+	enum VariantRefreshType {
+		NONE								= NULL,
+
+		// Notify the editor that the property list has changed, and fire the changed signal.
+		NOTIFY_OF_CHANGE					= TC_SFLAG(0),
+
+		// Enumerate features and variants to ensure that only valid ones are set and present.
+		ENFORCE_VALID_FEATURES_AND_VARIANTS	= TC_SFLAG(1),
+
+		// Update the shader field.
+		UPDATE_SHADER						= TC_SFLAG(2),
+
+		// ENFORCE_VALID_FEATURES_AND_VARIANTS | UPDATE_SHADER
+		ENFORCE_AND_UPDATE					= ENFORCE_VALID_FEATURES_AND_VARIANTS | UPDATE_SHADER,
+
+		// NOTIFY_OF_CHANGE | ENFORCE_VALID_FEATURES_AND_VARIANTS | UPDATE_SHADER
+		EVERYTHING							= NOTIFY_OF_CHANGE | ENFORCE_VALID_FEATURES_AND_VARIANTS | UPDATE_SHADER
+	};
+	// clang-format on
+
+
+	// The current shader variant, turned into an instance of a Shader type.
+	mutable Ref<Shader> shader;
+
+	Ref<Shader> base_shader;
+
+	mutable HashMap<StringName, StringName> uniform_name_cache;
+	mutable HashMap<StringName, StringName> feature_name_cache;
+	mutable HashMap<StringName, StringName> variant_name_cache;
+	mutable HashMap<StringName, Variant> shader_uniforms;
+	mutable HashMap<StringName, bool> shader_features;
+	mutable HashMap<StringName, StringName> shader_variants;
+	mutable HashMap<StringName, List<StringName>> valid_shader_variants;
 
 	mutable HashMap<StringName, StringName> remap_cache;
 	mutable HashMap<StringName, Variant> param_cache;
 	mutable Mutex material_rid_mutex;
+	mutable Mutex feature_and_variant_lock;
 
 protected:
 	bool _set(const StringName &p_name, const Variant &p_value);
@@ -116,7 +153,7 @@ protected:
 	virtual bool _can_use_render_priority() const override;
 
 	void _shader_changed();
-	void _check_material_rid() const;
+	void _check_material_rid(const bool p_apply_features_and_variants = false) const;
 
 public:
 	void set_shader(const Ref<Shader> &p_shader);
@@ -124,6 +161,15 @@ public:
 
 	void set_shader_parameter(const StringName &p_param, const Variant &p_value);
 	Variant get_shader_parameter(const StringName &p_param) const;
+
+	bool set_shader_feature(const StringName &p_feature, const bool p_enabled);
+	bool get_shader_feature(const StringName &p_feature) const;
+
+	bool set_shader_variant(const StringName &p_variant, const StringName &p_value);
+	const StringName get_shader_variant(const StringName &p_variant) const;
+
+	void apply_features_and_variants(const int p_refresh);
+	void reset_features_and_variants();
 
 	virtual Shader::Mode get_shader_mode() const override;
 
