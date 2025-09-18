@@ -95,10 +95,11 @@ inline constexpr unsigned char _certs_compressed[] = {{
 
 def make_authors_header(target, source, env):
     SECTIONS = {
-        "Project Founders": "AUTHORS_FOUNDERS",
-        "Lead Developer": "AUTHORS_LEAD_DEVELOPERS",
-        "Project Manager": "AUTHORS_PROJECT_MANAGERS",
-        "Developers": "AUTHORS_DEVELOPERS",
+        "Contributors (Godot: Conservatory Edition)": "AUTHORS_CONSERVATORY_EDITION_CONTRIBUTORS",
+        "Project Founders (Godot Engine)": "AUTHORS_FOUNDERS",
+        "Lead Developer (Godot Engine)": "AUTHORS_LEAD_DEVELOPERS",
+        "Project Manager (Godot Engine)": "AUTHORS_PROJECT_MANAGERS",
+        "Developers (Godot Engine)": "AUTHORS_DEVELOPERS",
     }
     buffer = methods.get_buffer(str(source[0]))
     reading = False

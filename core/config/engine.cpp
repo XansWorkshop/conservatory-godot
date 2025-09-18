@@ -171,7 +171,10 @@ static Array array_from_info_count(const char *const *info_list, int info_count)
 Dictionary Engine::get_author_info() const {
 	Dictionary dict;
 
+	// Future Xan: core/core_builders.py
+
 	dict["lead_developers"] = array_from_info(AUTHORS_LEAD_DEVELOPERS);
+	dict["contributors_conservatory_edition"] = array_from_info(AUTHORS_CONSERVATORY_EDITION_CONTRIBUTORS);
 	dict["project_managers"] = array_from_info(AUTHORS_PROJECT_MANAGERS);
 	dict["founders"] = array_from_info(AUTHORS_FOUNDERS);
 	dict["developers"] = array_from_info(AUTHORS_DEVELOPERS);

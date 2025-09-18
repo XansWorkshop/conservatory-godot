@@ -1781,6 +1781,11 @@ static HashMap<String, Dictionary> make_structure_samples() {
 		d.set("hash", String());
 		d.set("timestamp", 0);
 		d.set("string", String());
+
+		// From Xan:
+		d.set("modules", PackedStringArray());
+		d.set("commit", String());
+
 		res["Engine::get_version_info"] = d;
 	}
 
@@ -1790,6 +1795,10 @@ static HashMap<String, Dictionary> make_structure_samples() {
 		d.set("founders", arr);
 		d.set("project_managers", arr);
 		d.set("developers", arr);
+
+		// From Xan:
+		d.set("contributors_conservatory_edition", arr);
+
 		res["Engine::get_author_info"] = d;
 	}
 

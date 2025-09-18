@@ -16,20 +16,33 @@ wrote which part of the codebase.
 GitHub usernames are indicated in parentheses, or as sole entry when no other
 name is available.
 
-## Project Founders
+# Godot: Conservatory Edition authors
+
+This fork of the engine has had the work of many others implemented, some of 
+which has become official, some of which has not. A new section has been added
+containing the names and GitHub usernames of individuals who have made features
+that got added to this fork of the engine (even if those features were later
+added to the official build by those users).
+
+## Contributors (Godot: Conservatory Edition)
+
+    Xan (XansWorkshop)
+    Apples
+
+## Project Founders (Godot Engine)
 
     Juan Linietsky (reduz)
     Ariel Manzur (punto-)
 
-## Lead Developer
+## Lead Developer (Godot Engine)
 
     Juan Linietsky (reduz)
 
-## Project Manager
+## Project Manager (Godot Engine)
 
     Rémi Verschelde (akien-mga)
 
-## Developers
+## Developers (Godot Engine)
 
     Aaron Franke (aaronfranke)
     Aaron Pagano (aaronp64)
