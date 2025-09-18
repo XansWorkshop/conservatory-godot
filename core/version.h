@@ -78,7 +78,8 @@
 
 // Same as above, but prepended with Godot's name and a cosmetic "v" for "version".
 // Example: "Godot v3.1.4.stable.official.mono.double"
-#define GODOT_VERSION_FULL_NAME GODOT_VERSION_NAME " v" GODOT_VERSION_FULL_BUILD
+// Modified by Xan to remove the ".official" (or other build) from the end. Looks weird for Conservatory Edition
+#define GODOT_VERSION_FULL_NAME GODOT_VERSION_NAME " v" GODOT_VERSION_FULL_CONFIG
 
 // Git commit hash, generated at build time in `core/version_hash.gen.cpp`.
 extern const char *const GODOT_VERSION_HASH;
