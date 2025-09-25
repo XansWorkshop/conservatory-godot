@@ -48,6 +48,40 @@ namespace Godot
 
         private WeakReference<IDisposable>? _weakReferenceToSelf;
 
+        /// <summary>
+        /// A quick, shared reference to a nodepath created as <c>"."</c>, representing the node itself.
+        /// </summary>
+        public static NodePath Self
+        {
+            get
+            {
+                if (Engine.IsEditorHint())
+                {
+                    return new NodePath("."); // Create a new instance in editor to prevent assembly unloading problems.
+                }
+                // Cache in runtime.
+                return _self ??= new NodePath(".");
+            }
+        }
+        private static NodePath? _self = null;
+
+        /// <summary>
+        /// A quick, shared reference to a nodepath created as <c>".."</c>, representing the parent to a node.
+        /// </summary>
+        public static NodePath Parent
+        {
+            get
+            {
+                if (Engine.IsEditorHint())
+                {
+                    return new NodePath(".."); // Create a new instance in editor to prevent assembly unloading problems.
+                }
+                // Cache in runtime.
+                return _parent ??= new NodePath("..");
+            }
+        }
+        private static NodePath? _parent = null;
+
         ~NodePath()
         {
             Dispose(false);

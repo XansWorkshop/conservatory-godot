@@ -70,7 +70,7 @@ namespace Godot {
 			} else {
 				return; // Actually acceptable.
 			}
-			GD.PushError("If you are reading this, congratulations! Please enjoy your complimentary access violation in the CLR garbage collection routine once the next cycle occurs. In the mean time, why don't you consider what you did to get here. :)");
+			GD.PushError("If you are reading this, congratulations! Please enjoy your complimentary access violation in the CLR garbage collection routine once the next GC cycle occurs. In the mean time, why don't you consider what you did to get here. :^)");
 			base.Dispose(disposing);
 		}
 	}
@@ -93,8 +93,8 @@ namespace Godot {
 		/// </summary>
 		/// <param name="disposing"></param>
 		protected override void Dispose(bool disposing) {
-            GD.PushError("Why did you create an instance of this class? This and more at 10 in Unsolved Mysteries, on CBS...");
-            GD.PushError("If you are reading this, congratulations! Please enjoy your complimentary access violation in the CLR garbage collection routine once the next cycle occurs. In the mean time, why don't you consider what you did to get here. :)");
+            GD.PushError("Why did you create an instance of this class? This and more at 10 PM Pacific in Unsolved Mysteries, only on CBS...");
+            GD.PushError("If you are reading this, congratulations! Please enjoy your complimentary access violation in the CLR garbage collection routine once the next GC cycle occurs. In the mean time, why don't you consider what you did to get here. :)");
 			base.Dispose(disposing);
 		}
 
