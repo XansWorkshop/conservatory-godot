@@ -2009,7 +2009,7 @@ void main() {
 
 			float size_A = sc_use_light_soft_shadows() ? directional_lights.data[i].size : 0.0;
 
-			light_compute(normal, hvec3(directional_lights.data[i].direction), view, saturateHalf(size_A),
+			light_compute(normal, hvec3(directional_lights.data[i].direction), hvec3(0.0, 0.0, 0.0), hvec3(vertex), half(1.0), shadow, hvec3(directional_lights.data[i].color), half(0.0), view, saturateHalf(size_A),
 					hvec3(directional_lights.data[i].color * directional_lights.data[i].energy * tint),
 					true, shadow, f0, roughness, metallic, half(directional_lights.data[i].specular), albedo, alpha,
 					screen_uv, hvec3(1.0),

@@ -350,7 +350,7 @@ mediump float roughness_to_shininess(mediump float roughness) {
 	return r * r2 * r2 * 2000.0;
 }
 
-void light_compute(vec3 N, vec3 L, vec3 V, vec3 light_color, bool is_directional, float roughness,
+void light_compute(vec3 N, vec3 L, vec3 explicit_light_pos, vec3 explicit_vertex_pos, float explicit_physical_attenuation, float explicit_shadow, vec3 explicit_color, float explicit_inv_radius, vec3 V, vec3 light_color, bool is_directional, float roughness,
 		inout vec3 diffuse_light, inout vec3 specular_light) {
 	float NdotL = min(dot(N, L), 1.0);
 	float cNdotL = max(NdotL, 0.0); // clamped NdotL
@@ -391,12 +391,13 @@ float get_omni_spot_attenuation(float distance, float inv_range, float decay) {
 #if !defined(DISABLE_LIGHT_OMNI) || (defined(ADDITIVE_OMNI) && defined(USE_ADDITIVE_LIGHTING))
 void light_process_omni(uint idx, vec3 vertex, vec3 eye_vec, vec3 normal, float roughness,
 		inout vec3 diffuse_light, inout vec3 specular_light) {
-	vec3 light_rel_vec = omni_lights[idx].position - vertex;
+	vec3 light_position = omni_lights[idx].position;
+	vec3 light_rel_vec = light_position - vertex;
 	float light_length = length(light_rel_vec);
 	float omni_attenuation = get_omni_spot_attenuation(light_length, omni_lights[idx].inv_radius, omni_lights[idx].attenuation);
 	vec3 color = omni_lights[idx].color * omni_attenuation; // No light shaders here, so combine.
 
-	light_compute(normal, normalize(light_rel_vec), eye_vec, color, false, roughness,
+	light_compute(normal, normalize(light_rel_vec), light_position, vertex, omni_attenuation, 1.0, omni_lights[idx].color, omni_lights[idx].inv_radius, eye_vec, color, false, roughness,
 			diffuse_light,
 			specular_light);
 }
@@ -406,7 +407,9 @@ void light_process_omni(uint idx, vec3 vertex, vec3 eye_vec, vec3 normal, float 
 void light_process_spot(uint idx, vec3 vertex, vec3 eye_vec, vec3 normal, float roughness,
 		inout vec3 diffuse_light,
 		inout vec3 specular_light) {
-	vec3 light_rel_vec = spot_lights[idx].position - vertex;
+	
+	vec3 light_position = spot_lights[idx].position;
+	vec3 light_rel_vec = light_position - vertex;
 	float light_length = length(light_rel_vec);
 	float spot_attenuation = get_omni_spot_attenuation(light_length, spot_lights[idx].inv_radius, spot_lights[idx].attenuation);
 	vec3 spot_dir = spot_lights[idx].direction;
@@ -418,7 +421,7 @@ void light_process_spot(uint idx, vec3 vertex, vec3 eye_vec, vec3 normal, float 
 
 	vec3 color = spot_lights[idx].color * spot_attenuation;
 
-	light_compute(normal, normalize(light_rel_vec), eye_vec, color, false, roughness,
+	light_compute(normal, normalize(light_rel_vec), light_position, vertex, spot_attenuation, 1.0, spot_lights[idx].color, spot_lights[idx].inv_radius, eye_vec, color, false, roughness,
 			diffuse_light, specular_light);
 }
 #endif // !defined(DISABLE_LIGHT_SPOT) || (defined(ADDITIVE_SPOT) && defined(USE_ADDITIVE_LIGHTING))
@@ -758,7 +761,7 @@ void main() {
 			continue;
 		}
 #endif
-		light_compute(normal_interp, normalize(directional_lights[i].direction), normalize(view), directional_lights[i].color * directional_lights[i].energy, true, roughness,
+		light_compute(normal_interp, normalize(directional_lights[i].direction), vec3(0.0, 0.0, 0.0), vertex, 1.0, 1.0, directional_lights[i].color, 0.0, normalize(view), directional_lights[i].color * directional_lights[i].energy, true, roughness,
 				diffuse_light_interp.rgb,
 				specular_light_interp.rgb);
 	}
@@ -785,7 +788,7 @@ void main() {
 	additive_specular_light_interp = vec3(0.0);
 #if !defined(ADDITIVE_OMNI) && !defined(ADDITIVE_SPOT)
 
-	light_compute(normal_interp, normalize(directional_lights[directional_shadow_index].direction), normalize(view), directional_lights[directional_shadow_index].color * directional_lights[directional_shadow_index].energy, true, roughness,
+	light_compute(normal_interp, normalize(directional_lights[directional_shadow_index].direction), vec3(0.0, 0.0, 0.0), vertex, 1.0, 1.0, directional_lights[directional_shadow_index].color, 0.0, normalize(view), directional_lights[directional_shadow_index].color * directional_lights[directional_shadow_index].energy, true, roughness,
 			additive_diffuse_light_interp.rgb,
 			additive_specular_light_interp.rgb);
 #endif // !defined(ADDITIVE_OMNI) && !defined(ADDITIVE_SPOT)
@@ -1311,7 +1314,7 @@ float SchlickFresnel(float u) {
 	return m2 * m2 * m; // pow(m,5)
 }
 
-void light_compute(vec3 N, vec3 L, vec3 V, float A, vec3 light_color, bool is_directional, float attenuation, vec3 f0, float roughness, float metallic, float specular_amount, vec3 albedo, inout float alpha, vec2 screen_uv,
+void light_compute(vec3 N, vec3 L, vec3 explicit_light_pos, vec3 explicit_vertex_pos, float explicit_shadow, float explicit_physical_attenuation, vec3 explicit_color, float explicit_inv_radius, vec3 V, float A, vec3 light_color, bool is_directional, float attenuation, vec3 f0, float roughness, float metallic, float specular_amount, vec3 albedo, inout float alpha, vec2 screen_uv,
 #ifdef LIGHT_BACKLIGHT_USED
 		vec3 backlight,
 #endif
@@ -1489,7 +1492,8 @@ void light_process_omni(uint idx, vec3 vertex, vec3 eye_vec, vec3 normal, vec3 f
 		vec3 binormal, vec3 tangent, float anisotropy,
 #endif
 		inout vec3 diffuse_light, inout vec3 specular_light) {
-	vec3 light_rel_vec = omni_lights[idx].position - vertex;
+	vec3 light_position = omni_lights[idx].position;
+	vec3 light_rel_vec = light_position - vertex;
 	float light_length = length(light_rel_vec);
 	float omni_attenuation = get_omni_spot_attenuation(light_length, omni_lights[idx].inv_radius, omni_lights[idx].attenuation);
 	vec3 color = omni_lights[idx].color;
@@ -1500,9 +1504,10 @@ void light_process_omni(uint idx, vec3 vertex, vec3 eye_vec, vec3 normal, vec3 f
 		size_A = max(0.0, 1.0 - 1.0 / sqrt(1.0 + t * t));
 	}
 
+	float real_omni_attenuation = omni_attenuation;
 	omni_attenuation *= shadow;
 
-	light_compute(normal, normalize(light_rel_vec), eye_vec, size_A, color, false, omni_attenuation, f0, roughness, metallic, omni_lights[idx].specular_amount, albedo, alpha, screen_uv,
+	light_compute(normal, normalize(light_rel_vec), light_position, vertex, real_omni_attenuation, shadow, color, omni_lights[idx].inv_radius, eye_vec, size_A, color, false, omni_attenuation, f0, roughness, metallic, omni_lights[idx].specular_amount, albedo, alpha, screen_uv,
 #ifdef LIGHT_BACKLIGHT_USED
 			backlight,
 #endif
@@ -1537,7 +1542,8 @@ void light_process_spot(uint idx, vec3 vertex, vec3 eye_vec, vec3 normal, vec3 f
 		inout vec3 diffuse_light,
 		inout vec3 specular_light) {
 
-	vec3 light_rel_vec = spot_lights[idx].position - vertex;
+	vec3 light_position = spot_lights[idx].position;
+	vec3 light_rel_vec = light_position - vertex;
 	float light_length = length(light_rel_vec);
 	float spot_attenuation = get_omni_spot_attenuation(light_length, spot_lights[idx].inv_radius, spot_lights[idx].attenuation);
 	vec3 spot_dir = spot_lights[idx].direction;
@@ -1556,9 +1562,10 @@ void light_process_spot(uint idx, vec3 vertex, vec3 eye_vec, vec3 normal, vec3 f
 		size_A = max(0.0, 1.0 - 1.0 / sqrt(1.0 + t * t));
 	}
 
+	float real_spot_attenuation = spot_attenuation;
 	spot_attenuation *= shadow;
 
-	light_compute(normal, normalize(light_rel_vec), eye_vec, size_A, color, false, spot_attenuation, f0, roughness, metallic, spot_lights[idx].specular_amount, albedo, alpha, screen_uv,
+	light_compute(normal, normalize(light_rel_vec), light_position, vertex, real_spot_attenuation, shadow, color, spot_lights[idx].inv_radius, eye_vec, size_A, color, false, spot_attenuation, f0, roughness, metallic, spot_lights[idx].specular_amount, albedo, alpha, screen_uv,
 #ifdef LIGHT_BACKLIGHT_USED
 			backlight,
 #endif
@@ -2198,7 +2205,7 @@ void main() {
 			continue;
 		}
 #endif
-		light_compute(normal, normalize(directional_lights[i].direction), normalize(view), directional_lights[i].size, directional_lights[i].color * directional_lights[i].energy, true, 1.0, f0, roughness, metallic, directional_lights[i].specular, albedo, alpha, screen_uv,
+		light_compute(normal, normalize(directional_lights[i].direction), vec3(0.0, 0.0, 0.0), vertex, 1.0, 1.0, directional_lights[i].color, 0.0, normalize(view), directional_lights[i].size, directional_lights[i].color * directional_lights[i].energy, true, 1.0, f0, roughness, metallic, directional_lights[i].specular, albedo, alpha, screen_uv,
 #ifdef LIGHT_BACKLIGHT_USED
 				backlight,
 #endif
@@ -2512,7 +2519,7 @@ void main() {
 #endif // SHADOWS_DISABLED
 
 #ifndef USE_VERTEX_LIGHTING
-	light_compute(normal, normalize(directional_lights[directional_shadow_index].direction), normalize(view), directional_lights[directional_shadow_index].size, directional_lights[directional_shadow_index].color * directional_lights[directional_shadow_index].energy, true, directional_shadow, f0, roughness, metallic, directional_lights[directional_shadow_index].specular, albedo, alpha, screen_uv,
+	light_compute(normal, normalize(directional_lights[directional_shadow_index].direction), vec3(0.0, 0.0, 0.0), vertex, 1.0, directional_shadow, directional_lights[directional_shadow_index].color, 0.0, normalize(view), directional_lights[directional_shadow_index].size, directional_lights[directional_shadow_index].color * directional_lights[directional_shadow_index].energy, true, directional_shadow, f0, roughness, metallic, directional_lights[directional_shadow_index].specular, albedo, alpha, screen_uv,
 #ifdef LIGHT_BACKLIGHT_USED
 			backlight,
 #endif
