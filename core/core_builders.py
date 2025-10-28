@@ -19,7 +19,8 @@ def version_info_builder(target, source, env):
     with methods.generated_wrapper(str(target[0])) as file:
         file.write(
             """\
-// To future Xan, this is in core/core_builders.py
+// To future Xan, the actual macro here is in core/core_builders.py
+// It samples from version.py
 #define GODOT_VERSION_SHORT_NAME "{short_name}"
 #define GODOT_VERSION_NAME "{name}"
 #define GODOT_VERSION_MAJOR {major}
