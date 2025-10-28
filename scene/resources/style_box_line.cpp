@@ -92,6 +92,13 @@ float StyleBoxLine::get_grow_begin() const {
 }
 
 void StyleBoxLine::draw(RID p_canvas_item, const Rect2 &p_rect) const {
+	bool should_draw;
+	if (GDVIRTUAL_CALL(_should_draw, should_draw)) {
+		if (!should_draw) {
+			return;
+		}
+	}
+
 	RenderingServer *vs = RenderingServer::get_singleton();
 	Rect2i r = p_rect;
 

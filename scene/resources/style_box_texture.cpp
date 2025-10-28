@@ -161,6 +161,13 @@ Rect2 StyleBoxTexture::get_draw_rect(const Rect2 &p_rect) const {
 }
 
 void StyleBoxTexture::draw(RID p_canvas_item, const Rect2 &p_rect) const {
+	bool should_draw;
+	if (GDVIRTUAL_CALL(_should_draw, should_draw)) {
+		if (!should_draw) {
+			return;
+		}
+	}
+
 	if (texture.is_null()) {
 		return;
 	}

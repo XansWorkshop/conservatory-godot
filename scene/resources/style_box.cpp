@@ -90,6 +90,10 @@ Point2 StyleBox::get_offset() const {
 }
 
 void StyleBox::draw(RID p_canvas_item, const Rect2 &p_rect) const {
+	bool should_draw;
+	if (GDVIRTUAL_CALL(_should_draw, should_draw)) {
+		if (!should_draw) return;
+	}
 	GDVIRTUAL_CALL(_draw, p_canvas_item, p_rect);
 }
 
@@ -136,6 +140,7 @@ void StyleBox::_bind_methods() {
 	GDVIRTUAL_BIND(_get_draw_rect, "rect")
 	GDVIRTUAL_BIND(_get_minimum_size)
 	GDVIRTUAL_BIND(_test_mask, "point", "rect")
+	GDVIRTUAL_BIND(_should_draw)
 }
 
 StyleBox::StyleBox() {

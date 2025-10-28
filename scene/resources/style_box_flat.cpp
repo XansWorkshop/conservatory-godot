@@ -454,6 +454,13 @@ Rect2 StyleBoxFlat::get_draw_rect(const Rect2 &p_rect) const {
 }
 
 void StyleBoxFlat::draw(RID p_canvas_item, const Rect2 &p_rect) const {
+	bool should_draw;
+	if (GDVIRTUAL_CALL(_should_draw, should_draw)) {
+		if (!should_draw) {
+			return;
+		}
+	}
+
 	bool draw_border = (border_width[0] > 0) || (border_width[1] > 0) || (border_width[2] > 0) || (border_width[3] > 0);
 	bool draw_shadow = (shadow_size > 0);
 	if (!draw_border && !draw_center && !draw_shadow) {

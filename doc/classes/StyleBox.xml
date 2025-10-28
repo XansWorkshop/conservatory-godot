@@ -10,6 +10,16 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="_should_draw" qualifiers="virtual const">
+			<return type="bool" />
+			<description>
+				[admonition type="note" collapsible="true" open="false"]
+				[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+				This is not available in the official build of Godot.
+				[/admonition]
+				Can be overridden to prevent drawing all instances of this [StyleBox]. If this returns [code]false[/code], the [method _draw] method will not be called.
+			</description>
+		</method>
 		<method name="_draw" qualifiers="virtual required const">
 			<return type="void" />
 			<param index="0" name="to_canvas_item" type="RID" />
