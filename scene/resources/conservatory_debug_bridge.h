@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  conservatory_debug.h                                                  */
+/*  conservatory_debug_bridge.h                                           */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                 GODOT ENGINE /// THE CONSERVATORY FORK                 */
