@@ -582,6 +582,18 @@
 				Returns the vendor of the video adapter (e.g. "NVIDIA Corporation"). Equivalent to [method RenderingServer.get_video_adapter_vendor]. See also [method get_device_name].
 			</description>
 		</method>
+		<method name="get_device_api_name" qualifiers="const">
+			<return type="String" />
+			<description>
+				Returns the name of the active rendering API (e.g. "D3D12" or "Vulkan").
+			</description>
+		</method>
+		<method name="get_device_api_version" qualifiers="const">
+			<return type="String" />
+			<description>
+				Returns the version of the active rendering API's version, using its own version semantics (e.g. "12_2" for Direct3D, or "1.4.312" for Vulkan).
+			</description>
+		</method>
 		<method name="get_driver_allocation_count" qualifiers="const">
 			<return type="int" />
 			<description>
