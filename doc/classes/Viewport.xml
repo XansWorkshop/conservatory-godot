@@ -219,6 +219,17 @@
 				If [member handle_input_locally] is set to [code]false[/code], this method will try finding the first parent viewport that is set to handle input locally, and return its value for [method is_input_handled] instead.
 			</description>
 		</method>
+		<method name="get_input_handler" qualifiers="const">
+			<return type="Object" />
+			<description>
+				[admonition type="note" collapsible="true" open="false"]
+				[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+				This is not available in the official build of Godot.
+				[/admonition]
+				When available, this returns the [Object] that was responsible for handling an input. Note that this API is not standard and so some modules, particularly third party code, will not set this.
+				Note that this is a weak reference; the object may be invalid or destroyed.
+			</description>
+		</method>
 		<method name="notify_mouse_entered">
 			<return type="void" />
 			<description>
@@ -284,6 +295,7 @@
 		</method>
 		<method name="set_input_as_handled">
 			<return type="void" />
+			<param index="0" name="by" type="Object" />
 			<description>
 				Stops the input from propagating further down the [SceneTree].
 				[b]Note:[/b] This does not affect the methods in [Input], only the way events are propagated.
