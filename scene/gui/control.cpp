@@ -1912,7 +1912,7 @@ void Control::gui_input(const Ref<InputEvent> &p_event) {
 void Control::accept_event() {
 	ERR_MAIN_THREAD_GUARD;
 	if (is_inside_tree()) {
-		get_viewport()->_gui_accept_event();
+		get_viewport()->_gui_accept_event(this);
 	}
 }
 

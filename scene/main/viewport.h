@@ -301,6 +301,7 @@ private:
 	StringName shortcut_input_group;
 	StringName unhandled_input_group;
 	StringName unhandled_key_input_group;
+	WeakRef last_input_handler;
 
 	CONSERVATORY_VIRTUAL void _update_audio_listener_2d();
 
@@ -472,7 +473,7 @@ private:
 	CONSERVATORY_VIRTUAL void _gui_control_grab_focus(Control *p_control);
 	CONSERVATORY_VIRTUAL void _gui_grab_click_focus(Control *p_control);
 	CONSERVATORY_VIRTUAL void _post_gui_grab_click_focus();
-	CONSERVATORY_VIRTUAL void _gui_accept_event();
+	CONSERVATORY_VIRTUAL void _gui_accept_event(Object *p_obj = nullptr);
 
 	CONSERVATORY_VIRTUAL bool _gui_drop(Control *p_at_control, Point2 p_at_pos, bool p_just_check);
 
@@ -678,8 +679,9 @@ public:
 	CONSERVATORY_VIRTUAL void set_snap_2d_vertices_to_pixel(bool p_enable);
 	CONSERVATORY_VIRTUAL bool is_snap_2d_vertices_to_pixel_enabled() const;
 
-	CONSERVATORY_VIRTUAL void set_input_as_handled();
+	CONSERVATORY_VIRTUAL void set_input_as_handled(Object *p_by = nullptr);
 	CONSERVATORY_VIRTUAL bool is_input_handled() const;
+	CONSERVATORY_VIRTUAL Object *get_input_handler() const;
 
 	CONSERVATORY_VIRTUAL void set_handle_input_locally(bool p_enable);
 	CONSERVATORY_VIRTUAL bool is_handling_input_locally() const;

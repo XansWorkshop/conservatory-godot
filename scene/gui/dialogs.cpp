@@ -138,7 +138,7 @@ void AcceptDialog::_ok_pressed() {
 	}
 	ok_pressed();
 	emit_signal(SceneStringName(confirmed));
-	set_input_as_handled();
+	set_input_as_handled(this);
 }
 
 void AcceptDialog::_cancel_pressed() {
@@ -158,7 +158,7 @@ void AcceptDialog::_cancel_pressed() {
 	if (parent_window) {
 		//parent_window->grab_focus();
 	}
-	set_input_as_handled();
+	set_input_as_handled(this);
 }
 
 String AcceptDialog::get_text() const {

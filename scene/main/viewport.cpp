@@ -1822,7 +1822,7 @@ void Viewport::_gui_call_input(Control *p_control, const Ref<InputEvent> &p_inpu
 			}
 			if (control->get_mouse_filter_with_override() == Control::MOUSE_FILTER_STOP && is_pointer_event && !(is_scroll_event && control->data.force_pass_scroll_events)) {
 				// Mouse, ScreenDrag and ScreenTouch events are stopped by default with MOUSE_FILTER_STOP, unless we have a scroll event and force_pass_scroll_events set to true
-				set_input_as_handled();
+				set_input_as_handled(control);
 				break;
 			}
 		}
@@ -1985,7 +1985,7 @@ void Viewport::_gui_input_event(Ref<InputEvent> p_event) {
 		if (mb->is_pressed()) {
 			if (gui.dragging && mb->get_button_index() == MouseButton::RIGHT) {
 				_perform_drop();
-				set_input_as_handled();
+				set_input_as_handled(this);
 				return;
 			}
 			MouseButtonMask button_mask = mouse_button_to_mask(mb->get_button_index());
@@ -2338,7 +2338,7 @@ void Viewport::_gui_input_event(Ref<InputEvent> p_event) {
 	if (mm.is_null() && mb.is_null() && p_event->is_action_type()) {
 		if (gui.dragging && p_event->is_action_pressed(SNAME("ui_cancel")) && Input::get_singleton()->is_action_just_pressed(SNAME("ui_cancel"))) {
 			_perform_drop();
-			set_input_as_handled();
+			set_input_as_handled(this);
 			return;
 		}
 
@@ -2349,7 +2349,7 @@ void Viewport::_gui_input_event(Ref<InputEvent> p_event) {
 				// If a tooltip was hidden, prevent other actions associated with `ui_cancel` from occurring.
 				// For instance, this prevents the node from being deselected when pressing Escape
 				// to hide a documentation tooltip in the inspector.
-				set_input_as_handled();
+				set_input_as_handled(this);
 				return;
 			}
 		}
@@ -2454,7 +2454,7 @@ void Viewport::_gui_input_event(Ref<InputEvent> p_event) {
 			}
 			if (next) {
 				next->grab_focus();
-				set_input_as_handled();
+				set_input_as_handled(from);
 			}
 		}
 	}
@@ -2755,9 +2755,9 @@ void Viewport::_gui_control_grab_focus(Control *p_control) {
 	}
 }
 
-void Viewport::_gui_accept_event() {
+void Viewport::_gui_accept_event(Object *p_obj) {
 	if (is_inside_tree()) {
-		set_input_as_handled();
+		set_input_as_handled(p_obj);
 	}
 }
 
@@ -3520,7 +3520,7 @@ void Viewport::push_input(const Ref<InputEvent> &p_event, bool p_local_coords) {
 	}
 
 	if (is_embedding_subwindows() && _sub_windows_forward_input(ev)) {
-		set_input_as_handled();
+		set_input_as_handled(this);
 		return;
 	}
 
@@ -3604,7 +3604,7 @@ void Viewport::_push_unhandled_input_internal(const Ref<InputEvent> &p_event) {
 
 								)) {
 			physics_picking_events.push_back(p_event);
-			set_input_as_handled();
+			set_input_as_handled(this);
 		}
 	}
 #endif // !defined(PHYSICS_2D_DISABLED) || !defined(PHYSICS_3D_DISABLED)
@@ -3932,7 +3932,7 @@ void Viewport::gui_cancel_drag() {
 	}
 }
 
-void Viewport::set_input_as_handled() {
+void Viewport::set_input_as_handled(Object *p_by) {
 	ERR_MAIN_THREAD_GUARD;
 	if (!handle_input_locally) {
 		ERR_FAIL_COND(!is_inside_tree());
@@ -3947,12 +3947,13 @@ void Viewport::set_input_as_handled() {
 			vp = vp->get_parent()->get_viewport();
 		}
 		if (vp != this) {
-			vp->set_input_as_handled();
+			vp->set_input_as_handled(p_by);
 			return;
 		}
 	}
 
 	local_input_handled = true;
+	last_input_handler.set_obj(p_by);
 #ifdef CONSERVATORY_GLOBAL_INPUT_HACK_ENABLED
 	Input::get_singleton()->last_dispatched_input_was_handled = true;
 #endif
@@ -3977,6 +3978,11 @@ bool Viewport::is_input_handled() const {
 		}
 	}
 	return local_input_handled;
+}
+
+Object* Viewport::get_input_handler() const {
+	Variant ref = last_input_handler.get_ref();
+	return ref.get_validated_object();
 }
 
 void Viewport::set_handle_input_locally(bool p_enable) {
@@ -5159,8 +5165,9 @@ void Viewport::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_positional_shadow_atlas_quadrant_subdiv", "quadrant", "subdiv"), &Viewport::set_positional_shadow_atlas_quadrant_subdiv);
 	ClassDB::bind_method(D_METHOD("get_positional_shadow_atlas_quadrant_subdiv", "quadrant"), &Viewport::get_positional_shadow_atlas_quadrant_subdiv);
 
-	ClassDB::bind_method(D_METHOD("set_input_as_handled"), &Viewport::set_input_as_handled);
+	ClassDB::bind_method(D_METHOD("set_input_as_handled", "by"), &Viewport::set_input_as_handled, DEFVAL(Variant()));
 	ClassDB::bind_method(D_METHOD("is_input_handled"), &Viewport::is_input_handled);
+	ClassDB::bind_method(D_METHOD("get_input_handler"), &Viewport::get_input_handler);
 
 	ClassDB::bind_method(D_METHOD("set_handle_input_locally", "enable"), &Viewport::set_handle_input_locally);
 	ClassDB::bind_method(D_METHOD("is_handling_input_locally"), &Viewport::is_handling_input_locally);

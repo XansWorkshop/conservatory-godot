@@ -391,7 +391,7 @@ void EditorFileDialog::shortcut_input(const Ref<InputEvent> &p_event) {
 			}
 
 			if (handled) {
-				set_input_as_handled();
+				set_input_as_handled(this);
 			}
 		}
 	}

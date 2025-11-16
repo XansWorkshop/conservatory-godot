@@ -387,7 +387,7 @@ void EditorNode::input(const Ref<InputEvent> &p_event) {
 	// allowing interaction with the actual dialog where a Cancel button may be visible.
 	Ref<InputEventKey> k = p_event;
 	if (k.is_valid()) {
-		get_tree()->get_root()->set_input_as_handled();
+		get_tree()->get_root()->set_input_as_handled(this);
 	}
 }
 
@@ -424,7 +424,7 @@ void EditorNode::shortcut_input(const Ref<InputEvent> &p_event) {
 		}
 
 		if (is_handled) {
-			get_tree()->get_root()->set_input_as_handled();
+			get_tree()->get_root()->set_input_as_handled(this);
 		}
 	}
 }

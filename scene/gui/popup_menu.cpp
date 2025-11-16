@@ -503,7 +503,7 @@ void PopupMenu::_input_from_window_internal(const Ref<InputEvent> &p_event) {
 					scroll_to_item(i);
 					queue_accessibility_update();
 					control->queue_redraw();
-					set_input_as_handled();
+					set_input_as_handled(this);
 					match_found = true;
 					break;
 				}
@@ -519,7 +519,7 @@ void PopupMenu::_input_from_window_internal(const Ref<InputEvent> &p_event) {
 						scroll_to_item(i);
 						queue_accessibility_update();
 						control->queue_redraw();
-						set_input_as_handled();
+						set_input_as_handled(this);
 						break;
 					}
 				}
@@ -546,7 +546,7 @@ void PopupMenu::_input_from_window_internal(const Ref<InputEvent> &p_event) {
 					scroll_to_item(i);
 					queue_accessibility_update();
 					control->queue_redraw();
-					set_input_as_handled();
+					set_input_as_handled(this);
 					match_found = true;
 					break;
 				}
@@ -562,7 +562,7 @@ void PopupMenu::_input_from_window_internal(const Ref<InputEvent> &p_event) {
 						scroll_to_item(i);
 						queue_accessibility_update();
 						control->queue_redraw();
-						set_input_as_handled();
+						set_input_as_handled(this);
 						break;
 					}
 				}
@@ -572,22 +572,22 @@ void PopupMenu::_input_from_window_internal(const Ref<InputEvent> &p_event) {
 			if (n) {
 				if (Object::cast_to<PopupMenu>(n)) {
 					hide();
-					set_input_as_handled();
+					set_input_as_handled(this);
 				} else if (Object::cast_to<MenuBar>(n)) {
 					Object::cast_to<MenuBar>(n)->gui_input(p_event);
-					set_input_as_handled();
+					set_input_as_handled(this);
 					return;
 				}
 			}
 		} else if (p_event->is_action("ui_right", true) && p_event->is_pressed()) {
 			if (mouse_over >= 0 && mouse_over < items.size() && !items[mouse_over].separator && items[mouse_over].submenu && submenu_over != mouse_over) {
 				_activate_submenu(mouse_over, true);
-				set_input_as_handled();
+				set_input_as_handled(this);
 			} else {
 				Node *n = get_parent();
 				if (n && Object::cast_to<MenuBar>(n)) {
 					Object::cast_to<MenuBar>(n)->gui_input(p_event);
-					set_input_as_handled();
+					set_input_as_handled(this);
 					return;
 				}
 			}
@@ -598,7 +598,7 @@ void PopupMenu::_input_from_window_internal(const Ref<InputEvent> &p_event) {
 				} else {
 					activate_item(mouse_over);
 				}
-				set_input_as_handled();
+				set_input_as_handled(this);
 			}
 		}
 	}
@@ -752,7 +752,7 @@ void PopupMenu::_input_from_window_internal(const Ref<InputEvent> &p_event) {
 				scroll_to_item(i);
 				queue_accessibility_update();
 				control->queue_redraw();
-				set_input_as_handled();
+				set_input_as_handled(this);
 				break;
 			}
 		}
