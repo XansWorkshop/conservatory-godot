@@ -36,6 +36,7 @@
 #include "simulation_domain.h"
 
 #define CONSERVATORY_UNREPORTABLE_IMPL_ERROR (TheConservatoryExitCodes::FATAL_IMPLEMENTATION_ERROR | TheConservatoryExitCodes::FLAG_DISALLOW_REPORTING)
+#define CONSERVATORY_UNREPORTABLE_SECURITY_VIOLATION (TheConservatoryExitCodes::FATAL_CODE_SECURITY_VIOLATION | TheConservatoryExitCodes::FLAG_DISALLOW_REPORTING)
 
 bool SimulationDomain::declared_cs_methods;
 SimulationDomain *SimulationDomain::current;
@@ -51,7 +52,7 @@ void SimulationDomain::_tc_crash(const String &p_msg, const String &p_context, i
 		PackedByteArray context = p_context.to_utf8_buffer();
 		tc_crash(msg.ptr(), msg.size(), context.ptr(), context.size(), p_tc_error_code);
 	} else {
-		ERR_FAIL_MSG(vformat("%s (context: %s)", p_msg.ptr(), p_context.ptr()));
+		CRASH_NOW_MSG(vformat("%s (context: %s)", p_msg.ptr(), p_context.ptr()));
 	}
 }
 
@@ -68,7 +69,7 @@ bool SimulationDomain::_tc_is_client() {
 	if (tc_is_client) {
 		return tc_is_client();
 	} else {
-		_tc_crash("The IsClient method was not previously supplied correctly.", "Attempting to determine the function of a SimulationDomain", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
+		_tc_crash("The is_client method was not previously supplied correctly.", "Attempting to determine the function of a SimulationDomain", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 		return false;
 	}
 }
@@ -77,7 +78,7 @@ void SimulationDomain::_tc_active_changed(const SimulationDomain* p_instance) {
 	if (tc_active_changed) {
 		tc_active_changed((int64_t)p_instance);
 	} else {
-		_tc_crash("The IsClient method was not previously supplied correctly.", "Attempting to determine the function of a SimulationDomain", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
+		_tc_crash("The active_changed method was not previously supplied correctly.", "Attempting to determine the function of a SimulationDomain", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
 	}
 }
 
@@ -90,7 +91,7 @@ SimulationDomain *SimulationDomain::get_instance(const int64_t p_native_instance
 
 int64_t SimulationDomain::set_conservatory_callbacks(const int64_t p_crash, const int64_t p_destroy, const int64_t p_is_client, const int64_t p_active_changed) {
 	if (SimulationDomain::declared_cs_methods) {
-		_tc_crash("Invalid attempt to call SimulationDomain.SetConservatoryCallbacks more than once.", "Verifying the integrity of the simulation", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
+		_tc_crash("Illegal attempt to call SimulationDomain.SetConservatoryCallbacks.", "Verifying the integrity of the simulation", CONSERVATORY_UNREPORTABLE_SECURITY_VIOLATION);
 		return 0;
 	}
 	ERR_FAIL_COND_V(p_crash == 0, 0);
@@ -116,7 +117,7 @@ void SimulationDomain::_notification(int p_what) {
 		case Node::NOTIFICATION_ENTER_TREE:
 			if (!created_properly) {
 				malformed = true;
-				_tc_crash("This SimulationDomain was not created using the correct technique.", "Verifying correct construction procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
+				_tc_crash("This SimulationDomain was not created using the correct procedure.", "Verifying correct construction procedure (in-engine).", CONSERVATORY_UNREPORTABLE_SECURITY_VIOLATION);
 			} else {
 				Node *my_parent = get_parent();
 				Viewport *parent_viewport = Node::cast_to<Viewport>(my_parent);
@@ -270,7 +271,7 @@ void SimulationDomain::destroy() {
 	}
 }
 void SimulationDomain::set_world_2d(const Ref<World2D> &p_world_2d) {
-	ERR_FAIL_MSG("set_world_2d is not supported on SimulationDomain.");
+	ERR_FAIL_MSG("set_world_2d is not supported on SimulationDomain. It always has its own world created ahead of time.");
 }
 Ref<World2D> SimulationDomain::get_world_2d() const {
 	if (TC_IS_NULL(world2d)) {
@@ -288,7 +289,7 @@ Ref<World2D> SimulationDomain::find_world_2d() const {
 }
 
 void SimulationDomain::set_world_3d(const Ref<World3D> &p_world_3d) {
-	ERR_FAIL_MSG("set_world_3d is not supported on SimulationDomain.");
+	ERR_FAIL_MSG("set_world_3d is not supported on SimulationDomain. It always has its own world created ahead of time.");
 }
 Ref<World3D> SimulationDomain::get_world_3d() const {
 	if (TC_IS_NULL(world3d)) {
@@ -305,7 +306,7 @@ Ref<World3D> SimulationDomain::find_world_3d() const {
 	return world3d;
 }
 void SimulationDomain::set_use_own_world_3d(bool p_use_own_world_3d) {
-	ERR_FAIL_MSG("set_use_own_world_3d is not supported on SimulationDomain.");
+	ERR_FAIL_MSG("set_use_own_world_3d is not supported on SimulationDomain. It always has its own world.");
 }
 bool SimulationDomain::is_using_own_world_3d() const {
 	return true;

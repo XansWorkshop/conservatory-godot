@@ -140,6 +140,11 @@ class SimulationDomain : public Viewport {
 		/// Some piece of code attempted to access or call an unauthorized method or field, violating mod security constraints
 		/// that are intended to prevent malware from being stored in mods.
 		/// </summary>
+		/// <remarks>
+		/// If you have caused this error, but believe that the API you are using should be allowed anyway, please file an issue
+		/// report. You should also report this if you believe that the API was left in a locked state on accident, something
+		/// especially prevalent if you are modding a beta version of the game.
+		/// </remarks>
 		FATAL_CODE_SECURITY_VIOLATION,
 
 		/// <summary>
@@ -240,7 +245,7 @@ public:
 	_FORCE_INLINE_ void _gui_control_grab_focus(Control *p_control) override { get_parent_viewport()->_gui_control_grab_focus(p_control); }
 	_FORCE_INLINE_ void _gui_grab_click_focus(Control *p_control) override { get_parent_viewport()->_gui_grab_click_focus(p_control); }
 	_FORCE_INLINE_ void _post_gui_grab_click_focus() override { get_parent_viewport()->_post_gui_grab_click_focus(); }
-	_FORCE_INLINE_ void _gui_accept_event() override { get_parent_viewport()->_gui_accept_event(); }
+	_FORCE_INLINE_ void _gui_accept_event(Object *p_obj = nullptr) override { get_parent_viewport()->_gui_accept_event(p_obj); }
 	_FORCE_INLINE_ bool _gui_drop(Control *p_at_control, Point2 p_at_pos, bool p_just_check) override { return get_parent_viewport()->_gui_drop(p_at_control, p_at_pos, p_just_check); }
 	_FORCE_INLINE_ void _canvas_layer_add(CanvasLayer *p_canvas_layer) override { get_parent_viewport()->_canvas_layer_add(p_canvas_layer); }
 	_FORCE_INLINE_ void _canvas_layer_remove(CanvasLayer *p_canvas_layer) override { get_parent_viewport()->_canvas_layer_remove(p_canvas_layer); }
@@ -372,7 +377,8 @@ public:
 	_FORCE_INLINE_ bool is_snap_2d_transforms_to_pixel_enabled() const override { return get_parent_viewport()->is_snap_2d_transforms_to_pixel_enabled(); }
 	_FORCE_INLINE_ void set_snap_2d_vertices_to_pixel(bool p_enable) override { get_parent_viewport()->set_snap_2d_vertices_to_pixel(p_enable); }
 	_FORCE_INLINE_ bool is_snap_2d_vertices_to_pixel_enabled() const override { return get_parent_viewport()->is_snap_2d_vertices_to_pixel_enabled(); }
-	_FORCE_INLINE_ void set_input_as_handled() override { get_parent_viewport()->set_input_as_handled(); }
+	_FORCE_INLINE_ void set_input_as_handled(Object *p_obj) override { get_parent_viewport()->set_input_as_handled(p_obj); }
+	_FORCE_INLINE_ Object* get_input_handler() const override { return get_parent_viewport()->get_input_handler(); }
 	_FORCE_INLINE_ bool is_input_handled() const override { return get_parent_viewport()->is_input_handled(); }
 	_FORCE_INLINE_ void set_handle_input_locally(bool p_enable) override { get_parent_viewport()->set_handle_input_locally(p_enable); }
 	_FORCE_INLINE_ bool is_handling_input_locally() const override { return get_parent_viewport()->is_handling_input_locally(); }
