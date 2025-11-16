@@ -20,7 +20,7 @@ def version_info_builder(target, source, env):
         file.write(
             """\
 // To future Xan, the actual macro here is in core/core_builders.py
-// It samples from version.py
+// It samples from version.py to get its data.
 #define GODOT_VERSION_SHORT_NAME "{short_name}"
 #define GODOT_VERSION_NAME "{name}"
 #define GODOT_VERSION_MAJOR {major}
@@ -31,7 +31,8 @@ def version_info_builder(target, source, env):
 #define GODOT_VERSION_MODULE_CONFIG "{module_config}"
 #define GODOT_VERSION_WEBSITE "{website}"
 #define GODOT_VERSION_DOCS_BRANCH "{docs_branch}"
-#define GODOT_VERSION_DOCS_URL "https://docs.godotengine.org/en/" GODOT_VERSION_DOCS_BRANCH
+// #define GODOT_VERSION_DOCS_URL "https://docs.godotengine.org/en/" GODOT_VERSION_DOCS_BRANCH
+#define GODOT_VERSION_DOCS_URL "https://xansworkshop.com/conservatory/modding/class-reference/godot"
 """.format(**source[0].read())
         )
 
