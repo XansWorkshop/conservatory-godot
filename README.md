@@ -10,6 +10,7 @@ This fork of the Godot Engine is based on **Godot 4.5**, and features several ch
 ### Build System Changes
 
 * New SCons parameter `allow_break_on_error` and a corresponding `TC_ALLOW_BREAK_ON_ERROR` macro that is defined when enabled (see API changes)
+* New SCons parameter `allow_release_memory_tracking` and a corresponding `TC_ALLOW_RELEASE_MEMORY_TRACKING` macro that is defined when enabled (see API changes)
 
 ### Public API Changes
 
