@@ -61,5 +61,6 @@ public:
 	static void set_ptrs(const int64_t p_tc_break_on_err_ptr, const int64_t p_tc_is_debugger_attached_ptr);
 	static void intercept_godot_logging_using(const int64_t p_managed_error_handler);
 	static bool is_engine_error_breaking_possible();
+	static bool are_engine_memory_metrics_available();
 	
 };

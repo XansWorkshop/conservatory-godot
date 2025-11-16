@@ -48,6 +48,7 @@ void ConservatoryDebugBridge::_bind_methods() {
 	ClassDB::bind_static_method("ConservatoryDebugBridge", D_METHOD("set_ptrs", "should_break_on_error", "is_debugger_attached"), &ConservatoryDebugBridge::set_ptrs);
 	ClassDB::bind_static_method("ConservatoryDebugBridge", D_METHOD("intercept_godot_logging_using", "managed_error_handler"), &ConservatoryDebugBridge::intercept_godot_logging_using);
 	ClassDB::bind_static_method("ConservatoryDebugBridge", D_METHOD("is_engine_error_breaking_possible"), &ConservatoryDebugBridge::is_engine_error_breaking_possible);
+	ClassDB::bind_static_method("ConservatoryDebugBridge", D_METHOD("are_engine_memory_metrics_available"), &ConservatoryDebugBridge::are_engine_memory_metrics_available);
 }
 
 bool ConservatoryDebugBridge::should_break_on_engine_error() {
@@ -59,12 +60,13 @@ bool ConservatoryDebugBridge::should_break_on_engine_error() {
 }
 
 void ConservatoryDebugBridge::set_ptrs(const int64_t p_tc_break_on_err_ptr, const int64_t p_tc_is_debugger_attached_ptr) {
+	CRASH_COND_MSG(ConservatoryDebugBridge::tc_break_on_err_ptr || ConservatoryDebugBridge::tc_is_debugger_attached, "Security Violation: Something attempted to modify the pointers used for debugger interactions when they were already set.");
 	tc_break_on_err_ptr = (bool *)p_tc_break_on_err_ptr;
 	tc_is_debugger_attached = (bool (*)(void))p_tc_is_debugger_attached_ptr;
 }
 
 void ConservatoryDebugBridge::intercept_godot_logging_using(const int64_t p_managed_error_handler) {
-	ERR_FAIL_COND_MSG(ConservatoryDebugBridge::has_already_intercepted_logging, "Already intercepting Godot logging. This can only be used once, and is reserved for use by The Conservatory (as in, the core game class).");
+	CRASH_COND_MSG(ConservatoryDebugBridge::tc_break_on_err_ptr || ConservatoryDebugBridge::tc_is_debugger_attached, "Security Violation: Something attempted to modify the log callback when it was already set.");
 	ERR_FAIL_COND_MSG(p_managed_error_handler == 0, "Error handler pointer is null.");
 	ConservatoryDebugBridge::has_already_intercepted_logging = true;
 	ConservatoryDebugBridge::tc_managed_log = (void (*)(void *p_userdata, const unsigned char *p_message, int p_message_length, const unsigned char *p_error, int p_error_length, const unsigned char *p_function_name, int p_function_name_length, const unsigned char *p_file_name, int p_file_name_length, int p_line, unsigned char p_severity_rating, bool p_is_bbcode))((size_t)p_managed_error_handler);
@@ -122,6 +124,14 @@ void ConservatoryDebugBridge::handle_error(void *p_userdata, const char *functio
 
 bool ConservatoryDebugBridge::is_engine_error_breaking_possible() {
 #if defined(_MSC_VER) && (defined(DEV_ENABLED) || defined(TC_ALLOW_BREAK_ON_ERROR))
+	return true;
+#else
+	return false;
+#endif
+}
+
+bool ConservatoryDebugBridge::are_engine_memory_metrics_available() {
+#if defined(DEBUG_ENABLED) || defined(TC_ALLOW_RELEASE_MEMORY_TRACKING)
 	return true;
 #else
 	return false;
