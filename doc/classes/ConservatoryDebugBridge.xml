@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<class name="ConservatoryDebugBridge" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		A class which enables low level engine and debugger interactions between C# and the engine.
+	</brief_description>
+	<description>
+		[admonition type="note" collapsible="true" open="false"]
+		[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+		This is not available in the official build of Godot.
+		[/admonition]
+		The [ConservatoryDebugBridge] is responsible for mediating and providing insight into debugger interactions with the engine itself. Depending on the build of the engine, certain features may be made available, such as the ability for the .NET (C#) debugger to break and even view the C++ source code of the engine, which is extremely powerful given the nature of the fork this belongs to.
+	</description>
+	<tutorials>
+	</tutorials>
+	<constructors>
+	</constructors>
+	<methods>
+		<method name="should_break_on_engine_error" qualifiers="static">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the debug bridge has been given permission to, and is capable of, breaking and debugging native engine code using the .NET debugger.
+			</description>
+		</method>
+		<method name="set_ptrs" qualifiers="static">
+			<return type="void" />
+			<description>
+				[b]For internal use only. Using this in a mod will crash the game with a code security violation.[/b]
+				Documentation is internal as part of the engine source code, since this doesn't apply to you anyway. The engine [i]is[/i] open source if you still need it, however.
+			</description>
+		</method>
+		<method name="intercept_godot_logging_using" qualifiers="static">
+			<return type="void" />
+			<description>
+				[b]For internal use only. Using this in a mod will crash the game with a code security violation.[/b]
+				Documentation is internal as part of the engine source code, since this doesn't apply to you anyway. The engine [i]is[/i] open source if you still need it, however.
+			</description>
+		</method>
+		<method name="is_engine_error_breaking_possible" qualifiers="static">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the engine is in a state where using the .NET debugger to break for internal engine errors is actually possible in the first place.
+				To determine if it actually [i]will[/i] break, use [method should_break_on_engine_error].
+			</description>
+		</method>
+		<method name="are_engine_memory_metrics_available" qualifiers="static">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if memory usage metrics of the engine are being tracked and can be queried.
+				In standard Godot, this is disabled in release builds of the engine, however an optional compilation flag unique to Godot: Conservatory Edition allows it to be enabled anyway at a slight performance and memory cost. This method returns true if that flag was defined when the engine was built.
+			</description>
+		</method>
+	</methods>
+	<members>
+	</members>
+	<operators>
+	</operators>
+</class>

@@ -467,13 +467,13 @@
 		<method name="get_static_memory_peak_usage" qualifiers="const">
 			<return type="int" />
 			<description>
-				Returns the maximum amount of static memory used. Only works in debug builds.
+				Returns the maximum amount of static memory used. Only available if [code]are_engine_memory_metrics_available[/code] (from [ConservatoryDebugBridge]) returns [code]true[/code].
 			</description>
 		</method>
 		<method name="get_static_memory_usage" qualifiers="const">
 			<return type="int" />
 			<description>
-				Returns the amount of static memory being used by the program in bytes. Only works in debug builds.
+				Returns the amount of static memory being used by the program in bytes. Only available if [code]are_engine_memory_metrics_available[/code] (from [ConservatoryDebugBridge]) returns [code]true[/code].
 			</description>
 		</method>
 		<method name="get_stderr_type" qualifiers="const">

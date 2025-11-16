@@ -135,10 +135,10 @@
 			Time it took to complete one navigation step, in seconds. This includes navigation map updates as well as agent avoidance calculations. [i]Lower is better.[/i]
 		</constant>
 		<constant name="MEMORY_STATIC" value="4" enum="Monitor">
-			Static memory currently used, in bytes. Not available in release builds. [i]Lower is better.[/i]
+			Static memory currently used, in bytes. Only available if [code]are_engine_memory_metrics_available[/code] (from [ConservatoryDebugBridge]) returns [code]true[/code]. [i]Lower is better.[/i]
 		</constant>
 		<constant name="MEMORY_STATIC_MAX" value="5" enum="Monitor">
-			Available static memory. Not available in release builds. [i]Lower is better.[/i]
+			Available static memory. Only available if [code]are_engine_memory_metrics_available[/code] (from [ConservatoryDebugBridge]) returns [code]true[/code]. [i]Lower is better.[/i]
 		</constant>
 		<constant name="MEMORY_MESSAGE_BUFFER_MAX" value="6" enum="Monitor">
 			Largest amount of memory the message queue buffer has used, in bytes. The message queue is used for deferred functions calls and notifications. [i]Lower is better.[/i]
