@@ -62,6 +62,9 @@ StringBuilder &operator<<(StringBuilder &r_sb, const char *p_cstring) {
 #define INDENT3 INDENT2 INDENT1
 #define INDENT4 INDENT3 INDENT1
 
+#define MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n" INDENT1 "[ConservatoryMkdocsHide]"
+#define HIDE_ATTRIBUTE_CONSERVATORY_DOCS "[ConservatoryMkdocsHide]"
+
 #define MEMBER_BEGIN "\n" INDENT1
 
 #define OPEN_BLOCK "{\n"
@@ -2341,9 +2344,11 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 	// Add native name static field and cached type.
 
 	if (is_derived_type && !itype.is_singleton) {
+		output << MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n";
 		output << MEMBER_BEGIN "private static readonly System.Type CachedType = typeof(" << itype.proxy_name << ");\n";
 	}
 
+	output << MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n";
 	output.append(MEMBER_BEGIN "private static readonly StringName " BINDINGS_NATIVE_NAME_FIELD " = \"");
 	output.append(itype.name);
 	output.append("\";\n");
@@ -2379,6 +2384,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 		if (itype.is_instantiable) {
 			// Add native constructor static field
 
+			output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 			output << MEMBER_BEGIN << "[DebuggerBrowsable(DebuggerBrowsableState.Never)]\n"
 				   << INDENT1 "private static readonly unsafe delegate* unmanaged<godot_bool, IntPtr> "
 				   << CS_STATIC_FIELD_NATIVE_CTOR " = " ICALL_CLASSDB_GET_CONSTRUCTOR
@@ -2390,6 +2396,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 
 			// Add default constructor
 			if (itype.is_instantiable) {
+				output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 				output << MEMBER_BEGIN "public " << itype.proxy_name << "() : this("
 					   << (itype.memory_own ? "true" : "false") << ")\n" OPEN_BLOCK_L1
 					   << INDENT2 "unsafe\n" INDENT2 OPEN_BLOCK
@@ -2399,6 +2406,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 					   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 			} else {
 				// Hide the constructor
+				output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 				output << sets_required_members << MEMBER_BEGIN "internal " << itype.proxy_name << "() : this("
 					   << (itype.memory_own ? "true" : "false") << ")\n" OPEN_BLOCK_L1
 					   << INDENT2 "unsafe\n" INDENT2 OPEN_BLOCK
@@ -2408,6 +2416,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 					   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 			}
 
+			output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 			output << sets_required_members << MEMBER_BEGIN "internal " << itype.proxy_name << "(IntPtr " CS_PARAM_INSTANCE ") : this("
 				   << (itype.memory_own ? "true" : "false") << ")\n" OPEN_BLOCK_L1
 				   << INDENT2 "NativePtr = " CS_PARAM_INSTANCE ";\n"
@@ -2418,6 +2427,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 				   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 
 			// Add.. em.. trick constructor. Sort of.
+			output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 			output.append(sets_required_members);
 			output.append(MEMBER_BEGIN "internal ");
 			output.append(itype.proxy_name);
@@ -2462,6 +2472,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 
 			output << MEMBER_BEGIN "// ReSharper disable once InconsistentNaming\n"
 				   << INDENT1 "[DebuggerBrowsable(DebuggerBrowsableState.Never)]\n"
+				   << INDENT1 HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n"
 				   << INDENT1 "private static readonly StringName "
 				   << CS_STATIC_FIELD_METHOD_PROXY_NAME_PREFIX << imethod.name
 				   << " = \"" << imethod.proxy_name << "\";\n";
@@ -2472,6 +2483,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 		for (const SignalInterface &isignal : itype.signals_) {
 			output << MEMBER_BEGIN "// ReSharper disable once InconsistentNaming\n"
 				   << INDENT1 "[DebuggerBrowsable(DebuggerBrowsableState.Never)]\n"
+				   << INDENT1 HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n"
 				   << INDENT1 "private static readonly StringName "
 				   << CS_STATIC_FIELD_SIGNAL_PROXY_NAME_PREFIX << isignal.name
 				   << " = \"" << isignal.proxy_name << "\";\n";
@@ -2493,6 +2505,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 		// Avoid raising diagnostics because of calls to obsolete methods.
 		output << "#pragma warning disable CS0618 // Member is obsolete\n";
 
+		output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 		output << INDENT1 "protected internal " << (is_derived_type ? "override" : "virtual")
 			   << " bool " CS_METHOD_INVOKE_GODOT_CLASS_METHOD "(in godot_string_name method, "
 			   << "NativeVariantPtrArgs args, out godot_variant ret)\n"
@@ -2583,6 +2596,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 			   << INDENT1 "/// </summary>\n"
 			   << INDENT1 "/// <param name=\"method\">Name of the method to check for.</param>\n";
 
+		output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 		output << MEMBER_BEGIN "protected internal " << (is_derived_type ? "override" : "virtual")
 			   << " bool " CS_METHOD_HAS_GODOT_CLASS_METHOD "(in godot_string_name method)\n"
 			   << INDENT1 "{\n";
@@ -2622,6 +2636,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 			   << INDENT1 "/// </summary>\n"
 			   << INDENT1 "/// <param name=\"signal\">Name of the signal to check for.</param>\n";
 
+		output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 		output << MEMBER_BEGIN "protected internal " << (is_derived_type ? "override" : "virtual")
 			   << " bool " CS_METHOD_HAS_GODOT_CLASS_SIGNAL "(in godot_string_name signal)\n"
 			   << INDENT1 "{\n";
@@ -3073,6 +3088,7 @@ Error BindingsGenerator::_generate_cs_method(const BindingsGenerator::TypeInterf
 	{
 		if (!p_imethod.is_virtual && !p_imethod.requires_object_call && !p_use_span) {
 			p_output << MEMBER_BEGIN "[DebuggerBrowsable(DebuggerBrowsableState.Never)]\n"
+					 << INDENT1 HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n"
 					 << INDENT1 "private static readonly IntPtr " << method_bind_field << " = ";
 
 			if (p_itype.is_singleton) {

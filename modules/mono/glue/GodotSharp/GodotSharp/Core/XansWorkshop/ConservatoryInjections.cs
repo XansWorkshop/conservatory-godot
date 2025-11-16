@@ -160,7 +160,17 @@ namespace Godot {
 
     #endregion
 
-	file static class PrivateStringNames {
+    #region Attributes
+
+    /// <summary>
+    /// Primarily intended for internal Godot code, this attribute will be used by the custom documentation generator to hide a member even if user preferences wish to show it.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All & ~AttributeTargets.Parameter & ~AttributeTargets.GenericParameter, AllowMultiple = false)]
+    public sealed class ConservatoryMkdocsHideAttribute : Attribute { }
+
+    #endregion
+
+    file static class PrivateStringNames {
 
 		public static readonly StringName BBCODE_NAME = "bbcode";
 
