@@ -66,7 +66,7 @@ void ConservatoryDebugBridge::set_ptrs(const int64_t p_tc_break_on_err_ptr, cons
 }
 
 void ConservatoryDebugBridge::intercept_godot_logging_using(const int64_t p_managed_error_handler) {
-	CRASH_COND_MSG(ConservatoryDebugBridge::tc_break_on_err_ptr || ConservatoryDebugBridge::tc_is_debugger_attached, "Security Violation: Something attempted to modify the log callback when it was already set.");
+	CRASH_COND_MSG(ConservatoryDebugBridge::has_already_intercepted_logging, "Security Violation: Something attempted to modify the log callback when it was already set.");
 	ERR_FAIL_COND_MSG(p_managed_error_handler == 0, "Error handler pointer is null.");
 	ConservatoryDebugBridge::has_already_intercepted_logging = true;
 	ConservatoryDebugBridge::tc_managed_log = (void (*)(void *p_userdata, const unsigned char *p_message, int p_message_length, const unsigned char *p_error, int p_error_length, const unsigned char *p_function_name, int p_function_name_length, const unsigned char *p_file_name, int p_file_name_length, int p_line, unsigned char p_severity_rating, bool p_is_bbcode))((size_t)p_managed_error_handler);
