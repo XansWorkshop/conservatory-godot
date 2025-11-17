@@ -257,6 +257,22 @@
 				This can also be used to erase custom project settings. To do this change the setting value to [code]null[/code].
 			</description>
 		</method>
+		<method name="set_description">
+			<return type="void"/>
+			<param index="0" name="name" type="StringName" />
+			<param index="1" name="description" type="String" />
+			<description>
+				Assigns a non-persistent description to this setting in the Godot editor, so that hovering your cursor over it in the Project Settings panel displays the provided text.
+				[b]Note:[/b] It is best to set this in some tool script that runs when the editor starts or reloads. This value is not saved with the settings file, so providing it on load is the only way to reliably provide a description. It is possible to override vanilla descriptions.
+			</description>
+		</method>
+		<method name="get_description">
+			<return type="String"/>
+			<param index="0" name="name" type="StringName" />
+			<description>
+				Returns the custom property description set by [method set_description]. This will return an empty string for default properties, as well as properties which do not have their custom description set.
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="accessibility/general/accessibility_support" type="int" setter="" getter="" default="0">

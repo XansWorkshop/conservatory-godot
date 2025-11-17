@@ -251,6 +251,18 @@ void ProjectSettings::add_hidden_prefix(const String &p_prefix) {
 	hidden_prefixes.push_back(p_prefix);
 }
 
+void ProjectSettings::set_description(const StringName &p_name, const String& p_description) {
+	custom_prop_descriptions[p_name] = p_description;
+}
+
+String ProjectSettings::get_description(const StringName &p_name) const {
+	const String *value = custom_prop_descriptions.getptr(p_name);
+	if (value) {
+		return String(*value);
+	}
+	return String();
+}
+
 String ProjectSettings::globalize_path(const String &p_path) const {
 	if (p_path.begins_with("res://")) {
 		if (!resource_path.is_empty()) {
@@ -1508,6 +1520,10 @@ void ProjectSettings::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("load_resource_pack", "pack", "replace_files", "offset"), &ProjectSettings::load_resource_pack, DEFVAL(true), DEFVAL(0));
 
 	ClassDB::bind_method(D_METHOD("save_custom", "file"), &ProjectSettings::_save_custom_bnd);
+
+	// Conservatory:
+	ClassDB::bind_method(D_METHOD("set_description", "name", "description"), &ProjectSettings::set_description);
+	ClassDB::bind_method(D_METHOD("get_description", "name"), &ProjectSettings::get_description);
 
 	ADD_SIGNAL(MethodInfo("settings_changed"));
 }

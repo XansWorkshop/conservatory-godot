@@ -4345,6 +4345,7 @@ void EditorHelpBit::parse_symbol(const String &p_symbol, const String &p_prologu
 		symbol_hint = SYMBOL_HINT_ASSIGNABLE;
 		help_data = _get_constant_help_data(class_name, item_name);
 	} else if (item_type == "property") {
+		String description_override = String();
 		if (item_name.begins_with("metadata/")) {
 			symbol_type = TTR("Metadata");
 			symbol_name = item_name.trim_prefix("metadata/");
@@ -4352,12 +4353,16 @@ void EditorHelpBit::parse_symbol(const String &p_symbol, const String &p_prologu
 			symbol_doc_link = vformat("@member %s.%s", class_name, item_name);
 			symbol_type = TTR("Setting");
 			symbol_hint = SYMBOL_HINT_ASSIGNABLE;
+			description_override = ProjectSettings::get_singleton()->get_description(item_name);
 		} else {
 			symbol_doc_link = vformat("@member %s.%s", class_name, item_name);
 			symbol_type = TTR("Property");
 			symbol_hint = SYMBOL_HINT_ASSIGNABLE;
 		}
 		help_data = _get_property_help_data(class_name, item_name);
+		if (!description_override.is_empty()) {
+			help_data.description = description_override;
+		}
 	} else if (item_type == "internal_property") {
 		symbol_type = TTR("Internal Property");
 		help_data.description = "[color=<EditorHelpBitCommentColor>][i]" + TTR("This property can only be set in the Inspector.") + "[/i][/color]";
