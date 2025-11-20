@@ -147,6 +147,7 @@ void PhysicsServer3DExtension::_bind_methods() {
 	GDVIRTUAL_BIND(_concave_polygon_shape_create);
 	GDVIRTUAL_BIND(_heightmap_shape_create);
 	GDVIRTUAL_BIND(_custom_shape_create);
+	GDVIRTUAL_BIND(_is_shape, "shape");
 
 	GDVIRTUAL_BIND(_shape_set_data, "shape", "data");
 	GDVIRTUAL_BIND(_shape_set_custom_solver_bias, "shape", "bias");
@@ -161,6 +162,7 @@ void PhysicsServer3DExtension::_bind_methods() {
 	/* SPACE API */
 
 	GDVIRTUAL_BIND(_space_create);
+	GDVIRTUAL_BIND(_is_space, "space");
 	GDVIRTUAL_BIND(_space_set_active, "space", "active");
 	GDVIRTUAL_BIND(_space_is_active, "space");
 
@@ -176,6 +178,7 @@ void PhysicsServer3DExtension::_bind_methods() {
 	/* AREA API */
 
 	GDVIRTUAL_BIND(_area_create);
+	GDVIRTUAL_BIND(_is_area, "area");
 
 	GDVIRTUAL_BIND(_area_set_space, "area", "space");
 	GDVIRTUAL_BIND(_area_get_space, "area");
@@ -220,6 +223,7 @@ void PhysicsServer3DExtension::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("body_test_motion_is_excluding_object", "object"), &PhysicsServer3DExtension::body_test_motion_is_excluding_object);
 
 	GDVIRTUAL_BIND(_body_create);
+	GDVIRTUAL_BIND(_is_body, "body");
 
 	GDVIRTUAL_BIND(_body_set_space, "body", "space");
 	GDVIRTUAL_BIND(_body_get_space, "body");
@@ -314,6 +318,7 @@ void PhysicsServer3DExtension::_bind_methods() {
 	/* SOFT BODY API */
 
 	GDVIRTUAL_BIND(_soft_body_create);
+	GDVIRTUAL_BIND(_is_soft_body, "body");
 
 	GDVIRTUAL_BIND(_soft_body_update_rendering_server, "body", "rendering_server_handler");
 
@@ -377,6 +382,7 @@ void PhysicsServer3DExtension::_bind_methods() {
 	/* JOINT API */
 
 	GDVIRTUAL_BIND(_joint_create);
+	GDVIRTUAL_BIND(_is_joint, "joint");
 	GDVIRTUAL_BIND(_joint_clear, "joint");
 
 	GDVIRTUAL_BIND(_joint_make_pin, "joint", "body_A", "local_A", "body_B", "local_B");

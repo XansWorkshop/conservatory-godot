@@ -104,6 +104,13 @@ RID GodotPhysicsServer3D::heightmap_shape_create() {
 RID GodotPhysicsServer3D::custom_shape_create() {
 	ERR_FAIL_V(RID());
 }
+bool GodotPhysicsServer3D::is_shape(RID p_shape) const {
+	if (p_shape.is_null()) {
+		return false;
+	}
+	GodotShape3D *shape = shape_owner.get_or_null(p_shape);
+	return shape != nullptr;
+}
 
 void GodotPhysicsServer3D::shape_set_data(RID p_shape, const Variant &p_data) {
 	GodotShape3D *shape = shape_owner.get_or_null(p_shape);
@@ -159,6 +166,14 @@ RID GodotPhysicsServer3D::space_create() {
 	space->set_static_global_body(sgb);
 
 	return id;
+}
+
+bool GodotPhysicsServer3D::is_space(RID p_space) const {
+	if (p_space.is_null()) {
+		return false;
+	}
+	GodotSpace3D *space = space_owner.get_or_null(p_space);
+	return space != nullptr;
 }
 
 void GodotPhysicsServer3D::space_set_active(RID p_space, bool p_active) {
@@ -222,6 +237,14 @@ RID GodotPhysicsServer3D::area_create() {
 	RID rid = area_owner.make_rid(area);
 	area->set_self(rid);
 	return rid;
+}
+
+bool GodotPhysicsServer3D::is_area(RID p_area) const {
+	if (p_area.is_null()) {
+		return false;
+	}
+	GodotArea3D *area = area_owner.get_or_null(p_area);
+	return area != nullptr;
 }
 
 void GodotPhysicsServer3D::area_set_space(RID p_area, RID p_space) {
@@ -455,6 +478,14 @@ RID GodotPhysicsServer3D::body_create() {
 	RID rid = body_owner.make_rid(body);
 	body->set_self(rid);
 	return rid;
+}
+
+bool GodotPhysicsServer3D::is_body(RID p_body) const {
+	if (p_body.is_null()) {
+		return false;
+	}
+	GodotBody3D *body = body_owner.get_or_null(p_body);
+	return body != nullptr;
 }
 
 void GodotPhysicsServer3D::body_set_space(RID p_body, RID p_space) {
@@ -994,6 +1025,14 @@ RID GodotPhysicsServer3D::soft_body_create() {
 	return rid;
 }
 
+bool GodotPhysicsServer3D::is_soft_body(RID p_body) const {
+	if (p_body.is_null()) {
+		return false;
+	}
+	GodotSoftBody3D *soft_body = soft_body_owner.get_or_null(p_body);
+	return soft_body != nullptr;
+}
+
 void GodotPhysicsServer3D::soft_body_update_rendering_server(RID p_body, PhysicsServer3DRenderingServerHandler *p_rendering_server_handler) {
 	GodotSoftBody3D *soft_body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(soft_body);
@@ -1266,6 +1305,14 @@ RID GodotPhysicsServer3D::joint_create() {
 	RID rid = joint_owner.make_rid(joint);
 	joint->set_self(rid);
 	return rid;
+}
+
+bool GodotPhysicsServer3D::is_joint(RID p_joint) const {
+	if (p_joint.is_null()) {
+		return false;
+	}
+	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
+	return joint != nullptr;
 }
 
 void GodotPhysicsServer3D::joint_clear(RID p_joint) {

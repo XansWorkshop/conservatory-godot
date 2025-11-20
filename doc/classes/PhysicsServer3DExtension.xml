@@ -37,6 +37,12 @@
 			<description>
 			</description>
 		</method>
+		<method name="_is_area">
+			<return type="bool" />
+			<param index="0" name="area" type="RID"/>
+			<description>
+			</description>
+		</method>
 		<method name="_area_get_collision_layer" qualifiers="virtual required const">
 			<return type="int" />
 			<param index="0" name="area" type="RID" />
@@ -286,6 +292,12 @@
 		</method>
 		<method name="_body_create" qualifiers="virtual required">
 			<return type="RID" />
+			<description>
+			</description>
+		</method>
+		<method name="_is_body">
+			<return type="bool" />
+			<param index="0" name="body" type="RID"/>
 			<description>
 			</description>
 		</method>
@@ -654,6 +666,12 @@
 			<description>
 			</description>
 		</method>
+		<method name="_is_shape">
+			<return type="bool" />
+			<param index="0" name="shape" type="RID"/>
+			<description>
+			</description>
+		</method>
 		<method name="_cylinder_shape_create" qualifiers="virtual required">
 			<return type="RID" />
 			<description>
@@ -773,6 +791,12 @@
 		</method>
 		<method name="_joint_create" qualifiers="virtual required">
 			<return type="RID" />
+			<description>
+			</description>
+		</method>
+		<method name="_is_joint">
+			<return type="bool" />
+			<param index="0" name="joint" type="RID"/>
 			<description>
 			</description>
 		</method>
@@ -1024,6 +1048,12 @@
 			<description>
 			</description>
 		</method>
+		<method name="_is_soft_body">
+			<return type="bool" />
+			<param index="0" name="body" type="RID"/>
+			<description>
+			</description>
+		</method>
 		<method name="_soft_body_get_bounds" qualifiers="virtual required const">
 			<return type="AABB" />
 			<param index="0" name="body" type="RID" />
@@ -1254,6 +1284,12 @@
 		</method>
 		<method name="_space_create" qualifiers="virtual required">
 			<return type="RID" />
+			<description>
+			</description>
+		</method>
+		<method name="_is_space">
+			<return type="bool" />
+			<param index="0" name="space" type="RID"/>
 			<description>
 			</description>
 		</method>

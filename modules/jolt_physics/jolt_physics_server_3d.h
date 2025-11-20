@@ -135,6 +135,7 @@ public:
 	virtual RID concave_polygon_shape_create() override;
 	virtual RID heightmap_shape_create() override;
 	virtual RID custom_shape_create() override;
+	virtual bool is_shape(RID p_shape) const override;
 
 	virtual void shape_set_data(RID p_shape, const Variant &p_data) override;
 	virtual Variant shape_get_data(RID p_shape) const override;
@@ -149,6 +150,7 @@ public:
 	virtual real_t shape_get_custom_solver_bias(RID p_shape) const override;
 
 	virtual RID space_create() override;
+	virtual bool is_space(RID p_space) const override;
 
 	virtual void space_set_active(RID p_space, bool p_active) override;
 	virtual bool space_is_active(RID p_space) const override;
@@ -163,6 +165,7 @@ public:
 	virtual int space_get_contact_count(RID p_space) const override;
 
 	virtual RID area_create() override;
+	virtual bool is_area(RID p_area) const override;
 
 	virtual void area_set_space(RID p_area, RID p_space) override;
 	virtual RID area_get_space(RID p_area) const override;
@@ -206,6 +209,7 @@ public:
 	virtual void area_set_area_monitor_callback(RID p_area, const Callable &p_callback) override;
 
 	virtual RID body_create() override;
+	virtual bool is_body(RID p_body) const override;
 
 	virtual void body_set_space(RID p_body, RID p_space) override;
 	virtual RID body_get_space(RID p_body) const override;
@@ -301,6 +305,7 @@ public:
 	virtual PhysicsDirectBodyState3D *body_get_direct_state(RID p_body) override;
 
 	virtual RID soft_body_create() override;
+	virtual bool is_soft_body(RID p_body) const override;
 
 	virtual void soft_body_update_rendering_server(RID p_body, PhysicsServer3DRenderingServerHandler *p_rendering_server_handler) override;
 
@@ -364,6 +369,8 @@ public:
 	virtual bool soft_body_is_point_pinned(RID p_body, int p_point_index) const override;
 
 	virtual RID joint_create() override;
+	virtual bool is_joint(RID p_joint) const override;
+
 	virtual void joint_clear(RID p_joint) override;
 
 	virtual void joint_make_pin(RID p_joint, RID p_body_a, const Vector3 &p_local_a, RID p_body_b, const Vector3 &p_local_b) override;

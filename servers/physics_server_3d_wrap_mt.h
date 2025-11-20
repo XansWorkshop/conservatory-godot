@@ -90,6 +90,7 @@ public:
 	FUNCRID(concave_polygon_shape)
 	FUNCRID(heightmap_shape)
 	FUNCRID(custom_shape)
+	FUNC1RC(bool, is_shape, RID);
 
 	FUNC2(shape_set_data, RID, const Variant &);
 	FUNC2(shape_set_custom_solver_bias, RID, real_t);
@@ -110,6 +111,7 @@ public:
 	/* SPACE API */
 
 	FUNCRID(space);
+	FUNC1RC(bool, is_space, RID);
 	FUNC2(space_set_active, RID, bool);
 	FUNC1RC(bool, space_is_active, RID);
 
@@ -137,6 +139,7 @@ public:
 
 	//FUNC0RID(area);
 	FUNCRID(area);
+	FUNC1RC(bool, is_area, RID);
 
 	FUNC2(area_set_space, RID, RID);
 	FUNC1RC(RID, area_get_space, RID);
@@ -178,6 +181,7 @@ public:
 
 	//FUNC2RID(body,BodyMode,bool);
 	FUNCRID(body)
+	FUNC1RC(bool, is_body, RID);
 
 	FUNC2(body_set_space, RID, RID);
 	FUNC1RC(RID, body_get_space, RID);
@@ -285,6 +289,7 @@ public:
 	/* SOFT BODY API */
 
 	FUNCRID(soft_body)
+	FUNC1RC(bool, is_soft_body, RID);
 
 	FUNC2(soft_body_update_rendering_server, RID, PhysicsServer3DRenderingServerHandler *)
 
@@ -343,6 +348,7 @@ public:
 	/* JOINT API */
 
 	FUNCRID(joint)
+	FUNC1RC(bool, is_joint, RID);
 
 	FUNC1(joint_clear, RID)
 

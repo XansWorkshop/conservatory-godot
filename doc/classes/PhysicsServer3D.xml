@@ -48,6 +48,17 @@
 				Use [method area_add_shape] to add shapes to it, use [method area_set_transform] to set its transform, and use [method area_set_space] to add the area to a space. If you want the area to be detectable use [method area_set_monitorable].
 			</description>
 		</method>
+		<method name="is_area">
+			<return type="bool" />
+			<param index="0" name="area" type="RID"/>
+			<description>
+				[admonition type="note" collapsible="true" open="false"]
+				[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+				This is not available in the official build of Godot.
+				[/admonition]
+				Returns [code]true[/code] if the provided [RID] corresponds to an area created by [method area_create] (or as acquired from an [Area3D]).
+			</description>
+		</method>
 		<method name="area_get_collision_layer" qualifiers="const">
 			<return type="int" />
 			<param index="0" name="area" type="RID" />
@@ -354,6 +365,17 @@
 			<description>
 				Creates a 3D body object in the physics server, and returns the [RID] that identifies it. The default settings for the created area include a collision layer and mask set to [code]1[/code], and body mode set to [constant BODY_MODE_RIGID].
 				Use [method body_add_shape] to add shapes to it, use [method body_set_state] to set its transform, and use [method body_set_space] to add the body to a space.
+			</description>
+		</method>
+		<method name="is_body">
+			<return type="bool" />
+			<param index="0" name="body" type="RID"/>
+			<description>
+				[admonition type="note" collapsible="true" open="false"]
+				[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+				This is not available in the official build of Godot.
+				[/admonition]
+				Returns [code]true[/code] if the provided [RID] corresponds to a body created by [method body_create] (or as acquired from a [PhysicsBody3D]).
 			</description>
 		</method>
 		<method name="body_get_collision_layer" qualifiers="const">
@@ -745,6 +767,17 @@
 			<description>
 			</description>
 		</method>
+		<method name="is_shape">
+			<return type="bool" />
+			<param index="0" name="shape" type="RID"/>
+			<description>
+				[admonition type="note" collapsible="true" open="false"]
+				[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+				This is not available in the official build of Godot.
+				[/admonition]
+				Returns [code]true[/code] if the provided [RID] corresponds to a shape created via the [code]*_shape_create[/code] methods (or as acquired from a [Shape3D]).
+			</description>
+		</method>
 		<method name="free_rid">
 			<return type="void" />
 			<param index="0" name="rid" type="RID" />
@@ -845,6 +878,17 @@
 		<method name="joint_create">
 			<return type="RID" />
 			<description>
+			</description>
+		</method>
+		<method name="is_joint">
+			<return type="bool" />
+			<param index="0" name="joint" type="RID"/>
+			<description>
+				[admonition type="note" collapsible="true" open="false"]
+				[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+				This is not available in the official build of Godot.
+				[/admonition]
+				Returns [code]true[/code] if the provided [RID] corresponds to a joint created by [method joint_create] (or as acquired from a [Joint3D]).
 			</description>
 		</method>
 		<method name="joint_disable_collisions_between_bodies">
@@ -1098,6 +1142,17 @@
 			<return type="RID" />
 			<description>
 				Creates a new soft body and returns its internal [RID].
+			</description>
+		</method>
+		<method name="is_soft_body">
+			<return type="bool" />
+			<param index="0" name="body" type="RID"/>
+			<description>
+				[admonition type="note" collapsible="true" open="false"]
+				[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+				This is not available in the official build of Godot.
+				[/admonition]
+				Returns [code]true[/code] if the provided [RID] corresponds to a soft body created by [method soft_body_create] (or as acquired from a [SoftBody3D]).
 			</description>
 		</method>
 		<method name="soft_body_get_bounds" qualifiers="const">
@@ -1363,6 +1418,17 @@
 			<return type="RID" />
 			<description>
 				Creates a space. A space is a collection of parameters for the physics engine that can be assigned to an area or a body. It can be assigned to an area with [method area_set_space], or to a body with [method body_set_space].
+			</description>
+		</method>
+		<method name="is_space">
+			<return type="bool" />
+			<param index="0" name="space" type="RID"/>
+			<description>
+				[admonition type="note" collapsible="true" open="false"]
+				[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+				This is not available in the official build of Godot.
+				[/admonition]
+				Returns [code]true[/code] if the provided [RID] corresponds to a space created by [method space_create] (or as acquired from a [World3D]).
 			</description>
 		</method>
 		<method name="space_get_direct_state">

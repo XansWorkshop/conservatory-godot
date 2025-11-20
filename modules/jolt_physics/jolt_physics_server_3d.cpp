@@ -131,6 +131,14 @@ RID JoltPhysicsServer3D::custom_shape_create() {
 	ERR_FAIL_V_MSG(RID(), "Custom shapes are not supported.");
 }
 
+bool JoltPhysicsServer3D::is_shape(RID p_shape) const {
+	if (p_shape.is_null()) {
+		return false;
+	}
+	JoltShape3D *shape = shape_owner.get_or_null(p_shape);
+	return shape != nullptr;
+}
+
 void JoltPhysicsServer3D::shape_set_data(RID p_shape, const Variant &p_data) {
 	JoltShape3D *shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
@@ -192,6 +200,14 @@ RID JoltPhysicsServer3D::space_create() {
 	default_area->set_space(space);
 
 	return rid;
+}
+
+bool JoltPhysicsServer3D::is_space(RID p_space) const {
+	if (p_space.is_null()) {
+		return false;
+	}
+	JoltSpace3D *space = space_owner.get_or_null(p_space);
+	return space != nullptr;
 }
 
 void JoltPhysicsServer3D::space_set_active(RID p_space, bool p_active) {
@@ -272,6 +288,14 @@ RID JoltPhysicsServer3D::area_create() {
 	RID rid = area_owner.make_rid(area);
 	area->set_rid(rid);
 	return rid;
+}
+
+bool JoltPhysicsServer3D::is_area(RID p_area) const {
+	if (p_area.is_null()) {
+		return false;
+	}
+	JoltArea3D *area = area_owner.get_or_null(p_area);
+	return area != nullptr;
 }
 
 void JoltPhysicsServer3D::area_set_space(RID p_area, RID p_space) {
@@ -539,6 +563,14 @@ RID JoltPhysicsServer3D::body_create() {
 	RID rid = body_owner.make_rid(body);
 	body->set_rid(rid);
 	return rid;
+}
+
+bool JoltPhysicsServer3D::is_body(RID p_body) const {
+	if (p_body.is_null()) {
+		return false;
+	}
+	JoltBody3D *body = body_owner.get_or_null(p_body);
+	return body != nullptr;
 }
 
 void JoltPhysicsServer3D::body_set_space(RID p_body, RID p_space) {
@@ -999,6 +1031,14 @@ RID JoltPhysicsServer3D::soft_body_create() {
 	return rid;
 }
 
+bool JoltPhysicsServer3D::is_soft_body(RID p_body) const {
+	if (p_body.is_null()) {
+		return false;
+	}
+	JoltSoftBody3D *body = soft_body_owner.get_or_null(p_body);
+	return body != nullptr;
+}
+
 void JoltPhysicsServer3D::soft_body_update_rendering_server(RID p_body, PhysicsServer3DRenderingServerHandler *p_rendering_server_handler) {
 	JoltSoftBody3D *body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
@@ -1268,6 +1308,14 @@ RID JoltPhysicsServer3D::joint_create() {
 	RID rid = joint_owner.make_rid(joint);
 	joint->set_rid(rid);
 	return rid;
+}
+
+bool JoltPhysicsServer3D::is_joint(RID p_joint) const {
+	if (p_joint.is_null()) {
+		return false;
+	}
+	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
+	return joint != nullptr;
 }
 
 void JoltPhysicsServer3D::joint_clear(RID p_joint) {

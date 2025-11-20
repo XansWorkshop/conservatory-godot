@@ -145,6 +145,7 @@ public:
 	virtual RID concave_polygon_shape_create() override { return RID(); }
 	virtual RID heightmap_shape_create() override { return RID(); }
 	virtual RID custom_shape_create() override { return RID(); }
+	virtual bool is_shape(RID p_shape) const override { return false; }
 
 	virtual void shape_set_data(RID p_shape, const Variant &p_data) override {}
 	virtual void shape_set_custom_solver_bias(RID p_shape, real_t p_bias) override {}
@@ -160,6 +161,7 @@ public:
 	/* SPACE API */
 
 	virtual RID space_create() override { return RID(); }
+	virtual bool is_space(RID p_space) const override { return false; }
 	virtual void space_set_active(RID p_space, bool p_active) override {}
 	virtual bool space_is_active(RID p_space) const override { return false; }
 
@@ -175,6 +177,7 @@ public:
 	/* AREA API */
 
 	virtual RID area_create() override { return RID(); }
+	virtual bool is_area(RID p_area) const override { return false; }
 
 	virtual void area_set_space(RID p_area, RID p_space) override {}
 	virtual RID area_get_space(RID p_area) const override { return RID(); }
@@ -218,6 +221,7 @@ public:
 	/* BODY API */
 
 	virtual RID body_create() override { return RID(); }
+	virtual bool is_body(RID p_body) const override { return false; }
 
 	virtual void body_set_space(RID p_body, RID p_space) override {}
 	virtual RID body_get_space(RID p_body) const override { return RID(); }
@@ -313,6 +317,7 @@ public:
 	/* SOFT BODY */
 
 	virtual RID soft_body_create() override { return RID(); }
+	virtual bool is_soft_body(RID p_body) const override { return false; }
 
 	virtual void soft_body_update_rendering_server(RID p_body, PhysicsServer3DRenderingServerHandler *p_rendering_server_handler) override {}
 
@@ -376,6 +381,7 @@ public:
 	/* JOINT API */
 
 	virtual RID joint_create() override { return RID(); }
+	virtual bool is_joint(RID p_joint) const override { return false; }
 
 	virtual void joint_clear(RID p_joint) override {}
 
