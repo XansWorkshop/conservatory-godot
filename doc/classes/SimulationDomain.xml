@@ -9,43 +9,43 @@
 			This is not available in the official build of Godot.
 		[/admonition]
 
-		[admonition type="crucial"]
-			[b]This type is strictly managed and must NEVER be created or destroyed by user code![/b]
-			[SimulationDomain]s are extremely stringent about their operating conditions as they expect to be tied closely to a [manualcref=T:Star3D.World.Galaxy.WorldInstance] and, in the event that a [SimulationDomain] is destroyed or disconnected from a still-operating [manualcref=T:Star3D.World.Galaxy.WorldInstance], it will forcibly crash the game to prevent the inevitable data corruption that will result from you doing this.
-
-			You have been warned!
-		[/admonition]
-
-		An isolated container representing both a 2D and 3D physics space, a render scenario, and a canvas. This is different than a [SubViewport] in that it cannot be rendered to a target; instead, it is intended to be representative of a loaded game world with its own isolated rendering and physics.
+		An isolated container representing both a 2D and 3D physics space, a render scenario, and a canvas. This is different than a [SubViewport] in that it cannot be rendered to a target; instead, it is intended to be representative of a loaded game world with its own isolated rendering and physics. One instance of a [SimulationDomain] can be made active at a time, and when active, it overrides the root viewport's display.
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="set_conservatory_callbacks">
-			<return type="int" />
-			<param index="0" name="crash" type="int" />
-			<param index="1" name="destroy" type="int" />
-			<param index="2" name="is_client" type="int" />
-			<description>
-				Sets the low level references to the game's code needed to crash the game, verify the destruction of [SimulationDomain]s, and check if the current program is the game client.
-				[b]Note:[/b] As a modder, you should never call this. This is closely managed by the game and requires extremely specific conditions to use, otherwise the game will crash.
-			</description>
-		</method>
-		<method name="destroy">
+		<method name="initialize">
 			<return type="void" />
 			<description>
-				The equivalent of [code]Free[/code] for this instance. This [b]MUST[/b] be called; using [code]Free[/code] will crash the game.
-				[b]Note:[/b] As a modder, you should never call this. This is closely managed by the game and requires extremely specific conditions to use, otherwise the game will crash.
+				Instantiates the internal worlds that this domain oversees. This must be called before it can be used.
+			</description>
+		</method>
+		<method name="make_active">
+			<return type="void" />
+			<description>
+				Only usable on the game client. This will fail if used on the server, or if used on a domain that is already active. It must be in the scene tree.
+				This causes the current [SimulationDomain] to override the root viewport's display. Attempting to reference the world (either 2D or 3D) of the root viewport will return the domain's worlds instead.
+			</description>
+		</method>
+		<method name="deactivate">
+			<return type="void" />
+			<description>
+				Only usable on the game client. This will fail if used on the server, or used on a domain that is not active. It is called when the domain is removed from the tree.
+				This causes the current [SimulationDomain], if it is the active domain, to restore the original worlds of the root viewport (unless they have been modified).
+			</description>
+		</method>
+		<method name="set_is_client_ptr">
+			<return type="void" />
+			<param index="0" name="ptr_is_client" type="bool*"/>
+			<description>
+				[b]Only usable by The Conservatory, for internal use only[/b]. Illegal usage will crash the engine.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="is_valid" type="bool" setter="" getter="get_is_valid" default="true">
-			If [code]true[/code], this instance is valid and can be used. Only [code]false[/code] if destroyed and a reference to it is kept, which should never happen.
-		</member>
 		<member name="is_active" type="bool" setter="" getter="get_is_active" default="false">
 			If [code]true[/code], this instance is the current one being rendered to the game client's screen.
-			This is always [code]true[/code] on the server no matter what, because on servers every [SimulationDomain] is always active.
+			Usage of this method is invalid on servers; there is no screen to render to and so it is always [code]false[/code].
 		</member>
 		<member name="physics_space_2d" type="RID" setter="" getter="get_physics_space_2d" default="RID(0)">
 			The [RID] of the physics space used for 2D physics in this [SimulationDomain].

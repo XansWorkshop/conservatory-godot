@@ -1062,7 +1062,7 @@ void register_scene_types() {
 #endif
 
 #if !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
-	GDREGISTER_ABSTRACT_CLASS(SimulationDomain);
+	GDREGISTER_CLASS(SimulationDomain);
 #endif
 
 	// These classes are part of renderer_rd

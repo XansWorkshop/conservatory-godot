@@ -35,7 +35,17 @@ namespace Godot {
 
 	}
 
+    
 	partial class SimulationDomain {
+
+
+        /// <inheritdoc cref="SimulationDomain.SetIsClientPtr(long)"/>
+        public static unsafe void SetIsClientPtr(bool* isClient)
+        {
+            SetIsClientPtr((nint)isClient);
+        }
+
+#if false
 
 		/// <inheritdoc cref="SimulationDomain.SetConservatoryCallbacks(long, long, long, long)"/>
 		public static unsafe delegate*<long> SetConservatoryCallbacks(delegate*<byte*, int, byte*, int, int, void> crash, delegate*<long, bool> tryDestroy, delegate*<bool> isClient, delegate*<long, void> onActiveChanged) {
@@ -73,7 +83,9 @@ namespace Godot {
 			GD.PushError("If you are reading this, congratulations! Please enjoy your complimentary access violation in the CLR garbage collection routine once the next GC cycle occurs. In the mean time, why don't you consider what you did to get here. :^)");
 			base.Dispose(disposing);
 		}
-	}
+
+#endif
+    }
 
 	partial class ConservatoryDebugBridge {
 

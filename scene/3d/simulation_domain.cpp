@@ -35,297 +35,204 @@
 #if !defined(PHYSICS_3D_DISABLED) && !defined(PHYSICS_2D_DISABLED) && !defined(_3D_DISABLED)
 #include "simulation_domain.h"
 
-#define CONSERVATORY_UNREPORTABLE_IMPL_ERROR (TheConservatoryExitCodes::FATAL_IMPLEMENTATION_ERROR | TheConservatoryExitCodes::FLAG_DISALLOW_REPORTING)
-#define CONSERVATORY_UNREPORTABLE_SECURITY_VIOLATION (TheConservatoryExitCodes::FATAL_CODE_SECURITY_VIOLATION | TheConservatoryExitCodes::FLAG_DISALLOW_REPORTING)
+#define TC_SIMULATION_DOMAIN_WORLD_2D_MISSING "The 2D world was deleted, or was not created yet. Did you remember to call initialize after construction?"
+#define TC_SIMULATION_DOMAIN_WORLD_3D_MISSING "The 3D world was deleted, or was not created yet. Did you remember to call initialize after construction?"
 
-bool SimulationDomain::declared_cs_methods;
 SimulationDomain *SimulationDomain::current;
-List<SimulationDomain *> SimulationDomain::instances;
-void (*SimulationDomain::tc_crash)(const unsigned char *p_message, int p_message_length, const unsigned char *p_context, int p_context_length, int p_error_code);
-bool (*SimulationDomain::tc_destroy_validator)(const int64_t p_ptr);
-bool (*SimulationDomain::tc_is_client)(void);
-void (*SimulationDomain::tc_active_changed)(const int64_t p_ptr);
+bool *SimulationDomain::is_client;
+Ref<World2D> SimulationDomain::parent_world_2d;
+Ref<World3D> SimulationDomain::parent_world_3d;
+ObjectID SimulationDomain::last_parent;
 
-void SimulationDomain::_tc_crash(const String &p_msg, const String &p_context, int p_tc_error_code) {
-	if (tc_crash) {
-		PackedByteArray msg = p_msg.to_utf8_buffer();
-		PackedByteArray context = p_context.to_utf8_buffer();
-		tc_crash(msg.ptr(), msg.size(), context.ptr(), context.size(), p_tc_error_code);
-	} else {
-		CRASH_NOW_MSG(vformat("%s (context: %s)", p_msg.ptr(), p_context.ptr()));
-	}
+void SimulationDomain::set_is_client_ptr(int64_t p_ptr) {
+	ERR_FAIL_COND_MSG(is_client != nullptr, "Illegal attempt to use set_is_client_ptr.");
+	ERR_FAIL_COND_MSG(p_ptr == 0, "Invalid null pointer for set_is_client_ptr.");
+	is_client = (bool*)p_ptr;
 }
 
-bool SimulationDomain::_tc_destroy_validator(const SimulationDomain *p_instance) {
-	if (tc_destroy_validator) {
-		return tc_destroy_validator((int64_t)p_instance);
-	} else {
-		_tc_crash("The destroy method was not previously supplied correctly.", "Attempting to verify the destruction of a SimulationDomain", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-		return false;
-	}
+bool SimulationDomain::current_is_this(const Viewport* p_viewport) {
+	ERR_FAIL_NULL_V(p_viewport, false);
+	if (!current) return false;
+	return last_parent == p_viewport->get_instance_id();
 }
 
-bool SimulationDomain::_tc_is_client() {
-	if (tc_is_client) {
-		return tc_is_client();
-	} else {
-		_tc_crash("The is_client method was not previously supplied correctly.", "Attempting to determine the function of a SimulationDomain", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-		return false;
-	}
-}
-
-void SimulationDomain::_tc_active_changed(const SimulationDomain* p_instance) {
-	if (tc_active_changed) {
-		tc_active_changed((int64_t)p_instance);
-	} else {
-		_tc_crash("The active_changed method was not previously supplied correctly.", "Attempting to determine the function of a SimulationDomain", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-	}
-}
-
-SimulationDomain *SimulationDomain::get_instance(const int64_t p_native_instance) {
-	if (instances.find((SimulationDomain *)p_native_instance)) {
-		return (SimulationDomain *)p_native_instance;
-	}
-	return nullptr;
-}
-
-int64_t SimulationDomain::set_conservatory_callbacks(const int64_t p_crash, const int64_t p_destroy, const int64_t p_is_client, const int64_t p_active_changed) {
-	if (SimulationDomain::declared_cs_methods) {
-		_tc_crash("Illegal attempt to call SimulationDomain.SetConservatoryCallbacks.", "Verifying the integrity of the simulation", CONSERVATORY_UNREPORTABLE_SECURITY_VIOLATION);
-		return 0;
-	}
-	ERR_FAIL_COND_V(p_crash == 0, 0);
-	ERR_FAIL_COND_V(p_destroy == 0, 0);
-	ERR_FAIL_COND_V(p_is_client == 0, 0);
-	ERR_FAIL_COND_V(p_active_changed == 0, 0);
-
-	// This is so fucked
-	tc_crash = (void (*)(const unsigned char *, int, const unsigned char *, int, int))p_crash;
-	tc_destroy_validator = (bool (*)(const int64_t))p_destroy;
-	tc_is_client = (bool (*)(void))p_is_client;
-	tc_active_changed = (void (*)(const int64_t))p_active_changed;
-
-	SimulationDomain::declared_cs_methods = true;
-	size_t addr = (size_t)(&SimulationDomain::static_construct);
-	return (int64_t)addr;
-}
+// The notification order is: Predelete, Exit Tree, Unparented
 
 void SimulationDomain::_notification(int p_what) {
-	// The notification order is: Predelete, Exit Tree, Unparented
 	ERR_MAIN_THREAD_GUARD;
 	switch (p_what) {
-		case Node::NOTIFICATION_ENTER_TREE:
-			if (!created_properly) {
-				malformed = true;
-				_tc_crash("This SimulationDomain was not created using the correct procedure.", "Verifying correct construction procedure (in-engine).", CONSERVATORY_UNREPORTABLE_SECURITY_VIOLATION);
-			} else {
-				Node *my_parent = get_parent();
-				Viewport *parent_viewport = Node::cast_to<Viewport>(my_parent);
-				if (!parent_viewport || (parent_viewport != get_tree()->get_root()->get_viewport())) {
-					_tc_crash("A SimulationDomain must be parented to the root viewport. It cannot be a child of any other object.", "Verifying correct construction procedure when adding to scene tree. (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-					return;
-				}
-				if (TC_IS_NULL(world2d)) {
-					_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct construction procedure when adding to scene tree. (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-					return;
-				}
-				if (TC_IS_NULL(world3d)) {
-					_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct construction procedure when adding to scene tree. (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-					return;
-				}
-
-				bool is_client = _tc_is_client();
-				PhysicsServer2D::get_singleton()->space_set_active(world2d->get_space(), true);
-				PhysicsServer3D::get_singleton()->space_set_active(world3d->get_space(), true);
-				is_locked = true;
+		/*
+		* Occurs too late.
+		case Node::NOTIFICATION_POSTINITIALIZE:
+			if (domain_world_2d.is_null()) {
+				domain_world_2d.instantiate();
 			}
-			break;
-		case Node::NOTIFICATION_PREDELETE:
-			predeleted = true;
-			if (!world_instance_and_marshals_destroyed) {
-				if (current == this) {
-					current = nullptr;
-				}
-				_tc_crash("Illegal attempt to destroy SimulationDomain using Free(), or before its WorldInstance was destroyed.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-
-				// This might still run due to how exiting works so we should just clean it up anyway.
-				if (TC_IS_VALID(world2d)) {
-					TC_DELETE(world2d);
-				}
-				if (TC_IS_VALID(world3d)) {
-					TC_DELETE(world3d);
-				}
-				queue_free();
+			if (domain_world_3d.is_null()) {
+				domain_world_3d.instantiate();
 			}
-			break;
+			*/
+		case Node::NOTIFICATION_PREDELETE_CLEANUP:
+			if (SimulationDomain::current == this) {
+				deactivate();
+			}
+			domain_world_2d = nullptr;
+			domain_world_3d = nullptr;
 		case Node::NOTIFICATION_EXIT_TREE:
-			if (!predeleted) {
-				_tc_crash("Illegal attempt to unparent a SimulationDomain. It cannot be removed from the scene tree; it MUST be deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-			}
-			break;
-		case Node::NOTIFICATION_INTERNAL_PROCESS:
-			bool fail = TC_IS_NULL(world3d) || TC_IS_NULL(world2d);
-			if (!fail) {
-				fail = world3d->get_scenario().is_null() || world3d->get_space().is_null()
-					|| world2d->get_canvas().is_null() || world2d->get_space().is_null();
-			}
-			if (fail && get_is_valid()) {
-				_tc_crash("The World2D or World3D of a SimulationDomain was unexpectedly deleted, or the space/scenario/canvas of one or more of these objects was unexpectedly deleted.", "Verifying correct state during frame process (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
+			if (SimulationDomain::current == this) {
+				WARN_PRINT("Deactivating the current domain because it exited the scene tree.");
+				deactivate();
 			}
 			break;
 	}
-}
-
-bool SimulationDomain::get_is_valid() const {
-	if (_is_queued_for_deletion) {
-		return false;
-	}
-	if (world_instance_and_marshals_destroyed) {
-		return false;
-	}
-	return is_locked;
 }
 
 bool SimulationDomain::get_active() const {
-	if (!_tc_is_client()) {
-		return true;
-	}
 	return SimulationDomain::current == this;
 }
 
-void SimulationDomain::set_active() {
-	if (_tc_is_client()) {
-		if (SimulationDomain::current == this) {
-			return;
-		}
+void SimulationDomain::make_active() {
+	ERR_MAIN_THREAD_GUARD
+	ERR_FAIL_COND_MSG(SimulationDomain::current == this, "This SimulationDomain is already active.");
+	ERR_FAIL_COND_MSG(SimulationDomain::is_client == nullptr, "The boolean designating whether or not this is the game client was missing.");
 
-		Node *my_parent = get_parent();
-		Viewport *parent_viewport = Node::cast_to<Viewport>(my_parent);
-		if (!parent_viewport || (parent_viewport != get_tree()->get_root()->get_viewport())) {
-			_tc_crash("A SimulationDomain must be parented to the root viewport. It cannot be a child of any other object.", "Verifying correct state when making a SimulationDomain active. (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-			return;
-		}
-		if (TC_IS_NULL(world2d)) {
-			_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct state when making a SimulationDomain active. (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-			return;
-		}
-		if (TC_IS_NULL(world3d)) {
-			_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct state when making a SimulationDomain active. (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-			return;
-		}
-		// We know for a fact that it's in the root viewport already.
-		// Also we don't need to call setworld methods on this (via base), as its built in version of this signal
-		// (NOTIFICATION_ENTER_TREE) does all of the code exeuction that doing so would achieve.
+	bool is_client_real = *SimulationDomain::is_client;
+	if (!is_client_real) {
+		ERR_FAIL_MSG("Domains cannot be activated or deactivated on the server, as there is no screen for it to override in the first place.");
+	}
 
-		SimulationDomain::current = nullptr; // This is required for set_world_* to work.
-		parent_viewport->set_world_2d(world2d);
-		parent_viewport->set_world_3d(world3d);
-		PhysicsServer2D::get_singleton()->space_set_active(world2d->get_space(), true);
-		PhysicsServer3D::get_singleton()->space_set_active(world3d->get_space(), true);
-		SimulationDomain::current = this;
-		_tc_active_changed(this);
-	} else {
-		_tc_crash("Illegal attempt to set a SimulationDomain as the current gameplay target on a server.", "Verifying correct state when making a SimulationDomain active. (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
+	if (!is_inside_tree()) {
+		ERR_FAIL_MSG("The SimulationDomain must be in the scene tree to be made active.");
+	}
+
+	Viewport *tree_root_viewport = get_tree()->get_root()->get_viewport();
+	ERR_FAIL_NULL(tree_root_viewport);
+
+	if (domain_world_2d.is_null()) {
+		WARN_PRINT("2D World was deleted from a SimulationDomain.");
+		domain_world_2d.instantiate();
+	}
+	if (domain_world_3d.is_null()) {
+		WARN_PRINT("3D World was deleted from a SimulationDomain.");
+		domain_world_3d.instantiate();
+	}
+
+	if (SimulationDomain::current) {
+		SimulationDomain::current->deactivate();
+	}
+	
+	parent_world_2d = tree_root_viewport->get_world_2d();
+	parent_world_3d = tree_root_viewport->get_world_3d();
+	last_parent = tree_root_viewport->get_instance_id();
+
+	tree_root_viewport->set_world_2d(domain_world_2d);
+	tree_root_viewport->set_world_3d(domain_world_3d);
+
+	// Must be set after, mods to viewport make it reject setting the world when the current domain is valid.
+	SimulationDomain::current = this;
+}
+
+
+void SimulationDomain::deactivate() {
+	ERR_MAIN_THREAD_GUARD
+	ERR_FAIL_COND_MSG(SimulationDomain::current != this, "This SimulationDomain is not the current active domain, and cannot be deactivated.");
+	ERR_FAIL_COND_MSG(SimulationDomain::is_client == nullptr, "The boolean designating whether or not this is the game client was missing.");
+
+	bool is_client_real = *SimulationDomain::is_client;
+	if (!is_client_real) {
+		ERR_FAIL_MSG("Domains cannot be activated or deactivated on the server, as there is no screen for it to override in the first place.");
+	}
+
+	// Must be first!
+	SimulationDomain::current = nullptr;
+
+	Viewport *original_viewport = ObjectDB::get_instance<Viewport>(last_parent);
+	if (original_viewport) {
+		if (original_viewport->get_world_2d() == domain_world_2d) {
+			// Only restore if it's still set to this domain's world!!
+			// In another case, the user may have illegally replaced it.
+			// n.b. it is acceptable that the parent world may be null. It'll complain and fix it, but the warning it raises is perfect so we let it happen.
+			original_viewport->set_world_2d(parent_world_2d);
+		}
+		if (original_viewport->get_world_3d() == domain_world_3d) {
+			original_viewport->set_world_3d(parent_world_3d);
+		}
+	}
+	parent_world_2d = nullptr;
+	parent_world_3d = nullptr;
+	last_parent = ObjectID();
+}
+
+void SimulationDomain::initialize() {
+	if (domain_world_2d.is_null()) {
+		domain_world_2d.instantiate();
+	}
+	if (domain_world_3d.is_null()) {
+		domain_world_3d.instantiate();
 	}
 }
 
 RID SimulationDomain::get_physics_space_2d() const {
-	if (TC_IS_NULL(world2d)) {
-		_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct state when getting 2D Physics Space (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-		return RID();
-	}
-	return world2d->get_space();
+	ERR_FAIL_NULL_V_MSG(domain_world_2d, RID(), TC_SIMULATION_DOMAIN_WORLD_2D_MISSING);
+	return domain_world_2d->get_space();
 }
 
 RID SimulationDomain::get_physics_space_3d() const {
-	if (TC_IS_NULL(world3d)) {
-		_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct state when getting 3D Physics Space (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-		return RID();
-	}
-	return world3d->get_space();
+	ERR_FAIL_NULL_V_MSG(domain_world_3d, RID(), TC_SIMULATION_DOMAIN_WORLD_3D_MISSING);
+	return domain_world_3d->get_space();
 }
 
 RID SimulationDomain::get_render_canvas() const {
-	if (TC_IS_NULL(world2d)) {
-		_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct state when getting 2D Render Canvas (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-		return RID();
-	}
-	return world2d->get_canvas();
+	ERR_FAIL_NULL_V_MSG(domain_world_2d, RID(), TC_SIMULATION_DOMAIN_WORLD_2D_MISSING);
+	return domain_world_2d->get_canvas();
 }
 
 RID SimulationDomain::get_render_scenario() const {
-	if (TC_IS_NULL(world3d)) {
-		_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct state when getting 3D Render Canvas (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-		return RID();
-	}
-	return world3d->get_scenario();
+	ERR_FAIL_NULL_V_MSG(domain_world_3d, RID(), TC_SIMULATION_DOMAIN_WORLD_3D_MISSING);
+	return domain_world_3d->get_scenario();
 }
 
-void SimulationDomain::destroy() {
-	world_instance_and_marshals_destroyed = _tc_destroy_validator(this);
-	if (world_instance_and_marshals_destroyed) {
-		if (current == this) {
-			current = nullptr;
-		}
-		queue_free();
-	}
-}
 void SimulationDomain::set_world_2d(const Ref<World2D> &p_world_2d) {
 	ERR_FAIL_MSG("set_world_2d is not supported on SimulationDomain. It always has its own world created ahead of time.");
 }
 Ref<World2D> SimulationDomain::get_world_2d() const {
-	if (TC_IS_NULL(world2d)) {
-		_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-		return Ref<World2D>();
-	}
-	return world2d;
+	ERR_FAIL_NULL_V_MSG(domain_world_2d, Ref<World2D>(), TC_SIMULATION_DOMAIN_WORLD_2D_MISSING);
+	return domain_world_2d;
 }
 Ref<World2D> SimulationDomain::find_world_2d() const {
-	if (TC_IS_NULL(world2d)) {
-		_tc_crash("The World2D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-		return Ref<World2D>();
-	}
-	return world2d;
+	ERR_FAIL_NULL_V_MSG(domain_world_2d, Ref<World2D>(), TC_SIMULATION_DOMAIN_WORLD_2D_MISSING);
+	return domain_world_2d;
 }
 
 void SimulationDomain::set_world_3d(const Ref<World3D> &p_world_3d) {
-	ERR_FAIL_MSG("set_world_3d is not supported on SimulationDomain. It always has its own world created ahead of time.");
+	ERR_FAIL_MSG("set_world_3d is not supported on SimulationDomain.");
 }
 Ref<World3D> SimulationDomain::get_world_3d() const {
-	if (TC_IS_NULL(world3d)) {
-		_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-		return Ref<World3D>();
-	}
-	return world3d;
+	ERR_FAIL_NULL_V_MSG(domain_world_3d, Ref<World3D>(), TC_SIMULATION_DOMAIN_WORLD_3D_MISSING);
+	return domain_world_3d;
 }
 Ref<World3D> SimulationDomain::find_world_3d() const {
-	if (TC_IS_NULL(world3d)) {
-		_tc_crash("The World3D of a SimulationDomain was unexpectedly deleted.", "Verifying correct disposal procedure (in-engine).", CONSERVATORY_UNREPORTABLE_IMPL_ERROR);
-		return Ref<World3D>();
-	}
-	return world3d;
+	ERR_FAIL_NULL_V_MSG(domain_world_3d, Ref<World3D>(), TC_SIMULATION_DOMAIN_WORLD_3D_MISSING);
+	return domain_world_3d;
 }
 void SimulationDomain::set_use_own_world_3d(bool p_use_own_world_3d) {
-	ERR_FAIL_MSG("set_use_own_world_3d is not supported on SimulationDomain. It always has its own world.");
+	ERR_FAIL_MSG("set_use_own_world_3d is not supported on SimulationDomain.");
 }
 bool SimulationDomain::is_using_own_world_3d() const {
-	return true;
+	return false;
 }
 
 void SimulationDomain::_bind_methods() {
-	ClassDB::bind_static_method("SimulationDomain", D_METHOD("set_conservatory_callbacks", "crash", "destroy_callback", "is_client", "active_changed"), &SimulationDomain::set_conservatory_callbacks);
-	ClassDB::bind_static_method("SimulationDomain", D_METHOD("get_instance", "native_instance"), &SimulationDomain::get_instance);
+	ClassDB::bind_static_method("SimulationDomain", D_METHOD("set_is_client_ptr", "ptr"), &SimulationDomain::set_is_client_ptr);
 
-	ClassDB::bind_method(D_METHOD("get_is_valid"), &SimulationDomain::get_is_valid);
 	ClassDB::bind_method(D_METHOD("get_is_active"), &SimulationDomain::get_active);
-	ClassDB::bind_method(D_METHOD("make_active"), &SimulationDomain::set_active);
+	ClassDB::bind_method(D_METHOD("make_active"), &SimulationDomain::make_active);
+	ClassDB::bind_method(D_METHOD("deactivate"), &SimulationDomain::deactivate);
+	ClassDB::bind_method(D_METHOD("initialize"), &SimulationDomain::initialize);
 	ClassDB::bind_method(D_METHOD("get_physics_space_2d"), &SimulationDomain::get_physics_space_2d);
 	ClassDB::bind_method(D_METHOD("get_physics_space_3d"), &SimulationDomain::get_physics_space_3d);
 	ClassDB::bind_method(D_METHOD("get_render_canvas"), &SimulationDomain::get_render_canvas);
 	ClassDB::bind_method(D_METHOD("get_render_scenario"), &SimulationDomain::get_render_scenario);
-	ClassDB::bind_method(D_METHOD("destroy"), &SimulationDomain::destroy);
 
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::Type::BOOL, "is_valid"), "get_is_valid");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::Type::BOOL, "is_active"), "get_is_active");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::Type::RID, "physics_space_2d"), "get_physics_space_2d");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::Type::RID, "physics_space_3d"), "get_physics_space_3d");
@@ -333,26 +240,16 @@ void SimulationDomain::_bind_methods() {
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::Type::RID, "render_scenario"), "get_render_scenario");
 }
 
-SimulationDomain::SimulationDomain() {
-	instances.push_back(this);
-	created_properly = SimulationDomain::declared_cs_methods;
-	TC_INSTANTIATE(World2D, world2d);
-	TC_INSTANTIATE(World3D, world3d);
-	set_process_internal(true);
-}
+SimulationDomain::SimulationDomain() { }
 
 SimulationDomain::~SimulationDomain() {
-	instances.erase(this);
-	if (current == this) {
-		current = nullptr;
-		_tc_active_changed(nullptr);
+	if (SimulationDomain::current == this) {
+		deactivate();
 	}
-	if (TC_IS_VALID(world2d)) {
-		TC_DELETE(world2d);
-	}
-	if (TC_IS_VALID(world3d)) {
-		TC_DELETE(world3d);
-	}
+	parent_world_2d = nullptr;
+	parent_world_3d = nullptr;
+	domain_world_2d = nullptr;
+	domain_world_3d = nullptr;
 }
 
 #endif // !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)

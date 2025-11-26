@@ -1312,7 +1312,7 @@ void Viewport::set_world_2d(const Ref<World2D> &p_world_2d) {
 	if (world_2d == p_world_2d) {
 		return;
 	}
-	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
+	if (SimulationDomain::current_is_this(this)) {
 		return;
 	}
 
@@ -1346,7 +1346,7 @@ void Viewport::set_world_2d(const Ref<World2D> &p_world_2d) {
 
 Ref<World2D> Viewport::find_world_2d() const {
 	ERR_READ_THREAD_GUARD_V(Ref<World2D>());
-	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
+	if (SimulationDomain::current_is_this(this)) {
 		return SimulationDomain::current->get_world_2d();
 	}
 	if (world_2d.is_valid()) {
@@ -4764,7 +4764,7 @@ Ref<World3D> Viewport::get_world_3d() const {
 
 Ref<World3D> Viewport::find_world_3d() const {
 	ERR_READ_THREAD_GUARD_V(Ref<World3D>());
-	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
+	if (SimulationDomain::current_is_this(this)) {
 		return SimulationDomain::current->get_world_3d();
 	}
 	if (own_world_3d.is_valid()) {
@@ -4783,7 +4783,7 @@ void Viewport::set_world_3d(const Ref<World3D> &p_world_3d) {
 	if (world_3d == p_world_3d) {
 		return;
 	}
-	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
+	if (SimulationDomain::current_is_this(this)) {
 		return;
 	}
 
@@ -4843,7 +4843,7 @@ void Viewport::set_use_own_world_3d(bool p_use_own_world_3d) {
 	if (p_use_own_world_3d == own_world_3d.is_valid()) {
 		return;
 	}
-	if (SimulationDomain::current && SimulationDomain::current->get_parent_viewport() == this) {
+	if (SimulationDomain::current_is_this(this)) {
 		return;
 	}
 
