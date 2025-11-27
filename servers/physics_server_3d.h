@@ -1002,6 +1002,7 @@ public:
 	Vector3 get_collision_point(int p_collision_index = 0) const;
 	Vector3 get_collision_normal(int p_collision_index = 0) const;
 	Vector3 get_collider_velocity(int p_collision_index = 0) const;
+	Vector3 get_collider_angular_velocity(int p_collision_index = 0) const;
 	ObjectID get_collider_id(int p_collision_index = 0) const;
 	RID get_collider_rid(int p_collision_index = 0) const;
 	Object *get_collider(int p_collision_index = 0) const;

@@ -609,6 +609,11 @@ Vector3 PhysicsTestMotionResult3D::get_collider_velocity(int p_collision_index) 
 	return result.collisions[p_collision_index].collider_velocity;
 }
 
+Vector3 PhysicsTestMotionResult3D::get_collider_angular_velocity(int p_collision_index) const {
+	ERR_FAIL_INDEX_V(p_collision_index, result.collision_count, Vector3());
+	return result.collisions[p_collision_index].collider_angular_velocity;
+}
+
 ObjectID PhysicsTestMotionResult3D::get_collider_id(int p_collision_index) const {
 	ERR_FAIL_INDEX_V(p_collision_index, result.collision_count, ObjectID());
 	return result.collisions[p_collision_index].collider_id;

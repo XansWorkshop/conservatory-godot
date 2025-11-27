@@ -44,6 +44,14 @@
 				Returns the colliding body's velocity given a collision index (the deepest collision by default), if a collision occurred.
 			</description>
 		</method>
+		<method name="get_collider_angular_velocity" qualifiers="const">
+			<return type="Vector3" />
+			<param index="0" name="collision_index" type="int" default="0" />
+			<description>
+				Returns the colliding body's angular velocity given a collision index (the deepest collision by default), if a collision occurred.
+				Note that this requires the body to actually have angular velocity in the first place, which only applies to certain [RigidBody3D] instances.
+			</description>
+		</method>
 		<method name="get_collision_count" qualifiers="const">
 			<return type="int" />
 			<description>
