@@ -624,6 +624,9 @@ namespace Godot
 
         /// <summary>
         /// Returns the vector scaled to unit length. Equivalent to <c>v / v.Length()</c>.
+        /// Returns <see cref="Zero"/> if the length of this vector is zero. Unlike the base
+        /// Godot version of this method, this guarantees the result vector is normal even in
+        /// extreme cases.
         /// </summary>
         /// <returns>A normalized version of the vector.</returns>
         public readonly Vector3 Normalized()
