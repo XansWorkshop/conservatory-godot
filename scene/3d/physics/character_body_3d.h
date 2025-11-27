@@ -33,6 +33,19 @@
 #include "scene/3d/physics/kinematic_collision_3d.h"
 #include "scene/3d/physics/physics_body_3d.h"
 
+#define DISALLOW_STATIC_MOTION_GUARD ERR_FAIL_COND_MSG(motion_mode == MotionMode::MOTION_MODE_STATIC, "This method is not usable when the motion mode is set to static.")
+#define DISALLOW_STATIC_MOTION_GUARD_V(m_ret) ERR_FAIL_COND_V_MSG(motion_mode == MotionMode::MOTION_MODE_STATIC, m_ret, "This method is not usable when the motion mode is set to static.")
+#define ABORT_IF_STATIC_MOTION								\
+	if (motion_mode == MotionMode::MOTION_MODE_STATIC) {	\
+		return;												\
+	}														\
+	((void)0)
+#define ABORT_IF_STATIC_MOTION_V(m_ret) 					\
+	if (motion_mode == MotionMode::MOTION_MODE_STATIC) {	\
+		return m_ret;										\
+	}														\
+	((void)0)
+
 class CharacterBody3D : public PhysicsBody3D {
 	GDCLASS(CharacterBody3D, PhysicsBody3D);
 
@@ -40,6 +53,7 @@ public:
 	enum MotionMode {
 		MOTION_MODE_GROUNDED,
 		MOTION_MODE_FLOATING,
+		MOTION_MODE_STATIC
 	};
 	enum PlatformOnLeave {
 		PLATFORM_ON_LEAVE_ADD_VELOCITY,

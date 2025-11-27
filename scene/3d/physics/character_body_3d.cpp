@@ -38,6 +38,22 @@
 #define FLOOR_ANGLE_THRESHOLD 0.01
 
 bool CharacterBody3D::move_and_slide() {
+	if (motion_mode == MotionMode::MOTION_MODE_STATIC) {
+		motion_results.clear();
+		last_motion = Vector3();
+		real_velocity = Vector3();
+
+		platform_rid = RID();
+		platform_object_id = ObjectID();
+		platform_velocity = Vector3();
+		platform_angular_velocity = Vector3();
+		platform_ceiling_velocity = Vector3();
+		floor_normal = Vector3();
+		wall_normal = Vector3();
+		ceiling_normal = Vector3();
+		return false;
+	}
+
 	// Hack in order to work with calling from _process as well as from _physics_process; calling from thread is risky
 	double delta = Engine::get_singleton()->is_in_physics_frame() ? get_physics_process_delta_time() : get_process_delta_time();
 
@@ -457,6 +473,9 @@ void CharacterBody3D::apply_floor_snap() {
 	if (collision_state.floor) {
 		return;
 	}
+	if (motion_mode == MotionMode::MOTION_MODE_STATIC) {
+		return;
+	}
 
 	// Snap by at least collision margin to keep floor state consistent.
 	real_t length = MAX(floor_snap_length, margin);
@@ -791,6 +810,11 @@ void CharacterBody3D::set_platform_wall_layers(uint32_t p_exclude_layers) {
 }
 
 void CharacterBody3D::set_motion_mode(MotionMode p_mode) {
+	if (motion_mode != MotionMode::MOTION_MODE_STATIC && p_mode == MotionMode::MOTION_MODE_STATIC) {
+		set_body_mode(PhysicsServer3D::BODY_MODE_STATIC);
+	} else if (motion_mode == MotionMode::MOTION_MODE_STATIC && p_mode != MotionMode::MOTION_MODE_STATIC) {
+		set_body_mode(PhysicsServer3D::BODY_MODE_KINEMATIC);
+	}
 	motion_mode = p_mode;
 }
 
@@ -919,7 +943,7 @@ void CharacterBody3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_slide_collision", "slide_idx"), &CharacterBody3D::_get_slide_collision);
 	ClassDB::bind_method(D_METHOD("get_last_slide_collision"), &CharacterBody3D::_get_last_slide_collision);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "motion_mode", PROPERTY_HINT_ENUM, "Grounded,Floating", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED), "set_motion_mode", "get_motion_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "motion_mode", PROPERTY_HINT_ENUM, "Grounded,Floating,Static (Disabled)", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED), "set_motion_mode", "get_motion_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "up_direction"), "set_up_direction", "get_up_direction");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "slide_on_ceiling"), "set_slide_on_ceiling_enabled", "is_slide_on_ceiling_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "velocity", PROPERTY_HINT_NONE, "suffix:m/s", PROPERTY_USAGE_NO_EDITOR), "set_velocity", "get_velocity");
@@ -943,6 +967,7 @@ void CharacterBody3D::_bind_methods() {
 
 	BIND_ENUM_CONSTANT(MOTION_MODE_GROUNDED);
 	BIND_ENUM_CONSTANT(MOTION_MODE_FLOATING);
+	BIND_ENUM_CONSTANT(MOTION_MODE_STATIC);
 
 	BIND_ENUM_CONSTANT(PLATFORM_ON_LEAVE_ADD_VELOCITY);
 	BIND_ENUM_CONSTANT(PLATFORM_ON_LEAVE_ADD_UPWARD_VELOCITY);
@@ -953,7 +978,7 @@ void CharacterBody3D::_validate_property(PropertyInfo &p_property) const {
 	if (!Engine::get_singleton()->is_editor_hint()) {
 		return;
 	}
-	if (motion_mode == MOTION_MODE_FLOATING) {
+	if (motion_mode == MOTION_MODE_FLOATING || motion_mode == MOTION_MODE_STATIC) {
 		if (p_property.name.begins_with("floor_") || p_property.name == "up_direction" || p_property.name == "slide_on_ceiling") {
 			p_property.usage = PROPERTY_USAGE_NO_EDITOR;
 		}
