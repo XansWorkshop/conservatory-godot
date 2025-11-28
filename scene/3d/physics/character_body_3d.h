@@ -52,8 +52,7 @@ class CharacterBody3D : public PhysicsBody3D {
 public:
 	enum MotionMode {
 		MOTION_MODE_GROUNDED,
-		MOTION_MODE_FLOATING,
-		MOTION_MODE_STATIC
+		MOTION_MODE_FLOATING
 	};
 	enum PlatformOnLeave {
 		PLATFORM_ON_LEAVE_ADD_VELOCITY,
