@@ -1,10 +1,14 @@
 /**************************************************************************/
-/*  register_types.cpp                                                    */
+/*  noise_ext.h                                                           */
 /**************************************************************************/
 /*                         This file is part of:                          */
-/*                             GODOT ENGINE                               */
-/*                        https://godotengine.org                         */
+/*                 GODOT ENGINE /// THE CONSERVATORY FORK                 */
+/*          https://godotengine.org /// https://xansworkshop.com          */
 /**************************************************************************/
+/*                     DERIVED FROM GODOT SOURCE CODE                     */
+/*                       SEE ORIGINAL LICENSE BELOW                       */
+/**************************************************************************/
+/* Copyright (c) 2025-present Xan's Workshop.                             */
 /* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
 /* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
 /*                                                                        */
@@ -28,41 +32,31 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "register_types.h"
+#pragma once
 
-#include "fastnoise_lite.h"
 #include "noise.h"
-#include "noise_texture_2d.h"
-#include "noise_texture_3d.h"
-#include "noise_ext.h"
 
-#ifdef TOOLS_ENABLED
-#include "editor/noise_editor_plugin.h"
-#endif
+class NoiseExt : public Noise {
+	GDCLASS(NoiseExt, Noise);
 
-#ifdef TOOLS_ENABLED
-#include "editor/plugins/editor_plugin.h"
-#endif
+protected:
+	static void _bind_methods();
 
-void initialize_noise_module(ModuleInitializationLevel p_level) {
-	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
-		GDREGISTER_CLASS(NoiseTexture3D);
-		GDREGISTER_CLASS(NoiseTexture2D);
-		GDREGISTER_ABSTRACT_CLASS(Noise);
-		GDREGISTER_CLASS(FastNoiseLite);
-		GDREGISTER_CLASS(NoiseExt);
-		ClassDB::add_compatibility_class("NoiseTexture", "NoiseTexture2D");
+public:
+	GDVIRTUAL1RC_REQUIRED(real_t, _get_noise_1d, real_t);
+	GDVIRTUAL1RC_REQUIRED(real_t, _get_noise_2d, Vector2);
+	GDVIRTUAL1RC_REQUIRED(real_t, _get_noise_3d, Vector3);
+
+	real_t get_noise_1d(real_t p_x) const override;
+
+	real_t get_noise_2dv(Vector2 p_v) const override;
+	_FORCE_INLINE_ real_t get_noise_2d(real_t p_x, real_t p_y) const override {
+		return get_noise_2dv(Vector2(p_x, p_y));
 	}
 
-#ifdef TOOLS_ENABLED
-	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
-		EditorPlugins::add_by_type<NoiseEditorPlugin>();
+	real_t get_noise_3dv(Vector3 p_v) const override;
+	_FORCE_INLINE_ real_t get_noise_3d(real_t p_x, real_t p_y, real_t p_z) const override {
+		return get_noise_3dv(Vector3(p_x, p_y, p_z));
 	}
-#endif
-}
 
-void uninitialize_noise_module(ModuleInitializationLevel p_level) {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
-		return;
-	}
-}
+};
