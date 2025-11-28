@@ -516,8 +516,8 @@ void PhysicsTestMotionParameters3D::set_exclude_bodies(const TypedArray<RID> &p_
 	}
 }
 
-TypedArray<uint64_t> PhysicsTestMotionParameters3D::get_exclude_objects() const {
-	TypedArray<uint64_t> exclude;
+Array PhysicsTestMotionParameters3D::get_exclude_objects() const {
+	Array exclude;
 	exclude.resize(parameters.exclude_objects.size());
 
 	int object_index = 0;
@@ -528,10 +528,13 @@ TypedArray<uint64_t> PhysicsTestMotionParameters3D::get_exclude_objects() const 
 	return exclude;
 }
 
-void PhysicsTestMotionParameters3D::set_exclude_objects(const TypedArray<uint64_t> &p_exclude) {
+void PhysicsTestMotionParameters3D::set_exclude_objects(const Array &p_exclude) {
 	parameters.exclude_objects.clear();
 	for (int i = 0; i < p_exclude.size(); ++i) {
-		ObjectID object_id = p_exclude[i];
+		Variant object_id_v = p_exclude[i];
+		ERR_CONTINUE(p_exclude[i].get_type() != Variant::INT);
+
+		ObjectID object_id = object_id_v;
 		ERR_CONTINUE(object_id.is_null());
 		parameters.exclude_objects.insert(object_id);
 	}
@@ -568,7 +571,7 @@ void PhysicsTestMotionParameters3D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "max_collisions"), "set_max_collisions", "get_max_collisions");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_separation_ray"), "set_collide_separation_ray_enabled", "is_collide_separation_ray_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "exclude_bodies", PROPERTY_HINT_ARRAY_TYPE, "RID"), "set_exclude_bodies", "get_exclude_bodies");
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "exclude_objects"), "set_exclude_objects", "get_exclude_objects");
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "exclude_objects", PROPERTY_HINT_ARRAY_TYPE), "set_exclude_objects", "get_exclude_objects");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "recovery_as_collision"), "set_recovery_as_collision_enabled", "is_recovery_as_collision_enabled");
 }
 
@@ -653,6 +656,7 @@ void PhysicsTestMotionResult3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_collision_point", "collision_index"), &PhysicsTestMotionResult3D::get_collision_point, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_collision_normal", "collision_index"), &PhysicsTestMotionResult3D::get_collision_normal, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_collider_velocity", "collision_index"), &PhysicsTestMotionResult3D::get_collider_velocity, DEFVAL(0));
+	ClassDB::bind_method(D_METHOD("get_collider_angular_velocity", "collision_index"), &PhysicsTestMotionResult3D::get_collider_angular_velocity, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_collider_id", "collision_index"), &PhysicsTestMotionResult3D::get_collider_id, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_collider_rid", "collision_index"), &PhysicsTestMotionResult3D::get_collider_rid, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_collider", "collision_index"), &PhysicsTestMotionResult3D::get_collider, DEFVAL(0));
