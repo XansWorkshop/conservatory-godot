@@ -303,12 +303,12 @@ void Shader::enforce_valid_only_in(HashMap<StringName, bool> *p_features, HashMa
 }
 
 void Shader::fast_enforce_parity(HashMap<StringName, bool> *p_features, HashMap<StringName, StringName> *p_variants, HashMap<StringName, List<StringName>> *p_valid_variants) const {
-	if (unlikely(p_features && p_features->size() == 0)) {
+	if (p_features && p_features->size() == 0) {
 		if (valid_features.size() != 0) {
 			enforce_valid_only_in(p_features, nullptr, nullptr);
 		}
 	}
-	if (unlikely((p_variants && p_variants->size() == 0) || (p_valid_variants && p_valid_variants->size() == 0))) {
+	if ((p_variants && p_variants->size() == 0) || (p_valid_variants && p_valid_variants->size() == 0)) {
 		if (valid_variants.size() != 0) {
 			enforce_valid_only_in(nullptr, p_variants, p_valid_variants);
 		}
