@@ -29,6 +29,34 @@
 				[b]Note:[/b] Changes to the shader uniform will be effective on all instances using this [ShaderMaterial]. To prevent this, use per-instance uniforms with [method GeometryInstance3D.set_instance_shader_parameter] or duplicate the [ShaderMaterial] resource using [method Resource.duplicate]. Per-instance uniforms allow for better shader reuse and are therefore faster, so they should be preferred over duplicating the [ShaderMaterial] when possible.
 			</description>
 		</method>
+		<method name="set_shader_feature">
+			<return type="void" />
+			<param index="0" name="feature" type="StringName" />
+			<param index="1" name="enabled" type="bool" />
+			<description>
+				[admonition type="note" collapsible="true" open="false"]
+				[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+				This is not available in the official build of Godot.
+				[/admonition]
+				Enables or disables the provided shader feature. Shader features are added to a shader using [code]#pragma features A B C ...[/code] and operate as static flags. These can be checked using [code]#ifdef A[/code] or [code]#if defined(A)[/code] in the shader. Only features that have been declared in the list can be used in this method.
+				[b]Note:[/b] [param feature] is case-sensitive and must match the name of the feature in the code exactly. Unlike uniforms, the inspector displays these properties verbatim.
+				[b]Note:[/b] For organizational purposes, it is valid to place multiple [code]#pragma features[/code] lines in a shader. All of the lines are collected into one set of features.
+			</description>
+		</method>
+		<method name="set_shader_variant">
+			<return type="void" />
+			<param index="0" name="variant" type="StringName" />
+			<param index="1" name="value" type="StringName" />
+			<description>
+				[admonition type="note" collapsible="true" open="false"]
+				[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+				This is not available in the official build of Godot.
+				[/admonition]
+				Changes to the provided shader variant. Shader variants are added to a shader using [code]#pragma exclusive_variants NAME : A B C ...[/code] and operate as a static "switch". These can be checked using [code]#ifdef NAME_A[/code] or [code]#if defined(NAME_A)[/code] in the shader, [b]note that the name of the variant is prefixed to the value![/b]. Only variants that have been declared in the list can be selected.
+				[b]Note:[/b] [param variant] is case-sensitive and must match the name of the feature in the code exactly. Unlike uniforms, the inspector displays these properties verbatim, and unlike features, only one variant value can be enabled at once for any given name. In the provided example above, [code]NAME[/code] can only be [code]A[/code], [code]B[/code], or [code]C[/code] [i]exclusively[/i]. Combinations of values are [b]not possible[/b].
+				[b]Note:[/b] While checked in shaders using the name and value [code]NAME_A[/code], the [param value] parameter must [b]only be the name[/b] ([code]A[/code], [i]not[/i] [code]NAME_A[/code])!
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="shader" type="Shader" setter="set_shader" getter="get_shader">
