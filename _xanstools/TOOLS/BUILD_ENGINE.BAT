@@ -125,7 +125,6 @@ CD bin
 
 CD..
 SET LOCAL_NUGET=%USERPROFILE%\LocalNuget
-ECHO %LOCAL_NUGET%
 PAUSE
 python ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows %DOUBLE% --no-deprecated --push-nupkgs-local "%LOCAL_NUGET%"
 

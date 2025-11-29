@@ -1,0 +1,7 @@
+The external libraries needed are in here, for the most part, but there is some additional work to do. This will be updated as time goes on.
+
+TO BUILD:
+1. Run `/misc/scripts/install_d3d12_sdk_windows.py`
+
+NOTES:
+1. Glue exports to `%CURRENTUSER%/LocalNuget` i.e. `C:\Users\Xan\LocalNuget`. You need to add this as a package source to Visual Studio or whatever your IDE is.

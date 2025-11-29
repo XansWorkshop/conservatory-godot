@@ -1670,6 +1670,14 @@ ProjectManager::ProjectManager() {
 		EngineUpdateLabel *update_label = memnew(EngineUpdateLabel);
 		footer_bar->add_child(update_label);
 		update_label->connect("offline_clicked", callable_mp(this, &ProjectManager::_show_quick_settings));
+#else
+		// To Future Xan: You don't use label because it fucks up the layout for some reason.
+		LinkButton *update_label = memnew(LinkButton);
+		update_label->set_text(TTR("Update checking is not applicable to this version."));
+		update_label->set_default_cursor_shape(Control::CursorShape::CURSOR_ARROW);
+		update_label->set_underline_mode(LinkButton::UnderlineMode::UNDERLINE_MODE_NEVER);
+		update_label->set_disabled(true);
+		footer_bar->add_child(update_label);
 #endif
 
 		EditorVersionButton *version_btn = memnew(EditorVersionButton(EditorVersionButton::FORMAT_WITH_BUILD));
