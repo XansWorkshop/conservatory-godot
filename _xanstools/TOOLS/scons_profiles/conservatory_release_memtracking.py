@@ -1,0 +1,17 @@
+production = "yes"
+dev_build = "no"
+module_mono_enabled = "yes"
+optimize = "speed_trace"
+deprecated = "no"
+allow_break_on_error = "no" # Custom parameter! See SConstruct in project root.
+allow_release_memory_tracking = "yes" # Custom parameter! See SConstruct in project root.
+website = "https://xansworkshop.com/godot"
+d3d12 = "yes"
+fast_unsafe = "no"
+module_camera_enabled = "no"
+module_csg_enabled = "no"
+module_gridmap_enabled = "no"
+module_jsonrpc_enabled = "no"
+module_mobile_vr_enabled = "no"
+module_msdfgen_enabled = "no"
+module_webxr_enabled = "no"
