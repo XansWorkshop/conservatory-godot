@@ -858,6 +858,9 @@ void ShaderPreprocessor::process_pragma(Tokenizer *p_tokenizer) {
 				set_error(vformat(RTR("Cannot declare '%s' as a variant; this name is already in use by a shader feature."), to_add), line);
 				return;
 			}
+			/*
+			* // Check no longer applicable! Variants are checked using NAME_VALUE syntax i.e. #ifdef MY_VARIANT_AAA rather than #ifdef AAA.
+			
 			for (KeyValue<String, List<String>> variant_binding : state->variants) {
 				if (variant_binding.key == variant_ctr_name) {
 					continue;
@@ -867,6 +870,7 @@ void ShaderPreprocessor::process_pragma(Tokenizer *p_tokenizer) {
 					return;
 				}
 			}
+			*/
 			variants.push_back(to_add);
 			following_word = p_tokenizer->get_identifier();
 			if (following_word.is_empty()) {
