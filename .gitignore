@@ -17,6 +17,7 @@
 # - IDE and tool specific
 # - Visual Studio specific
 # - OS specific
+# - Xan's Overrides
 
 ###########################
 ### Build configuration ###
@@ -390,3 +391,10 @@ $RECYCLE.BIN/
 *.msp
 *.lnk
 *.generated.props
+
+
+#######################
+### Xan's Overrides ###
+#######################
+
+_xanstools/scons_cache
