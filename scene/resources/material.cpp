@@ -803,6 +803,8 @@ void ShaderMaterial::apply_features_and_variants(const int p_refresh) {
 
 		for (const KeyValue<StringName, StringName> &variant : shader_variants) {
 			result.append("#define ");
+			result.append(variant.key);
+			result.append("_");
 			result.append(variant.value);
 			result.append("\n");
 		}
