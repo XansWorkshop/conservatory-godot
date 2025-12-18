@@ -5,19 +5,6 @@ using System.Runtime.CompilerServices;
 #nullable enable
 namespace Godot {
 
-    #region Interfaces
-
-    /// <summary>
-    /// Container class for interoperability layers between the engine's generated C# types and The Conservatory.
-    /// </summary>
-    public static class ConservatoryInterop {
-
-        
-
-    }
-
-    #endregion
-
     #region Class Modifications
 
     partial class CharFXTransform {
@@ -28,6 +15,9 @@ namespace Godot {
 		/// A <see cref="Rune"/> representing the <see cref="CharFXTransform.GlyphCodepoint"/>. Changing this value affects it and by extension
 		/// <see cref="CharFXTransform.GlyphIndex"/> as well.
 		/// </summary>
+        /// <remarks>
+        /// This is not safe to use with languages other than English at this time; this must be fixed.
+        /// </remarks>
 		public Rune Glyph {
 			get => new Rune((uint)GlyphCodepoint);
 			set => GlyphCodepoint = value.Value;
@@ -45,46 +35,6 @@ namespace Godot {
             SetIsClientPtr((nint)isClient);
         }
 
-#if false
-
-		/// <inheritdoc cref="SimulationDomain.SetConservatoryCallbacks(long, long, long, long)"/>
-		public static unsafe delegate*<long> SetConservatoryCallbacks(delegate*<byte*, int, byte*, int, int, void> crash, delegate*<long, bool> tryDestroy, delegate*<bool> isClient, delegate*<long, void> onActiveChanged) {
-			return (delegate*<long>)((nint)SetConservatoryCallbacks((nint)crash, (nint)tryDestroy, (nint)isClient, (nint)onActiveChanged));
-		}
-
-		/// <summary>
-		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
-		/// <para/>
-		/// Crashes the game; you should never free a SimulationDomain. Use Destroy() instead.
-		/// </summary>
-		[Obsolete("SimulationDomain disallows the use of Free(). This will crash the game.", true)]
-		public new void Free() { }
-
-		/// <summary>
-		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
-		/// <para/>
-		/// Crashes the game; you should never free a SimulationDomain. Use Destroy() instead.
-		/// </summary>
-		[Obsolete("SimulationDomain disallows the use of QueueFree(). This will crash the game.", true)]
-		public new void QueueFree() { }
-
-		/// <summary>
-		/// A customized implementation of <see cref="GodotObject.Dispose(bool)"/> which prevents a crash caused by how the engine handles
-		/// the <see cref="SimulationDomain"/> type internally.
-		/// </summary>
-		/// <param name="disposing"></param>
-		protected override void Dispose(bool disposing) {
-			if (NativeInstance != IntPtr.Zero) {
-				string errMsg = $"An unmanaged (C++) {nameof(SimulationDomain)} instance's wrapper (the C# instance) was {(disposing ? "disposed of" : "garbage collected")} before being deleted by the engine. This is indicative of outright disregard for the usage guidelines of {nameof(SimulationDomain)}; under no circumstances should you ever manually destroy an instance of this class using disposal, garbage collection, or the {nameof(Free)}/{nameof(QueueFree)} methods.";
-				GD.PushError(errMsg);
-			} else {
-				return; // Actually acceptable.
-			}
-			GD.PushError("If you are reading this, congratulations! Please enjoy your complimentary access violation in the CLR garbage collection routine once the next GC cycle occurs. In the mean time, why don't you consider what you did to get here. :^)");
-			base.Dispose(disposing);
-		}
-
-#endif
     }
 
 	partial class ConservatoryDebugBridge {
@@ -92,11 +42,6 @@ namespace Godot {
 		/// <inheritdoc cref="ConservatoryDebugBridge.SetPtrs(long, long)"/>
 		public static unsafe void SetPtrs(bool* breakOnError, delegate*<bool> isDebuggerAttached) {
 			SetPtrs((nint)breakOnError, (nint)isDebuggerAttached);
-		}
-
-		/// <inheritdoc cref="ConservatoryDebugBridge.InterceptGodotLoggingUsing(long)"/>
-		public static unsafe void InterceptGodotLoggingUsing(delegate*<void*, byte*, int, byte*, int, byte*, int, byte*, int, int, byte, bool, void> callback) {
-			InterceptGodotLoggingUsing((nint)callback);
 		}
 
 		/// <summary>
@@ -155,20 +100,20 @@ namespace Godot {
 
 	}
 
-	partial class RichTextEffect {
+    partial class RichTextEffect {
 
-		/// <summary>
-		/// <strong>Added by The Conservatory for the .NET Extended API; this API is not available in official Godot builds, nor is it available from GDScript.</strong>
-		/// <para/>
-		/// The name of the BBCode tag that must be used.
-		/// </summary>
-		/// <remarks>
-		/// Note: This supersedes Godot's previous requirement for a field named <c>bbcode</c>, as additional code has been added
-		/// to find this specific case of the property as well for C# naming convention compliance.
-		/// </remarks>
-		public virtual string BBCode => (string)Get(PrivateStringNames.BBCODE_NAME);
+	    /// <summary>
+	    /// <strong>Added by The Conservatory for the .NET Extended API; this API is not available in official Godot builds, nor is it available from GDScript.</strong>
+	    /// <para/>
+	    /// The name of the BBCode tag that must be used.
+	    /// </summary>
+	    /// <remarks>
+	    /// Note: This supersedes Godot's previous requirement for a field named <c>bbcode</c>, as additional code has been added
+	    /// to find this specific case of the property as well for C# naming convention compliance.
+	    /// </remarks>
+	    public virtual string BBCode => (string)Get(PrivateStringNames.BBCODE_NAME);
 
-	}
+    }
 
     #endregion
 
