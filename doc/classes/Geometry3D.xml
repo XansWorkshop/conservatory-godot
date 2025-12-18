@@ -52,6 +52,32 @@
 				Calculates and returns all the vertex points of a convex shape defined by an array of [param planes].
 			</description>
 		</method>
+		<method name="compute_convex_mesh_planes">
+			<return type="Plane[]" />
+			<param index="0" name="points" type="Vector3[]" />
+			<description>
+				Calculates and returns all the [Plane]s that can compose a convex hull. This is the exact opposite of [method compute_convex_mesh_points].
+				You can use the output of this method to test collisions with individual points:
+				[codeblocks]
+				[gdscript]
+				func check_convex_collision(points: Array[Vector3], test: Vector3) -> bool:
+					var planes = Geometry3D.compute_convex_mesh_planes(points)
+					for plane in planes:
+						if plane.is_point_over(test):
+							return false
+					return true
+				[/gdscript]
+				[csharp]
+				public static bool CheckConvexCollision(Vector3[] points, Vector3 test) {
+					foreach (Plane plane in Geometry3D.ComputeConvexMeshPlanes(points)) {
+						if (plane.IsPointOver(test)) return false;
+					}
+					return true;
+				}
+				[/csharp]
+				[/codeblocks]
+			</description>
+		</method>
 		<method name="get_closest_point_to_segment">
 			<return type="Vector3" />
 			<param index="0" name="point" type="Vector3" />
