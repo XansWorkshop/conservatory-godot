@@ -60,7 +60,7 @@
 				You can use the output of this method to test collisions with individual points:
 				[codeblocks]
 				[gdscript]
-				func check_convex_collision(points: Array[Vector3], test: Vector3) -> bool:
+				func check_convex_collision(points: Array[ Vector3 ], test: Vector3) -> bool:
 					var planes = Geometry3D.compute_convex_mesh_planes(points)
 					for plane in planes:
 						if plane.is_point_over(test):
