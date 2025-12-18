@@ -40,6 +40,7 @@ public:
 	static void get_closest_points_between_segments(const Vector3 &p_p0, const Vector3 &p_p1, const Vector3 &p_q0, const Vector3 &p_q1, Vector3 &r_ps, Vector3 &r_qt);
 	static real_t get_closest_distance_between_segments(const Vector3 &p_p0, const Vector3 &p_p1, const Vector3 &p_q0, const Vector3 &p_q1);
 
+
 	static inline bool ray_intersects_triangle(const Vector3 &p_from, const Vector3 &p_dir, const Vector3 &p_v0, const Vector3 &p_v1, const Vector3 &p_v2, Vector3 *r_res = nullptr) {
 		Vector3 e1 = p_v1 - p_v0;
 		Vector3 e2 = p_v2 - p_v0;
@@ -594,6 +595,9 @@ public:
 	static Vector<Plane> build_capsule_planes(real_t p_radius, real_t p_height, int p_sides, int p_lats, Vector3::Axis p_axis = Vector3::AXIS_Z);
 
 	static Vector<Vector3> compute_convex_mesh_points(const Plane *p_planes, int p_plane_count);
+
+	// Added by Xan. Uses convex_hull to get the planes from an arbitrary point cloud.
+	static Vector<Plane> compute_convex_mesh_planes(const Vector<Vector3> &p_points);
 
 #define FINDMINMAX(x0, x1, x2, min, max) \
 	min = max = x0;                      \
