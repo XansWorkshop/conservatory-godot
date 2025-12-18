@@ -34,10 +34,6 @@
 
 #include <cstdlib>
 
-#if defined(DEBUG_ENABLED) || defined(TC_ALLOW_RELEASE_MEMORY_TRACKING)
-	#define TC_MEMORY_TRACKING_OR_DEBUG_ENABLED
-#endif
-
 void *operator new(size_t p_size, const char *p_description) {
 	return Memory::alloc_static(p_size, false);
 }

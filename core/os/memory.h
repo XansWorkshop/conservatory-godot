@@ -36,8 +36,12 @@
 #include <new> // IWYU pragma: keep // `new` operators.
 #include <type_traits>
 
+#if defined(DEBUG_ENABLED) || defined(TC_ALLOW_RELEASE_MEMORY_TRACKING)
+#define TC_MEMORY_TRACKING_OR_DEBUG_ENABLED
+#endif
+
 class Memory {
-#ifdef DEBUG_ENABLED
+#ifdef TC_MEMORY_TRACKING_OR_DEBUG_ENABLED
 	static SafeNumeric<uint64_t> mem_usage;
 	static SafeNumeric<uint64_t> max_usage;
 #endif
