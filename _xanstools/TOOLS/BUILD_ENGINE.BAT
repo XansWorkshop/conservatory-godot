@@ -110,10 +110,10 @@ IF %CHS%==1 GOTO EXPORT_TEMPLATES
 ECHO Build Templates...
 
 ECHO Making Windows Debug Build Template...
-scons platform=windows target=template_debug %PROFILE%
+scons platform=windows "accesskit_sdk_path=%XANSTOOLS_FOLDER%MODULES/accesskit-c-0.17.0" "mesa_libs=%XANSTOOLS_FOLDER%MODULES/d3d12" "angle_libs=%XANSTOOLS_FOLDER%MODULES/ANGLE" target=template_debug %PROFILE%
 
 ECHO Making Windows Release Build Template...
-scons platform=windows target=template_release %PROFILE%
+scons platform=windows "accesskit_sdk_path=%XANSTOOLS_FOLDER%MODULES/accesskit-c-0.17.0" "mesa_libs=%XANSTOOLS_FOLDER%MODULES/d3d12" "angle_libs=%XANSTOOLS_FOLDER%MODULES/ANGLE" target=template_release %PROFILE%
 
 :GLUE
 ECHO Glue...
@@ -125,7 +125,6 @@ CD bin
 
 CD..
 SET LOCAL_NUGET=%USERPROFILE%\LocalNuget
-PAUSE
 python ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows %DOUBLE% --no-deprecated --push-nupkgs-local "%LOCAL_NUGET%"
 
 ECHO.
