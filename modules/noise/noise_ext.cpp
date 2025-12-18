@@ -52,8 +52,36 @@ real_t NoiseExt::get_noise_3dv(Vector3 p_v) const {
 	return result;
 }
 
+Ref<Image> NoiseExt::get_image(int p_width, int p_height, bool p_invert, bool p_in_3d_space, bool p_normalize) const {
+	Ref<Image> result;
+	GDVIRTUAL_CALL(_get_image, p_width, p_height, p_invert, p_in_3d_space, p_normalize, result);
+	return result;
+}
+
+TypedArray<Image> NoiseExt::get_image_3d(int p_width, int p_height, int p_depth, bool p_invert, bool p_normalize) const {
+	TypedArray<Image> result;
+	GDVIRTUAL_CALL(_get_image_3d, p_width, p_height, p_depth, p_invert, p_normalize, result);
+	return result;
+}
+
+Ref<Image> NoiseExt::get_seamless_image(int p_width, int p_height, bool p_invert, bool p_in_3d_space, real_t p_blend_skirt, bool p_normalize) const {
+	Ref<Image> result;
+	GDVIRTUAL_CALL(_get_seamless_image, p_width, p_height, p_invert, p_in_3d_space, p_blend_skirt, p_normalize, result);
+	return result;
+}
+
+TypedArray<Image> NoiseExt::get_seamless_image_3d(int p_width, int p_height, int p_depth, bool p_invert, real_t p_blend_skirt, bool p_normalize) const {
+	TypedArray<Image> result;
+	GDVIRTUAL_CALL(_get_seamless_image_3d, p_width, p_height, p_depth, p_invert, p_blend_skirt, p_normalize, result);
+	return result;
+}
+
 void NoiseExt::_bind_methods() {
 	GDVIRTUAL_BIND(_get_noise_1d, "scalar");
 	GDVIRTUAL_BIND(_get_noise_2d, "vector");
 	GDVIRTUAL_BIND(_get_noise_3d, "vector");
+	GDVIRTUAL_BIND(_get_image, "width", "height", "invert", "in_3d_space", "normalize");
+	GDVIRTUAL_BIND(_get_image_3d, "width", "height", "depth", "invert", "normalize");
+	GDVIRTUAL_BIND(_get_seamless_image, "width", "height", "invert", "in_3d_space", "blend_skirt", "normalize");
+	GDVIRTUAL_BIND(_get_seamless_image_3d, "width", "height", "depth", "invert", "blend_skirt", "normalize");
 }
