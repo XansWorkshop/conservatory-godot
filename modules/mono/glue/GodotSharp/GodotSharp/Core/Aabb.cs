@@ -496,7 +496,7 @@ namespace Godot
 
             for (int i = 0; i < 8; i++)
             {
-                if (plane.DistanceTo(points[i]) > 0)
+                if (plane.SignedDistanceTo(points[i]) > 0)
                 {
                     over = true;
                 }

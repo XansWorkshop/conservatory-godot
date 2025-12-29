@@ -9,6 +9,7 @@ website = "https://xansworkshop.com/godot"
 d3d12 = "yes"
 fast_unsafe = "no"
 engine_update_check = "no"
+'''
 module_camera_enabled = "no"
 module_csg_enabled = "no"
 module_gridmap_enabled = "no"
@@ -16,3 +17,4 @@ module_jsonrpc_enabled = "no"
 module_mobile_vr_enabled = "no"
 module_msdfgen_enabled = "no"
 module_webxr_enabled = "no"
+'''

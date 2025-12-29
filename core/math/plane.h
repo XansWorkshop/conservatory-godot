@@ -51,6 +51,7 @@ struct [[nodiscard]] Plane {
 
 	_FORCE_INLINE_ bool is_point_over(const Vector3 &p_point) const; ///< Point is over plane
 	_FORCE_INLINE_ real_t distance_to(const Vector3 &p_point) const;
+	_FORCE_INLINE_ real_t signed_distance_to(const Vector3 &p_point) const; // Same as above, just for The Conservatory.
 	_FORCE_INLINE_ bool has_point(const Vector3 &p_point, real_t p_tolerance = CMP_EPSILON) const;
 
 	/* intersections */
@@ -95,6 +96,10 @@ bool Plane::is_point_over(const Vector3 &p_point) const {
 }
 
 real_t Plane::distance_to(const Vector3 &p_point) const {
+	return (normal.dot(p_point) - d);
+}
+
+real_t Plane::signed_distance_to(const Vector3 &p_point) const { // Same as above, just for The Conservatory.
 	return (normal.dot(p_point) - d);
 }
 

@@ -43,6 +43,8 @@
 			<param index="1" name="plane" type="Plane" />
 			<description>
 				Clips the polygon defined by the points in [param points] against the [param plane] and returns the points of the clipped polygon.
+				The provided polygon must be defined in order of its edges (that is, each consecutive vertex is considered to be directly linked to its predecessor, and the last vertex links back to the first). It must also be coplanar, but can be any ngon if this condition is satisfied.
+				If the aforementioned requirements are not met, the result of this method will be invalid and undefined.
 			</description>
 		</method>
 		<method name="compute_convex_mesh_points">

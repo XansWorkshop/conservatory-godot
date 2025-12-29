@@ -826,6 +826,8 @@ void Mesh::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("surface_get_material", "surf_idx"), &Mesh::surface_get_material);
 	ClassDB::bind_method(D_METHOD("create_placeholder"), &Mesh::create_placeholder);
 
+	ClassDB::bind_static_method("Mesh", D_METHOD("convex_decompose", "triangle_vertices", "settings"), &Mesh::convex_decompose_exposed);
+
 	BIND_ENUM_CONSTANT(PRIMITIVE_POINTS);
 	BIND_ENUM_CONSTANT(PRIMITIVE_LINES);
 	BIND_ENUM_CONSTANT(PRIMITIVE_LINE_STRIP);
@@ -951,6 +953,36 @@ Vector<Ref<Shape3D>> Mesh::convex_decompose(const Ref<MeshConvexDecompositionSet
 
 	return ret;
 }
+
+TypedArray<Array> Mesh::convex_decompose_exposed(const Vector<Vector3> &p_triangles, const Ref<MeshConvexDecompositionSettings> &p_settings) {
+	ERR_FAIL_NULL_V(convex_decomposition_function, TypedArray<Array>());
+	ERR_FAIL_COND_V(p_triangles.size() % 3 != 0, TypedArray<Array>());
+
+	int vertex_count = p_triangles.size();
+	int triangle_count = vertex_count / 3;
+	Vector<uint32_t> indices;
+	indices.resize(vertex_count);
+	for (int i = 0; i < vertex_count; ++i) {
+		indices.push_back(i);
+	}
+
+	Vector<Vector<Vector3>> decomposed = convex_decomposition_function((real_t *)p_triangles.ptr(), vertex_count, indices.ptr(), triangle_count, p_settings, nullptr);
+	int decomp_size = decomposed.size();
+	TypedArray<Array> ret;
+	ret.resize(decomp_size);
+	for (int i = 0; i < decomp_size; ++i) {
+		const Vector<Vector3> &list = decomposed.get(i);
+		const int size = list.size();
+		Array self;
+		self.resize(size);
+		for (int j = 0; j < size; ++j) {
+			self.push_back(list[j]);
+		}
+		ret.push_back(self);
+	}
+	return ret;
+}
+
 #endif // PHYSICS_3D_DISABLED
 
 int Mesh::get_builtin_bind_pose_count() const {

@@ -70,11 +70,19 @@
 		</constructor>
 	</constructors>
 	<methods>
-		<method name="distance_to" qualifiers="const">
+		<method name="distance_to" qualifiers="const" deprecated="The name of this method does not adequately describe what it does; prefer [method signed_distance_to].">
 			<return type="float" />
 			<param index="0" name="point" type="Vector3" />
 			<description>
 				Returns the shortest distance from the plane to the position [param point]. If the point is above the plane, the distance will be positive. If below, the distance will be negative.
+			</description>
+		</method>
+		<method name="signed_distance_to" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="point" type="Vector3" />
+			<description>
+				Returns the shortest distance from the plane to the position [param point]. If the point is above the plane, the distance will be positive. If below, the distance will be negative.
+				This is the same as [method distance_to] just with a better name to describe what it does.
 			</description>
 		</method>
 		<method name="get_center" qualifiers="const">

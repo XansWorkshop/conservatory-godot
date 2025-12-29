@@ -94,14 +94,27 @@ namespace Godot
         }
 
         /// <summary>
-        /// Returns the shortest distance from this plane to the position <paramref name="point"/>.
+        /// Returns the shortest distance from this plane to the position <paramref name="point"/>. If the point is
+        /// above the plane, the return value is greater than zero. Otherwise, it is less than or equal to zero when
+        /// below or intersecting respectively.
         /// </summary>
         /// <param name="point">The position to use for the calculation.</param>
         /// <returns>The shortest distance.</returns>
-        public readonly real_t DistanceTo(Vector3 point)
+        public readonly real_t SignedDistanceTo(Vector3 point)
         {
             return _normal.Dot(point) - _d;
         }
+
+        /// <summary>
+        /// Returns the shortest distance from this plane to the position <paramref name="point"/>. If the point is
+        /// above the plane, the return value is greater than zero. Otherwise, it is less than or equal to zero when
+        /// below or intersecting respectively.
+        /// </summary>
+        /// <param name="point">The position to use for the calculation.</param>
+        /// <returns>The shortest distance.</returns>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        [Obsolete("The preferred method is SignedDistanceTo, which is the same as this method but with a much better name for what this function does.")]
+        public readonly real_t DistanceTo(Vector3 point) => SignedDistanceTo(point);
 
         /// <summary>
         /// Returns the center of the plane, the point on the plane closest to the origin.
@@ -249,7 +262,7 @@ namespace Godot
         /// <returns>The projected point.</returns>
         public readonly Vector3 Project(Vector3 point)
         {
-            return point - (_normal * DistanceTo(point));
+            return point - (_normal * SignedDistanceTo(point));
         }
 
         // Constants
