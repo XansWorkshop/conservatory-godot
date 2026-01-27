@@ -139,6 +139,7 @@ public:
 	String get_name() const;
 
 	virtual void set_path(const String &p_path, bool p_take_over = false);
+	virtual void take_over_path_without_moving(const String &p_path);
 	String get_path() const;
 	virtual void set_path_cache(const String &p_path); // Set raw path without involving resource cache.
 	_FORCE_INLINE_ bool is_built_in() const { return path_cache.is_empty() || path_cache.contains("::") || path_cache.begins_with("local://"); }

@@ -151,6 +151,18 @@
 				Sets the [member resource_path] to [param path], potentially overriding an existing cache entry for this path. Further attempts to load an overridden resource by path will instead return this resource.
 			</description>
 		</method>
+		<method name="take_over_path_without_moving">
+			<return type="void" />
+			<param index="0" name="path" type="String" />
+			<description>
+				[admonition type="warning" collapsible="true" open="false"]
+				[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+				This is not available in the official build of Godot. Additionally, unlike most other methods like this, this method is restricted.
+				Even though it is public, mods can not use this API member.
+				[/admonition]
+				Functions like take_over_path, but [b]does not[/b] modify the [member resource_path]. As far as this instance is concerned, nothing has happened. This will not raise any signals. However, the target resource at the path (if one exists) is still replaced by this resource. Thus, this resource will now occupy more than one path simultaneously, intentionally leaking it.
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="resource_local_to_scene" type="bool" setter="set_local_to_scene" getter="is_local_to_scene" default="false">

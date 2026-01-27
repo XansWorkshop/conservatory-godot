@@ -106,6 +106,48 @@ void Resource::set_path(const String &p_path, bool p_take_over) {
 	_resource_path_changed();
 }
 
+void Resource::take_over_path_without_moving(const String& p_path) {
+	// For anyone who comes across this, this is majorly fucked, and is an outright violation of the entire resource system.
+	// It's dirty. It's broken. It spits in the face of the fundamentals. If you are learning to mod the engine, please for
+	// the love of all things ever, do NOT make methods like this. Just don't. Seriously.
+
+	// Anyway, the reason this exists is because of some mod trickery that I need to do. Mods can't include Conservatory
+	// C# code in their Godot project files since CSharpScript only loads from the project's own assembly, and not any assemblies
+	// it references. For this reason, even if the project references TheConservatory.dll, their editor can't see my custom
+	// node types.
+
+	// To bypass this, I originally created a resource "shim" that looks for specific .gdscript files referenced in mods. It was possible to
+	// call TakeOverPath() on the CSharpScript instance and have it take over the GDScript's path. This way, when any asset loaded, it would
+	// load the C# script instead of the GDScript placed there in the editor.
+
+	// This is great and all, except for one thing: Doing that to the CSharpScript disjoints it from its actual C# file, which
+	// majorly fucks up the entire C# script system and also causes any native assets that use the C# class to fail since the script
+	// evidently does not exist to the engine any more (* it's obvious why. Just annoying.)
+
+	// The really annoying part is that you might think the solution is to just duplicate the CSharpScript resource. But no, you can't do that!
+	// You see, the validity of the script is determined by whether or not it can be *FRESHLY* added to the script manager bridge. Since the
+	// script has already been assigned its .NET Type before, this validation fails and so the duplicate script, despite being identical,
+	// is considered broken. This causes a misleading error message reporting that the script file doesn't exist (it does exist, it's just the
+	// ordinary behavior in which this kind of invalid code shows up is when the Type mismatches the script and can't be found at all, rather
+	// than failing due to being registered twice).
+
+	// Frankly, the reason the TakeOverPath technique worked is actually because of that error above. So fixing it would just break the other thing.
+	// (It worked because the path doesn't matter once it has been registered to the bridge).
+
+	// So my genius 2 IQ solution to this all is:
+	MutexLock lock(ResourceCache::lock);
+	Ref<Resource> existing = ResourceCache::get_ref(p_path);
+	if (existing.is_valid()) {
+		existing->path_cache = String();
+		ResourceCache::resources.erase(p_path);
+	}
+	ResourceCache::resources[p_path] = this;
+
+	// Yep. Let's just duplicate this resource in the cache, creating an untrackable "ghost resource" reference that can't be removed once
+	// added. Even if the original resource is deleted, sike, no it's not, it still exists here. :)
+	// So yes, this purposely leaks a resource just so that it can have two different paths acting like one, singular, non-duplicate resource.
+}
+
 String Resource::get_path() const {
 	return path_cache;
 }
@@ -711,6 +753,7 @@ String Resource::get_id_for_path(const String &p_referrer_path) const {
 void Resource::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_path", "path"), &Resource::_set_path);
 	ClassDB::bind_method(D_METHOD("take_over_path", "path"), &Resource::_take_over_path);
+	ClassDB::bind_method(D_METHOD("take_over_path_without_moving", "path"), &Resource::take_over_path_without_moving);
 	ClassDB::bind_method(D_METHOD("get_path"), &Resource::get_path);
 	ClassDB::bind_method(D_METHOD("set_path_cache", "path"), &Resource::set_path_cache);
 	ClassDB::bind_method(D_METHOD("set_name", "name"), &Resource::set_name);

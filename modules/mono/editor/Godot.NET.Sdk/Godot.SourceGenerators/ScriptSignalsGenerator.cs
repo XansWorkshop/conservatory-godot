@@ -77,6 +77,7 @@ namespace Godot.SourceGenerators
 
             var source = new StringBuilder();
 
+            source.Append("#pragma warning disable CS0618\n"); // Added by Xan. This silences deprecation messages in user API.
             source.Append("using Godot;\n");
             source.Append("using Godot.NativeInterop;\n");
             source.Append("\n");
