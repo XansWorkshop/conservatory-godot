@@ -169,7 +169,7 @@ lower_gl_clamp(enum pipe_tex_wrap old_wrap, GLenum wrap, bool clamp_to_border)
 static inline void
 _mesa_lower_gl_clamp(struct gl_context *ctx, struct gl_sampler_object *samp)
 {
-   if (ctx->DriverFlags.NewSamplersWithClamp) {
+   if (!BITSET_IS_EMPTY(ctx->DriverFlags.NewSamplersWithClamp)) {
       struct pipe_sampler_state *s = &samp->Attrib.state;
       bool clamp_to_border = s->min_img_filter != PIPE_TEX_FILTER_NEAREST &&
                              s->mag_img_filter != PIPE_TEX_FILTER_NEAREST;
@@ -194,11 +194,17 @@ update_sampler_gl_clamp(struct gl_context *ctx, struct gl_sampler_object *samp, 
 {
    if (cur_state == new_state)
       return;
-   ctx->NewDriverState |= ctx->DriverFlags.NewSamplersWithClamp;
+   ST_SET_STATES(ctx->NewDriverState, ctx->DriverFlags.NewSamplersWithClamp);
+   uint8_t old_mask = samp->glclamp_mask;
    if (new_state)
       samp->glclamp_mask |= wrap;
    else
       samp->glclamp_mask &= ~wrap;
+
+   if (old_mask && !samp->glclamp_mask)
+      ctx->Texture.NumSamplersWithClamp--;
+   else if (samp->glclamp_mask && !old_mask)
+      ctx->Texture.NumSamplersWithClamp++;
 }
 #ifdef __cplusplus
 }

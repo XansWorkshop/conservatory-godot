@@ -323,7 +323,6 @@ EditorThemeManager::ThemeConfiguration EditorThemeManager::_create_theme_config(
 
 			// Please use alphabetical order if you're adding a new theme here.
 			// no fuck off *incinerates you*
-			// Anyway, editor_settings.cpp L580 is where you add new themes. It won't show up on ctrl+shift+f for some reason even if you have all files turned on.
 			if (config.preset == "Xan's Workshop") {
 				preset_accent_color = Color::from_rgba8(189, 88, 70);
 				preset_base_color = Color::from_rgba8(56, 51, 51);
@@ -365,7 +364,6 @@ EditorThemeManager::ThemeConfiguration EditorThemeManager::_create_theme_config(
 			} else if (config.preset == "Black (OLED)") {
 				preset_accent_color = Color(0.45, 0.75, 1.0);
 				preset_base_color = Color(0, 0, 0);
-				// The contrast rate value is irrelevant on a fully black theme.
 				preset_contrast = 0.0;
 				preset_draw_extra_borders = true;
 			} else if (config.preset == "Breeze Dark") {

@@ -45,7 +45,6 @@ extern "C" {
 
 #define ONE_SECOND_IN_NS INT64_C(1000000000)
 
-/* must be equal to PIPE_TIMEOUT_INFINITE */
 #define OS_TIMEOUT_INFINITE 0xffffffffffffffffull
 
 /*
@@ -75,6 +74,8 @@ os_localtime(const time_t *timer, struct tm *buf)
 #endif
 }
 
+void
+os_time_nanosleep_until(int64_t deadline);
 
 /*
  * Sleep.

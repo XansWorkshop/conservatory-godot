@@ -79,7 +79,6 @@ nir_cf_node_insert_end(struct exec_list *list, nir_cf_node *node)
    nir_cf_node_insert(nir_after_cf_list(list), node);
 }
 
-
 /** Control flow motion.
  *
  * These functions let you take a part of a control flow list (basically
@@ -171,6 +170,9 @@ nir_cf_node_remove(nir_cf_node *node)
    nir_cf_extract(&list, nir_before_cf_node(node), nir_after_cf_node(node));
    nir_cf_delete(&list);
 }
+
+/** removes instructions after a control flow node, also removing any phis immediately after it */
+void nir_remove_after_cf_node(nir_cf_node *node);
 
 /** inserts undef phi sources from predcessor into phis of the block */
 void nir_insert_phi_undef(nir_block *block, nir_block *pred);

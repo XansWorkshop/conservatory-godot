@@ -24,10 +24,10 @@
 #ifndef _NIR_WORKLIST_
 #define _NIR_WORKLIST_
 
-#include "nir.h"
 #include "util/set.h"
 #include "util/u_vector.h"
 #include "util/u_worklist.h"
+#include "nir_defines.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,29 +36,29 @@ extern "C" {
 typedef u_worklist nir_block_worklist;
 
 #define nir_block_worklist_init(w, num_blocks, mem_ctx) \
-        u_worklist_init(w, num_blocks, mem_ctx)
+   u_worklist_init(w, num_blocks, mem_ctx)
 
 #define nir_block_worklist_fini(w) u_worklist_fini(w)
 
 #define nir_block_worklist_is_empty(w) u_worklist_is_empty(w)
 
 #define nir_block_worklist_push_head(w, block) \
-        u_worklist_push_head(w, block, index)
+   u_worklist_push_head(w, block, index)
 
 #define nir_block_worklist_peek_head(w) \
-        u_worklist_peek_head(w, nir_block, index)
+   u_worklist_peek_head(w, nir_block, index)
 
 #define nir_block_worklist_pop_head(w) \
-        u_worklist_pop_head(w, nir_block, index)
+   u_worklist_pop_head(w, nir_block, index)
 
 #define nir_block_worklist_push_tail(w, block) \
-        u_worklist_push_tail(w, block, index)
+   u_worklist_push_tail(w, block, index)
 
 #define nir_block_worklist_peek_tail(w) \
-        u_worklist_peek_tail(w, nir_block, index)
+   u_worklist_peek_tail(w, nir_block, index)
 
 #define nir_block_worklist_pop_tail(w) \
-        u_worklist_pop_tail(w, nir_block, index)
+   u_worklist_pop_tail(w, nir_block, index)
 
 void nir_block_worklist_add_all(nir_block_worklist *w, nir_function_impl *impl);
 
@@ -76,20 +76,15 @@ void nir_block_worklist_add_all(nir_block_worklist *w, nir_function_impl *impl);
 
 typedef struct {
    struct u_vector instr_vec;
+   bool initialized;
 } nir_instr_worklist;
 
-static inline nir_instr_worklist *
-nir_instr_worklist_create() {
-   nir_instr_worklist *wl = malloc(sizeof(nir_instr_worklist));
-   if (!wl)
-      return NULL;
-
-   if (!u_vector_init_pow2(&wl->instr_vec, 8, sizeof(struct nir_instr *))) {
-      free(wl);
-      return NULL;
-   }
-
-   return wl;
+static inline bool
+nir_instr_worklist_init(nir_instr_worklist *wl)
+{
+   wl->initialized =
+      u_vector_init_pow2(&wl->instr_vec, 8, sizeof(struct nir_instr *)) != 0;
+   return wl->initialized;
 }
 
 static inline uint32_t
@@ -105,23 +100,22 @@ nir_instr_worklist_is_empty(nir_instr_worklist *wl)
 }
 
 static inline void
-nir_instr_worklist_destroy(nir_instr_worklist *wl)
+nir_instr_worklist_fini(nir_instr_worklist *wl)
 {
    u_vector_finish(&wl->instr_vec);
-   free(wl);
 }
 
 static inline void
 nir_instr_worklist_push_tail(nir_instr_worklist *wl, nir_instr *instr)
 {
-   struct nir_instr **vec_instr = u_vector_add(&wl->instr_vec);
+   nir_instr **vec_instr = (nir_instr **)u_vector_add(&wl->instr_vec);
    *vec_instr = instr;
 }
 
 static inline nir_instr *
 nir_instr_worklist_pop_head(nir_instr_worklist *wl)
 {
-   struct nir_instr **vec_instr = u_vector_remove(&wl->instr_vec);
+   nir_instr **vec_instr = (nir_instr **)u_vector_remove(&wl->instr_vec);
 
    if (vec_instr == NULL)
       return NULL;
@@ -133,7 +127,7 @@ void
 nir_instr_worklist_add_ssa_srcs(nir_instr_worklist *wl, nir_instr *instr);
 
 #define nir_foreach_instr_in_worklist(instr, wl) \
-   for (nir_instr *instr; (instr = nir_instr_worklist_pop_head(wl));)
+   for (nir_instr * instr; (instr = nir_instr_worklist_pop_head(wl));)
 
 #ifdef __cplusplus
 } /* extern "C" */

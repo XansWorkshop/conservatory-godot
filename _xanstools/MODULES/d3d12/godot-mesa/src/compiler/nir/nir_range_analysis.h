@@ -23,9 +23,10 @@
 #ifndef _NIR_RANGE_ANALYSIS_H_
 #define _NIR_RANGE_ANALYSIS_H_
 
-#include "nir.h"
+#include "nir_defines.h"
+#include "util/u_hash_table.h"
 
-enum PACKED ssa_ranges {
+enum ENUM_PACKED ssa_ranges {
    unknown = 0,
    lt_zero,
    le_zero,
@@ -57,7 +58,9 @@ extern struct ssa_result_range
 nir_analyze_range(struct hash_table *range_ht,
                   const nir_alu_instr *instr, unsigned src);
 
-uint64_t nir_ssa_def_bits_used(const nir_ssa_def *def);
+uint64_t nir_def_bits_used(const nir_def *def);
+
+unsigned nir_def_num_lsb_zero(struct hash_table *numlsb_ht, nir_scalar def);
 
 #ifdef __cplusplus
 }

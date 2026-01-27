@@ -774,6 +774,15 @@ private:
 	friend class Camera2D; // Needs _camera_2d_set
 	Camera2D *camera_2d = nullptr;
 	CONSERVATORY_VIRTUAL void _camera_2d_set(Camera2D *p_camera_2d);
+#if DEBUG_ENABLED
+	CameraOverride<Camera2D> camera_2d_override;
+
+public:
+	CONSERVATORY_VIRTUAL void enable_camera_2d_override(bool p_enable);
+	CONSERVATORY_VIRTUAL bool is_camera_2d_override_enabled() const;
+	CONSERVATORY_VIRTUAL Camera2D *get_overridden_camera_2d() const;
+	CONSERVATORY_VIRTUAL Camera2D *get_override_camera_2d() const;
+#endif // DEBUG_ENABLED
 
 private:
 #ifndef PHYSICS_2D_DISABLED

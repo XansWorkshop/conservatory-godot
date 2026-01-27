@@ -39,7 +39,7 @@
 #include "core/object/object.h"
 #include "scene/main/node.h"
 #include "scene/3d/node_3d.h"
-#include "servers/physics_server_3d.h"
+#include "servers/physics_3d/physics_server_3d.h"
 #include "scene/3d/physics/collision_object_3d.h"
 #include "scene/3d/physics/ray_cast_result.h"
 

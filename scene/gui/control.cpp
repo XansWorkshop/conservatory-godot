@@ -150,10 +150,6 @@ bool Control::_edit_use_rotation() const {
 
 void Control::_edit_set_pivot(const Point2 &p_pivot) {
 	Vector2 pivot_offset = get_pivot_offset();
-	const Vector2 size = get_size();
-	if (data.relative_pivot) {
-		pivot_offset *= size;
-	}
 	Vector2 delta_pivot = p_pivot - pivot_offset;
 	Vector2 move = Vector2((std::cos(data.rotation) - 1.0) * delta_pivot.x - std::sin(data.rotation) * delta_pivot.y, std::sin(data.rotation) * delta_pivot.x + (std::cos(data.rotation) - 1.0) * delta_pivot.y);
 	set_position(get_position() + move);
@@ -4058,9 +4054,6 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("find_prev_valid_focus"), &Control::find_prev_valid_focus);
 	ClassDB::bind_method(D_METHOD("find_next_valid_focus"), &Control::find_next_valid_focus);
 	ClassDB::bind_method(D_METHOD("find_valid_focus_neighbor", "side"), &Control::find_valid_focus_neighbor);
-
-	ClassDB::bind_method(D_METHOD("get_pivot_is_relative"), &Control::get_pivot_is_relative);
-	ClassDB::bind_method(D_METHOD("set_pivot_is_relative", "is_relative"), &Control::set_pivot_is_relative);
 
 	ClassDB::bind_method(D_METHOD("set_h_size_flags", "flags"), &Control::set_h_size_flags);
 	ClassDB::bind_method(D_METHOD("get_h_size_flags"), &Control::get_h_size_flags);

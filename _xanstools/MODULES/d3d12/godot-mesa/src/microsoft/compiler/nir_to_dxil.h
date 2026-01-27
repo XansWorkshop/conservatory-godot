@@ -81,8 +81,8 @@ struct nir_to_dxil_options {
    bool interpolate_at_vertex;
    bool lower_int16;
    bool disable_math_refactoring;
-   bool no_ubo0;
    bool last_ubo_is_not_arrayed;
+   bool advanced_texture_ops;
    unsigned provoking_vertex;
    unsigned num_kernel_globals;
    unsigned input_clip_size;
@@ -104,7 +104,13 @@ nir_to_dxil(struct nir_shader *s, const struct nir_to_dxil_options *opts,
             const struct dxil_logger *logger, struct blob *blob);
 
 const nir_shader_compiler_options*
-dxil_get_nir_compiler_options(void);
+dxil_get_base_nir_compiler_options(void);
+
+void
+dxil_get_nir_compiler_options(nir_shader_compiler_options *options,
+                              enum dxil_shader_model shader_model_max,
+                              unsigned supported_int_sizes,
+                              unsigned supported_float_sizes);
 
 #ifdef __cplusplus
 }

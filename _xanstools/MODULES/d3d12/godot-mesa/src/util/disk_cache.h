@@ -79,21 +79,6 @@ struct cache_item_metadata {
 
 struct disk_cache;
 
-static inline char *
-disk_cache_format_hex_id(char *buf, const uint8_t *hex_id, unsigned size)
-{
-   static const char hex_digits[] = "0123456789abcdef";
-   unsigned i;
-
-   for (i = 0; i < size; i += 2) {
-      buf[i] = hex_digits[hex_id[i >> 1] >> 4];
-      buf[i + 1] = hex_digits[hex_id[i >> 1] & 0x0f];
-   }
-   buf[i] = '\0';
-
-   return buf;
-}
-
 #ifdef HAVE_DLADDR
 static inline bool
 disk_cache_get_function_timestamp(void *ptr, uint32_t* timestamp)
@@ -179,6 +164,11 @@ disk_cache_get_function_identifier(void *ptr, struct mesa_sha1 *ctx)
 struct disk_cache *
 disk_cache_create(const char *gpu_name, const char *timestamp,
                   uint64_t driver_flags);
+
+struct disk_cache *
+disk_cache_create_custom(const char *gpu_name, const char *driver_id,
+                         uint64_t driver_flags, const char *cache_dir_name,
+                         uint32_t max_size);
 
 /**
  * Destroy a cache object, (freeing all associated resources).
@@ -285,6 +275,14 @@ disk_cache_set_callbacks(struct disk_cache *cache, disk_cache_put_cb put,
 static inline struct disk_cache *
 disk_cache_create(const char *gpu_name, const char *timestamp,
                   uint64_t driver_flags)
+{
+   return NULL;
+}
+
+static inline struct disk_cache *
+disk_cache_create_custom(const char *gpu_name, const char *driver_id,
+                         uint64_t driver_flags, const char *cache_dir_name,
+                         uint32_t max_size)
 {
    return NULL;
 }

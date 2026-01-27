@@ -87,6 +87,7 @@ public:
 		return ObjectDB::get_instance<Viewport>(last_parent);
 	}
 
+// Calls the method on the hijacked viewport (which is the last known parent that this domain was a part of), or on the base type (viewport).
 	#define CALL_ON_HIJACKED_OR_BASE(p_method, ...)   \
 		Viewport *hijacked = get_hijacked_viewport(); \
 		if (hijacked) {                               \
@@ -96,6 +97,7 @@ public:
 		}                                             \
 		((void)0)
 
+// Calls the method on the hijacked viewport (which is the last known parent that this domain was a part of), or on the base type (viewport).
 	#define CALL_ON_HIJACKED_OR_BASE_V(p_method, ...) \
 		Viewport *hijacked = get_hijacked_viewport(); \
 		if (hijacked) {                               \
@@ -135,8 +137,8 @@ public:
 	_FORCE_INLINE_ Control *_gui_get_drag_preview() override { CALL_ON_HIJACKED_OR_BASE_V(_gui_get_drag_preview); }
 	_FORCE_INLINE_ void _gui_remove_focus_for_window(Node *p_window) override { CALL_ON_HIJACKED_OR_BASE(_gui_remove_focus_for_window, p_window); }
 	_FORCE_INLINE_ void _gui_unfocus_control(Control *p_control) override { CALL_ON_HIJACKED_OR_BASE(_gui_unfocus_control, p_control); }
-	_FORCE_INLINE_ bool _gui_control_has_focus(const Control *p_control) override { CALL_ON_HIJACKED_OR_BASE_V(_gui_control_has_focus, p_control); }
-	_FORCE_INLINE_ void _gui_control_grab_focus(Control *p_control) override { CALL_ON_HIJACKED_OR_BASE(_gui_control_grab_focus, p_control); }
+	_FORCE_INLINE_ bool _gui_control_has_focus(const Control *p_control, bool p_ignore_hidden_focus = false) override { CALL_ON_HIJACKED_OR_BASE_V(_gui_control_has_focus, p_control, p_ignore_hidden_focus); }
+	_FORCE_INLINE_ void _gui_control_grab_focus(Control *p_control, bool p_hide_focus = false) override { CALL_ON_HIJACKED_OR_BASE(_gui_control_grab_focus, p_control, p_hide_focus); }
 	_FORCE_INLINE_ void _gui_grab_click_focus(Control *p_control) override { CALL_ON_HIJACKED_OR_BASE(_gui_grab_click_focus, p_control); }
 	_FORCE_INLINE_ void _post_gui_grab_click_focus() override { CALL_ON_HIJACKED_OR_BASE(_post_gui_grab_click_focus); }
 	_FORCE_INLINE_ void _gui_accept_event(Object *p_obj = nullptr) override { CALL_ON_HIJACKED_OR_BASE(_gui_accept_event, p_obj); }
@@ -155,7 +157,7 @@ public:
 	_FORCE_INLINE_ int _sub_window_find(Window *p_window) const override { CALL_ON_HIJACKED_OR_BASE_V(_sub_window_find, p_window); }
 	_FORCE_INLINE_ bool _sub_windows_forward_input(const Ref<InputEvent> &p_event) override { CALL_ON_HIJACKED_OR_BASE_V(_sub_windows_forward_input, p_event); }
 	_FORCE_INLINE_ SubWindowResize _sub_window_get_resize_margin(Window *p_subwindow, const Point2 &p_point) override { CALL_ON_HIJACKED_OR_BASE_V(_sub_window_get_resize_margin, p_subwindow, p_point); }
-	_FORCE_INLINE_ void _update_mouse_over() override { CALL_ON_HIJACKED_OR_BASE(_update_mouse_over); }
+	_FORCE_INLINE_ void _update_mouse_over(const Ref<InputEventMouse> &p_mm) override { CALL_ON_HIJACKED_OR_BASE(_update_mouse_over, p_mm); }
 	_FORCE_INLINE_ void _update_mouse_over(Vector2 p_pos) override { CALL_ON_HIJACKED_OR_BASE(_update_mouse_over, p_pos); }
 	_FORCE_INLINE_ void _mouse_leave_viewport() override { CALL_ON_HIJACKED_OR_BASE(_mouse_leave_viewport); }
 	_FORCE_INLINE_ bool _can_consume_input_events() const override { CALL_ON_HIJACKED_OR_BASE_V(_can_consume_input_events); }
@@ -177,10 +179,6 @@ public:
 	_FORCE_INLINE_ void update_canvas_items() override { CALL_ON_HIJACKED_OR_BASE(update_canvas_items); }
 	_FORCE_INLINE_ Rect2 get_visible_rect() const override { CALL_ON_HIJACKED_OR_BASE_V(get_visible_rect); }
 	_FORCE_INLINE_ RID get_viewport_rid() const override { CALL_ON_HIJACKED_OR_BASE_V(get_viewport_rid); }
-	_FORCE_INLINE_ void enable_canvas_transform_override(bool p_enable) override { CALL_ON_HIJACKED_OR_BASE(enable_canvas_transform_override, p_enable); }
-	_FORCE_INLINE_ bool is_canvas_transform_override_enabled() const override { CALL_ON_HIJACKED_OR_BASE_V(is_canvas_transform_override_enabled); }
-	_FORCE_INLINE_ void set_canvas_transform_override(const Transform2D &p_transform) override { CALL_ON_HIJACKED_OR_BASE(set_canvas_transform_override, p_transform); }
-	_FORCE_INLINE_ Transform2D get_canvas_transform_override() const override { CALL_ON_HIJACKED_OR_BASE_V(get_canvas_transform_override); }
 	_FORCE_INLINE_ void set_canvas_transform(const Transform2D &p_transform) override { CALL_ON_HIJACKED_OR_BASE(set_canvas_transform, p_transform); }
 	_FORCE_INLINE_ Transform2D get_canvas_transform() const override { CALL_ON_HIJACKED_OR_BASE_V(get_canvas_transform); }
 	_FORCE_INLINE_ void set_global_canvas_transform(const Transform2D &p_transform) override { CALL_ON_HIJACKED_OR_BASE(set_global_canvas_transform, p_transform); }
@@ -231,10 +229,10 @@ public:
 	_FORCE_INLINE_ Vector2 get_camera_coords(const Vector2 &p_viewport_coords) const override { CALL_ON_HIJACKED_OR_BASE_V(get_camera_coords, p_viewport_coords); }
 	_FORCE_INLINE_ Vector2 get_camera_rect_size() const override { CALL_ON_HIJACKED_OR_BASE_V(get_camera_rect_size); }
 	_FORCE_INLINE_ void push_text_input(const String &p_text) override { CALL_ON_HIJACKED_OR_BASE(push_text_input, p_text); }
-	_FORCE_INLINE_ void push_input(const Ref<InputEvent> &p_event, bool p_local_coords = false) override { CALL_ON_HIJACKED_OR_BASE(push_input, p_event, p_local_coords); }
+	_FORCE_INLINE_ void push_input(RequiredParam<InputEvent> rp_event, bool p_local_coords = false) override { CALL_ON_HIJACKED_OR_BASE(push_input, rp_event, p_local_coords); }
 #ifndef DISABLE_DEPRECATED
-	_FORCE_INLINE_ void push_unhandled_input(const Ref<InputEvent> &p_event, bool p_local_coords = false) override { CALL_ON_HIJACKED_OR_BASE(push_unhandled_input, p_event, p_local_coords); }
-#endif
+	_FORCE_INLINE_ void push_unhandled_input(RequiredParam<InputEvent> rp_event, bool p_local_coords = false) override { CALL_ON_HIJACKED_OR_BASE(push_unhandled_input, rp_event, p_local_coords); }
+#endif // DISABLE_DEPRECATED
 	_FORCE_INLINE_ void notify_mouse_entered() override { CALL_ON_HIJACKED_OR_BASE(notify_mouse_entered); }
 	_FORCE_INLINE_ void notify_mouse_exited() override { CALL_ON_HIJACKED_OR_BASE(notify_mouse_exited); }
 	_FORCE_INLINE_ void set_disable_input(bool p_disable) override { CALL_ON_HIJACKED_OR_BASE(set_disable_input, p_disable); }
@@ -321,6 +319,12 @@ public:
 	_FORCE_INLINE_ void _audio_listener_2d_set(AudioListener2D *p_audio_listener) override { CALL_ON_HIJACKED_OR_BASE(_audio_listener_2d_set, p_audio_listener); }
 	_FORCE_INLINE_ void _audio_listener_2d_remove(AudioListener2D *p_audio_listener) override { CALL_ON_HIJACKED_OR_BASE(_audio_listener_2d_remove, p_audio_listener); }
 	_FORCE_INLINE_ void _camera_2d_set(Camera2D *p_camera_2d) override { CALL_ON_HIJACKED_OR_BASE(_camera_2d_set, p_camera_2d); }
+#if DEBUG_ENABLED
+	_FORCE_INLINE_ void enable_camera_2d_override(bool p_enable) override { CALL_ON_HIJACKED_OR_BASE(enable_camera_2d_override, p_enable); }
+	_FORCE_INLINE_ bool is_camera_2d_override_enabled() const override { CALL_ON_HIJACKED_OR_BASE_V(is_camera_2d_override_enabled); }
+	_FORCE_INLINE_ Camera2D *get_overridden_camera_2d() const override { CALL_ON_HIJACKED_OR_BASE_V(get_overridden_camera_2d); }
+	_FORCE_INLINE_ Camera2D *get_override_camera_2d() const override { CALL_ON_HIJACKED_OR_BASE_V(get_override_camera_2d); }
+#endif // DEBUG_ENABLED
 	_FORCE_INLINE_ void _cleanup_mouseover_colliders(bool p_clean_all_frames, bool p_paused_only, uint64_t p_frame_reference = 0) override { CALL_ON_HIJACKED_OR_BASE(_cleanup_mouseover_colliders, p_clean_all_frames, p_paused_only, p_frame_reference); }
 	_FORCE_INLINE_ AudioListener2D *get_audio_listener_2d() const override { CALL_ON_HIJACKED_OR_BASE_V(get_audio_listener_2d); }
 	_FORCE_INLINE_ void set_as_audio_listener_2d(bool p_enable) override { CALL_ON_HIJACKED_OR_BASE(set_as_audio_listener_2d, p_enable); }
@@ -346,20 +350,19 @@ public:
 	_FORCE_INLINE_ void set_as_audio_listener_3d(bool p_enable) override { CALL_ON_HIJACKED_OR_BASE(set_as_audio_listener_3d, p_enable); }
 	_FORCE_INLINE_ bool is_audio_listener_3d() const override { CALL_ON_HIJACKED_OR_BASE_V(is_audio_listener_3d); }
 	_FORCE_INLINE_ Camera3D *get_camera_3d() const override { CALL_ON_HIJACKED_OR_BASE_V(get_camera_3d); }
+#if DEBUG_ENABLED
 	_FORCE_INLINE_ void enable_camera_3d_override(bool p_enable) override { CALL_ON_HIJACKED_OR_BASE(enable_camera_3d_override, p_enable); }
 	_FORCE_INLINE_ bool is_camera_3d_override_enabled() const override { CALL_ON_HIJACKED_OR_BASE_V(is_camera_3d_override_enabled); }
-	_FORCE_INLINE_ void set_camera_3d_override_transform(const Transform3D &p_transform) override { CALL_ON_HIJACKED_OR_BASE(set_camera_3d_override_transform, p_transform); }
-	_FORCE_INLINE_ Transform3D get_camera_3d_override_transform() const override { CALL_ON_HIJACKED_OR_BASE_V(get_camera_3d_override_transform); }
-	_FORCE_INLINE_ void set_camera_3d_override_perspective(real_t p_fovy_degrees, real_t p_z_near, real_t p_z_far) override { CALL_ON_HIJACKED_OR_BASE(set_camera_3d_override_perspective, p_fovy_degrees, p_z_near, p_z_far); }
-	_FORCE_INLINE_ void set_camera_3d_override_orthogonal(real_t p_size, real_t p_z_near, real_t p_z_far) override { CALL_ON_HIJACKED_OR_BASE(set_camera_3d_override_orthogonal, p_size, p_z_near, p_z_far); }
-	_FORCE_INLINE_ HashMap<StringName, real_t> get_camera_3d_override_properties() const override { CALL_ON_HIJACKED_OR_BASE_V(get_camera_3d_override_properties); }
-	_FORCE_INLINE_ Vector3 camera_3d_override_project_ray_normal(const Point2 &p_pos) const override { CALL_ON_HIJACKED_OR_BASE_V(camera_3d_override_project_ray_normal, p_pos); }
-	_FORCE_INLINE_ Vector3 camera_3d_override_project_ray_origin(const Point2 &p_pos) const override { CALL_ON_HIJACKED_OR_BASE_V(camera_3d_override_project_ray_origin, p_pos); }
-	_FORCE_INLINE_ Vector3 camera_3d_override_project_local_ray_normal(const Point2 &p_pos) const override { CALL_ON_HIJACKED_OR_BASE_V(camera_3d_override_project_local_ray_normal, p_pos); }
+	_FORCE_INLINE_ Camera3D *get_overridden_camera_3d() const override { CALL_ON_HIJACKED_OR_BASE_V(get_overridden_camera_3d); }
+	_FORCE_INLINE_ Camera3D *get_override_camera_3d() const override { CALL_ON_HIJACKED_OR_BASE_V(get_override_camera_3d); }
+#endif
 	_FORCE_INLINE_ void set_disable_3d(bool p_disable) override { CALL_ON_HIJACKED_OR_BASE(set_disable_3d, p_disable); }
 	_FORCE_INLINE_ bool is_3d_disabled() const override { CALL_ON_HIJACKED_OR_BASE_V(is_3d_disabled); }
+
+#ifndef XR_DISABLED
 	_FORCE_INLINE_ void set_use_xr(bool p_use_xr) override { CALL_ON_HIJACKED_OR_BASE(set_use_xr, p_use_xr); }
 	_FORCE_INLINE_ bool is_using_xr() override { CALL_ON_HIJACKED_OR_BASE_V(is_using_xr); }
+#endif
 
 	void set_world_2d(const Ref<World2D> &p_world_2d) override;
 	Ref<World2D> get_world_2d() const override;

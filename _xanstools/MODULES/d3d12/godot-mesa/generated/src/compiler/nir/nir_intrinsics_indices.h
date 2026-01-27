@@ -555,6 +555,30 @@ nir_intrinsic_has_align_offset(const nir_intrinsic_instr *instr)
 
 
 static inline unsigned
+nir_intrinsic_offset_shift(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_OFFSET_SHIFT] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_OFFSET_SHIFT] - 1];
+}
+
+static inline void
+nir_intrinsic_set_offset_shift(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_OFFSET_SHIFT] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_OFFSET_SHIFT] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_offset_shift(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_OFFSET_SHIFT] > 0;
+}
+
+
+static inline unsigned
 nir_intrinsic_desc_type(const nir_intrinsic_instr *instr)
 {
    const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
@@ -626,6 +650,78 @@ nir_intrinsic_has_dest_type(const nir_intrinsic_instr *instr)
 }
 
 
+static inline enum glsl_base_type
+nir_intrinsic_src_base_type(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_SRC_BASE_TYPE] > 0);
+   return (enum glsl_base_type)instr->const_index[info->index_map[NIR_INTRINSIC_SRC_BASE_TYPE] - 1];
+}
+
+static inline void
+nir_intrinsic_set_src_base_type(nir_intrinsic_instr *instr, enum glsl_base_type val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_SRC_BASE_TYPE] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_SRC_BASE_TYPE] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_src_base_type(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_SRC_BASE_TYPE] > 0;
+}
+
+
+static inline enum glsl_base_type
+nir_intrinsic_src_base_type2(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_SRC_BASE_TYPE2] > 0);
+   return (enum glsl_base_type)instr->const_index[info->index_map[NIR_INTRINSIC_SRC_BASE_TYPE2] - 1];
+}
+
+static inline void
+nir_intrinsic_set_src_base_type2(nir_intrinsic_instr *instr, enum glsl_base_type val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_SRC_BASE_TYPE2] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_SRC_BASE_TYPE2] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_src_base_type2(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_SRC_BASE_TYPE2] > 0;
+}
+
+
+static inline enum glsl_base_type
+nir_intrinsic_dest_base_type(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_DEST_BASE_TYPE] > 0);
+   return (enum glsl_base_type)instr->const_index[info->index_map[NIR_INTRINSIC_DEST_BASE_TYPE] - 1];
+}
+
+static inline void
+nir_intrinsic_set_dest_base_type(nir_intrinsic_instr *instr, enum glsl_base_type val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_DEST_BASE_TYPE] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_DEST_BASE_TYPE] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_dest_base_type(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_DEST_BASE_TYPE] > 0;
+}
+
+
 static inline unsigned
 nir_intrinsic_swizzle_mask(const nir_intrinsic_instr *instr)
 {
@@ -647,6 +743,30 @@ nir_intrinsic_has_swizzle_mask(const nir_intrinsic_instr *instr)
 {
    const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
    return info->index_map[NIR_INTRINSIC_SWIZZLE_MASK] > 0;
+}
+
+
+static inline bool
+nir_intrinsic_fetch_inactive(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_FETCH_INACTIVE] > 0);
+   return (bool)instr->const_index[info->index_map[NIR_INTRINSIC_FETCH_INACTIVE] - 1];
+}
+
+static inline void
+nir_intrinsic_set_fetch_inactive(nir_intrinsic_instr *instr, bool val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_FETCH_INACTIVE] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_FETCH_INACTIVE] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_fetch_inactive(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_FETCH_INACTIVE] > 0;
 }
 
 
@@ -866,16 +986,16 @@ nir_intrinsic_has_memory_modes(const nir_intrinsic_instr *instr)
 }
 
 
-static inline nir_scope
+static inline mesa_scope
 nir_intrinsic_memory_scope(const nir_intrinsic_instr *instr)
 {
    const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
    assert(info->index_map[NIR_INTRINSIC_MEMORY_SCOPE] > 0);
-   return (nir_scope)instr->const_index[info->index_map[NIR_INTRINSIC_MEMORY_SCOPE] - 1];
+   return (mesa_scope)instr->const_index[info->index_map[NIR_INTRINSIC_MEMORY_SCOPE] - 1];
 }
 
 static inline void
-nir_intrinsic_set_memory_scope(nir_intrinsic_instr *instr, nir_scope val)
+nir_intrinsic_set_memory_scope(nir_intrinsic_instr *instr, mesa_scope val)
 {
    const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
    assert(info->index_map[NIR_INTRINSIC_MEMORY_SCOPE] > 0);
@@ -890,16 +1010,16 @@ nir_intrinsic_has_memory_scope(const nir_intrinsic_instr *instr)
 }
 
 
-static inline nir_scope
+static inline mesa_scope
 nir_intrinsic_execution_scope(const nir_intrinsic_instr *instr)
 {
    const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
    assert(info->index_map[NIR_INTRINSIC_EXECUTION_SCOPE] > 0);
-   return (nir_scope)instr->const_index[info->index_map[NIR_INTRINSIC_EXECUTION_SCOPE] - 1];
+   return (mesa_scope)instr->const_index[info->index_map[NIR_INTRINSIC_EXECUTION_SCOPE] - 1];
 }
 
 static inline void
-nir_intrinsic_set_execution_scope(nir_intrinsic_instr *instr, nir_scope val)
+nir_intrinsic_set_execution_scope(nir_intrinsic_instr *instr, mesa_scope val)
 {
    const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
    assert(info->index_map[NIR_INTRINSIC_EXECUTION_SCOPE] > 0);
@@ -930,7 +1050,6 @@ nir_intrinsic_set_io_semantics(nir_intrinsic_instr *instr, struct nir_io_semanti
 {
    const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
    assert(info->index_map[NIR_INTRINSIC_IO_SEMANTICS] > 0);
-   val._pad = 0; /* clear padding bits */
    STATIC_ASSERT(sizeof(instr->const_index[0]) == sizeof(val));
    memcpy(&instr->const_index[info->index_map[NIR_INTRINSIC_IO_SEMANTICS] - 1], &val, sizeof(val));
 }
@@ -1020,6 +1139,30 @@ nir_intrinsic_has_ray_query_value(const nir_intrinsic_instr *instr)
 {
    const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
    return info->index_map[NIR_INTRINSIC_RAY_QUERY_VALUE] > 0;
+}
+
+
+static inline bool
+nir_intrinsic_committed(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_COMMITTED] > 0);
+   return (bool)instr->const_index[info->index_map[NIR_INTRINSIC_COMMITTED] - 1];
+}
+
+static inline void
+nir_intrinsic_set_committed(nir_intrinsic_instr *instr, bool val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_COMMITTED] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_COMMITTED] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_committed(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_COMMITTED] > 0;
 }
 
 
@@ -1164,6 +1307,738 @@ nir_intrinsic_has_flags(const nir_intrinsic_instr *instr)
 {
    const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
    return info->index_map[NIR_INTRINSIC_FLAGS] > 0;
+}
+
+
+static inline nir_atomic_op
+nir_intrinsic_atomic_op(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_ATOMIC_OP] > 0);
+   return (nir_atomic_op)instr->const_index[info->index_map[NIR_INTRINSIC_ATOMIC_OP] - 1];
+}
+
+static inline void
+nir_intrinsic_set_atomic_op(nir_intrinsic_instr *instr, nir_atomic_op val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_ATOMIC_OP] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_ATOMIC_OP] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_atomic_op(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_ATOMIC_OP] > 0;
+}
+
+
+static inline unsigned
+nir_intrinsic_resource_block_intel(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_RESOURCE_BLOCK_INTEL] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_RESOURCE_BLOCK_INTEL] - 1];
+}
+
+static inline void
+nir_intrinsic_set_resource_block_intel(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_RESOURCE_BLOCK_INTEL] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_RESOURCE_BLOCK_INTEL] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_resource_block_intel(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_RESOURCE_BLOCK_INTEL] > 0;
+}
+
+
+static inline nir_resource_data_intel
+nir_intrinsic_resource_access_intel(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_RESOURCE_ACCESS_INTEL] > 0);
+   return (nir_resource_data_intel)instr->const_index[info->index_map[NIR_INTRINSIC_RESOURCE_ACCESS_INTEL] - 1];
+}
+
+static inline void
+nir_intrinsic_set_resource_access_intel(nir_intrinsic_instr *instr, nir_resource_data_intel val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_RESOURCE_ACCESS_INTEL] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_RESOURCE_ACCESS_INTEL] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_resource_access_intel(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_RESOURCE_ACCESS_INTEL] > 0;
+}
+
+
+static inline unsigned
+nir_intrinsic_num_components(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_NUM_COMPONENTS] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_NUM_COMPONENTS] - 1];
+}
+
+static inline void
+nir_intrinsic_set_num_components(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_NUM_COMPONENTS] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_NUM_COMPONENTS] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_num_components(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_NUM_COMPONENTS] > 0;
+}
+
+
+static inline unsigned
+nir_intrinsic_num_array_elems(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_NUM_ARRAY_ELEMS] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_NUM_ARRAY_ELEMS] - 1];
+}
+
+static inline void
+nir_intrinsic_set_num_array_elems(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_NUM_ARRAY_ELEMS] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_NUM_ARRAY_ELEMS] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_num_array_elems(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_NUM_ARRAY_ELEMS] > 0;
+}
+
+
+static inline unsigned
+nir_intrinsic_bit_size(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_BIT_SIZE] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_BIT_SIZE] - 1];
+}
+
+static inline void
+nir_intrinsic_set_bit_size(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_BIT_SIZE] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_BIT_SIZE] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_bit_size(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_BIT_SIZE] > 0;
+}
+
+
+static inline bool
+nir_intrinsic_divergent(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_DIVERGENT] > 0);
+   return (bool)instr->const_index[info->index_map[NIR_INTRINSIC_DIVERGENT] - 1];
+}
+
+static inline void
+nir_intrinsic_set_divergent(nir_intrinsic_instr *instr, bool val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_DIVERGENT] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_DIVERGENT] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_divergent(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_DIVERGENT] > 0;
+}
+
+
+static inline bool
+nir_intrinsic_legacy_fabs(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_LEGACY_FABS] > 0);
+   return (bool)instr->const_index[info->index_map[NIR_INTRINSIC_LEGACY_FABS] - 1];
+}
+
+static inline void
+nir_intrinsic_set_legacy_fabs(nir_intrinsic_instr *instr, bool val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_LEGACY_FABS] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_LEGACY_FABS] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_legacy_fabs(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_LEGACY_FABS] > 0;
+}
+
+
+static inline bool
+nir_intrinsic_legacy_fneg(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_LEGACY_FNEG] > 0);
+   return (bool)instr->const_index[info->index_map[NIR_INTRINSIC_LEGACY_FNEG] - 1];
+}
+
+static inline void
+nir_intrinsic_set_legacy_fneg(nir_intrinsic_instr *instr, bool val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_LEGACY_FNEG] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_LEGACY_FNEG] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_legacy_fneg(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_LEGACY_FNEG] > 0;
+}
+
+
+static inline bool
+nir_intrinsic_legacy_fsat(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_LEGACY_FSAT] > 0);
+   return (bool)instr->const_index[info->index_map[NIR_INTRINSIC_LEGACY_FSAT] - 1];
+}
+
+static inline void
+nir_intrinsic_set_legacy_fsat(nir_intrinsic_instr *instr, bool val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_LEGACY_FSAT] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_LEGACY_FSAT] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_legacy_fsat(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_LEGACY_FSAT] > 0;
+}
+
+
+static inline struct glsl_cmat_description
+nir_intrinsic_cmat_desc(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_CMAT_DESC] > 0);
+   struct glsl_cmat_description res;
+   STATIC_ASSERT(sizeof(instr->const_index[0]) == sizeof(res));
+   memcpy(&res, &instr->const_index[info->index_map[NIR_INTRINSIC_CMAT_DESC] - 1], sizeof(res));
+   return res;
+}
+
+static inline void
+nir_intrinsic_set_cmat_desc(nir_intrinsic_instr *instr, struct glsl_cmat_description val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_CMAT_DESC] > 0);
+   STATIC_ASSERT(sizeof(instr->const_index[0]) == sizeof(val));
+   memcpy(&instr->const_index[info->index_map[NIR_INTRINSIC_CMAT_DESC] - 1], &val, sizeof(val));
+}
+
+static inline bool
+nir_intrinsic_has_cmat_desc(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_CMAT_DESC] > 0;
+}
+
+
+static inline enum glsl_matrix_layout
+nir_intrinsic_matrix_layout(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_MATRIX_LAYOUT] > 0);
+   return (enum glsl_matrix_layout)instr->const_index[info->index_map[NIR_INTRINSIC_MATRIX_LAYOUT] - 1];
+}
+
+static inline void
+nir_intrinsic_set_matrix_layout(nir_intrinsic_instr *instr, enum glsl_matrix_layout val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_MATRIX_LAYOUT] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_MATRIX_LAYOUT] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_matrix_layout(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_MATRIX_LAYOUT] > 0;
+}
+
+
+static inline nir_cmat_signed
+nir_intrinsic_cmat_signed_mask(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_CMAT_SIGNED_MASK] > 0);
+   return (nir_cmat_signed)instr->const_index[info->index_map[NIR_INTRINSIC_CMAT_SIGNED_MASK] - 1];
+}
+
+static inline void
+nir_intrinsic_set_cmat_signed_mask(nir_intrinsic_instr *instr, nir_cmat_signed val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_CMAT_SIGNED_MASK] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_CMAT_SIGNED_MASK] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_cmat_signed_mask(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_CMAT_SIGNED_MASK] > 0;
+}
+
+
+static inline nir_op
+nir_intrinsic_alu_op(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_ALU_OP] > 0);
+   return (nir_op)instr->const_index[info->index_map[NIR_INTRINSIC_ALU_OP] - 1];
+}
+
+static inline void
+nir_intrinsic_set_alu_op(nir_intrinsic_instr *instr, nir_op val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_ALU_OP] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_ALU_OP] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_alu_op(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_ALU_OP] > 0;
+}
+
+
+static inline unsigned
+nir_intrinsic_neg_lo_amd(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_NEG_LO_AMD] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_NEG_LO_AMD] - 1];
+}
+
+static inline void
+nir_intrinsic_set_neg_lo_amd(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_NEG_LO_AMD] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_NEG_LO_AMD] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_neg_lo_amd(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_NEG_LO_AMD] > 0;
+}
+
+
+static inline unsigned
+nir_intrinsic_neg_hi_amd(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_NEG_HI_AMD] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_NEG_HI_AMD] - 1];
+}
+
+static inline void
+nir_intrinsic_set_neg_hi_amd(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_NEG_HI_AMD] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_NEG_HI_AMD] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_neg_hi_amd(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_NEG_HI_AMD] > 0;
+}
+
+
+static inline unsigned
+nir_intrinsic_systolic_depth(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_SYSTOLIC_DEPTH] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_SYSTOLIC_DEPTH] - 1];
+}
+
+static inline void
+nir_intrinsic_set_systolic_depth(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_SYSTOLIC_DEPTH] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_SYSTOLIC_DEPTH] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_systolic_depth(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_SYSTOLIC_DEPTH] > 0;
+}
+
+
+static inline unsigned
+nir_intrinsic_repeat_count(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_REPEAT_COUNT] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_REPEAT_COUNT] - 1];
+}
+
+static inline void
+nir_intrinsic_set_repeat_count(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_REPEAT_COUNT] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_REPEAT_COUNT] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_repeat_count(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_REPEAT_COUNT] > 0;
+}
+
+
+static inline struct glsl_cmat_description
+nir_intrinsic_dst_cmat_desc(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_DST_CMAT_DESC] > 0);
+   struct glsl_cmat_description res;
+   STATIC_ASSERT(sizeof(instr->const_index[0]) == sizeof(res));
+   memcpy(&res, &instr->const_index[info->index_map[NIR_INTRINSIC_DST_CMAT_DESC] - 1], sizeof(res));
+   return res;
+}
+
+static inline void
+nir_intrinsic_set_dst_cmat_desc(nir_intrinsic_instr *instr, struct glsl_cmat_description val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_DST_CMAT_DESC] > 0);
+   STATIC_ASSERT(sizeof(instr->const_index[0]) == sizeof(val));
+   memcpy(&instr->const_index[info->index_map[NIR_INTRINSIC_DST_CMAT_DESC] - 1], &val, sizeof(val));
+}
+
+static inline bool
+nir_intrinsic_has_dst_cmat_desc(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_DST_CMAT_DESC] > 0;
+}
+
+
+static inline struct glsl_cmat_description
+nir_intrinsic_src_cmat_desc(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_SRC_CMAT_DESC] > 0);
+   struct glsl_cmat_description res;
+   STATIC_ASSERT(sizeof(instr->const_index[0]) == sizeof(res));
+   memcpy(&res, &instr->const_index[info->index_map[NIR_INTRINSIC_SRC_CMAT_DESC] - 1], sizeof(res));
+   return res;
+}
+
+static inline void
+nir_intrinsic_set_src_cmat_desc(nir_intrinsic_instr *instr, struct glsl_cmat_description val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_SRC_CMAT_DESC] > 0);
+   STATIC_ASSERT(sizeof(instr->const_index[0]) == sizeof(val));
+   memcpy(&instr->const_index[info->index_map[NIR_INTRINSIC_SRC_CMAT_DESC] - 1], &val, sizeof(val));
+}
+
+static inline bool
+nir_intrinsic_has_src_cmat_desc(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_SRC_CMAT_DESC] > 0;
+}
+
+
+static inline bool
+nir_intrinsic_explicit_coord(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_EXPLICIT_COORD] > 0);
+   return (bool)instr->const_index[info->index_map[NIR_INTRINSIC_EXPLICIT_COORD] - 1];
+}
+
+static inline void
+nir_intrinsic_set_explicit_coord(nir_intrinsic_instr *instr, bool val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_EXPLICIT_COORD] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_EXPLICIT_COORD] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_explicit_coord(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_EXPLICIT_COORD] > 0;
+}
+
+
+static inline unsigned
+nir_intrinsic_fmt_idx(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_FMT_IDX] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_FMT_IDX] - 1];
+}
+
+static inline void
+nir_intrinsic_set_fmt_idx(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_FMT_IDX] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_FMT_IDX] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_fmt_idx(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_FMT_IDX] > 0;
+}
+
+
+static inline unsigned
+nir_intrinsic_num_matrices(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_NUM_MATRICES] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_NUM_MATRICES] - 1];
+}
+
+static inline void
+nir_intrinsic_set_num_matrices(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_NUM_MATRICES] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_NUM_MATRICES] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_num_matrices(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_NUM_MATRICES] > 0;
+}
+
+
+static inline nir_preamble_class
+nir_intrinsic_preamble_class(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_PREAMBLE_CLASS] > 0);
+   return (nir_preamble_class)instr->const_index[info->index_map[NIR_INTRINSIC_PREAMBLE_CLASS] - 1];
+}
+
+static inline void
+nir_intrinsic_set_preamble_class(nir_intrinsic_instr *instr, nir_preamble_class val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_PREAMBLE_CLASS] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_PREAMBLE_CLASS] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_preamble_class(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_PREAMBLE_CLASS] > 0;
+}
+
+
+static inline uint16_t
+nir_intrinsic_smp_flags_pco(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_SMP_FLAGS_PCO] > 0);
+   return (uint16_t)instr->const_index[info->index_map[NIR_INTRINSIC_SMP_FLAGS_PCO] - 1];
+}
+
+static inline void
+nir_intrinsic_set_smp_flags_pco(nir_intrinsic_instr *instr, uint16_t val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_SMP_FLAGS_PCO] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_SMP_FLAGS_PCO] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_smp_flags_pco(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_SMP_FLAGS_PCO] > 0;
+}
+
+
+static inline unsigned
+nir_intrinsic_mutex_id_pco(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_MUTEX_ID_PCO] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_MUTEX_ID_PCO] - 1];
+}
+
+static inline void
+nir_intrinsic_set_mutex_id_pco(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_MUTEX_ID_PCO] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_MUTEX_ID_PCO] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_mutex_id_pco(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_MUTEX_ID_PCO] > 0;
+}
+
+
+static inline unsigned
+nir_intrinsic_mutex_op_pco(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_MUTEX_OP_PCO] > 0);
+   return (unsigned)instr->const_index[info->index_map[NIR_INTRINSIC_MUTEX_OP_PCO] - 1];
+}
+
+static inline void
+nir_intrinsic_set_mutex_op_pco(nir_intrinsic_instr *instr, unsigned val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_MUTEX_OP_PCO] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_MUTEX_OP_PCO] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_mutex_op_pco(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_MUTEX_OP_PCO] > 0;
+}
+
+
+static inline bool
+nir_intrinsic_freep(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_FREEP] > 0);
+   return (bool)instr->const_index[info->index_map[NIR_INTRINSIC_FREEP] - 1];
+}
+
+static inline void
+nir_intrinsic_set_freep(nir_intrinsic_instr *instr, bool val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_FREEP] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_FREEP] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_freep(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_FREEP] > 0;
+}
+
+
+static inline bool
+nir_intrinsic_scale(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_SCALE] > 0);
+   return (bool)instr->const_index[info->index_map[NIR_INTRINSIC_SCALE] - 1];
+}
+
+static inline void
+nir_intrinsic_set_scale(nir_intrinsic_instr *instr, bool val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_SCALE] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_SCALE] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_scale(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_SCALE] > 0;
+}
+
+
+static inline bool
+nir_intrinsic_roundzero(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_ROUNDZERO] > 0);
+   return (bool)instr->const_index[info->index_map[NIR_INTRINSIC_ROUNDZERO] - 1];
+}
+
+static inline void
+nir_intrinsic_set_roundzero(nir_intrinsic_instr *instr, bool val)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   assert(info->index_map[NIR_INTRINSIC_ROUNDZERO] > 0);
+   instr->const_index[info->index_map[NIR_INTRINSIC_ROUNDZERO] - 1] = val;
+}
+
+static inline bool
+nir_intrinsic_has_roundzero(const nir_intrinsic_instr *instr)
+{
+   const nir_intrinsic_info *info = &nir_intrinsic_infos[instr->intrinsic];
+   return info->index_map[NIR_INTRINSIC_ROUNDZERO] > 0;
 }
 
 #endif /* _NIR_INTRINSICS_INDICES_ */

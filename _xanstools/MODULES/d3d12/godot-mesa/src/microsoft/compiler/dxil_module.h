@@ -41,7 +41,7 @@ extern "C" {
 #include "util/list.h"
 
 
-#define DXIL_SHADER_MAX_IO_ROWS 80
+#define DXIL_SHADER_MAX_IO_ROWS 128
 
 enum dxil_shader_kind {
    DXIL_PIXEL_SHADER = 0,
@@ -134,7 +134,7 @@ enum dxil_opt_flags {
 };
 
 struct dxil_features {
-   unsigned doubles : 1,
+   uint64_t doubles : 1,
             cs_4x_raw_sb : 1,
             uavs_at_every_stage : 1,
             use_64uavs : 1,
@@ -164,7 +164,9 @@ struct dxil_features {
             unnamed : 1,
             atomic_int64_heap_resource : 1,
             advanced_texture_ops : 1,
-            writable_msaa : 1;
+            writable_msaa : 1,
+            sample_cmp_bias_gradient : 1,
+            extended_command_info : 1;
 };
 
 struct dxil_shader_info {
@@ -218,7 +220,9 @@ struct dxil_module {
     * should be allocated dynamically based on on the maximum
     * driver_location across all input vars.
     */
-   unsigned input_mappings[DXIL_SHADER_MAX_IO_ROWS * 4];
+   uint8_t input_mappings[DXIL_SHADER_MAX_IO_ROWS * 4];
+   uint8_t output_mappings[DXIL_SHADER_MAX_IO_ROWS * 4];
+   uint8_t patch_mappings[DXIL_SHADER_MAX_IO_ROWS * 4];
 
    struct dxil_psv_signature_element psv_inputs[DXIL_SHADER_MAX_IO_ROWS];
    struct dxil_psv_signature_element psv_outputs[DXIL_SHADER_MAX_IO_ROWS];
@@ -226,6 +230,23 @@ struct dxil_module {
 
    struct _mesa_string_buffer *sem_string_table;
    struct dxil_psv_sem_index_table sem_index_table;
+
+   /* These tables are a bitmask per input, with one bit per output
+    * to indicate whether or not that input contributes to the output.
+    * Each input's bitmask size is rounded up to a uint32 (DWORD),
+    * so a bitbask for one output component is the same as for 8 output vec4s.
+    * Sizes are in number of uint32s.
+    * Meaning of each array entry depends on shader stage.
+    * GS: [i] = output stream index
+    * HS: [0] = control point outputs, [1] = patch constant outputs
+    * DS: [0] = control point inputs, [1] = patch constant inputs (only for io table)
+    * PS/VS: only 0 is used. */
+   uint32_t *serialized_dependency_table;
+   uint32_t *viewid_dependency_table[4];
+   uint32_t *io_dependency_table[4];
+   uint32_t dependency_table_dwords_per_input[4];
+   uint32_t io_dependency_table_size[4];
+   uint32_t serialized_dependency_table_size;
 
    struct {
       unsigned abbrev_width;
@@ -311,7 +332,8 @@ dxil_module_get_split_double_ret_type(struct dxil_module *mod);
 
 const struct dxil_type *
 dxil_module_get_res_type(struct dxil_module *m, enum dxil_resource_kind kind,
-                         enum dxil_component_type comp_type, bool readwrite);
+                         enum dxil_component_type comp_type, unsigned num_comps,
+                         bool readwrite);
 
 const struct dxil_type *
 dxil_module_get_resret_type(struct dxil_module *m, enum overload_type overload);
@@ -397,6 +419,14 @@ dxil_module_get_double_const(struct dxil_module *m, double value);
 const struct dxil_value *
 dxil_module_get_array_const(struct dxil_module *m, const struct dxil_type *type,
                             const struct dxil_value **values);
+
+const struct dxil_value *
+dxil_module_get_vector_const(struct dxil_module *m, const struct dxil_type *type,
+                             const struct dxil_value **values);
+
+const struct dxil_value *
+dxil_module_get_struct_const(struct dxil_module *m, const struct dxil_type *type,
+                             const struct dxil_value **values);
 
 const struct dxil_value *
 dxil_module_get_undef(struct dxil_module *m, const struct dxil_type *type);
@@ -520,7 +550,6 @@ dxil_emit_ret_void(struct dxil_module *m);
 
 const struct dxil_value *
 dxil_emit_alloca(struct dxil_module *m, const struct dxil_type *alloc_type,
-                 const struct dxil_type *size_type,
                  const struct dxil_value *size,
                  unsigned int align);
 
