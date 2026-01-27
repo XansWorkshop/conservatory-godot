@@ -32,6 +32,7 @@
 
 #include "scene/main/node.h"
 #include "scene/resources/texture.h"
+#include "servers/display/display_server.h"
 
 #ifndef _3D_DISABLED
 class Camera3D;
@@ -255,9 +256,6 @@ private:
 	RID current_canvas;
 	RID subwindow_canvas;
 
-	bool override_canvas_transform = false;
-
-	Transform2D canvas_transform_override;
 	Transform2D canvas_transform;
 	Transform2D global_canvas_transform;
 	Transform2D stretch_transform;
@@ -270,11 +268,8 @@ private:
 	RID contact_3d_debug_multimesh;
 	RID contact_3d_debug_instance;
 
-	Rect2 last_vp_rect;
-
 	bool transparent_bg = false;
 	bool use_hdr_2d = false;
-	bool gen_mipmaps = false;
 
 	bool snap_controls_to_pixels = true;
 	bool snap_2d_transforms_to_pixel = false;
@@ -338,6 +333,9 @@ private:
 
 	CONSERVATORY_VIRTUAL void _update_viewport_path();
 
+	bool _can_hide_focus_state();
+	void _on_settings_changed();
+
 	SDFOversize sdf_oversize = SDF_OVERSIZE_120_PERCENT;
 	SDFScale sdf_scale = SDF_SCALE_50_PERCENT;
 
@@ -382,8 +380,9 @@ private:
 		Control *mouse_click_grabber = nullptr;
 		BitField<MouseButtonMask> mouse_focus_mask = MouseButtonMask::NONE;
 		Control *key_focus = nullptr;
-		Control *mouse_over = nullptr;
-		LocalVector<Control *> mouse_over_hierarchy;
+		bool hide_focus = false;
+		ObjectID mouse_over;
+		LocalVector<ObjectID> mouse_over_hierarchy;
 		bool sending_mouse_enter_exit_notifications = false;
 		Window *subwindow_over = nullptr; // mouse_over and subwindow_over are mutually exclusive. At all times at least one of them is nullptr.
 		Window *windowmanager_window_over = nullptr; // Only used in root Viewport.
@@ -411,6 +410,7 @@ private:
 		bool drag_successful = false;
 		Control *target_control = nullptr; // Control that the mouse is over in the innermost nested Viewport. Only used in root-Viewport and SubViewports, that are not children of a SubViewportContainer.
 		bool embed_subwindows_hint = false;
+		int drag_threshold = 10;
 
 		Window *subwindow_focused = nullptr;
 		Window *currently_dragged_subwindow = nullptr;
@@ -469,8 +469,8 @@ private:
 
 	CONSERVATORY_VIRTUAL void _gui_remove_focus_for_window(Node *p_window);
 	CONSERVATORY_VIRTUAL void _gui_unfocus_control(Control *p_control);
-	CONSERVATORY_VIRTUAL bool _gui_control_has_focus(const Control *p_control);
-	CONSERVATORY_VIRTUAL void _gui_control_grab_focus(Control *p_control);
+	CONSERVATORY_VIRTUAL bool _gui_control_has_focus(const Control *p_control, bool p_ignore_hidden_focus = false);
+	CONSERVATORY_VIRTUAL void _gui_control_grab_focus(Control *p_control, bool p_hide_focus = false);
 	CONSERVATORY_VIRTUAL void _gui_grab_click_focus(Control *p_control);
 	CONSERVATORY_VIRTUAL void _post_gui_grab_click_focus();
 	CONSERVATORY_VIRTUAL void _gui_accept_event(Object *p_obj = nullptr);
@@ -498,7 +498,7 @@ private:
 	CONSERVATORY_VIRTUAL bool _sub_windows_forward_input(const Ref<InputEvent> &p_event);
 	CONSERVATORY_VIRTUAL SubWindowResize _sub_window_get_resize_margin(Window *p_subwindow, const Point2 &p_point);
 
-	CONSERVATORY_VIRTUAL void _update_mouse_over();
+	CONSERVATORY_VIRTUAL void _update_mouse_over(const Ref<InputEventMouse> &p_mm);
 	virtual void _update_mouse_over(Vector2 p_pos);
 	virtual void _mouse_leave_viewport();
 
@@ -542,12 +542,6 @@ public:
 	CONSERVATORY_VIRTUAL void set_world_2d(const Ref<World2D> &p_world_2d);
 	CONSERVATORY_VIRTUAL Ref<World2D> get_world_2d() const;
 	CONSERVATORY_VIRTUAL Ref<World2D> find_world_2d() const;
-
-	CONSERVATORY_VIRTUAL void enable_canvas_transform_override(bool p_enable);
-	CONSERVATORY_VIRTUAL bool is_canvas_transform_override_enabled() const;
-
-	CONSERVATORY_VIRTUAL void set_canvas_transform_override(const Transform2D &p_transform);
-	CONSERVATORY_VIRTUAL Transform2D get_canvas_transform_override() const;
 
 	CONSERVATORY_VIRTUAL void set_canvas_transform(const Transform2D &p_transform);
 	CONSERVATORY_VIRTUAL Transform2D get_canvas_transform() const;
@@ -624,10 +618,11 @@ public:
 	CONSERVATORY_VIRTUAL Vector2 get_camera_coords(const Vector2 &p_viewport_coords) const;
 	CONSERVATORY_VIRTUAL Vector2 get_camera_rect_size() const;
 
+	void _push_text_input(const String &p_text, bool p_emit_text_changed_signal = false);
 	CONSERVATORY_VIRTUAL void push_text_input(const String &p_text);
-	CONSERVATORY_VIRTUAL void push_input(const Ref<InputEvent> &p_event, bool p_local_coords = false);
+	CONSERVATORY_VIRTUAL void push_input(RequiredParam<InputEvent> rp_event, bool p_local_coords = false);
 #ifndef DISABLE_DEPRECATED
-	CONSERVATORY_VIRTUAL void push_unhandled_input(const Ref<InputEvent> &p_event, bool p_local_coords = false);
+	CONSERVATORY_VIRTUAL void push_unhandled_input(RequiredParam<InputEvent> rp_event, bool p_local_coords = false);
 #endif // DISABLE_DEPRECATED
 	CONSERVATORY_VIRTUAL void notify_mouse_entered();
 	CONSERVATORY_VIRTUAL void notify_mouse_exited();
@@ -724,6 +719,9 @@ public:
 	CONSERVATORY_VIRTUAL void subwindow_set_popup_safe_rect(Window *p_window, const Rect2i &p_rect);
 	CONSERVATORY_VIRTUAL Rect2i subwindow_get_popup_safe_rect(Window *p_window) const;
 
+	CONSERVATORY_VIRTUAL void set_drag_threshold(int p_threshold);
+	CONSERVATORY_VIRTUAL int get_drag_threshold() const;
+
 	CONSERVATORY_VIRTUAL Viewport *get_parent_viewport() const;
 	CONSERVATORY_VIRTUAL Window *get_base_window();
 
@@ -748,6 +746,23 @@ public:
 	virtual bool is_sub_viewport() const { return false; }
 
 private:
+#if DEBUG_ENABLED
+	template <class T>
+	class CameraOverride {
+	private:
+		bool enabled = false;
+		ObjectID overridden_camera_id;
+
+	public:
+		bool is_enabled() const;
+		void enable(Viewport *p_viewport, const T *p_current_camera);
+		void disable(T *p_current_camera);
+
+		void set_overridden_camera(const T *p_camera);
+		T *get_overridden_camera() const;
+	};
+#endif // DEBUG_ENABLED
+
 	// 2D audio, camera, and physics. (don't put World2D here because World2D is needed for Control nodes).
 	friend class AudioListener2D; // Needs _audio_listener_2d_set and _audio_listener_2d_remove
 	AudioListener2D *audio_listener_2d = nullptr;
@@ -760,6 +775,7 @@ private:
 	Camera2D *camera_2d = nullptr;
 	CONSERVATORY_VIRTUAL void _camera_2d_set(Camera2D *p_camera_2d);
 
+private:
 #ifndef PHYSICS_2D_DISABLED
 	// Collider to frame
 	HashMap<ObjectID, uint64_t> physics_2d_mouseover;
@@ -780,7 +796,9 @@ public:
 #ifndef _3D_DISABLED
 private:
 	// 3D audio, camera, physics, and world.
+#ifndef XR_DISABLED
 	bool use_xr = false;
+#endif // XR_DISABLED
 	friend class AudioListener3D;
 	AudioListener3D *audio_listener_3d = nullptr;
 	HashSet<AudioListener3D *> audio_listener_3d_set;
@@ -797,26 +815,11 @@ private:
 	CONSERVATORY_VIRTUAL void _collision_object_3d_input_event(CollisionObject3D *p_object, Camera3D *p_camera, const Ref<InputEvent> &p_input_event, const Vector3 &p_pos, const Vector3 &p_normal, int p_shape);
 #endif // PHYSICS_3D_DISABLED
 
-	struct Camera3DOverrideData {
-		Transform3D transform;
-		enum Projection {
-			PROJECTION_PERSPECTIVE,
-			PROJECTION_ORTHOGONAL
-		};
-		Projection projection = Projection::PROJECTION_PERSPECTIVE;
-		real_t fov = 0.0;
-		real_t size = 0.0;
-		real_t z_near = 0.0;
-		real_t z_far = 0.0;
-		RID rid;
-
-		operator bool() const {
-			return rid != RID();
-		}
-	} camera_3d_override;
-
 	friend class Camera3D;
 	Camera3D *camera_3d = nullptr;
+#if DEBUG_ENABLED
+	CameraOverride<Camera3D> camera_3d_override;
+#endif // DEBUG_ENABLED
 	HashSet<Camera3D *> camera_3d_set;
 	CONSERVATORY_VIRTUAL void _camera_3d_transform_changed_notify();
 	CONSERVATORY_VIRTUAL void _camera_3d_set(Camera3D *p_camera);
@@ -836,19 +839,13 @@ public:
 	CONSERVATORY_VIRTUAL bool is_audio_listener_3d() const;
 
 	CONSERVATORY_VIRTUAL Camera3D *get_camera_3d() const;
+
+#if DEBUG_ENABLED
 	CONSERVATORY_VIRTUAL void enable_camera_3d_override(bool p_enable);
 	CONSERVATORY_VIRTUAL bool is_camera_3d_override_enabled() const;
-
-	CONSERVATORY_VIRTUAL void set_camera_3d_override_transform(const Transform3D &p_transform);
-	CONSERVATORY_VIRTUAL Transform3D get_camera_3d_override_transform() const;
-
-	CONSERVATORY_VIRTUAL void set_camera_3d_override_perspective(real_t p_fovy_degrees, real_t p_z_near, real_t p_z_far);
-	CONSERVATORY_VIRTUAL void set_camera_3d_override_orthogonal(real_t p_size, real_t p_z_near, real_t p_z_far);
-	CONSERVATORY_VIRTUAL HashMap<StringName, real_t> get_camera_3d_override_properties() const;
-
-	CONSERVATORY_VIRTUAL Vector3 camera_3d_override_project_ray_normal(const Point2 &p_pos) const;
-	CONSERVATORY_VIRTUAL Vector3 camera_3d_override_project_ray_origin(const Point2 &p_pos) const;
-	CONSERVATORY_VIRTUAL Vector3 camera_3d_override_project_local_ray_normal(const Point2 &p_pos) const;
+	CONSERVATORY_VIRTUAL Camera3D *get_overridden_camera_3d() const;
+	CONSERVATORY_VIRTUAL Camera3D *get_override_camera_3d() const;
+#endif // DEBUG_ENABLED
 
 	CONSERVATORY_VIRTUAL void set_disable_3d(bool p_disable);
 	CONSERVATORY_VIRTUAL bool is_3d_disabled() const;
@@ -859,8 +856,10 @@ public:
 	CONSERVATORY_VIRTUAL void set_use_own_world_3d(bool p_use_own_world_3d);
 	CONSERVATORY_VIRTUAL bool is_using_own_world_3d() const;
 
+#ifndef XR_DISABLED
 	CONSERVATORY_VIRTUAL void set_use_xr(bool p_use_xr);
 	CONSERVATORY_VIRTUAL bool is_using_xr();
+#endif // XR_DISABLED
 #endif // _3D_DISABLED
 
 	Viewport();
