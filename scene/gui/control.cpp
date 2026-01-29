@@ -1877,18 +1877,29 @@ real_t Control::get_stretch_ratio() const {
 
 // Input events.
 
-void Control::_call_gui_input(const Ref<InputEvent> &p_event) {
+void Control::_call_gui_input(Viewport* p_from, const Ref<InputEvent> &p_event) {
 	if (p_event->get_device() != InputEvent::DEVICE_ID_INTERNAL) {
 		emit_signal(SceneStringName(gui_input), p_event); // Signal should be first, so it's possible to override an event (and then accept it).
 	}
-	if (!is_inside_tree() || get_viewport()->is_input_handled()) {
+	if (p_from != nullptr && p_from != get_viewport()) {
+		String err = "An unexpected mismatch occurred in _call_gui_input. The calling viewport was not equal to the node's current viewport? Node: ";
+		if (is_inside_tree()) {
+			err += (String)get_path();
+		} else {
+			err += get_name();
+		}
+		ERR_FAIL_MSG(err);
+	}
+	// Added by Xan: The Conservatory sometimes crashes with a really confusing access violation here due to the viewport being missing even though it's in the tree?
+	// This is a shit fix, because I'm just patching the symptom rather than the cause.
+
+	if (!is_inside_tree() || p_from->is_input_handled()) {
 		return; // Input was handled, abort.
 	}
-
 	if (p_event->get_device() != InputEvent::DEVICE_ID_INTERNAL) {
 		GDVIRTUAL_CALL(_gui_input, p_event);
 	}
-	if (!is_inside_tree() || get_viewport()->is_input_handled()) {
+	if (!is_inside_tree() || p_from->is_input_handled()) {
 		return; // Input was handled, abort.
 	}
 	gui_input(p_event);

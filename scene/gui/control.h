@@ -339,7 +339,7 @@ private:
 
 	// Input events.
 
-	void _call_gui_input(const Ref<InputEvent> &p_event);
+	void _call_gui_input(Viewport *p_from, const Ref<InputEvent> &p_event);
 
 	// Mouse Filter.
 
