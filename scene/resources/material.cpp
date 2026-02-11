@@ -501,7 +501,7 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 			}
 		}
 
-#define NEW_PROPERTY_GROUP(display, prefix) (PropertyInfo(Variant::Type::NIL, display, PROPERTY_HINT_NONE, prefix##"/", PROPERTY_USAGE_GROUP, StringName()))
+#define NEW_PROPERTY_GROUP(display, prefix) (PropertyInfo(Variant::Type::NIL, display, PROPERTY_HINT_NONE, prefix "/", PROPERTY_USAGE_GROUP, StringName()))
 
 		// NOTE: Use base_shader here because we want the features/variants from the actual main shader.
 		// Features and variants can't be used to permit or deny other features and variants.
