@@ -30,26 +30,34 @@ namespace Godot {
 
 
         /// <inheritdoc cref="SimulationDomain.SetIsClientPtr(long)"/>
-        public static unsafe void SetIsClientPtr(bool* isClient)
-        {
+        //[ConservatoryMkdocsSecurityDeny(Capability.CallingAndDelegation)]
+        public static unsafe void SetIsClientPtr(bool* isClient) {
             SetIsClientPtr((nint)isClient);
         }
 
+        // MAGIC BEHAVIOR: Custom docs generator looks for "Ptr" ending to disable calling and delegation.
+
     }
 
-	partial class ConservatoryDebugBridge {
+    partial class ConservatoryDebugBridge {
 
-		/// <inheritdoc cref="ConservatoryDebugBridge.SetPtrs(long, long)"/>
-		public static unsafe void SetPtrs(bool* breakOnError, delegate*<bool> isDebuggerAttached) {
+        /// <inheritdoc cref="ConservatoryDebugBridge.SetPtrs(long, long)"/>
+        //[ConservatoryMkdocsSecurityDeny(Capability.CallingAndDelegation)]
+        public static unsafe void SetPtrs(byte* breakOnError, delegate* unmanaged<byte> isDebuggerAttached) {
 			SetPtrs((nint)breakOnError, (nint)isDebuggerAttached);
-		}
+        }
 
-		/// <summary>
-		/// A customized implementation of <see cref="GodotObject.Dispose(bool)"/> which prevents a crash caused by how the engine handles
-		/// the <see cref="ConservatoryDebugBridge"/> type internally.
-		/// </summary>
-		/// <param name="disposing"></param>
-		protected override void Dispose(bool disposing) {
+        // MAGIC BEHAVIOR: Custom docs generator looks for "Ptrs" ending to disable calling and delegation.
+        public static unsafe void InterceptGodotLoggingUsingPtr(delegate* unmanaged<ulong, byte*, int, byte*, int, byte*, int, byte*, int, int, byte, byte, void> callback) {
+            InterceptGodotLoggingUsingPtr((nint)callback);
+        }
+
+        /// <summary>
+        /// A customized implementation of <see cref="GodotObject.Dispose(bool)"/> which prevents a crash caused by how the engine handles
+        /// the <see cref="ConservatoryDebugBridge"/> type internally.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing) {
             GD.PushError("Why did you create an instance of this class? This and more at 10 PM Pacific in Unsolved Mysteries, only on CBS...");
             GD.PushError("If you are reading this, congratulations! Please enjoy your complimentary access violation in the CLR garbage collection routine once the next GC cycle occurs. In the mean time, why don't you consider what you did to get here. :)");
 			base.Dispose(disposing);
@@ -123,7 +131,23 @@ namespace Godot {
     /// Primarily intended for internal Godot code, this attribute will be used by the custom documentation generator to hide a member even if user preferences wish to show it.
     /// </summary>
     [AttributeUsage(AttributeTargets.All & ~AttributeTargets.Parameter & ~AttributeTargets.GenericParameter, AllowMultiple = false)]
-    public sealed class ConservatoryMkdocsHideAttribute : Attribute { }
+    internal sealed class ConservatoryMkdocsHideAttribute : Attribute { }
+
+#pragma warning disable // i forgor (xmldoc doesn't like the manual use of T:)
+    /// <summary>
+    /// The same as <see cref="T:Star3D.Security.SecurityDenyAttribute"/> but usable in Godot source code.
+    /// </summary>
+#pragma warning restore
+    [AttributeUsage(AttributeTargets.All & ~AttributeTargets.Parameter & ~AttributeTargets.GenericParameter, AllowMultiple = false)]
+    internal sealed class ConservatoryMkdocsSecurityDenyAttribute : Attribute {
+
+        internal Capability Capabilities { get; }
+
+        internal ConservatoryMkdocsSecurityDenyAttribute(Capability capabilities) {
+            Capabilities = capabilities;
+        }
+
+    }
 
     #endregion
 
@@ -132,4 +156,29 @@ namespace Godot {
 		public static readonly StringName BBCODE_NAME = "bbcode";
 
 	}
+    [Flags]
+    internal enum Capability : byte {
+
+        None                = 0,
+
+        CallingAndDelegation           = 1 << 0,
+
+        Reading             = 1 << 1,
+
+        Writing             = 1 << 2,
+
+        Adding              = 1 << 3,
+
+        Removing            = 1 << 4,
+
+        Patching            = 1 << 5,
+
+        ReadWrite           = Reading | Writing,
+
+        AddRemove           = Adding | Removing,
+
+        All                 = 0xFF
+
+
+    }
 }
