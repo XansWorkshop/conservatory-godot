@@ -111,7 +111,7 @@ _FORCE_INLINE_ bool tc_break_on_err();
  */
 #define GENERATE_TRAP() __builtin_trap()
 #if defined(TC_ALLOW_BREAK_ON_ERROR)
-#error The allow_break_on_error scons argument is available for MSVC only. If you are using mingw, this is not recommended for debug builds (Visual Studio can't read its debug symbols, and it takes significantly longer to build)
+#error The allow_break_on_error scons argument is available for MSVC only. If you are using mingw, this is not recommended for debug builds (Visual Studio can not read its debug symbols, and it takes significantly longer to build)
 #endif
 #endif
 
