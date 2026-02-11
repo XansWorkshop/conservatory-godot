@@ -1,7 +1,10 @@
 @ECHO OFF
 
+CALL "VSDEV.BAT"
+CLS
+
 SET ACCESSKIT_NAME=accesskit-c-0.18.0
-:: d3d12 python script 
+:: https://docs.godotengine.org/en/stable/engine_details/development/compiling/compiling_for_windows.html#installing-direct3d-12-requirements
 :: https://github.com/godotengine/godot-accesskit-c-static/releases
 :: https://github.com/godotengine/godot-angle-static/releases
 
@@ -99,7 +102,7 @@ ECHO.
 SET CHS=%ERRORLEVEL%
 
 @ECHO ON
-scons platform=windows "accesskit_sdk_path=%XANSTOOLS_FOLDER%MODULES/%ACCESSKIT_NAME%" "mesa_libs=%XANSTOOLS_FOLDER%MODULES/d3d12" "angle_libs=%XANSTOOLS_FOLDER%MODULES/ANGLE" %PROFILE%
+scons platform=windows arch=x86_64 "accesskit_sdk_path=%XANSTOOLS_FOLDER%MODULES/%ACCESSKIT_NAME%" %PROFILE%
 @ECHO OFF
 
 if %ERRORLEVEL%==0 GOTO CARRYON
@@ -116,10 +119,10 @@ IF %CHS%==1 GOTO EXPORT_TEMPLATES
 ECHO Build Templates...
 
 ECHO Making Windows Debug Build Template...
-scons platform=windows "accesskit_sdk_path=%XANSTOOLS_FOLDER%MODULES/%ACCESSKIT_NAME%" "mesa_libs=%XANSTOOLS_FOLDER%MODULES/d3d12" "angle_libs=%XANSTOOLS_FOLDER%MODULES/ANGLE" target=template_debug %PROFILE%
+scons platform=windows arch=x86_64 "accesskit_sdk_path=%XANSTOOLS_FOLDER%MODULES/%ACCESSKIT_NAME%" target=template_debug %PROFILE%
 
 ECHO Making Windows Release Build Template...
-scons platform=windows "accesskit_sdk_path=%XANSTOOLS_FOLDER%MODULES/%ACCESSKIT_NAME%" "mesa_libs=%XANSTOOLS_FOLDER%MODULES/d3d12" "angle_libs=%XANSTOOLS_FOLDER%MODULES/ANGLE" target=template_release %PROFILE%
+scons platform=windows arch=x86_64 "accesskit_sdk_path=%XANSTOOLS_FOLDER%MODULES/%ACCESSKIT_NAME%" target=template_release %PROFILE%
 
 :GLUE
 ECHO Glue...

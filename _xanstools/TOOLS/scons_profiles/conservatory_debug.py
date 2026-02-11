@@ -6,9 +6,10 @@ deprecated = "no"
 allow_break_on_error = "yes" # Custom parameter! See SConstruct in project root.
 allow_release_memory_tracking = "yes" # Custom parameter! See SConstruct in project root. (Does nothing in debug, it's always on)
 website = "https://xansworkshop.com/godot"
-d3d12 = "no"
+d3d12 = "yes"
 fast_unsafe = "yes"
 engine_update_check = "no"
+use_mingw = "no"
 '''
 module_camera_enabled = "no"
 module_csg_enabled = "no"

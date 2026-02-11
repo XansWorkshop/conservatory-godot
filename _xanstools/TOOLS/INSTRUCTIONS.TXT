@@ -1,7 +1,18 @@
 The external libraries needed are in here, for the most part, but there is some additional work to do. This will be updated as time goes on.
 
 TO BUILD:
-1. Run `/misc/scripts/install_d3d12_sdk_windows.py`
+PRELIMINARY:
+1. Run `/misc/scripts/install_d3d12_sdk_windows.py` (this is both d3d12 stuff and agile stuff)
+2. Download https://github.com/godotengine/godot-accesskit-c-static/releases and put it into the MODULES folder
+3. Make sure the contents of BUILD_ENGINE.BAT refer to the correct AccessKit version.
+
+THEN:
+1. Start BUILD_ENGINE.BAT, then...
+2. The chosen options are #2 (Debug) and #5 (Release, Memory Tracked). The latter is the same as a stock release build, but the memory allocator stats are enabled to keep track of the amount of engine-allocated memory.
+    2a. If you choose a double precision build, modify the game's C# project to include the same macro: REAL_T_IS_DOUBLE. The Conservatory handles this automagically.
+    2b. ^ This is not recommended, as a lot of the hardware acceleration uses 128 bit vectors, aka m128, which most platforms support. m256 is rarer.
+3. Choose MSVC for debugging and fast iteration of engine builds. Choose MINGW for release.
+    3a. mingw's debug symbols aren't recognized by Visual Studio; it is not recommended for debug builds.
 
 NOTES:
 1. Glue exports to `%CURRENTUSER%/LocalNuget` i.e. `C:\Users\Xan\LocalNuget`. You need to add this as a package source to Visual Studio or whatever your IDE is.
