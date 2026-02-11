@@ -1503,7 +1503,7 @@ Error ShaderPreprocessor::preprocess(const String &p_code, const String &p_filen
 		*p_features = state->features;
 
 		if (r_completion_defines) {
-			for (String feature : state->features) {
+			for (const String &feature : state->features) {
 				ScriptLanguage::CodeCompletionOption option(feature, ScriptLanguage::CODE_COMPLETION_KIND_CONSTANT);
 				r_completion_defines->push_back(option);
 			}
@@ -1513,8 +1513,8 @@ Error ShaderPreprocessor::preprocess(const String &p_code, const String &p_filen
 		*p_variants = state->variants;
 
 		if (r_completion_defines) {
-			for (const KeyValue<String, List<String>> variant_group : state->variants) {
-				for (const String keyword : variant_group.value) {
+			for (const KeyValue<String, List<String>> &variant_group : state->variants) {
+				for (const String &keyword : variant_group.value) {
 					ScriptLanguage::CodeCompletionOption option(keyword, ScriptLanguage::CODE_COMPLETION_KIND_CONSTANT);
 					r_completion_defines->push_back(option);
 				}
