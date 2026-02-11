@@ -308,6 +308,7 @@ void ScrollContainer::_update_scrollbar_position() {
 }
 
 void ScrollContainer::_gui_focus_changed(Control *p_control) {
+	ERR_FAIL_NULL(p_control);
 	if (follow_focus && is_ancestor_of(p_control)) {
 		ensure_control_visible(p_control);
 	}
@@ -320,6 +321,7 @@ void ScrollContainer::_gui_focus_changed(Control *p_control) {
 }
 
 void ScrollContainer::ensure_control_visible(Control *p_control) {
+	ERR_FAIL_NULL(p_control);
 	ERR_FAIL_COND_MSG(!is_ancestor_of(p_control), "Must be an ancestor of the control.");
 
 	// Just eliminate the rotation of this ScrollContainer.
