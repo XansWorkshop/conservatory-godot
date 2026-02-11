@@ -2796,6 +2796,7 @@ void Viewport::_gui_control_grab_focus(Control *p_control, bool p_hide_focus) {
 			gui.hide_focus = p_hide_focus;
 		}
 		emit_signal(SNAME("gui_focus_changed"), p_control);
+		emit_signal(SNAME("gui_focus_changed_nullable"), p_control);
 		p_control->notification(Control::NOTIFICATION_FOCUS_ENTER);
 		p_control->queue_redraw();
 	}
@@ -3811,7 +3812,7 @@ void Viewport::gui_release_focus() {
 	if (gui.key_focus) {
 		Control *f = gui.key_focus;
 		gui.key_focus = nullptr;
-		emit_signal(SNAME("gui_focus_transferred"), f, Variant());
+		emit_signal(SNAME("gui_focus_changed_nullable"), Variant());
 		f->notification(Control::NOTIFICATION_FOCUS_EXIT, true);
 		f->queue_redraw();
 
@@ -5328,7 +5329,7 @@ void Viewport::_bind_methods() {
 
 	ADD_SIGNAL(MethodInfo("size_changed"));
 	ADD_SIGNAL(MethodInfo("gui_focus_changed", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Control")));
-	ADD_SIGNAL(MethodInfo("gui_focus_transferred", PropertyInfo(Variant::OBJECT, "from", PROPERTY_HINT_RESOURCE_TYPE, "Control"), PropertyInfo(Variant::OBJECT, "to", PROPERTY_HINT_RESOURCE_TYPE, "Control")));
+	ADD_SIGNAL(MethodInfo("gui_focus_changed_nullable", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Control")));
 
 	BIND_ENUM_CONSTANT(SHADOW_ATLAS_QUADRANT_SUBDIV_DISABLED);
 	BIND_ENUM_CONSTANT(SHADOW_ATLAS_QUADRANT_SUBDIV_1);
