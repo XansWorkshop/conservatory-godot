@@ -73,6 +73,7 @@ public:
 	void deactivate();
 	void initialize();
 
+	// Future Xan: "ptr" and "ptrs" are magic suffixes (as is the "privileged" prefix) which tells CasCore to lock it out.
 	static void set_is_client_ptr(int64_t p_ptr);
 	static bool current_is_this(const Viewport *p_viewport);
 

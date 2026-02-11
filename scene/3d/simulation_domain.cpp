@@ -45,7 +45,6 @@ Ref<World3D> SimulationDomain::parent_world_3d;
 ObjectID SimulationDomain::last_parent;
 
 void SimulationDomain::set_is_client_ptr(int64_t p_ptr) {
-	ERR_FAIL_COND_MSG(is_client != nullptr, "Illegal attempt to use set_is_client_ptr.");
 	ERR_FAIL_COND_MSG(p_ptr == 0, "Invalid null pointer for set_is_client_ptr.");
 	is_client = (bool*)p_ptr;
 }
