@@ -1,8 +1,5 @@
 @ECHO OFF
 
-CALL "VSDEV.BAT"
-CLS
-
 SET ACCESSKIT_NAME=accesskit-c-0.18.0
 :: https://docs.godotengine.org/en/stable/engine_details/development/compiling/compiling_for_windows.html#installing-direct3d-12-requirements
 :: https://github.com/godotengine/godot-accesskit-c-static/releases
