@@ -18,8 +18,8 @@ name is available.
 
 # Godot: Conservatory Edition authors
 
-This fork of the engine has had the work of many others implemented, some of 
-which has become official, some of which has not. A new section has been added
+This fork of the engine has had the work of others implemented, some of which
+has become official, some of which has not. A new section has been added
 containing the names and GitHub usernames of individuals who have made features
 that got added to this fork of the engine (even if those features were later
 added to the official build by those users).

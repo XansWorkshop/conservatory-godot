@@ -54,6 +54,7 @@ void EditorAbout::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_TRANSLATION_CHANGED: {
 			_about_text_label->set_text(
+					String(U"© 2026-present ") + TTR("Xan's Workshop") + ".\n" +
 					String(U"© 2014-present ") + TTR("Godot Engine contributors") + ".\n" +
 					String(U"© 2007-2014 Juan Linietsky, Ariel Manzur.\n"));
 
@@ -258,6 +259,7 @@ EditorAbout::EditorAbout() {
 
 		_create_section(vb, TTRC("Project Founders"), AUTHORS_FOUNDERS, FLAG_SINGLE_COLUMN);
 		_create_section(vb, TTRC("Lead Developer"), AUTHORS_LEAD_DEVELOPERS);
+		_create_section(vb, TTRC("Contributors (Godot: Conservatory Edition)"), AUTHORS_CONSERVATORY_EDITION_CONTRIBUTORS);
 		// The section title will be updated in NOTIFICATION_TRANSLATION_CHANGED.
 		_project_manager_label = _create_section(vb, "", AUTHORS_PROJECT_MANAGERS, FLAG_EASTER_EGG);
 		_project_manager_label->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);

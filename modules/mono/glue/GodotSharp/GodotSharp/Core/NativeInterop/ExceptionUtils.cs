@@ -17,7 +17,7 @@ namespace Godot.NativeInterop
         {
             if (_callback != null)
             {
-                _callback(typeof(ConservatoryInterop), "Illegal attempt to set the exception handling callback. I hope you're not a mod.");
+                _callback(typeof(ConservatoryInterop), new InvalidOperationException("Illegal attempt to set the exception handling callback. I hope you're not a mod."));
                 return;
             }
             _callback = callback;

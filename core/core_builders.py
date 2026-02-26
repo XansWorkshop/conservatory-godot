@@ -96,6 +96,7 @@ inline constexpr unsigned char _certs_compressed[] = {{
 
 
 def make_authors_header(target, source, env):
+    #editor_about.cpp uses these
     SECTIONS = {
         "Contributors (Godot: Conservatory Edition)": "AUTHORS_CONSERVATORY_EDITION_CONTRIBUTORS",
         "Project Founders (Godot Engine)": "AUTHORS_FOUNDERS",
