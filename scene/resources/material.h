@@ -100,7 +100,7 @@ class ShaderMaterial : public Material {
 	GDCLASS(ShaderMaterial, Material);
 	// clang-format off
 	enum VariantRefreshType {
-		NONE								= NULL,
+		NONE								= 0,
 
 		// Notify the editor that the property list has changed, and fire the changed signal.
 		NOTIFY_OF_CHANGE					= TC_SFLAG(0),
