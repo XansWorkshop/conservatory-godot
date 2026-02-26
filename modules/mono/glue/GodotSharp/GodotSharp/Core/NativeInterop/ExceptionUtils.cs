@@ -8,6 +8,26 @@ using System.Text;
 
 namespace Godot.NativeInterop
 {
+    // Added by Xan
+    public static class ConservatoryInterop
+    {
+        private static Action<object?, Exception> _callback;
+
+        public static void SetLogExceptionCallback(Action<object?, Exception> callback)
+        {
+            if (_callback != null)
+            {
+                _callback(typeof(ConservatoryInterop), "Illegal attempt to set the exception handling callback. I hope you're not a mod.");
+                return;
+            }
+            _callback = callback;
+        }
+
+        internal static void InformTheConservatory(Exception about) => _callback?.Invoke(about);
+
+    }
+
+
     internal static class ExceptionUtils
     {
         public static void PushError(string message)
@@ -117,6 +137,11 @@ namespace Godot.NativeInterop
             {
                 OnExceptionLoggerException(unexpected, e);
             }
+            // Added by Xan:
+            finally
+            {
+                ConservatoryInterop.InformTheConservatory(e);
+            }
         }
 
         public static void LogUnhandledException(Exception e)
@@ -134,6 +159,11 @@ namespace Godot.NativeInterop
             catch (Exception unexpected)
             {
                 OnExceptionLoggerException(unexpected, e);
+            }
+            // Added by Xan:
+            finally
+            {
+                ConservatoryInterop.InformTheConservatory(e);
             }
         }
 
