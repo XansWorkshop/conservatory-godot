@@ -16,3 +16,4 @@ THEN:
 
 NOTES:
 1. Glue exports to `%CURRENTUSER%/LocalNuget` i.e. `C:\Users\Xan\LocalNuget`. You need to add this as a package source to Visual Studio or whatever your IDE is.
+2. In the buildscript python, module_*_enabled is determined by the modules folder in the source directory. The name of the folder is what replaces the *.
