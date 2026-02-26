@@ -11,7 +11,7 @@ namespace Godot.NativeInterop
     // Added by Xan
     public static class ConservatoryInterop
     {
-        private static Action<object?, Exception> _callback;
+        private static Action<object?, Exception>? _callback;
 
         public static void SetLogExceptionCallback(Action<object?, Exception> callback)
         {
@@ -23,7 +23,7 @@ namespace Godot.NativeInterop
             _callback = callback;
         }
 
-        internal static void InformTheConservatory(Exception about) => _callback?.Invoke(about);
+        internal static void InformTheConservatory(Exception about) => _callback?.Invoke(null, about);
 
     }
 
