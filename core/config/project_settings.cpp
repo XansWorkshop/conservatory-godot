@@ -1272,7 +1272,7 @@ Error ProjectSettings::save_custom(const String &p_path, const CustomMap &p_cust
 			vc.order = v->order;
 			vc.type = v->variant.get_type();
 			vc.flags = PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE;
-			if (v->variant == v->initial) {
+			if (v->variant == v->initial && !get_always_save(G.key)) {
 				continue;
 			}
 
@@ -1488,6 +1488,18 @@ bool ProjectSettings::has_custom_feature(const String &p_feature) const {
 	return custom_features.has(p_feature);
 }
 
+void ProjectSettings::set_always_save(const StringName &p_path, bool p_always_save) {
+	if (p_always_save) {
+		always_save.insert(p_path);
+	} else {
+		always_save.erase(p_path);
+	}
+}
+
+bool ProjectSettings::get_always_save(const StringName &p_path) const {
+	return always_save.has(p_path);
+}
+
 const HashMap<StringName, ProjectSettings::AutoloadInfo> &ProjectSettings::get_autoload_list() const {
 	return autoloads;
 }
@@ -1650,6 +1662,8 @@ void ProjectSettings::_bind_methods() {
 	// Conservatory:
 	ClassDB::bind_method(D_METHOD("set_description", "name", "description"), &ProjectSettings::set_description);
 	ClassDB::bind_method(D_METHOD("get_description", "name"), &ProjectSettings::get_description);
+	ClassDB::bind_method(D_METHOD("set_always_save", "name", "always_save"), &ProjectSettings::set_always_save);
+	ClassDB::bind_method(D_METHOD("get_always_save", "name"), &ProjectSettings::get_always_save);
 
 	ADD_SIGNAL(MethodInfo("settings_changed"));
 }

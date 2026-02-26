@@ -101,6 +101,7 @@ protected:
 	String resource_path;
 	HashMap<StringName, PropertyInfo> custom_prop_info;
 	HashMap<StringName, String> custom_prop_descriptions;
+	HashSet<StringName> always_save;
 	bool using_datapack = false;
 	bool project_loaded = false;
 	List<String> input_presets;
@@ -216,6 +217,9 @@ public:
 	bool is_project_loaded() const;
 
 	bool has_custom_feature(const String &p_feature) const;
+
+	void set_always_save(const StringName &p_path, bool p_always_save);
+	bool get_always_save(const StringName &p_path) const;
 
 	// Change tracking methods
 	PackedStringArray get_changed_settings() const;
