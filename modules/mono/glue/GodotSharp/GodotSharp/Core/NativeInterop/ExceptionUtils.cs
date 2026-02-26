@@ -137,11 +137,6 @@ namespace Godot.NativeInterop
             {
                 OnExceptionLoggerException(unexpected, e);
             }
-            // Added by Xan:
-            finally
-            {
-                ConservatoryInterop.InformTheConservatory(e);
-            }
         }
 
         public static void LogUnhandledException(Exception e)
