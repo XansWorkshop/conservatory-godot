@@ -11,19 +11,19 @@ namespace Godot.NativeInterop
     // Added by Xan
     public static class ConservatoryInterop
     {
-        private static Action<object?, Exception>? _callback;
+        private static Action<object?, Exception, bool>? _callback;
 
-        public static void SetLogExceptionCallback(Action<object?, Exception> callback)
+        public static void SetLogExceptionCallback(Action<object?, Exception, bool> callback)
         {
             if (_callback != null)
             {
-                _callback(typeof(ConservatoryInterop), new InvalidOperationException("Illegal attempt to set the exception handling callback. I hope you're not a mod."));
+                _callback(typeof(ConservatoryInterop), new InvalidOperationException("Illegal attempt to set the exception handling callback. I hope you're not a mod."), true);
                 return;
             }
             _callback = callback;
         }
 
-        internal static void InformTheConservatory(Exception about) => _callback?.Invoke(null, about);
+        internal static void InformTheConservatory(Exception about, bool unhandled) => _callback?.Invoke(null, about, unhandled);
 
     }
 
@@ -137,6 +137,11 @@ namespace Godot.NativeInterop
             {
                 OnExceptionLoggerException(unexpected, e);
             }
+            // Added by Xan:
+            finally
+            {
+                ConservatoryInterop.InformTheConservatory(e, false);
+            }
         }
 
         public static void LogUnhandledException(Exception e)
@@ -158,7 +163,7 @@ namespace Godot.NativeInterop
             // Added by Xan:
             finally
             {
-                ConservatoryInterop.InformTheConservatory(e);
+                ConservatoryInterop.InformTheConservatory(e, true);
             }
         }
 
