@@ -116,7 +116,7 @@ void ConservatoryDebugBridge::handle_error(void *p_userdata, const char *functio
 		STRING_TO_UTF8_WITH_LENGTH(file, file_utf8, file_length);
 		STRING_TO_UTF8_WITH_LENGTH(err, err_utf8, err_length);
 		STRING_TO_UTF8_WITH_LENGTH(message, message_utf8, message_length);
-		ConservatoryDebugBridge::tc_managed_log((uint64_t)p_userdata, message_utf8, message_length, err_utf8, err_length, function_utf8, function_length, file_utf8, file_length, p_line, 2, false);
+		ConservatoryDebugBridge::tc_managed_log((uint64_t)p_userdata, message_utf8, message_length, err_utf8, err_length, function_utf8, function_length, file_utf8, file_length, p_line, p_type == ErrorHandlerType::ERR_HANDLER_WARNING ? 1 : 2, false);
 	}
 }
 #undef STRING_TO_UTF8_WITH_LENGTH
