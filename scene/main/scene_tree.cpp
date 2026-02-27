@@ -879,6 +879,10 @@ void SceneTree::quit(int p_exit_code) {
 	_quit = true;
 }
 
+bool SceneTree::quitting() const {
+	return _quit;
+}
+
 void SceneTree::_main_window_close() {
 	if (accept_quit) {
 		_quit = true;
@@ -1893,6 +1897,8 @@ void SceneTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_node_count"), &SceneTree::get_node_count);
 	ClassDB::bind_method(D_METHOD("get_frame"), &SceneTree::get_frame);
 	ClassDB::bind_method(D_METHOD("quit", "exit_code"), &SceneTree::quit, DEFVAL(EXIT_SUCCESS));
+	ClassDB::bind_method(D_METHOD("_quitting"), &SceneTree::quitting);
+
 
 	ClassDB::bind_method(D_METHOD("set_physics_interpolation_enabled", "enabled"), &SceneTree::set_physics_interpolation_enabled);
 	ClassDB::bind_method(D_METHOD("is_physics_interpolation_enabled"), &SceneTree::is_physics_interpolation_enabled);
@@ -1950,6 +1956,8 @@ void SceneTree::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "root", PROPERTY_HINT_RESOURCE_TYPE, "Node", PROPERTY_USAGE_NONE), "", "get_root");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "multiplayer_poll"), "set_multiplayer_poll_enabled", "is_multiplayer_poll_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "physics_interpolation"), "set_physics_interpolation_enabled", "is_physics_interpolation_enabled");
+
+	ADD_READONLY_PROPERTY(PropertyInfo(Variant::BOOL, "quitting"), "_quitting");
 
 	ADD_SIGNAL(MethodInfo("tree_changed"));
 	ADD_SIGNAL(MethodInfo("scene_changed"));

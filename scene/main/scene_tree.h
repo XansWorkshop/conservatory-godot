@@ -358,6 +358,7 @@ public:
 	void set_quit_on_go_back(bool p_enable);
 
 	void quit(int p_exit_code = EXIT_SUCCESS);
+	bool quitting() const;
 
 	_FORCE_INLINE_ double get_physics_process_time() const { return physics_process_time; }
 	_FORCE_INLINE_ double get_process_time() const { return process_time; }
