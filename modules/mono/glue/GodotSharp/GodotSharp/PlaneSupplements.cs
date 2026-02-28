@@ -6,8 +6,6 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-using static Godot.Image;
-
 namespace Godot
 {
     /// <summary>

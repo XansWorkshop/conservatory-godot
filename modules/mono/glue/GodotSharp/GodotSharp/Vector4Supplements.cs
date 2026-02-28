@@ -350,7 +350,15 @@ namespace Godot
         /// <param name="this">This vector.</param>
         /// <returns>A normalized version of the vector.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector4 Normalized(this Vector4 @this) => Vector4.Normalize(@this);
+        public static Vector4 Normalized(this Vector4 @this)
+        {
+            if (Mathf.IsZeroApprox(@this.LengthSquared())) return default;
+            while (!@this.IsNormalized())
+            {
+                @this = Vector4.Normalize(@this);
+            }
+            return @this;
+        }
 
         /// <summary>
         /// Returns a vector composed of the <see cref="Mathf.PosMod(float, float)"/> of this vector's components
@@ -467,7 +475,7 @@ namespace Godot
         /// </summary>
         /// <param name="this">This vector.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsZeroApprox(this Vector4 @this) => Vector4.LessThanAll(@this, Vector4.Create(Mathf.Epsilon));
+        public static bool IsZeroApprox(this Vector4 @this) => Vector4.Abs(@this) < Vector4.Create(Mathf.Epsilon);
 
         /// <summary>
         /// Returns <see langword="true"/> if the vector is exactly equal to zero.
@@ -488,7 +496,7 @@ namespace Godot
             /// <param name="left"></param>
             /// <param name="right"></param>
             /// <returns></returns>
-            public static bool operator >(Vector4 left, Vector4 right) => Vector4.AllWhereAllBitsSet(Vector4.GreaterThan(left, right));
+            public static bool operator >(Vector4 left, Vector4 right) => Vector4.GreaterThanAll(left, right);
 
             /// <summary>
             /// Returns true if both components of <paramref name="left"/> are less than those of <paramref name="right"/>.
@@ -496,7 +504,7 @@ namespace Godot
             /// <param name="left"></param>
             /// <param name="right"></param>
             /// <returns></returns>
-            public static bool operator <(Vector4 left, Vector4 right) => Vector4.AllWhereAllBitsSet(Vector4.LessThan(left, right));
+            public static bool operator <(Vector4 left, Vector4 right) => Vector4.LessThanAll(left, right);
 
             /// <summary>
             /// Returns true if both components of <paramref name="left"/> are greater than or equal to those of <paramref name="right"/>.
@@ -504,7 +512,7 @@ namespace Godot
             /// <param name="left"></param>
             /// <param name="right"></param>
             /// <returns></returns>
-            public static bool operator >=(Vector4 left, Vector4 right) => Vector4.AllWhereAllBitsSet(Vector4.GreaterThanOrEqual(left, right));
+            public static bool operator >=(Vector4 left, Vector4 right) => Vector4.GreaterThanOrEqualAll(left, right);
 
             /// <summary>
             /// Returns true if both components of <paramref name="left"/> are less than or equal to those of <paramref name="right"/>.
@@ -512,7 +520,7 @@ namespace Godot
             /// <param name="left"></param>
             /// <param name="right"></param>
             /// <returns></returns>
-            public static bool operator <=(Vector4 left, Vector4 right) => Vector4.AllWhereAllBitsSet(Vector4.LessThanOrEqual(left, right));
+            public static bool operator <=(Vector4 left, Vector4 right) => Vector4.LessThanOrEqualAll(left, right);
 
             /// <summary>
             /// Performs the modulus of <paramref name="left"/> and <paramref name="right"/>, which returns the remainder of the division operation <c><paramref name="left"/> / <paramref name="right"/></c>

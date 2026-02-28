@@ -13,18 +13,10 @@ namespace Godot
     /// <summary>
     /// Added by Xan for Godot: Conservatory Edition
     /// <para/>
-    /// Extension members for <see cref="Vector4"/> specifically.
+    /// Extension members for <see cref="Quaternion"/> specifically.
     /// </summary>
     public static class QuaternionSupplements
     {
-#pragma warning disable CS1591
-        /// <summary>
-        /// Represents an axis of a <see cref="Vector4"/>.
-        /// </summary>
-        public enum Axis { X, Y, Z, W }
-#pragma warning restore CS1591
-
-
         /// <summary>
         /// Returns the angle between this quaternion and <paramref name="to"/>.
         /// This is the magnitude of the angle you would need to rotate
@@ -332,6 +324,14 @@ namespace Godot
             float invFactor = float.Sin((1.0f - weight) * theta) * sinT;
             return ((@this.AsVector4() * invFactor) + (newFactor * to.AsVector4())).AsQuaternion();
         }
+
+        /// <summary>
+        /// Returns <see langword="true"/> if this quaternion is approximately equal to the other quaternion.
+        /// </summary>
+        /// <param name="this"></param>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public static bool IsEqualApprox(this Quaternion @this, Quaternion other) => @this.AsVector4().IsEqualApprox(other.AsVector4());
 
 
         extension(Quaternion @this)

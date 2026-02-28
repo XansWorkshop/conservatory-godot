@@ -313,7 +313,7 @@ namespace Godot
         /// </summary>
         /// <param name="this">This vector.</param>
         /// <returns>Whether this vector is finite or not.</returns>
-        public static bool IsFinite(this Vector3 @this) => Vector128.NoneWhereAllBitsSet(Vector128.IsInfinity(@this.AsVector128()) | Vector128.IsNaN(@this.AsVector128()));
+        public static bool IsFinite(this Vector3 @this) => Vector128.NoneWhereAllBitsSet((Vector128.IsInfinity(@this.AsVector128()) | Vector128.IsNaN(@this.AsVector128())).AsUInt32() & Vector128.Create(uint.MaxValue, uint.MaxValue, uint.MaxValue, 0));
 
         /// <summary>
         /// Returns <see langword="true"/> if the vector is normalized, and <see langword="false"/> otherwise.
@@ -438,7 +438,14 @@ namespace Godot
         /// <param name="this">This vector.</param>
         /// <returns>A normalized version of the vector.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3 Normalized(this Vector3 @this) => Vector3.Normalize(@this);
+        public static Vector3 Normalized(this Vector3 @this) {
+            if (Mathf.IsZeroApprox(@this.LengthSquared())) return default;
+            while (!@this.IsNormalized())
+            {
+                @this = Vector3.Normalize(@this);
+            }
+            return @this;
+        }
 
         /// <summary>
         /// Returns the outer product with <paramref name="with"/>.
@@ -707,21 +714,21 @@ namespace Godot
         /// <param name="other">The other vector to compare.</param>
         /// <returns>Whether or not the vectors are approximately equal.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsEqualApprox(this Vector3 @this, Vector3 other) => Vector3.LessThanAll(Vector3.Abs(@this - other), Vector3.Create(Mathf.Epsilon));
+        public static bool IsEqualApprox(this Vector3 @this, Vector3 other) => Vector3.Abs(@this - other) < Vector3.Create(Mathf.Epsilon);
 
         /// <summary>
         /// Returns <see langword="true"/> if this vector's values are approximately zero.
         /// </summary>
         /// <param name="this">This vector.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsZeroApprox(this Vector3 @this) => Vector3.LessThanAll(@this, Vector3.Create(Mathf.Epsilon));
+        public static bool IsZeroApprox(this Vector3 @this) => Vector3.Abs(@this) < Vector3.Create(Mathf.Epsilon);
 
         /// <summary>
         /// Returns <see langword="true"/> if the vector is exactly equal to zero.
         /// </summary>
         /// <param name="this">This vector.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsExactlyZero(this Vector3 @this) => Vector3.AllWhereAllBitsSet(Vector3.IsZero(@this));
+        public static bool IsExactlyZero(this Vector3 @this) => Vector128.AllWhereAllBitsSet(Vector3.IsZero(@this).AsVector128().AsUInt32() | Vector128.Create(0, 0, 0, uint.MaxValue));
 
         extension(Vector3 @this)
         {
@@ -794,7 +801,13 @@ namespace Godot
             /// <param name="left"></param>
             /// <param name="right"></param>
             /// <returns></returns>
-            public static bool operator >(Vector3 left, Vector3 right) => Vector3.AllWhereAllBitsSet(Vector3.GreaterThan(left, right));
+            public static bool operator >(Vector3 left, Vector3 right) => Vector128.AllWhereAllBitsSet(
+                    Vector128.BitwiseOr(
+                        Vector128.GreaterThan(left.AsVector128Unsafe(), right.AsVector128Unsafe()).AsUInt32(),
+                        Vector128.Create(0, 0, 0, uint.MaxValue)
+                    )
+                );
+                // Vector3.GreaterThanAll(left, right); // RUNTIME BUG: This does not work, #125013
 
             /// <summary>
             /// Returns true if both components of <paramref name="left"/> are less than those of <paramref name="right"/>.
@@ -802,7 +815,13 @@ namespace Godot
             /// <param name="left"></param>
             /// <param name="right"></param>
             /// <returns></returns>
-            public static bool operator <(Vector3 left, Vector3 right) => Vector3.AllWhereAllBitsSet(Vector3.LessThan(left, right));
+            public static bool operator <(Vector3 left, Vector3 right) => Vector128.AllWhereAllBitsSet(
+                    Vector128.BitwiseOr(
+                        Vector128.LessThan(left.AsVector128Unsafe(), right.AsVector128Unsafe()).AsUInt32(),
+                        Vector128.Create(0, 0, 0, uint.MaxValue)
+                    )
+                );
+            // Vector3.LessThanAll(left, right); // RUNTIME BUG: This does not work, #125013
 
             /// <summary>
             /// Returns true if both components of <paramref name="left"/> are greater than or equal to those of <paramref name="right"/>.
@@ -810,7 +829,13 @@ namespace Godot
             /// <param name="left"></param>
             /// <param name="right"></param>
             /// <returns></returns>
-            public static bool operator >=(Vector3 left, Vector3 right) => Vector3.AllWhereAllBitsSet(Vector3.GreaterThanOrEqual(left, right));
+            public static bool operator >=(Vector3 left, Vector3 right) => Vector128.AllWhereAllBitsSet(
+                    Vector128.BitwiseOr(
+                        Vector128.GreaterThanOrEqual(left.AsVector128Unsafe(), right.AsVector128Unsafe()).AsUInt32(),
+                        Vector128.Create(0, 0, 0, uint.MaxValue)
+                    )
+                );
+            // Vector3.GreaterThanOrEqualAll(left, right); // RUNTIME BUG: This does not work, #125013
 
             /// <summary>
             /// Returns true if both components of <paramref name="left"/> are less than or equal to those of <paramref name="right"/>.
@@ -818,7 +843,13 @@ namespace Godot
             /// <param name="left"></param>
             /// <param name="right"></param>
             /// <returns></returns>
-            public static bool operator <=(Vector3 left, Vector3 right) => Vector3.AllWhereAllBitsSet(Vector3.LessThanOrEqual(left, right));
+            public static bool operator <=(Vector3 left, Vector3 right) => Vector128.AllWhereAllBitsSet(
+                    Vector128.BitwiseOr(
+                        Vector128.LessThanOrEqual(left.AsVector128Unsafe(), right.AsVector128Unsafe()).AsUInt32(),
+                        Vector128.Create(0, 0, 0, uint.MaxValue)
+                    )
+                );
+            // Vector3.LessThanOrEqualAll(left, right); // RUNTIME BUG: This does not work, #125013
 
             /// <summary>
             /// Performs the modulus of <paramref name="left"/> and <paramref name="right"/>, which returns the remainder of the division operation <c><paramref name="left"/> / <paramref name="right"/></c>
