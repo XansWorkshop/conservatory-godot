@@ -20,7 +20,7 @@ def version_info_builder(target, source, env):
         file.write(
             """\
 // To future Xan, the actual macro here is in core/core_builders.py
-// It samples from version.py to get its data.
+// It samples from version.py (in the repo root) to get its data.
 #define GODOT_VERSION_SHORT_NAME "{short_name}"
 #define GODOT_VERSION_NAME "{name}"
 #define GODOT_VERSION_MAJOR {major}
