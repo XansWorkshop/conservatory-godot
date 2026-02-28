@@ -130,29 +130,32 @@ namespace Godot.SourceGenerators
                         {
                             return type switch
                             {
-                                { Name: "Vector2" } => MarshalType.Vector2,
                                 { Name: "Vector2I" } => MarshalType.Vector2I,
                                 { Name: "Rect2" } => MarshalType.Rect2,
                                 { Name: "Rect2I" } => MarshalType.Rect2I,
                                 { Name: "Transform2D" } => MarshalType.Transform2D,
-                                { Name: "Vector3" } => MarshalType.Vector3,
                                 { Name: "Vector3I" } => MarshalType.Vector3I,
                                 { Name: "Basis" } => MarshalType.Basis,
-                                { Name: "Quaternion" } => MarshalType.Quaternion,
                                 { Name: "Transform3D" } => MarshalType.Transform3D,
-                                { Name: "Vector4" } => MarshalType.Vector4,
                                 { Name: "Vector4I" } => MarshalType.Vector4I,
                                 { Name: "Projection" } => MarshalType.Projection,
                                 { Name: "Aabb" } => MarshalType.Aabb,
                                 { Name: "Color" } => MarshalType.Color,
-                                { Name: "Plane" } => MarshalType.Plane,
                                 { Name: "Rid" } => MarshalType.Rid,
                                 { Name: "Callable" } => MarshalType.Callable,
                                 { Name: "Signal" } => MarshalType.Signal,
                                 { Name: "Variant" } => MarshalType.Variant,
+#if !USING_SYSTEM_NUMERICS_VECTORS
+                                { Name: "Vector2" } => MarshalType.Vector2,
+                                { Name: "Vector3" } => MarshalType.Vector3,
+                                { Name: "Vector4" } => MarshalType.Vector4,
+                                { Name: "Quaternion" } => MarshalType.Quaternion,
+                                { Name: "Plane" } => MarshalType.Plane,
+#endif
                                 _ => null
                             };
                         }
+#if USING_SYSTEM_NUMERICS_VECTORS
                         // Added by Xan for the special interop
                         else if (type.ContainingAssembly?.Name == "System.Numerics.Vectors" &&
                             type.ContainingNamespace?.Name == "Numerics")
@@ -167,6 +170,7 @@ namespace Godot.SourceGenerators
                                 _ => null
                             };
                         }
+#endif
                     }
                     else if (typeKind == TypeKind.Array)
                     {
@@ -201,12 +205,14 @@ namespace Godot.SourceGenerators
                         {
                             switch (elementType)
                             {
+#if !USING_SYSTEM_NUMERICS_VECTORS
                                 case { Name: "Vector2" }:
                                     return MarshalType.Vector2Array;
                                 case { Name: "Vector3" }:
                                     return MarshalType.Vector3Array;
                                 case { Name: "Vector4" }:
                                     return MarshalType.Vector4Array;
+#endif
                                 case { Name: "Color" }:
                                     return MarshalType.ColorArray;
                                 case { Name: "StringName" }:
@@ -217,6 +223,7 @@ namespace Godot.SourceGenerators
                                     return MarshalType.SystemArrayOfRid;
                             }
                         }
+#if USING_SYSTEM_NUMERICS_VECTORS
                         // Added by Xan for the special interop
                         else if (elementType.ContainingAssembly?.Name == "System.Numerics.Vectors" &&
                             elementType.ContainingNamespace?.Name == "Numerics")
@@ -231,6 +238,7 @@ namespace Godot.SourceGenerators
                                     return MarshalType.Vector4Array;
                             };
                         }
+#endif
                         return null;
                     }
                     else

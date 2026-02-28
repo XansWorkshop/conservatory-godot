@@ -1,6 +1,12 @@
 using Godot;
 using static GodotTools.Internals.Globals;
 
+#if USING_SYSTEM_NUMERICS_VECTORS
+using Vector2 = System.Numerics.Vector2;
+using Vector3 = System.Numerics.Vector3;
+using Vector4 = System.Numerics.Vector4;
+#endif
+
 namespace GodotTools.Build
 {
     public partial class BuildOutputView : HBoxContainer
@@ -39,7 +45,7 @@ namespace GodotTools.Build
 
             var vbLeft = new VBoxContainer
             {
-                CustomMinimumSize = new System.Numerics.Vector2(0, 180 * EditorScale),
+                CustomMinimumSize = new Vector2(0, 180 * EditorScale),
                 SizeFlagsVertical = SizeFlags.ExpandFill,
                 SizeFlagsHorizontal = SizeFlags.ExpandFill,
             };

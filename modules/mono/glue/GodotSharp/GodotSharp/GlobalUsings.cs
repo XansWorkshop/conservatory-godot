@@ -17,7 +17,6 @@ global using Vector2Axis = Godot.Vector2Supplements.Axis;
 global using Vector3Axis = Godot.Vector3Supplements.Axis;
 global using Vector4Axis = Godot.Vector4Supplements.Axis;
 #else
-#error The project file was overwritten. Oops.
 global using Vector2 = Godot.Vector2;
 global using Vector3 = Godot.Vector3;
 global using Vector4 = Godot.Vector4;

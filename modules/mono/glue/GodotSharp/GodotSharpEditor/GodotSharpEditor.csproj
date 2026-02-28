@@ -31,6 +31,7 @@
     <DefineConstants>$(DefineConstants);GODOT</DefineConstants>
     <DefineConstants Condition=" '$(GodotFloat64)' == 'true' ">REAL_T_IS_DOUBLE;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="NumericsGlobalUsings.cs" />
   </ItemGroup>

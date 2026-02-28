@@ -1,3 +1,4 @@
+#if USING_SYSTEM_NUMERICS_VECTORS
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -328,3 +329,4 @@ namespace Godot
         }
     }
 }
+#endif
