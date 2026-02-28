@@ -39,9 +39,9 @@ namespace Godot
         {
             // We actually have a huge benefit here! Basis uses rows, which Matrix does as well.
             return Matrix4x4.Create(
-                Row0.AsVector4(),
-                Row1.AsVector4(),
-                Row2.AsVector4(),
+                Column0.AsVector4(),
+                Column1.AsVector4(),
+                Column2.AsVector4(),
                 new(0, 0, 0, 1)
             );
         }
@@ -53,13 +53,11 @@ namespace Godot
         /// <returns></returns>
         public static Basis FromSystemMatrix(in Matrix4x4 matrix)
         {
-            return new Basis
-            {
-                // Can't use the constructor.
-                Row0 = matrix.X.AsVector3(),
-                Row1 = matrix.Y.AsVector3(),
-                Row2 = matrix.Z.AsVector3()
-            };
+            return new Basis(
+                matrix.X.AsVector3(),
+                matrix.Y.AsVector3(),
+                matrix.Z.AsVector3()
+            );
         }
 #endif
 
