@@ -262,7 +262,7 @@ namespace GodotTools.Build
             }
         }
 
-        private void ShowProblemContextMenu(Vector2 position, long mouseButtonIndex)
+        private void ShowProblemContextMenu(System.Numerics.Vector2 position, long mouseButtonIndex)
         {
             if (mouseButtonIndex != (long)MouseButton.Right)
                 return;
@@ -524,7 +524,7 @@ namespace GodotTools.Build
 
             var vbLeft = new VBoxContainer
             {
-                CustomMinimumSize = new Vector2(0, 180 * EditorScale),
+                CustomMinimumSize = new System.Numerics.Vector2(0, 180 * EditorScale),
                 SizeFlagsVertical = SizeFlags.ExpandFill,
                 SizeFlagsHorizontal = SizeFlags.ExpandFill,
             };

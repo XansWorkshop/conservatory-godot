@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
+using System.Numerics;
 
 #nullable enable
 
@@ -26,6 +27,41 @@ namespace Godot
     public struct Basis : IEquatable<Basis>
     {
         // NOTE: x, y and z are public-only. Use Column0, Column1 and Column2 internally.
+
+#if USING_SYSTEM_NUMERICS_VECTORS
+        /// <summary>
+        /// Converts this <see cref="Basis"/> into a <see cref="Matrix4x4"/>, which can perform mathematical
+        /// operations significantly faster than this class due to its use of hardware acceleration.
+        /// Note that the matrix will only store the rotation and scale.
+        /// </summary>
+        /// <returns></returns>
+        public readonly Matrix4x4 ToSystemMatrix()
+        {
+            // We actually have a huge benefit here! Basis uses rows, which Matrix does as well.
+            return Matrix4x4.Create(
+                Row0.AsVector4(),
+                Row1.AsVector4(),
+                Row2.AsVector4(),
+                new(0, 0, 0, 1)
+            );
+        }
+
+        /// <summary>
+        /// Converts a <see cref="Matrix4x4"/> into a <see cref="Basis"/>. This will discard the positional data
+        /// and any higher dimensional projections!
+        /// </summary>
+        /// <returns></returns>
+        public static Basis FromSystemMatrix(in Matrix4x4 matrix)
+        {
+            return new Basis
+            {
+                // Can't use the constructor.
+                Row0 = matrix.X.AsVector3(),
+                Row1 = matrix.Y.AsVector3(),
+                Row2 = matrix.Z.AsVector3()
+            };
+        }
+#endif
 
         /// <summary>
         /// The basis matrix's X vector (column 0).
@@ -656,7 +692,11 @@ namespace Godot
             {
                 throw new ArgumentException("Target and up vectors are colinear. This is not advised as it may cause unwanted rotation around local Z axis.");
             }
+#if USING_SYSTEM_NUMERICS_VECTORS
+            column0 = column0.Normalized();
+#else
             column0.Normalize();
+#endif
             Vector3 column1 = column2.Cross(column0);
             return new Basis(column0, column1, column2);
         }
@@ -680,11 +720,19 @@ namespace Godot
             Vector3 column1 = this[1];
             Vector3 column2 = this[2];
 
+#if USING_SYSTEM_NUMERICS_VECTORS
+            column0 = column0.Normalized();
+            column1 = column1 - column0 * column0.Dot(column1);
+            column1 = column1.Normalized();
+            column2 = column2 - column0 * column0.Dot(column2) - column1 * column1.Dot(column2);
+            column2 = column2.Normalized();
+#else
             column0.Normalize();
             column1 = column1 - column0 * column0.Dot(column1);
             column1.Normalize();
             column2 = column2 - column0 * column0.Dot(column2) - column1 * column1.Dot(column2);
             column2.Normalize();
+#endif
 
             return new Basis(column0, column1, column2);
         }
@@ -738,8 +786,8 @@ namespace Godot
         /// <returns>The resulting basis matrix of the interpolation.</returns>
         public readonly Basis Slerp(Basis target, real_t weight)
         {
-            Quaternion from = new Quaternion(this);
-            Quaternion to = new Quaternion(target);
+            Quaternion from = this.GetQuaternion();
+            Quaternion to = target.GetQuaternion();
 
             Basis b = new Basis(from.Slerp(to, weight));
             b.Row0 *= Mathf.Lerp(Row0.Length(), target.Row0.Length(), weight);

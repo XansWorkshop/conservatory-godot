@@ -131,6 +131,8 @@ CD bin
 
 CD..
 SET LOCAL_NUGET=%USERPROFILE%\LocalNuget
+SET PYTHONIOENCODING="UTF-8"
+python ./modules/mono/build_scripts/xans_comical_vector_axis_hack.py "%CONSERVATORY_GODOT_FOLDER%"
 python ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows %DOUBLE% --no-deprecated --push-nupkgs-local "%LOCAL_NUGET%"
 
 ECHO.

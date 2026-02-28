@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
 #pragma warning disable CS0169
 #pragma warning disable CS0414
@@ -36,7 +37,7 @@ namespace Godot.SourceGenerators.Sample
         [Export] private Vector3 _fieldVector3 = new(10f, 10f, 10f);
         [Export] private Vector3I _fieldVector3I = Vector3I.Back;
         [Export] private Basis _fieldBasis = new Basis(Quaternion.Identity);
-        [Export] private Quaternion _fieldQuaternion = new Quaternion(Basis.Identity);
+        [Export] private Quaternion _fieldQuaternion = Basis.Identity.GetRotationQuaternion();
         [Export] private Transform3D _fieldTransform3D = Transform3D.Identity;
         [Export] private Vector4 _fieldVector4 = new(10f, 10f, 10f, 10f);
         [Export] private Vector4I _fieldVector4I = Vector4I.One;

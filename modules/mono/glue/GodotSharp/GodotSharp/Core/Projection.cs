@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 #nullable enable
@@ -19,6 +20,29 @@ namespace Godot
     [StructLayout(LayoutKind.Sequential)]
     public struct Projection : IEquatable<Projection>
     {
+
+#if USING_SYSTEM_NUMERICS_VECTORS
+        /// <summary>
+        /// Converts this <see cref="Projection"/> into a <see cref="Matrix4x4"/>, which can perform mathematical
+        /// operations significantly faster than this class due to its use of hardware acceleration.
+        /// </summary>
+        /// <returns></returns>
+        public readonly Matrix4x4 ToSystemMatrix()
+        {
+            return Matrix4x4.Create(X, Y, Z, W);
+        }
+
+        /// <summary>
+        /// Converts a <see cref="Matrix4x4"/> into a <see cref="Projection"/>.
+        /// </summary>
+        /// <returns></returns>
+        public static Projection FromSystemMatrix(in Matrix4x4 matrix)
+        {
+            return new Projection(matrix.X, matrix.Y, matrix.Z, matrix.W);
+        }
+#endif
+
+
         /// <summary>
         /// Enumerated index values for the planes.
         /// </summary>

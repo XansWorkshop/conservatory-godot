@@ -1,6 +1,7 @@
 using System;
 using Godot.Collections;
 using Array = Godot.Collections.Array;
+using System.Numerics;
 
 namespace Godot.SourceGenerators.Sample;
 

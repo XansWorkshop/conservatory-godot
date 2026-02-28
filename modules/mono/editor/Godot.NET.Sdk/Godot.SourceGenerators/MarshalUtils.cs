@@ -153,6 +153,20 @@ namespace Godot.SourceGenerators
                                 _ => null
                             };
                         }
+                        // Added by Xan for the special interop
+                        else if (type.ContainingAssembly?.Name == "System.Numerics.Vectors" &&
+                            type.ContainingNamespace?.Name == "Numerics")
+                        {
+                            return type switch
+                            {
+                                { Name: "Vector2" } => MarshalType.Vector2,
+                                { Name: "Vector3" } => MarshalType.Vector3,
+                                { Name: "Vector4" } => MarshalType.Vector4,
+                                { Name: "Quaternion" } => MarshalType.Quaternion,
+                                { Name: "Plane" } => MarshalType.Plane,
+                                _ => null
+                            };
+                        }
                     }
                     else if (typeKind == TypeKind.Array)
                     {
@@ -203,7 +217,20 @@ namespace Godot.SourceGenerators
                                     return MarshalType.SystemArrayOfRid;
                             }
                         }
-
+                        // Added by Xan for the special interop
+                        else if (elementType.ContainingAssembly?.Name == "System.Numerics.Vectors" &&
+                            elementType.ContainingNamespace?.Name == "Numerics")
+                        {
+                            switch (elementType)
+                            {
+                                case { Name: "Vector2" }:
+                                    return MarshalType.Vector2Array;
+                                case { Name: "Vector3" }:
+                                    return MarshalType.Vector3Array;
+                                case { Name: "Vector4" }:
+                                    return MarshalType.Vector4Array;
+                            };
+                        }
                         return null;
                     }
                     else

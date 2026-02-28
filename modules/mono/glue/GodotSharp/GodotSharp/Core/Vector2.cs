@@ -1,3 +1,4 @@
+#if !USING_SYSTEM_NUMERICS_VECTORS
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -14,6 +15,7 @@ namespace Godot
     [StructLayout(LayoutKind.Sequential)]
     public struct Vector2 : IEquatable<Vector2>, IComparable<Vector2>
     {
+
         /// <summary>
         /// Enumerated index values for the axes.
         /// Returned by <see cref="MaxAxisIndex"/> and <see cref="MinAxisIndex"/>.
@@ -1244,3 +1246,4 @@ namespace Godot
         }
     }
 }
+#endif

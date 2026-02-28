@@ -1,3 +1,4 @@
+#if !USING_SYSTEM_NUMERICS_VECTORS
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -1418,3 +1419,4 @@ namespace Godot
         }
     }
 }
+#endif
