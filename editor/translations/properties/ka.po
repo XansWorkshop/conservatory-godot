@@ -6,17 +6,13 @@
 # George Dzavashvili <dzavashviligeorge@gmail.com>, 2018.
 # დემეტრე შონია <blender.animation.maker@gmail.com>, 2019.
 # Rati Nikolaishvili <rati.nikolaishvili@gmail.com>, 2019.
-# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2023, 2024, 2025.
+# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2023, 2024, 2025, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine properties\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
-<<<<<<< HEAD
-"PO-Revision-Date: 2025-09-16 06:20+0000\n"
-=======
-"PO-Revision-Date: 2025-10-30 13:39+0000\n"
->>>>>>> godot/4.6
+"PO-Revision-Date: 2026-02-13 12:54+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://hosted.weblate.org/projects/godot-engine/"
 "godot-properties/ka/>\n"
@@ -25,11 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-<<<<<<< HEAD
-"X-Generator: Weblate 5.14-dev\n"
-=======
-"X-Generator: Weblate 5.14.1-dev\n"
->>>>>>> godot/4.6
+"X-Generator: Weblate 5.16-dev\n"
 
 msgid "Application"
 msgstr "აპლიკაცია"
@@ -1173,6 +1165,9 @@ msgstr "Rest-ის შემოტანა Reset-ის სახით"
 
 msgid "Import Script"
 msgstr "სკრიპტის შემოტანა"
+
+msgid "Materials"
+msgstr "მასალები"
 
 msgid "Extract"
 msgstr "ამღება"
@@ -6845,63 +6840,6 @@ msgstr "კონსტანტის ID"
 msgid "Sample Masks"
 msgstr "მაგალითი ნიღბები"
 
-<<<<<<< HEAD
-msgid "Depth Draw"
-msgstr "ღრმა ხატვა"
-
-msgid "Cull"
-msgstr "კულინგი"
-
-msgid "Wireframe"
-msgstr "კარკასი"
-
-msgid "Skip Vertex Transform"
-msgstr "წვეროს გარდაქმნის გამოტოვება"
-
-msgid "Ensure Correct Normals"
-msgstr "სწორი ნორმალების გარანტია"
-
-msgid "Shadows Disabled"
-msgstr "ჩრდილები გამორთულია"
-
-msgid "Ambient Light Disabled"
-msgstr "გარემოს განათება გამორთულია"
-
-msgid "Vertex Lighting"
-msgstr "წვეროს განათება"
-
-msgid "Particle Trails"
-msgstr "ნაწილაკის კვლები"
-
-msgid "Fog Disabled"
-msgstr "ნისლი გათიშულია"
-
-msgid "Light Only"
-msgstr "მხოლოდ, განათება"
-
-msgid "Collision Use Scale"
-msgstr "შეჯახება მასშტაბს იყენებ"
-
-msgid "Disable Force"
-msgstr "ძალის გათიშვა"
-
-msgid "Disable Velocity"
-msgstr "სიჩქარის გამორთვა"
-
-msgid "Keep Data"
-msgstr "მონაცემების დატოვება"
-
-msgid "Internal Size"
-msgstr "შიდა ზომა"
-
-msgid "Target Size"
-msgstr "სამიზნის ზომა"
-
-msgid "View Count"
-msgstr "ნახვების რაოდენობა"
-
-=======
->>>>>>> godot/4.6
 msgid "Render Loop Enabled"
 msgstr "რენდერის მარყუჟი ჩართულია"
 

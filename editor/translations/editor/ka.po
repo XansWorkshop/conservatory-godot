@@ -6,18 +6,14 @@
 # George Dzavashvili <dzavashviligeorge@gmail.com>, 2018.
 # დემეტრე შონია <blender.animation.maker@gmail.com>, 2019.
 # Rati Nikolaishvili <rati.nikolaishvili@gmail.com>, 2019.
-# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2023, 2024, 2025.
+# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2023, 2024, 2025, 2026.
 # "A Thousand Ships (she/her)" <over999ships@gmail.com>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine editor interface\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
-<<<<<<< HEAD
-"PO-Revision-Date: 2025-09-16 06:20+0000\n"
-=======
-"PO-Revision-Date: 2025-10-30 13:39+0000\n"
->>>>>>> godot/4.6
+"PO-Revision-Date: 2026-02-13 12:54+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://hosted.weblate.org/projects/godot-engine/"
 "godot/ka/>\n"
@@ -26,17 +22,61 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-<<<<<<< HEAD
-"X-Generator: Weblate 5.14-dev\n"
-=======
-"X-Generator: Weblate 5.14.1-dev\n"
->>>>>>> godot/4.6
+"X-Generator: Weblate 5.16-dev\n"
 
 msgid "OK"
 msgstr "დიახ"
 
+msgid "Failed"
+msgstr "ჩავარდა"
+
+msgid "Unavailable"
+msgstr "მიუწვდომელია"
+
+msgid "Parameter out of range"
+msgstr "პარამეტრი შუალედს გარეთაა"
+
+msgid "Out of memory"
+msgstr "მეხსიერება ამოიწურა"
+
+msgid "File not found"
+msgstr "ფაილი აღმოჩენილი არაა"
+
+msgid "File already in use"
+msgstr "ფაილი უკვე გამოიყენება"
+
+msgid "Can't open file"
+msgstr "ფაილის გახსნა შეუძლებელია"
+
+msgid "Can't write file"
+msgstr "ფაილის ჩაწერის შეცდომა"
+
+msgid "Can't read file"
+msgstr "ფაილის წაკითხვის შეცდომა"
+
+msgid "Missing dependencies for file"
+msgstr "ნაკლული დამოკიდებულებები ფაილისთვის"
+
 msgid "Locked"
 msgstr "დაბლოკილი"
+
+msgid "Timeout"
+msgstr "მოლოდინის ვადა"
+
+msgid "Already exists"
+msgstr "უკვე არსებობს"
+
+msgid "Method not found"
+msgstr "მეთოდი აღმოჩენილი არაა"
+
+msgid "Script failed"
+msgstr "სკრიპტის ჩავარდა"
+
+msgid "Invalid declaration"
+msgstr "არასწორი დეკლარაცია"
+
+msgid "Parse error"
+msgstr "დამუშავების შეცდომა"
 
 msgid "Help"
 msgstr "დახმარება"
@@ -341,11 +381,6 @@ msgstr "მინ"
 msgid "Value"
 msgstr "მნიშვნელობა"
 
-<<<<<<< HEAD
-msgid "Blend X Value"
-msgstr "შერევის X მნიშვნელობა"
-
-=======
 msgid "Open Animation Node"
 msgstr "ანიმაციის კვანძის გახსნა"
 
@@ -367,7 +402,6 @@ msgstr "Y მნიშვნელობა"
 msgid "X Value"
 msgstr "X მნიშვნელობა"
 
->>>>>>> godot/4.6
 msgid "Parameter Changed: %s"
 msgstr "პარამეტრი შეიცვალა: %s"
 
@@ -578,6 +612,9 @@ msgstr "სიღრმე"
 msgid "Close"
 msgstr "დახურვა"
 
+msgid "Reconnect Transition"
+msgstr "თავიდან დაკავშირების გადასვლა"
+
 msgid "Transition exists!"
 msgstr "გარდასვლა არსებობს!"
 
@@ -587,12 +624,9 @@ msgstr "%s-ის ჩასწორება"
 msgid "Add Node and Transition"
 msgstr "კვანძის და გადასვლის დამატება"
 
-<<<<<<< HEAD
-=======
 msgid "Add Transition"
 msgstr "გარდასვლის დამატება"
 
->>>>>>> godot/4.6
 msgid "Immediate"
 msgstr "უეცარი"
 
@@ -906,12 +940,9 @@ msgstr "ანიმაცია RESET გასაღებების და�
 msgid "Bake Animation as Linear Keys"
 msgstr "ანიმაციის გამოცხობა წრფივი გასაღებების სახით"
 
-<<<<<<< HEAD
-=======
 msgid "Create Node"
 msgstr "კვანძის შექმნა"
 
->>>>>>> godot/4.6
 msgid "Select an AnimationPlayer node to create and edit animations."
 msgstr "ანიმაციების შექმნისა და ჩასწორებისთვის AnimatonPlayer კვანძი აირჩიეთ."
 
@@ -920,9 +951,6 @@ msgstr "არააქტიური დამკვრელი"
 
 msgid "Toggle method names"
 msgstr "მეთოდის სახელების გადართვა"
-
-msgid "Inactive Player"
-msgstr "არააქტიური დამკვრელი"
 
 msgid "Only show tracks from nodes selected in tree."
 msgstr "მხოლოდ აჩვენე ჩანაწერები კვანძებიდან მონიშნული ხეში."
@@ -1008,15 +1036,12 @@ msgstr "ანიმაციის ოპტიმიზაცია (შეუ
 msgid "Clean-Up Animation (no undo)..."
 msgstr "ანიმაციის გასუფთავება (შეუქცევადი)..."
 
-<<<<<<< HEAD
-=======
 msgid "Track Property"
 msgstr "ტრეკის ცვლილება"
 
 msgid "Method Key"
 msgstr "მეთოდის გასაღები"
 
->>>>>>> godot/4.6
 msgid "Animation Optimizer"
 msgstr "ანიმაციის ოპტიმიზატორი"
 
@@ -1114,6 +1139,9 @@ msgstr "ყველაფრის/არაფრის მონიშვნ�
 
 msgid "Copy Selection"
 msgstr "მონიშნულის კოპირება"
+
+msgid "Imported Animation cannot be edited!"
+msgstr "შემოტანილი ანიმაციის ჩასწორება შეუძლებელია!"
 
 msgid "Animation Change Keyframe Time"
 msgstr "ანიმაციის საკვანძო კადრის დროის ცვლილება"
@@ -1401,12 +1429,9 @@ msgstr "ხილული ბილიკები"
 msgid "Visible Avoidance"
 msgstr "ხილული თავიდან აცილება"
 
-<<<<<<< HEAD
-=======
 msgid "Set %s on %d objects"
 msgstr "%s-ის დაყენება %d ობიექტზე"
 
->>>>>>> godot/4.6
 msgid "Remote %s: %d"
 msgstr "დაშორებული %s: %d"
 
@@ -1771,12 +1796,9 @@ msgstr "რეგისტრზე-დამოკიდებული"
 msgid "Filter"
 msgstr "ფილტრი"
 
-<<<<<<< HEAD
-=======
 msgid "Display All"
 msgstr "ყველას ჩვენება"
 
->>>>>>> godot/4.6
 msgid "Constructors Only"
 msgstr "მხოლოდ კონსტრუქტორები"
 
@@ -1842,6 +1864,11 @@ msgstr "საქაღალდის შექმნა"
 
 msgid "Could not create folder: %s"
 msgstr "ვერ შევქმენი საქაღალდე: %s"
+
+msgid "Copy %d selected item to \"%s\"?"
+msgid_plural "Copy %d selected items to \"%s\"?"
+msgstr[0] "დაკოპირდეს %d მონიშნული ელემენტი \"%s\"-ში?"
+msgstr[1] "დაკოპირდეს %d მონიშნული ელემენტი \"%s\"-ში?"
 
 msgid "Open Scene"
 msgstr "სცენის გახსნა"
@@ -1927,12 +1954,9 @@ msgstr "შემდეგ არჩეულ ფაილზე/საქაღ
 msgid "Filter Files"
 msgstr "ფილტრის ფაილები"
 
-<<<<<<< HEAD
-=======
 msgid "Directories"
 msgstr "საქაღალდეები"
 
->>>>>>> godot/4.6
 msgid "Display Mode"
 msgstr "ჩვენების რეჟიმი"
 
@@ -2051,12 +2075,6 @@ msgstr "სხვა კვანძი"
 
 msgid "Set Shader"
 msgstr "შეიდერის დაყენება"
-<<<<<<< HEAD
-
-msgid "Create Node"
-msgstr "კვანძის შექმნა"
-=======
->>>>>>> godot/4.6
 
 msgid "Reparent to New Node"
 msgstr "მშობლობის ახალ კვანძზე გადატანა"
@@ -2214,10 +2232,6 @@ msgstr "მობაილი"
 msgid "Compatibility"
 msgstr "თავსებადობა"
 
-<<<<<<< HEAD
-msgid "%s (Overridden)"
-msgstr "%s (გადაფარულია)"
-=======
 msgid "Open Recent"
 msgstr "ბოლოს გახსნილი ფაილების გახსნა"
 
@@ -2232,7 +2246,6 @@ msgstr "ვერსიის კონტროლის მორგება.
 
 msgid "Tools"
 msgstr "ხელსაწყოები"
->>>>>>> godot/4.6
 
 msgid "Main Menu"
 msgstr "მთავარი მენიუ"
@@ -2287,6 +2300,9 @@ msgstr "შეცდომის პატაკი"
 
 msgid "Project"
 msgstr "პროექტი"
+
+msgid "Renderer"
+msgstr "რენდერერი"
 
 msgid "Update Continuously"
 msgstr "უწყვეტი განახლება"
@@ -2447,9 +2463,6 @@ msgstr "დატოვება"
 msgid "Godot Project Pack"
 msgstr "Godot-ის პროექტების ნაკრები"
 
-msgid "Godot Project Pack"
-msgstr "Godot-ის პროექტების ნაკრები"
-
 msgid "Features"
 msgstr "თვისებები"
 
@@ -2470,6 +2483,9 @@ msgstr "ყველაფრის გატანა"
 
 msgid "Project Export"
 msgstr "პროექტის გატანა"
+
+msgid "Search Replacement For: %s"
+msgstr "ჩანაცვლების ძებნა რისთვის: %s"
 
 msgid "Dependencies For:"
 msgstr "დამოკიდებულება:"
@@ -2515,6 +2531,9 @@ msgstr "წაშლის შეცდომა:"
 
 msgid "Files to be deleted:"
 msgstr "წაიშლება ფაილები:"
+
+msgid "Error loading: %s"
+msgstr "ჩატვირთვის შეცდომა: %s"
 
 msgid "Fix Dependencies"
 msgstr "დამოკიდებულებების გასწორება"
@@ -2610,12 +2629,9 @@ msgstr "პლატინის სპონსორები"
 msgid "Gold Sponsors"
 msgstr "ოქროს სპონსორები"
 
-<<<<<<< HEAD
-=======
 msgid "Silver Sponsors"
 msgstr "ვერცხლის დონატორები"
 
->>>>>>> godot/4.6
 msgid "Platinum Members"
 msgstr "პლატინის დონის წევრები"
 
@@ -2669,65 +2685,6 @@ msgstr "აირჩიეთ სამიზნე საქაღალდე:
 msgid "Move"
 msgstr "გადატანა"
 
-<<<<<<< HEAD
-msgid "Network"
-msgstr "ქსელი"
-
-msgid "All Files"
-msgstr "ფაილების დამატება"
-
-msgid "Open a File"
-msgstr "ფაილის გახსნა"
-
-msgid "Save a File"
-msgstr "ფაილის შენახვა"
-
-msgid "Go Back"
-msgstr "უკან დაბრუნება"
-
-msgid "Go Forward"
-msgstr "წინ გადასვლა"
-
-msgid "Go Up"
-msgstr "მაღლა ასვლა"
-
-msgid "Toggle Mode"
-msgstr "მუქი რეჟიმის გადართვა"
-
-msgid "Go to previous folder."
-msgstr "წინა საქაღალდეზე გადასვლა."
-
-msgid "Go to next folder."
-msgstr "შემდეგ საქაღალდეზე გადასვლა."
-
-msgid "Refresh files."
-msgstr "ფაილების განახლება."
-
-msgid "Current Drive"
-msgstr "მიმდინარე ამძრავი"
-
-msgid "Preview:"
-msgstr "გადახედვა:"
-
-msgid "Filename Filter:"
-msgstr "ფაილის სახელის ფილტრი:"
-
-msgid "File:"
-msgstr "ფაილი:"
-
-msgid ""
-"Remove the selected files? For safety only files and empty directories can be "
-"deleted from here. (Cannot be undone.)\n"
-"Depending on your filesystem configuration, the files will either be moved to "
-"the system trash or deleted permanently."
-msgstr ""
-"წავშალო მონიშნული ფაილები? უსაფრთხოებისთვის აქ მხოლოდ ფაილების და ცარიელი "
-"საქაღალდეების წაშლა შეგიძლიათ. (პროცესი შეუქცევადია.)\n"
-"ფაილური სისტემის კონფიგურაციაზე დამოკიდებულებით, ფაილები შეიძლება ნაგვის "
-"ყუთში იქნეს გადატანილი, ან სამუდამოდ წაიშლება."
-
-=======
->>>>>>> godot/4.6
 msgid "Fuzzy Search"
 msgstr "ბუნდოვანი ძებნა"
 
@@ -2799,6 +2756,9 @@ msgstr "ანიმაციის შენახვის ბილიკე�
 
 msgid "Meshes"
 msgstr "ბადეები"
+
+msgid "Materials"
+msgstr "მასალები"
 
 msgid "Status"
 msgstr "სტატუსი"
@@ -3057,12 +3017,9 @@ msgstr "Git"
 msgid "Project Name"
 msgstr "პროექტის სახელი"
 
-<<<<<<< HEAD
-=======
 msgid "Scanning"
 msgstr "სკანირება"
 
->>>>>>> godot/4.6
 msgid "Missing Project"
 msgstr "აკლია პროექტი"
 
@@ -3148,6 +3105,9 @@ msgstr "შეყვანა"
 msgid "Override the in-game camera."
 msgstr "თამაშის კამერის გადაფარვა."
 
+msgid "Fixed Size"
+msgstr "ფიქსირებული ზომა"
+
 msgid "Game"
 msgstr "თამაში"
 
@@ -3232,8 +3192,6 @@ msgstr "MeshInstance2D-ის შექმნა"
 msgid "MeshInstance2D Preview"
 msgstr "MeshInstance2D-ის მინიატურა"
 
-<<<<<<< HEAD
-=======
 msgid "Create Polygon2D"
 msgstr "Polygon2D-ის შექმნა"
 
@@ -3249,7 +3207,6 @@ msgstr "LightOccluder2D-ის შექმნა"
 msgid "LightOccluder2D Preview"
 msgstr "LightOccluder2D-ის მინიატურა"
 
->>>>>>> godot/4.6
 msgid "Can't convert an empty sprite to mesh."
 msgstr "ცარიელი სპრაიტის ბადეში გადაყვანა შეუძლებელია."
 
@@ -3373,12 +3330,9 @@ msgstr "რელიეფის დახატვა"
 msgid "No Layers"
 msgstr "ფენების გარეშე"
 
-<<<<<<< HEAD
-=======
 msgid "TileMap"
 msgstr "ფილების რუკა"
 
->>>>>>> godot/4.6
 msgid "TileMap Layers"
 msgstr "ფილების რუკის ფენები"
 
@@ -3493,12 +3447,9 @@ msgstr "ალტერნატიული ფილის შექმნა"
 msgid "Remove source"
 msgstr "წყაროს წაშლა"
 
-<<<<<<< HEAD
-=======
 msgid "TileSet"
 msgstr "ფილების ნაკრები"
 
->>>>>>> godot/4.6
 msgid "Sort Sources"
 msgstr "წყაროების დალაგება"
 
@@ -3559,18 +3510,6 @@ msgstr "შეჯახების ფორმის შექმნა შვ
 msgid "Collision Shape Type"
 msgstr "შეჯახების ფორმის ტპი"
 
-<<<<<<< HEAD
-msgid "Add Item"
-msgstr "ჩანაწერის დამატება"
-
-msgid "Apply without Transforms"
-msgstr "გადატარება ტრანსფორმაციების გარეშე"
-
-msgid "Apply with Transforms"
-msgstr "გადატარება ტრანსფორმაციებით"
-
-=======
->>>>>>> godot/4.6
 msgid "X-Axis"
 msgstr "X-ღერძი"
 
@@ -3597,6 +3536,12 @@ msgstr "პერსპექტივა"
 
 msgid "Grouped"
 msgstr "დაჯგუფებული"
+
+msgid "Objects: %d"
+msgstr "ობიექტები: %d"
+
+msgid "Primitives: %d"
+msgstr "პრიმიტივები: %d"
 
 msgid "Translating:"
 msgstr "გადატანა:"
@@ -3705,6 +3650,9 @@ msgstr "ტრასფორმირება"
 
 msgid "Snap Settings"
 msgstr "მიბმის მორგება"
+
+msgid "Rotate Snap:"
+msgstr "მიმაგრების შებრუნება:"
 
 msgid "Perspective VFOV (deg.):"
 msgstr "პერსპექტივის VFOV (გრად.):"
@@ -3898,12 +3846,9 @@ msgstr "მეთოდის სახელი სწორი იდენტ
 msgid "Attached Script"
 msgstr "მიმაგრებული სკრიპტი"
 
-<<<<<<< HEAD
-=======
 msgid "From Signal:"
 msgstr "სიგნალიდან:"
 
->>>>>>> godot/4.6
 msgid "Go to Source"
 msgstr "კოდზე გადასვლა"
 
@@ -4361,9 +4306,6 @@ msgstr "გადიდების გაუქმება"
 msgid "As Selected"
 msgstr "როგორც მონიშნულია"
 
-msgid "As Selected"
-msgstr "როგორც მონიშნულია"
-
 msgid "Left to Right, Top to Bottom"
 msgstr "მარცხნიდან მარჯვნივ, ზემოდან ქვემოთ"
 
@@ -4627,12 +4569,9 @@ msgstr "მონიშვნის ასლის შექმნა"
 msgid "Duplicate Lines"
 msgstr "ხაზების დუბლირება"
 
-<<<<<<< HEAD
-=======
 msgid "Evaluate Selection"
 msgstr "მონიშნულის გამოთვლა"
 
->>>>>>> godot/4.6
 msgid "Auto Indent"
 msgstr "ავტომატური სწორება"
 
@@ -4702,12 +4641,9 @@ msgstr "3D ძრავა"
 msgid "XR"
 msgstr "XR"
 
-<<<<<<< HEAD
-=======
 msgid "OpenXR"
 msgstr "OpenXR"
 
->>>>>>> godot/4.6
 msgid "Forward+ Renderer"
 msgstr "რენდერერი Forward+"
 
@@ -4805,15 +4741,15 @@ msgstr "პროფილის შექმნა"
 msgid "Remove Profile"
 msgstr "პროფილის წაშლა"
 
-<<<<<<< HEAD
-=======
 msgid "Make Current"
 msgstr "მიმდინარედ დანიშვნა"
 
 msgid "Extra Options:"
 msgstr "დამატებითი პარამეტრები:"
 
->>>>>>> godot/4.6
+msgid "Select Existing Layout:"
+msgstr "არსებული განლაგების არჩევა:"
+
 msgid "New layout name"
 msgstr "ახალი განლაგების სახელი"
 
@@ -4942,9 +4878,6 @@ msgstr "შეიდერების რედაქტორი"
 
 msgid "ShaderFile"
 msgstr "შეიდერის ფაილი"
-
-msgid "Shader Editor"
-msgstr "შეიდერების რედაქტორი"
 
 msgid "Global shader parameter '%s' already exists."
 msgstr "გლობალური შეიდერის პარამეტრი '%s' უკვე არსებობს."
@@ -5304,6 +5237,9 @@ msgstr "გაერთიანებული"
 msgid "Cannot instantiate GDScript class."
 msgstr "GDScript-ს კლასის ინსტანცირება შეუძლებელია."
 
+msgid "Export Settings"
+msgstr "პარამეტრების გატანა"
+
 msgid "glTF 2.0 Scene..."
 msgstr "glTF 2.0 სცენა..."
 
@@ -5399,17 +5335,20 @@ msgstr "NavigationPolygon-ის გამოცხობა"
 msgid "Clear NavigationPolygon"
 msgstr "NavigationPolygon-ის შექმნა"
 
-<<<<<<< HEAD
-msgid "Bake NavigationMesh"
-msgstr "NavigationPolygon-ის გამოცხობა"
-
-msgid "Clear NavigationMesh"
-msgstr "NavigationPolygon-ის გასუფთავება"
-
-=======
->>>>>>> godot/4.6
 msgid "Baking NavigationMesh ..."
 msgstr "NavigationMesh-ის გამოცხობა..."
+
+msgid "Total Refs"
+msgstr "მიმართვები სულ"
+
+msgid "Total References: %d"
+msgstr "სულ მიმართვები: %d"
+
+msgid "Duplicate?"
+msgstr "დავადუბლირო?"
+
+msgid "Generating Snapshot"
+msgstr "სწრაფი ასლის გენერაცია"
 
 msgid "Rename Action"
 msgstr "ქმედების სახელის გადარქმევა"
@@ -5464,12 +5403,6 @@ msgstr "მიბმის წაშლა"
 
 msgid "Modifiers"
 msgstr "მოდიფიკატორები"
-
-msgid "Add binding"
-msgstr "მიბმის დამატება"
-
-msgid "Remove binding"
-msgstr "მიბმის წაშლა"
 
 msgid "Select an interaction profile"
 msgstr "აირჩიეთ ინტერაქციის პროფილი"

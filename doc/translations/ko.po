@@ -49,13 +49,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine class reference\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
-<<<<<<< HEAD
-"PO-Revision-Date: 2025-09-19 22:59+0000\n"
+"PO-Revision-Date: 2026-02-04 18:02+0000\n"
 "Last-Translator: Myeongjin <aranet100@gmail.com>\n"
-=======
-"PO-Revision-Date: 2026-01-24 03:31+0000\n"
-"Last-Translator: yoohyeon <yoohyeon0526@naver.com>\n"
->>>>>>> godot/4.6
 "Language-Team: Korean <https://hosted.weblate.org/projects/godot-engine/godot-"
 "class-reference/ko/>\n"
 "Language: ko\n"
@@ -743,7 +738,7 @@ msgstr ""
 "var diamond = preload(\"res://diamond.tscn\").instantiate()\n"
 "[/codeblock]\n"
 "[b]참고:[/b] [method preload]는 키워드이며 함수가 아닙니다. 따라서 [Callable]"
-"로 액세스할 수 없습니다."
+"로 접근할 수 없습니다."
 
 msgid ""
 "Like [method @GlobalScope.print], but includes the current stack frame when "
@@ -5780,13 +5775,13 @@ msgid "Generic error."
 msgstr "통용 오류."
 
 msgid "Unavailable error."
-msgstr "사용할 수 없음 오류."
+msgstr "사용 가능하지 않음 오류."
 
 msgid "Unconfigured error."
 msgstr "구성되지 않음 오류."
 
 msgid "Unauthorized error."
-msgstr "승인되지 않음 오류."
+msgstr "권한 없음 오류."
 
 msgid "Parameter range error."
 msgstr "매개변수 범위 오류."
@@ -5804,7 +5799,7 @@ msgid "File: Bad path error."
 msgstr "파일: 잘못된 경로 오류."
 
 msgid "File: No permission error."
-msgstr "파일: 권한이 없음 오류."
+msgstr "파일: 권한 없음 오류."
 
 msgid "File: Already in use error."
 msgstr "파일: 이미 사용 중 오류."
@@ -5825,16 +5820,16 @@ msgid "File: Corrupt error."
 msgstr "파일: 손상 오류."
 
 msgid "File: Missing dependencies error."
-msgstr "파일: 종속 관계 누락 오류."
+msgstr "파일: 종속성 누락 오류."
 
 msgid "File: End of file (EOF) error."
-msgstr "파일: End of file (EOF) 오류."
+msgstr "파일: 파일의 끝 (EOF) 오류."
 
 msgid "Can't open error."
 msgstr "열 수 없음 오류."
 
 msgid "Can't create error."
-msgstr "생성할 수 없음 오류."
+msgstr "만들 수 없음 오류."
 
 msgid "Query failed error."
 msgstr "쿼리 실패 오류."
@@ -5843,7 +5838,7 @@ msgid "Already in use error."
 msgstr "이미 사용 중 오류."
 
 msgid "Locked error."
-msgstr "잠금 오류."
+msgstr "잠김 오류."
 
 msgid "Timeout error."
 msgstr "시간 초과 오류."
@@ -5897,13 +5892,13 @@ msgid "Cycling link (import cycle) error."
 msgstr "순환 링크 (가져오기 순환) 오류."
 
 msgid "Invalid declaration error."
-msgstr "선언이 잘못됨 오류."
+msgstr "잘못된 선언 오류."
 
 msgid "Duplicate symbol error."
 msgstr "중복 기호 오류."
 
 msgid "Parse error."
-msgstr "파서 오류."
+msgstr "구문 분석 오류."
 
 msgid "Busy error."
 msgstr "바쁨 오류."
@@ -5916,7 +5911,7 @@ msgid ""
 "help[/code] as executable options."
 msgstr ""
 "도움말 오류. 실행 가능한 옵션으로 [code]--version[/code] 또는 [code]--help[/"
-"code]를 넘기기 위해 내부적으로 사용됩니다."
+"code]를 전달할 때 내부적으로 사용됩니다."
 
 msgid ""
 "Bug error, caused by an implementation issue in the method.\n"
@@ -5924,16 +5919,16 @@ msgid ""
 "[url=https://github.com/godotengine/godot/issues]the GitHub Issue Tracker[/"
 "url]."
 msgstr ""
-"메서드의 구현 이슈로 발생하는 버그 오류입니다.\n"
+"메서드에서 구현 이슈로 발생하는 버그 오류입니다.\n"
 "[b]참고:[/b] 내장 메서드가 이 코드를 반환한다면, [url=https://github.com/"
-"godotengine/godot/issues]GitHHub 이슈 추적기[/url]에서 이슈를 열어주세요."
+"godotengine/godot/issues]GitHub 이슈 트래커[/url]에서 이슈를 열어 주세요."
 
 msgid ""
 "Printer on fire error (This is an easter egg, no built-in methods return this "
 "error code)."
 msgstr ""
-"프린터에 불이 붙음 오류 (이것은 이스터 에그이며, 내장 메서드는 이 오류 코드를 "
-"반환하지 않습니다)."
+"프린터에 불이 붙음 오류 (이것은 이스터 에그이며, 이 오류 코드를 반환하는 내장 "
+"메서드는 없습니다)."
 
 msgid "The property has no hint for the editor."
 msgstr "속성이 편집기에 어떠한 힌트도 주지 않습니다."
@@ -5961,49 +5956,49 @@ msgid ""
 "Hints that an [int] property is a bitmask using the optionally named 2D "
 "render layers."
 msgstr ""
-"[int] 속성이 선택적으로 이름 붙은 2D render 레이어를 사용한 비트 마스크라는 힌"
-"트를 줍니다."
+"[int] 속성이 선택적으로 이름 붙은 2D 렌더 레이어를 사용한 비트마스크라는 힌트"
+"를 줍니다."
 
 msgid ""
 "Hints that an [int] property is a bitmask using the optionally named 2D "
 "physics layers."
 msgstr ""
-"[int] 속성이 선택적으로 이름 붙은 2D physics 레이어를 사용한 비트 마스크라는 "
-"힌트를 줍니다."
+"[int] 속성이 선택적으로 이름 붙은 2D 물리 레이어를 사용한 비트마스크라는 힌트"
+"를 줍니다."
 
 msgid ""
 "Hints that an [int] property is a bitmask using the optionally named 2D "
 "navigation layers."
 msgstr ""
-"[int] 속성이 선택적으로 이름 붙은 2D navigation 레이어를 사용한 비트 마스크라"
+"[int] 속성이 선택적으로 이름 붙은 2D 내비게이션 레이어를 사용한 비트마스크라"
 "는 힌트를 줍니다."
 
 msgid ""
 "Hints that an [int] property is a bitmask using the optionally named 3D "
 "render layers."
 msgstr ""
-"[int] 속성이 선택적으로 이름 붙은 3D render 레이어를 사용한 비트 마스크라는 힌"
-"트를 줍니다."
+"[int] 속성이 선택적으로 이름 붙은 3D 렌더 레이어를 사용한 비트마스크라는 힌트"
+"를 줍니다."
 
 msgid ""
 "Hints that an [int] property is a bitmask using the optionally named 3D "
 "physics layers."
 msgstr ""
-"[int] 속성이 선택적으로 이름 붙은 3D physics 레이어를 사용한 비트 마스크라는 "
-"힌트를 줍니다."
+"[int] 속성이 선택적으로 이름 붙은 3D 물리 레이어를 사용한 비트마스크라는 힌트"
+"를 줍니다."
 
 msgid ""
 "Hints that an [int] property is a bitmask using the optionally named 3D "
 "navigation layers."
 msgstr ""
-"[int] 속성이 선택적으로 이름 붙은 3D navigation 레이어를 사용한 비트 마스크라"
+"[int] 속성이 선택적으로 이름 붙은 3D 내비게이션 레이어를 사용한 비트마스크라"
 "는 힌트를 줍니다."
 
 msgid ""
 "Hints that an integer property is a bitmask using the optionally named "
 "avoidance layers."
 msgstr ""
-"[int] 속성이 선택적으로 이름 붙은 avoidance 레이어를 사용한 비트 마스크라는 힌"
+"[int] 속성이 선택적으로 이름 붙은 어보이던스 레이어를 사용한 비트마스크라는 힌"
 "트를 줍니다."
 
 msgid ""
@@ -10903,8 +10898,8 @@ msgid ""
 "Low-pass filter for feedback, in Hz. Frequencies below this value are "
 "filtered out of the source signal."
 msgstr ""
-"피드백에 대한 로우패스 필터 (Hz). 이 값 이하의 주파수는 원본 신호에서 필터링됩"
-"니다."
+"피드백에 대한 로우패스 필터, Hz 단위. 이 값 이하의 주파수는 원본 신호에서 필터"
+"링됩니다."
 
 msgid "If [code]true[/code], the first tap will be enabled."
 msgstr "[code]true[/code]이면 첫번째 탭이 활성화됩니다."
@@ -11404,7 +11399,7 @@ msgid ""
 "that the [BoneAttachment3D] node will either dynamically copy or override the "
 "3D transform of the selected bone."
 msgstr ""
-"이 노드는 [Skeleton3D]에서 본을 선택하여 첨부합니다. 이는 [BoneAttachment3D] "
+"이 노드는 [Skeleton3D]에서 본을 선택하여 부착합니다. 이는 [BoneAttachment3D] "
 "노드가 선택된 본의 3D 변형을 동적으로 복사하거나 오버라이드할 수 있다는 것을 "
 "뜻합니다."
 
@@ -11608,7 +11603,7 @@ msgid "The tint color to apply."
 msgstr "적용할 틴트 색상."
 
 msgid "A container that keeps child controls in its center."
-msgstr "자식 컨트롤을 중앙에 유지하는 컨테이너."
+msgstr "자식 컨트롤을 가운데에 유지하는 컨테이너."
 
 msgid "Kinematic character (2D)"
 msgstr "키네마틱 캐릭터 (2D)"
@@ -12438,6 +12433,9 @@ msgstr "2D 스켈레톤 편집기에서 역운동학이 활성화된 본에 사�
 msgid "Maximum number of matches to show in dialog."
 msgstr "대화 상자에 보여줄 최대 일치 수."
 
+msgid "Tab style of editor docks, except bottom docks."
+msgstr "아래 독을 제외한 편집기 독의 탭 스타일."
+
 msgid ""
 <<<<<<< HEAD
 "The language to use for the editor interface.\n"
@@ -12588,6 +12586,9 @@ msgstr "외부 텍스처 크기."
 
 msgid "Position based forward and backward reaching inverse kinematics solver."
 msgstr "위치 기반 전진 및 후진 도달 역운동학 솔버."
+
+msgid "Inverse Kinematics Returns to Godot 4.6 - IKModifier3D"
+msgstr "역운동학이 Godot 4.6에 돌아왔습니다 - IKModifier3D"
 
 msgid "Translate the noise input coordinates by the given [Vector3]."
 msgstr "주어진 [Vector3]로 노이즈 입력 좌표를 옮깁니다."
@@ -12839,6 +12840,17 @@ msgstr ""
 msgstr "[code]true[/code]이면 파일 정렬 옵션 버튼을 보여줍니다."
 >>>>>>> godot/4.6
 
+msgid ""
+"If [code]true[/code], shows the button for creating new directories (when "
+"using [constant FILE_MODE_OPEN_DIR], [constant FILE_MODE_OPEN_ANY], or "
+"[constant FILE_MODE_SAVE_FILE]), and the context menu will have the \"New "
+"Folder...\" option."
+msgstr ""
+"[code]true[/code]이면 ([constant FILE_MODE_OPEN_DIR], [constant "
+"FILE_MODE_OPEN_ANY], 또는 [constant FILE_MODE_SAVE_FILE]을 사용할 때) 새로운 "
+"디렉터리를 만들기 위한 버튼을 보여주고 컨텍스트 메뉴에 \"새 폴더...\" 옵션을 "
+"가집니다."
+
 msgid "If [code]true[/code], shows the toggle hidden files button."
 msgstr "[code]true[/code]이면 숨긴 파일 토글 버튼을 보여줍니다."
 
@@ -12866,7 +12878,7 @@ msgid ""
 "[b]Note:[/b] This property is ignored by native file dialogs."
 msgstr ""
 "비어 있지 않으면 주어진 하위 폴더가 [FileDialog]의 \"루트\"가 됩니다. 즉, 사용"
-"자는 상위 디렉토리로 이동할 수 없습니다.\n"
+"자는 상위 디렉터리로 이동할 수 없습니다.\n"
 "[b]참고:[/b] 이 속성은 네이티브 파일 대화 상자에서는 무시됩니다."
 
 msgid ""
@@ -15350,28 +15362,28 @@ msgid "If [code]true[/code], collisions with [PhysicsBody3D]s will be reported."
 msgstr "[code]true[/code]이면 [PhysicsBody3D]와의 콜리전이 보고됩니다."
 
 msgid "Attachment format (used by [RenderingDevice])."
-msgstr "첨부 형식 ([RenderingDevice]에 의해 사용됨)."
+msgstr "부착 형식 ([RenderingDevice]에 의해 사용됨)."
 
 msgid "The attachment's data format."
-msgstr "첨부의 데이터 헝식."
+msgstr "부착의 데이터 헝식."
 
 msgid "The number of samples used when sampling the attachment."
-msgstr "첨부를 샘플링할 때 사용되는 샘플의 수."
+msgstr "부착을 샘플링할 때 사용되는 샘플의 수."
 
 msgid "The attachment's usage flags, which determine what can be done with it."
-msgstr "첨부로 무엇을 할 수 있는지를 결정하는 첨부의 사용 플래그."
+msgstr "부착으로 무엇을 할 수 있는지를 결정하는 부착의 사용 플래그."
 
 msgid "Framebuffer pass attachment description (used by [RenderingDevice])."
-msgstr "프레임버퍼 패스 첨부 설명 ([RenderingDevice]에 의해 사용됨)."
+msgstr "프레임버퍼 패스 부착 설명 ([RenderingDevice]에 의해 사용됨)."
 
 msgid "Attachment is unused."
-msgstr "첨부가 사용되지 않습니다."
+msgstr "부착이 사용되지 않습니다."
 
 msgid "The attachments that are blended together."
-msgstr "함께 블렌딩된 첨부."
+msgstr "함께 블렌딩된 부착."
 
 msgid "Pipeline color blend state attachment (used by [RenderingDevice])."
-msgstr "파이프라인 색상 블렌드 상태 첨부 ([RenderingDevice]에 의해 사용됨)."
+msgstr "파이프라인 색상 블렌드 상태 부착 ([RenderingDevice]에 의해 사용됨)."
 
 msgid ""
 "The cull mode to use when drawing polygons, which determines whether front "
@@ -15664,13 +15676,17 @@ msgid "Represents the size of the [enum TextureSamples] enum."
 msgstr "[enum TextureSamples] 열거형의 크기를 나타냅니다."
 
 msgid "Texture can be sampled."
-msgstr "텍스처를 샘플링할 수 있습니다."
+msgstr "텍스처는 샘플링될 수 있습니다."
 
 msgid "Texture can be used as a color attachment in a framebuffer."
-msgstr "텍스처는 프레임버퍼에서 색상 첨부로 사용될 수 있습니다."
+msgstr "텍스처는 프레임버퍼에서 색상 부착으로 사용될 수 있습니다."
 
 msgid "Texture can be used as a depth/stencil attachment in a framebuffer."
-msgstr "텍스처는 프레임버퍼에서 깊이/스텐실 첨부로 사용될 수 있습니다."
+msgstr "텍스처는 프레임버퍼에서 깊이/스텐실 부착으로 사용될 수 있습니다."
+
+msgid ""
+"Texture can be used as a depth/stencil resolve attachment in a framebuffer."
+msgstr "텍스처는 프레임버퍼에서 깊이/스텐실 해결 부착으로 사용될 수 있습니다."
 
 msgid ""
 "Texture can be used as a [url=https://registry.khronos.org/vulkan/specs/1.3-"
@@ -15689,6 +15705,13 @@ msgstr ""
 "1.3-extensions/html/vkspec.html#descriptorsets-storageimage]저장공간 이미지[/"
 "url]로 사용될 수 있습니다."
 
+msgid ""
+"Texture can be read back on the CPU using [method texture_get_data] faster "
+"than without this bit, since it is always kept in the system memory."
+msgstr ""
+"텍스처는 항상 시스템 메모리에 유지되므로, 이 비트가 없을 때보다 CPU에서 "
+"[method texture_get_data]를 사용하여 더 빠르게 읽어올 수 있습니다."
+
 msgid "Texture can be updated using [method texture_update]."
 msgstr "텍스처는 [method texture_update]를 사용하여 업데이트될 수 있습니다."
 
@@ -15704,8 +15727,8 @@ msgid ""
 "url] in a framebuffer."
 msgstr ""
 "텍스처는 프레임버퍼에서 [url=https://registry.khronos.org/vulkan/specs/1.3-"
-"extensions/html/vkspec.html#descriptorsets-inputattachment]입력 첨부[/url]로 "
-"사용될 수 있습니다."
+"extensions/html/vkspec.html#descriptorsets-inputattachment]입력 부착[/url]으"
+"로 사용될 수 있습니다."
 
 msgid "Return the sampled value as-is."
 msgstr "샘플링된 값을 그대로 반환합니다."
@@ -15747,7 +15770,7 @@ msgid "Represents the size of the [enum SamplerBorderColor] enum."
 msgstr "[enum SamplerBorderColor] 열거형의 크기를 나타냅니다."
 
 msgid "Input attachment uniform."
-msgstr "입력 첨부 유니폼."
+msgstr "입력 부착 유니폼."
 
 msgid "Represents the size of the [enum UniformType] enum."
 msgstr "[enum UniformType] 열거형의 크기를 나타냅니다."
@@ -15812,7 +15835,7 @@ msgstr "MetalFX 공간 업스케일링에 대한 지원."
 msgid ""
 "Maximum number of color framebuffer attachments that can be used at a given "
 "time."
-msgstr "주어진 시간에 사용할 수 있는 컬러 프레임버퍼 첨부의 최대 수."
+msgstr "주어진 시간에 사용할 수 있는 컬러 프레임버퍼 부착의 최대 수."
 
 msgid "Maximum number of texture array layers."
 msgstr "텍스처 배열 레이어의 최대 수."
@@ -15860,79 +15883,79 @@ msgid "Memory taken by buffers."
 msgstr "버퍼가 차지하는 메모리."
 
 msgid "Do not clear or ignore any attachments."
-msgstr "첨부를 비우거나 무시하지 않습니다."
+msgstr "부착을 비우거나 무시하지 않습니다."
 
 msgid "Clear the first color attachment."
-msgstr "첫 번째 색상 첨부를 비웁니다."
+msgstr "첫 번째 색상 부착을 비웁니다."
 
 msgid "Clear the second color attachment."
-msgstr "두 번째 색상 첨부를 비웁니다."
+msgstr "두 번째 색상 부착을 비웁니다."
 
 msgid "Clear the third color attachment."
-msgstr "세 번째 색상 첨부를 비웁니다."
+msgstr "세 번째 색상 부착을 비웁니다."
 
 msgid "Clear the fourth color attachment."
-msgstr "네 번째 색상 첨부를 비웁니다."
+msgstr "네 번째 색상 부착을 비웁니다."
 
 msgid "Clear the fifth color attachment."
-msgstr "다섯 번째 색상 첨부를 비웁니다."
+msgstr "다섯 번째 색상 부착을 비웁니다."
 
 msgid "Clear the sixth color attachment."
-msgstr "여섯 번째 색상 첨부를 비웁니다."
+msgstr "여섯 번째 색상 부착을 비웁니다."
 
 msgid "Clear the seventh color attachment."
-msgstr "일곱 번째 색상 첨부를 비웁니다."
+msgstr "일곱 번째 색상 부착을 비웁니다."
 
 msgid "Clear the eighth color attachment."
-msgstr "여덟 번째 색상 첨부를 비웁니다."
+msgstr "여덟 번째 색상 부착을 비웁니다."
 
 msgid "Mask for clearing all color attachments."
-msgstr "모든 색상 첨부를 비우기 위한 마스크."
+msgstr "모든 색상 부착을 비우기 위한 마스크."
 
 msgid "Clear all color attachments."
-msgstr "모든 색상 첨부를 비웁니다."
+msgstr "모든 색상 부착을 비웁니다."
 
 msgid "Ignore the previous contents of the first color attachment."
-msgstr "첫 번째 색상 첨부의 이전 내용을 무시합니다."
+msgstr "첫 번째 색상 부착의 이전 내용을 무시합니다."
 
 msgid "Ignore the previous contents of the second color attachment."
-msgstr "두 번째 색상 첨부의 이전 내용을 무시합니다."
+msgstr "두 번째 색상 부착의 이전 내용을 무시합니다."
 
 msgid "Ignore the previous contents of the third color attachment."
-msgstr "세 번째 색상 첨부의 이전 내용을 무시합니다."
+msgstr "세 번째 색상 부착의 이전 내용을 무시합니다."
 
 msgid "Ignore the previous contents of the fourth color attachment."
-msgstr "네 번째 색상 첨부의 이전 내용을 무시합니다."
+msgstr "네 번째 색상 부착의 이전 내용을 무시합니다."
 
 msgid "Ignore the previous contents of the fifth color attachment."
-msgstr "다섯 번째 색상 첨부의 이전 내용을 무시합니다."
+msgstr "다섯 번째 색상 부착의 이전 내용을 무시합니다."
 
 msgid "Ignore the previous contents of the sixth color attachment."
-msgstr "여섯 번째 색상 첨부의 이전 내용을 무시합니다."
+msgstr "여섯 번째 색상 부착의 이전 내용을 무시합니다."
 
 msgid "Ignore the previous contents of the seventh color attachment."
-msgstr "일곱 번째 색상 첨부의 이전 내용을 무시합니다."
+msgstr "일곱 번째 색상 부착의 이전 내용을 무시합니다."
 
 msgid "Ignore the previous contents of the eighth color attachment."
-msgstr "여덟 번째 색상 첨부의 이전 내용을 무시합니다."
+msgstr "여덟 번째 색상 부착의 이전 내용을 무시합니다."
 
 msgid "Mask for ignoring all the previous contents of the color attachments."
-msgstr "모든 색상 첨부의 이전 내용을 무시하기 위한 마스크."
+msgstr "모든 색상 부착의 이전 내용을 무시하기 위한 마스크."
 
 msgid "Ignore the previous contents of all color attachments."
-msgstr "모든 색상 첨부의 이전 내용을 무시합니다."
+msgstr "모든 색상 부착의 이전 내용을 무시합니다."
 
 msgid "Clear the depth attachment."
-msgstr "깊이 첨부를 비웁니다."
+msgstr "깊이 부착을 비웁니다."
 
 msgid "Ignore the previous contents of the depth attachment."
-msgstr "깊이 첨부의 이전 내용을 무시합니다."
+msgstr "깊이 부착의 이전 내용을 무시합니다."
 
 msgid "Clear all attachments."
-msgstr "모든 첨부를 비웁니다."
+msgstr "모든 부착을 비웁니다."
 
 msgid "Ignore the previous contents of all attachments."
-msgstr "모든 첨부의 이전 내용을 무시합니다."
+msgstr "모든 부착의 이전 내용을 무시합니다."
 
 msgid "Sets the visibility of the [CanvasItem]."
 msgstr "[CanvasItem]의 가시성을 지정합니다."
@@ -16548,7 +16571,7 @@ msgid ""
 "be attached to."
 msgstr ""
 "표면 버텍스의 고정된 상태를 설정합니다. [code]true[/code]로 설정할 때, 선택적 "
-"[param attachment_path]는 고정된 버텍스가 첨부될 [Node3D]를 정의할 수 있습니"
+"[param attachment_path]는 고정된 버텍스가 부착될 [Node3D]를 정의할 수 있습니"
 "다."
 
 msgid "Full height of the sphere."

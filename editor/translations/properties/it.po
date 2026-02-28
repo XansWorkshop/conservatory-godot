@@ -98,18 +98,14 @@
 # Pietro Marini <pietromarinivr2006@gmail.com>, 2025.
 # shifenis <dedi.ceka99@gmail.com>, 2026.
 # Alex B <alexius.barresi@gmail.com>, 2026.
+# Cristian Zerbinati <cristian.zerbinati@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine properties\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
-<<<<<<< HEAD
-"PO-Revision-Date: 2025-09-30 07:24+0000\n"
-"Last-Translator: Micky <micheledevita2@gmail.com>\n"
-=======
-"PO-Revision-Date: 2026-01-18 16:02+0000\n"
-"Last-Translator: Alex B <alexius.barresi@gmail.com>\n"
->>>>>>> godot/4.6
+"PO-Revision-Date: 2026-02-03 14:02+0000\n"
+"Last-Translator: Cristian Zerbinati <cristian.zerbinati@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/godot-engine/"
 "godot-properties/it/>\n"
 "Language: it\n"
@@ -117,11 +113,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-<<<<<<< HEAD
-"X-Generator: Weblate 5.14-dev\n"
-=======
-"X-Generator: Weblate 5.15.2\n"
->>>>>>> godot/4.6
+"X-Generator: Weblate 5.16-dev\n"
 
 msgid "Application"
 msgstr "Applicazione"
@@ -431,6 +423,9 @@ msgstr "Ritardo dei tooltip (secondi)"
 
 msgid "Common"
 msgstr "Comune"
+
+msgid "Drag Threshold"
+msgstr "Soglia di trascinamento"
 
 msgid "Snap Controls to Pixels"
 msgstr "Scatta i nodi Control ai pixel"
@@ -1707,12 +1702,9 @@ msgstr "Sorgente delle normali"
 msgid "Process"
 msgstr "Processo"
 
-<<<<<<< HEAD
-=======
 msgid "Channel Remap"
 msgstr "Rimappatura dei canali"
 
->>>>>>> godot/4.6
 msgid "Red"
 msgstr "Rosso"
 
@@ -2759,9 +2751,6 @@ msgstr "Forma dell'osso"
 msgid "Lightmap GI Probe Size"
 msgstr "Dimensione di sonde GI delle lightmap"
 
-msgid "Lightmap GI Probe Size"
-msgstr "Dimensione di sonde GI delle lightmap"
-
 msgid "Primary Grid Steps"
 msgstr "Passo della griglia primaria"
 
@@ -3744,20 +3733,10 @@ msgid "Max Call Stack"
 msgstr "Limite dello stack di chiamate"
 
 msgid "Always Track Call Stacks"
-<<<<<<< HEAD
-msgstr "Traccia sempre i call stack"
-
-msgid "Always Track Local Variables"
-msgstr "Traccia sempre le variabili locali"
-
-msgid "Exclude Addons"
-msgstr "Escludi componenti aggiuntivi"
-=======
 msgstr "Traccia sempre gli stack di chiamate"
 
 msgid "Always Track Local Variables"
 msgstr "Traccia sempre le variabili locali"
->>>>>>> godot/4.6
 
 msgid "Renamed in Godot 4 Hint"
 msgstr "Rinominato in Godot 4 (suggerimento)"
@@ -4890,9 +4869,6 @@ msgstr "SDK target"
 msgid "Custom Theme Attributes"
 msgstr "Attributi di tema personalizzati"
 
-msgid "Custom Theme Attributes"
-msgstr "Attributi di tema personalizzati"
-
 msgid "Keystore"
 msgstr "Keystore"
 
@@ -5924,12 +5900,6 @@ msgstr "Poligoni massimi per la ricerca del percorso"
 
 msgid "Path Search Max Distance"
 msgstr "Distanza massima per la ricerca di percorso"
-<<<<<<< HEAD
-
-msgid "Avoidance Enabled"
-msgstr "Evasione attiva"
-=======
->>>>>>> godot/4.6
 
 msgid "Neighbor Distance"
 msgstr "Distanza dal vicino"
@@ -6389,11 +6359,7 @@ msgid "Tile Set"
 msgstr "Tile set"
 
 msgid "Rendering Quadrant Size"
-<<<<<<< HEAD
-msgstr "Dimensione del quadrante di rendering"
-=======
 msgstr "Dimensione dei quadranti di rendering"
->>>>>>> godot/4.6
 
 msgid "Collision Animatable"
 msgstr "Collisioni animabili"
@@ -6420,11 +6386,7 @@ msgid "Use Kinematic Bodies"
 msgstr "Usa corpi cinematici"
 
 msgid "Physics Quadrant Size"
-<<<<<<< HEAD
-msgstr "Dimensione del quadrante di fisica"
-=======
 msgstr "Dimensione dei quadranti di fisica"
->>>>>>> godot/4.6
 
 msgid "Show Rect"
 msgstr "Mostra rettangolo"
@@ -7825,12 +7787,9 @@ msgstr "Forma del cursore predefinita"
 msgid "Shortcut Context"
 msgstr "Contesto della scorciatoia"
 
-<<<<<<< HEAD
-=======
 msgid "Live"
 msgstr "Attivo"
 
->>>>>>> godot/4.6
 msgid "Controls Nodes"
 msgstr "Nodi controllati"
 
@@ -7840,12 +7799,9 @@ msgstr "Descritto dai nodi"
 msgid "Labeled by Nodes"
 msgstr "Etichettato dai nodi"
 
-<<<<<<< HEAD
-=======
 msgid "Flow to Nodes"
 msgstr "Fluisce verso i nodi"
 
->>>>>>> godot/4.6
 msgid "Type Variation"
 msgstr "Variazione di tipo"
 
@@ -7888,12 +7844,9 @@ msgstr "Filtro del nome di file"
 msgid "Use Native Dialog"
 msgstr "Usa la finestra di dialogo nativa"
 
-<<<<<<< HEAD
-=======
 msgid "Options"
 msgstr "Opzioni"
 
->>>>>>> godot/4.6
 msgid "Hidden Files Toggle Enabled"
 msgstr "Opzione per i file nascosti abilitata"
 
@@ -7923,24 +7876,6 @@ msgstr "Inverti riempimento"
 
 msgid "Folded"
 msgstr "Piegato"
-
-msgid "Title Alignment"
-msgstr "Allineamento del titolo"
-
-msgid "Title Position"
-msgstr "Posizione del titolo"
-
-msgid "Title Text Overrun Behavior"
-msgstr "Reazione al testo eccessivo del titolo"
-
-msgid "Foldable Group"
-msgstr "Gruppo riducibile"
-
-msgid "Title Text Direction"
-msgstr "Direzione di testo del titolo"
-
-msgid "Allow Folding All"
-msgstr "Permetti di ridurre tutto"
 
 msgid "Title Alignment"
 msgstr "Allineamento del titolo"
@@ -8139,18 +8074,6 @@ msgstr "Abilita menù delle emoji"
 
 msgid "Backspace Deletes Composite Character Enabled"
 msgstr "Backspace elimina i caratteri composti abilitato"
-<<<<<<< HEAD
-
-msgid "Virtual Keyboard Enabled"
-msgstr "Abilita tastiera virtuale"
-
-msgid "Virtual Keyboard Show on Focus"
-msgstr "Mostra tastiera virtuale al focus"
-
-msgid "Virtual Keyboard Type"
-msgstr "Tipo di tastiera virtuale"
-=======
->>>>>>> godot/4.6
 
 msgid "Clear Button Enabled"
 msgstr "Abilita pulsante per cancellare"
@@ -8197,12 +8120,9 @@ msgstr "Segreto"
 msgid "Character"
 msgstr "Carattere"
 
-<<<<<<< HEAD
-=======
 msgid "Right Icon"
 msgstr "Icona destra"
 
->>>>>>> godot/4.6
 msgid "Underline"
 msgstr "Sottolinea"
 
@@ -8431,9 +8351,6 @@ msgstr "Allineamento scheda"
 msgid "Clip Tabs"
 msgstr "Ritaglia schede"
 
-msgid "Close With Middle Mouse"
-msgstr "Chiudi con clic centrale"
-
 msgid "Tab Close Display Policy"
 msgstr "Criterio per mostrare il pulsante di chiusura delle schede"
 
@@ -8482,12 +8399,9 @@ msgstr "Modalità di avvolgimento"
 msgid "Tab Input Mode"
 msgstr "Modalità di input della scheda"
 
-<<<<<<< HEAD
-=======
 msgid "Smooth"
 msgstr "Graduale"
 
->>>>>>> godot/4.6
 msgid "Past End of File"
 msgstr "Scorri oltre la fine del file"
 
@@ -10878,12 +10792,9 @@ msgstr "Modalità elenco"
 msgid "Create Folder"
 msgstr "Crea cartella"
 
-<<<<<<< HEAD
-=======
 msgid "Sort"
 msgstr "Ordina"
 
->>>>>>> godot/4.6
 msgid "Favorite Up"
 msgstr "Preferito su"
 
@@ -11178,11 +11089,6 @@ msgstr "Larghezza dell'etichetta"
 msgid "Center Slider Grabbers"
 msgstr "Centra i grabber della barra"
 
-<<<<<<< HEAD
-msgid "Focused not Editing Cursor Color"
-msgstr "Colore di cursore focalizzato non in modifica"
-
-=======
 msgid "Sample Focus"
 msgstr "Campione focalizzato"
 
@@ -11198,7 +11104,6 @@ msgstr "Colore di cursore focalizzato non in modifica"
 msgid "Menu Option"
 msgstr "Opzione di menu"
 
->>>>>>> godot/4.6
 msgid "Folded Arrow"
 msgstr "Freccia compressa"
 
@@ -11328,12 +11233,9 @@ msgstr "O. dragger touch"
 msgid "V Touch Dragger"
 msgstr "V. dragger touch"
 
-<<<<<<< HEAD
-=======
 msgid "Touch Dragger"
 msgstr "Dragger tattile"
 
->>>>>>> godot/4.6
 msgid "H Grabber"
 msgstr "Grabber O"
 
@@ -11424,12 +11326,9 @@ msgstr "Pannello di titolo minimizzato passato"
 msgid "Hover Font Color"
 msgstr "Colore di font al passaggio"
 
-<<<<<<< HEAD
-=======
 msgid "Collapsed Font Color"
 msgstr "Colore di font minimizzato"
 
->>>>>>> godot/4.6
 msgid "Expanded Arrow Mirrored"
 msgstr "Freccia estesa specchiata"
 
@@ -11877,123 +11776,6 @@ msgstr "ID costante"
 msgid "Sample Masks"
 msgstr "Maschere di campionamento"
 
-<<<<<<< HEAD
-msgid "Depth Draw"
-msgstr "Disegno di profondità"
-
-msgid "Depth Prepass Alpha"
-msgstr "Pre-passaggio di profondità alfa"
-
-msgid "SSS Mode Skin"
-msgstr "Modo SSS per pelle"
-
-msgid "Cull"
-msgstr "Culling"
-
-msgid "Unshaded"
-msgstr "Senza ombreggiatura"
-
-msgid "Wireframe"
-msgstr "Fildiferro"
-
-msgid "Skip Vertex Transform"
-msgstr "Salta la trasformazione dei vertici"
-
-msgid "World Vertex Coords"
-msgstr "Coordinate dei vertici del mondo"
-
-msgid "Ensure Correct Normals"
-msgstr "Garantisci vettori normali corretti"
-
-msgid "Shadows Disabled"
-msgstr "Ombre disabilitate"
-
-msgid "Ambient Light Disabled"
-msgstr "Luce ambientale disabilitata"
-
-msgid "Vertex Lighting"
-msgstr "Illuminazione per vertice"
-
-msgid "Particle Trails"
-msgstr "Scie di particelle"
-
-msgid "Alpha to Coverage"
-msgstr "Alfa a copertura"
-
-msgid "Alpha to Coverage and One"
-msgstr "Alfa a copertura e uno"
-
-msgid "Debug Shadow Splits"
-msgstr "Debug della separazione dell'ombra"
-
-msgid "Fog Disabled"
-msgstr "Nebbia disabilitata"
-
-msgid "Specular Occlusion Disabled"
-msgstr "Occlusione speculare disabilitata"
-
-msgid "Light Only"
-msgstr "Solo la luce"
-
-msgid "Collision Use Scale"
-msgstr "Usa scala per le collisioni"
-
-msgid "Disable Force"
-msgstr "Disabilita forza"
-
-msgid "Disable Velocity"
-msgstr "Disabilita velocità"
-
-msgid "Keep Data"
-msgstr "Mantieni i dati"
-
-msgid "Use Half Res Pass"
-msgstr "Usa la metà della risoluzione per il passo"
-
-msgid "Use Quarter Res Pass"
-msgstr "Usa un quarto della risoluzione per il passo"
-
-msgid "Float Comparison"
-msgstr "Confronto tra float"
-
-msgid "Unused Constant"
-msgstr "Costante non utilizzata"
-
-msgid "Unused Function"
-msgstr "Funzione non utilizzata"
-
-msgid "Unused Struct"
-msgstr "Struct non utilizzato"
-
-msgid "Unused Uniform"
-msgstr "Uniforme non utilizzato"
-
-msgid "Unused Varying"
-msgstr "Varying non utilizzato"
-
-msgid "Unused Local Variable"
-msgstr "Variabile locale non utilizzata"
-
-msgid "Formatting Error"
-msgstr "Errore di formattazione"
-
-msgid "Device Limit Exceeded"
-msgstr "Limite del dispositivo superato"
-
-msgid "Magic Position Write"
-msgstr "Scrittura di posizione magica"
-
-msgid "Internal Size"
-msgstr "Dimensioni interne"
-
-msgid "Target Size"
-msgstr "Dimensioni finali"
-
-msgid "View Count"
-msgstr "Quantità di viste"
-
-=======
->>>>>>> godot/4.6
 msgid "Render Loop Enabled"
 msgstr "Ciclo di rendering abilitato"
 

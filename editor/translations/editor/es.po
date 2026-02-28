@@ -152,28 +152,18 @@
 # Joshue Garcia <joshrgarb@gmail.com>, 2025.
 # David <ocsidev@gmail.com>, 2025.
 # Eduardo Suárez <eduardosrez@gmail.com>, 2025.
-<<<<<<< HEAD
-# Julián Lacomba <julian_alberto93@yahoo.com.ar>, 2025.
-# Ignacio Parentella <ignacio.parentella@gmail.com>, 2025.
-=======
 # Julián Lacomba <julian_alberto93@yahoo.com.ar>, 2025, 2026.
 # Ignacio Parentella <ignacio.parentella@gmail.com>, 2025.
 # "A Thousand Ships (she/her)" <over999ships@gmail.com>, 2025.
 # Myeongjin <aranet100@gmail.com>, 2025.
 # Kevin <kevmed39@protonmail.com>, 2025.
->>>>>>> godot/4.6
 msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine editor interface\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
-<<<<<<< HEAD
-"PO-Revision-Date: 2025-09-22 12:43+0000\n"
-"Last-Translator: Alejandro Moctezuma <moctezumaalejandro25@gmail.com>\n"
-=======
-"PO-Revision-Date: 2026-01-15 02:11+0000\n"
-"Last-Translator: Javier <xavier.ocampos@gmail.com>\n"
->>>>>>> godot/4.6
+"PO-Revision-Date: 2026-01-28 01:30+0000\n"
+"Last-Translator: Julián Lacomba <julian_alberto93@yahoo.com.ar>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/godot-engine/"
 "godot/es/>\n"
 "Language: es\n"
@@ -181,7 +171,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 msgid "OK"
 msgstr "Aceptar"
@@ -8799,7 +8789,7 @@ msgid "Error: Project is missing on the filesystem."
 msgstr "Error: Proyecto faltante en el sistema de archivos."
 
 msgid "Toggle Favorite"
-msgstr "Act./Desact. Favorito"
+msgstr "Alternar favorito"
 
 msgid "Open in file manager"
 msgstr "Abrir en el gestor de archivos"
@@ -9212,7 +9202,7 @@ msgid "Edit in Recovery Mode"
 msgstr "Editar en Modo de Recuperación"
 
 msgid "Backup project first"
-msgstr "Haz una copia de seguridad del proyecto primero"
+msgstr "Hacer primero una copia de seguridad del proyecto"
 
 msgid "Convert Full Project"
 msgstr "Convertir Proyecto Completo"
@@ -9270,7 +9260,7 @@ msgid "New Tag Name"
 msgstr "Nuevo Nombre de Etiqueta"
 
 msgid "example_tag (will display as Example Tag)"
-msgstr "example_tag (se mostrará como Etiqueta de Ejemplo)"
+msgstr "etiqueta_de_ejemplo (se mostrará como Etiqueta De Ejemplo)"
 
 msgid "Create Tag"
 msgstr "Crear Etiqueta"
@@ -18161,12 +18151,9 @@ msgstr "Añadir Cadenas Integradas"
 msgid "Add strings from built-in components such as certain Control nodes."
 msgstr ""
 "Agregar strings de componentes integrados como ciertos nodos de Control."
-<<<<<<< HEAD
-=======
 
 msgid "No translatable strings found."
 msgstr "No se encontraron cadenas traducibles."
->>>>>>> godot/4.6
 
 msgid ""
 "No VCS plugins are available in the project. Install a VCS plugin to use VCS "

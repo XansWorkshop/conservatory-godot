@@ -120,25 +120,18 @@
 # Daniel Colciaghi <danielcolciaghi@gmail.com>, 2025.
 # Leonardo Di Pasquale <leondipas@gmail.com>, 2025.
 # Denyer Pimentel <dj18pim@gmail.com>, 2025.
-<<<<<<< HEAD
-=======
 # "A Thousand Ships (she/her)" <over999ships@gmail.com>, 2025.
 # Pietro Marini <pietromarinivr2006@gmail.com>, 2025.
 # shifenis <dedi.ceka99@gmail.com>, 2026.
 # Mirto <mirtorande@gmail.com>, 2026.
->>>>>>> godot/4.6
+# Alex B <alexius.barresi@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine editor interface\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
-<<<<<<< HEAD
-"PO-Revision-Date: 2025-09-30 07:24+0000\n"
-"Last-Translator: Micky <micheledevita2@gmail.com>\n"
-=======
-"PO-Revision-Date: 2026-01-14 15:11+0000\n"
-"Last-Translator: Mirto <mirtorande@gmail.com>\n"
->>>>>>> godot/4.6
+"PO-Revision-Date: 2026-01-26 17:42+0000\n"
+"Last-Translator: Alex B <alexius.barresi@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/godot-engine/"
 "godot/it/>\n"
 "Language: it\n"
@@ -146,11 +139,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-<<<<<<< HEAD
-"X-Generator: Weblate 5.14-dev\n"
-=======
-"X-Generator: Weblate 5.15.2\n"
->>>>>>> godot/4.6
+"X-Generator: Weblate 5.16-dev\n"
 
 msgid "OK"
 msgstr "OK"
@@ -859,6 +848,9 @@ msgstr "Cattura"
 
 msgid "Create points."
 msgstr "Crea punti."
+
+msgid "Set the blending position within the space."
+msgstr "Imposta la posizione di fusione all'interno dello spazio."
 
 msgid "Erase points."
 msgstr "Cancella i punti."
@@ -2088,10 +2080,6 @@ msgstr "Vai al passo successivo"
 msgid "Go to Previous Step"
 msgstr "Vai al passo precedente"
 
-<<<<<<< HEAD
-msgid "Apply Reset"
-msgstr "Applica reset"
-=======
 msgid "Go to Next Keyframe"
 msgstr "Vai al fotogramma chiave successivo"
 
@@ -2100,7 +2088,6 @@ msgstr "Vai al fotogramma chiave precedente"
 
 msgid "Add tracks to RESET"
 msgstr "Aggiungi tracce a RESET"
->>>>>>> godot/4.6
 
 msgid "Bake Animation..."
 msgstr "Precalcola animazione..."
@@ -2332,9 +2319,6 @@ msgstr "AnimationTree"
 
 msgid "Path:"
 msgstr "Percorso:"
-
-msgid "Open asset details"
-msgstr "Apri i dettagli del contenuto"
 
 msgid "Open asset details"
 msgstr "Apri i dettagli del contenuto"
@@ -4052,18 +4036,12 @@ msgstr "Vai al prossimo file (o cartella) selezionato."
 msgid "Change Split Mode"
 msgstr "Cambia la modalità divisione"
 
-msgid "Dock Placement"
-msgstr "Posizionamento del pannello"
-
 msgid "Filter Files"
 msgstr "Filtra i file"
 
-<<<<<<< HEAD
-=======
 msgid "Directories"
 msgstr "Cartelle"
 
->>>>>>> godot/4.6
 msgid "Display Mode"
 msgstr "Modalità di visualizzazione"
 
@@ -5141,21 +5119,14 @@ msgstr ""
 "Interrompere l'esecuzione del progetto prima di ricaricare il progetto "
 "attuale?"
 
-<<<<<<< HEAD
-=======
 msgid "Stop & Reload"
 msgstr "Arresta e ricarica"
 
->>>>>>> godot/4.6
 msgid "Stop running project before exiting the editor?"
 msgstr "Interrompere l'esecuzione del progetto prima di uscire dall'editor?"
 
 msgid "Stop & Quit"
-<<<<<<< HEAD
-msgstr "Salva ed esci"
-=======
 msgstr "Arresta ed esci"
->>>>>>> godot/4.6
 
 msgid "Save modified resources before reloading?"
 msgstr "Salvare le risorse modificate prima di ricaricare?"
@@ -5432,10 +5403,6 @@ msgstr "Mobile"
 msgid "Compatibility"
 msgstr "Compatibilità"
 
-<<<<<<< HEAD
-msgid "%s (Overridden)"
-msgstr "%s (Sovrascritto)"
-=======
 msgid "Open Recent"
 msgstr "Apri scena recente"
 
@@ -5495,7 +5462,6 @@ msgstr "Configura importatore FBX..."
 msgid "Copies the system info as a single-line text into the clipboard."
 msgstr ""
 "Copia le informazioni di sistema negli appunti in una singola riga di testo."
->>>>>>> godot/4.6
 
 msgid "Main Menu"
 msgstr "Menù principale"
@@ -5650,13 +5616,6 @@ msgstr "Supporta lo sviluppo di Godot"
 msgid "Open Script Editor"
 msgstr "Apri l'editor degli script"
 
-<<<<<<< HEAD
-msgid "Rendering Method"
-msgstr "Metodo di rendering"
-
-msgid "Save & Restart"
-msgstr "Salva e riavvia"
-=======
 msgid "Open Game View"
 msgstr "Apri la schermata di gioco"
 
@@ -5674,10 +5633,6 @@ msgstr "Progetto"
 
 msgid "Update Mode"
 msgstr "Modalità di aggiornamento"
->>>>>>> godot/4.6
-
-msgid "Update Mode"
-msgstr "Modalità di aggiornamento"
 
 msgid "Update Continuously"
 msgstr "Aggiorna continuamente"
@@ -5688,45 +5643,6 @@ msgstr "Aggiorna ai cambiamenti"
 msgid "Hide Update Spinner"
 msgstr "Nascondi la rotella di aggiornamento"
 
-<<<<<<< HEAD
-msgid "Open Scene Dock"
-msgstr "Apri pannello Scena"
-
-msgid "Import"
-msgstr "Importa"
-
-msgid "Open Import Dock"
-msgstr "Apri pannello Importazione"
-
-msgid "FileSystem"
-msgstr "FileSystem"
-
-msgid "Open FileSystem Dock"
-msgstr "Apri pannello File system"
-
-msgid "Inspector"
-msgstr "Ispettore"
-
-msgid "Open Inspector Dock"
-msgstr "Apri pannello Ispettore"
-
-msgid "Node"
-msgstr "Nodo"
-
-msgid "Open Node Dock"
-msgstr "Apri pannello Nodo"
-
-msgid "History"
-msgstr "Cronologia"
-
-msgid "Output"
-msgstr "Output"
-
-msgid "Toggle Output Bottom Panel"
-msgstr "Commuta pannello inferiore dell'Output"
-
-=======
->>>>>>> godot/4.6
 msgid "Don't Save"
 msgstr "Non salvare"
 
@@ -6116,16 +6032,6 @@ msgstr "Esecuzione fallita, verificare il registro dell'editor per i dettagli."
 msgid "\"Shader Baker\" is not supported when using the Compatibility renderer."
 msgstr ""
 "Lo shader baker non è supportato quando si utilizza il renderer Compatibilità."
-
-msgid ""
-"The editor is currently using a different renderer than what the target "
-"platform will use. \"Shader Baker\" won't be able to include core shaders. "
-"Switch to the \"%s\" renderer temporarily to fix this."
-msgstr ""
-"L'editor sta utilizzando un renderer diverso da quello utilizzato dalla "
-"piattaforma di destinazione. \"Preparatore di shader\" non sarà in grado di "
-"includere gli shader base. Passa temporaneamente al renderer \"%s\" per "
-"risolverlo."
 
 msgid ""
 "The editor is currently using a different renderer than what the target "
@@ -6659,12 +6565,6 @@ msgstr "Gestisci i modelli di esportazione"
 
 msgid "Baking shaders"
 msgstr "Preparazione degli shader"
-<<<<<<< HEAD
-
-msgid "Search Replacement For:"
-msgstr "Cerca rimpiazzo per:"
-=======
->>>>>>> godot/4.6
 
 msgid "Dependencies For:"
 msgstr "Dipendenze per:"
@@ -6834,12 +6734,6 @@ msgstr "Mostra sostituisci"
 
 msgid "Replace Mode"
 msgstr "Modalità sostituzione"
-<<<<<<< HEAD
-
-msgid "Find"
-msgstr "Trova"
-=======
->>>>>>> godot/4.6
 
 msgid "Match Case"
 msgstr "Maiuscole distinte"
@@ -7064,149 +6958,6 @@ msgstr "Scegli una cartella di destinazione:"
 msgid "Move"
 msgstr "Sposta"
 
-<<<<<<< HEAD
-msgid "Network"
-msgstr "Rete"
-
-msgid "Select Current Folder"
-msgstr "Seleziona la cartella attuale"
-
-msgid "Cannot save file with an empty filename."
-msgstr "Impossibile salvare un file senza nome."
-
-msgid "Cannot save file with a name starting with a dot."
-msgstr "Impossibile salvare un file il cui nome inizia con un punto."
-
-msgid ""
-"File \"%s\" already exists.\n"
-"Do you want to overwrite it?"
-msgstr ""
-"Il file \"%s\" esiste già.\n"
-"Si desidera sovrascriverlo?"
-
-msgid "Select This Folder"
-msgstr "Seleziona questa cartella"
-
-msgid "Show Package Contents"
-msgstr "Mostra il contenuto del pacchetto"
-
-msgid "All Files"
-msgstr "Tutti i file"
-
-msgid "Open a File"
-msgstr "Apri un file"
-
-msgid "Open File(s)"
-msgstr "Apri uno o più file"
-
-msgid "Open a Directory"
-msgstr "Apri una cartella"
-
-msgid "Open a File or Directory"
-msgstr "Apri un file o una cartella"
-
-msgid "Save a File"
-msgstr "Salva un file"
-
-msgid "The path specified is invalid."
-msgstr "Il percorso specificato non è valido."
-
-msgid "Could not create folder. File with that name already exists."
-msgstr "Impossibile creare una cartella. Esiste già un file con quel nome."
-
-msgid "Could not create folder."
-msgstr "Impossibile creare la cartella."
-
-msgid "Favorited folder does not exist anymore and will be removed."
-msgstr "La cartella aggiunta ai preferiti non esiste più e verrà rimossa."
-
-msgid "Go Back"
-msgstr "Torna indietro"
-
-msgid "Go Forward"
-msgstr "Vai avanti"
-
-msgid "Go Up"
-msgstr "Risali"
-
-msgid "Toggle Hidden Files"
-msgstr "Commuta la visibilità dei file nascosti"
-
-msgid "Toggle Favorite"
-msgstr "Commuta lo stato di preferito"
-
-msgid "Toggle Mode"
-msgstr "Commuta la modalità"
-
-msgid "Focus Path"
-msgstr "Focalizza il percorso"
-
-msgid "Focus Filter"
-msgstr "Focalizza il filtro"
-
-msgid "Move Favorite Up"
-msgstr "Sposta preferito in su"
-
-msgid "Move Favorite Down"
-msgstr "Sposta preferito in giù"
-
-msgid "Go to previous folder."
-msgstr "Vai alla cartella precedente."
-
-msgid "Go to next folder."
-msgstr "Vai alla cartella successiva."
-
-msgid "Go to parent folder."
-msgstr "Vai alla cartella superiore."
-
-msgid "Refresh files."
-msgstr "Ricarica i file."
-
-msgid "(Un)favorite current folder."
-msgstr "Aggiungi o rimuovi la cartella attuale dai preferiti."
-
-msgid "Current Drive"
-msgstr "Unità attuale"
-
-msgid "Create a new folder."
-msgstr "Crea una nuova cartella."
-
-msgid "Directories & Files:"
-msgstr "File e cartelle:"
-
-msgid "Toggle the visibility of hidden files."
-msgstr "Mostra/nascondi i file nascosti."
-
-msgid "Sort files"
-msgstr "Ordina i file"
-
-msgid "Toggle the visibility of the filter for file names."
-msgstr "Mostra/nascondi il filtro per i nomi dei file."
-
-msgid "Preview:"
-msgstr "Anteprima:"
-
-msgid "Filter:"
-msgstr "Filtro:"
-
-msgid "Filename Filter:"
-msgstr "Filtro di nome di file:"
-
-msgid "File:"
-msgstr "File:"
-
-msgid ""
-"Remove the selected files? For safety only files and empty directories can be "
-"deleted from here. (Cannot be undone.)\n"
-"Depending on your filesystem configuration, the files will either be moved to "
-"the system trash or deleted permanently."
-msgstr ""
-"Rimuovere i file selezionati dal progetto? (Non può essere annullato.)\n"
-"A seconda della propria configurazione di sistema, i file saranno spostati "
-"nel cestino di sistema oppure eliminati permanentemente."
-
-=======
->>>>>>> godot/4.6
 msgid "No sub-resources found."
 msgstr "Nessuna sotto-risorsa trovata."
 
@@ -7288,9 +7039,6 @@ msgstr "Rendi questo pannello mobile nello schermo %d."
 
 msgid "Make this panel floating."
 msgstr "Rendi questo pannello mobile."
-
-msgid "Right-click to open the screen selector."
-msgstr "Clic destro per aprire la selezione dello schermo."
 
 msgid "Right-click to open the screen selector."
 msgstr "Clic destro per aprire la selezione dello schermo."
@@ -7800,8 +7548,6 @@ msgstr ""
 msgid "Property: %s"
 msgstr "Proprietà: %s"
 
-<<<<<<< HEAD
-=======
 msgid ""
 "Toggling the checkbox is disabled for Resource properties. Modify the "
 "property using the resource picker instead."
@@ -7809,7 +7555,6 @@ msgstr ""
 "L'opzione di commutare la casella è disabilitata per le proprietà Resource. "
 "Modifica la proprietà attraverso il selettore delle risorse."
 
->>>>>>> godot/4.6
 msgid "Unfavorite Property"
 msgstr "Rimuovi proprietà dai preferiti"
 
@@ -7833,11 +7578,6 @@ msgstr ""
 "Fissa un valore per forzane il salvataggio anche se è uguale al valore "
 "predefinito."
 
-<<<<<<< HEAD
-msgid "Delete Property"
-msgstr "Cancella proprietà"
-
-=======
 msgid "Override for Project"
 msgstr "Sovrascrivi per il progetto"
 
@@ -7847,7 +7587,6 @@ msgstr "Cancella proprietà"
 msgid "Revert Value"
 msgstr "Ripristina valore"
 
->>>>>>> godot/4.6
 msgid "Category: %s"
 msgstr "Categoria: %s"
 
@@ -8914,9 +8653,6 @@ msgstr "Questi caratteri non sono consentito nelle etichette: %s."
 msgid "About Godot"
 msgstr "Info su Godot"
 
-msgid "About Godot"
-msgstr "Info su Godot"
-
 msgid "Settings"
 msgstr "Impostazioni"
 
@@ -9059,12 +8795,9 @@ msgstr "Le etichette sono automaticamente in maiuscolo quando visualizzate."
 msgid "New Tag Name"
 msgstr "Nome della nuova etichetta"
 
-<<<<<<< HEAD
-=======
 msgid "Create Tag"
 msgstr "Crea un'etichetta"
 
->>>>>>> godot/4.6
 msgid "Project Tag: %s"
 msgstr "Etichetta di progetto: %s"
 
@@ -9136,19 +8869,8 @@ msgstr ""
 msgid "Restart & Upgrade"
 msgstr "Riavvia e aggiorna"
 
-<<<<<<< HEAD
-msgid "Re-saving scene:"
-msgstr "Risalvando la scena:"
-
-msgid "Re-saving resource:"
-msgstr "Ri-salvando la risorsa:"
-
-msgid "Play the project."
-msgstr "Esegui il progetto."
-=======
 msgid "Updating Project Scenes"
 msgstr "Aggiornamento delle scene del progetto"
->>>>>>> godot/4.6
 
 msgid "Re-saving scene:"
 msgstr "Risalvando la scena:"
@@ -9361,14 +9083,11 @@ msgstr ""
 "È possibile modificare il server di visualizzazione nelle Impostazioni del "
 "progetto (Schermo > Server di visualizzazione > Driver)."
 
-<<<<<<< HEAD
-=======
 msgid "Game embedding not available when the game starts minimized."
 msgstr ""
 "L'incorporamento del gioco non è disponibile quando il gioco si avvia "
 "minimizzato."
 
->>>>>>> godot/4.6
 msgid ""
 "Consider overriding the window mode project setting with the editor feature "
 "tag to Windowed to use game embedding while leaving the exported project "
@@ -9378,8 +9097,6 @@ msgstr ""
 "il tag della funzionalità \"editor\" su \"Windowed\" per usare "
 "l'incorporamento del gioco, lasciando intatto il progetto esportato."
 
-<<<<<<< HEAD
-=======
 msgid "Game embedding not available when the game starts maximized."
 msgstr ""
 "L'incorporamento del gioco non è disponibile quando il gioco si avvia "
@@ -9390,7 +9107,6 @@ msgstr ""
 "L'incorporamento del gioco non è disponibile quando il gioco si avvia a "
 "schermo intero."
 
->>>>>>> godot/4.6
 msgid "Game embedding not available in single window mode."
 msgstr ""
 "L'incorporamento del gioco non è disponibile in modalità finestra singola."
@@ -9400,14 +9116,6 @@ msgstr "Riattiva l'audio di gioco."
 
 msgid "Mute game audio."
 msgstr "Silenzia l'audio di gioco."
-<<<<<<< HEAD
-
-msgid "Alt+RMB: Show list of all nodes at position clicked."
-msgstr ""
-"Alt + Clic destro: Mostra una lista di tutti i nodi presenti nella posizione "
-"cliccata."
-=======
->>>>>>> godot/4.6
 
 msgid "Suspend"
 msgstr "Sospendi"
@@ -14602,11 +14310,6 @@ msgstr "Seleziona cartella"
 msgid "Includes:"
 msgstr "Include:"
 
-<<<<<<< HEAD
-msgid "Excludes:"
-msgstr "Esclude:"
-
-=======
 msgid "Include the files with the following expressions. Use \",\" to separate."
 msgstr ""
 "Includi i file con le seguenti espressioni. Utilizza \",\" per separare."
@@ -14621,7 +14324,6 @@ msgid "Exclude the files with the following expressions. Use \",\" to separate."
 msgstr ""
 "Escludi i file con le seguenti espressioni. Utilizza \",\" per separare."
 
->>>>>>> godot/4.6
 msgid "example: res://addons,scenes/test/*.gd"
 msgstr "esempio: res://addons,scenes/test/*.gd"
 
@@ -14766,15 +14468,12 @@ msgstr "Verrà creato un nuovo file di script."
 msgid "Parent Name"
 msgstr "Nome del padre"
 
-<<<<<<< HEAD
-=======
 msgid "Search Parent"
 msgstr "Ricerca padre"
 
 msgid "Select Parent"
 msgstr "Seleziona padre"
 
->>>>>>> godot/4.6
 msgid "Use Template"
 msgstr "Usa modello"
 
@@ -15735,12 +15434,6 @@ msgstr "Scorciatoie"
 msgid "Binding"
 msgstr "Associazione"
 
-<<<<<<< HEAD
-msgid "Overridden in project: %s"
-msgstr "Sostituito nel progetto: %s"
-
-=======
->>>>>>> godot/4.6
 msgid "Go to the override in the Project Settings."
 msgstr "Vai alla sostituzione nelle Impostazioni del progetto."
 
@@ -16152,12 +15845,9 @@ msgstr "Campionatore"
 msgid "[default]"
 msgstr "[predefinito]"
 
-<<<<<<< HEAD
-=======
 msgid "Expand output port"
 msgstr "Espandi la porta di uscita"
 
->>>>>>> godot/4.6
 msgid "Select preview port"
 msgstr "Seleziona una porta da vedere in anteprima"
 
@@ -17473,12 +17163,9 @@ msgstr "Anteprima: %s"
 msgid "Disable Translation Preview"
 msgstr "Disabilita anteprima di traduzione"
 
-<<<<<<< HEAD
-=======
 msgid "Previewing translation. Click to disable."
 msgstr "Anteprima della traduzione. Clicca per disattivare."
 
->>>>>>> godot/4.6
 msgid "Add %d Translation"
 msgid_plural "Add %d Translations"
 msgstr[0] "Aggiungi %d traduzione"
@@ -17523,12 +17210,6 @@ msgstr "Risorse:"
 
 msgid "Remaps by Locale:"
 msgstr "Rimappature per lingua:"
-<<<<<<< HEAD
-
-msgid "POT Generation"
-msgstr "Generazione del POT"
-=======
->>>>>>> godot/4.6
 
 msgid "Files with translation strings:"
 msgstr "Flie con stringhe di traduzione:"
@@ -18006,12 +17687,9 @@ msgstr ""
 msgid "Filter Meshes"
 msgstr "Filtra le mesh"
 
-<<<<<<< HEAD
-=======
 msgid "View as Thumbnails"
 msgstr "Mostra come miniature"
 
->>>>>>> godot/4.6
 msgid "View as List"
 msgstr "Mostra come lista"
 
@@ -18493,11 +18171,6 @@ msgstr "Rinomina il nome localizzato di un'azione"
 msgid "Change Action Type"
 msgstr "Cambia il tipo di un'azione"
 
-<<<<<<< HEAD
-msgid "Action Name"
-msgstr "Nome dell'azione"
-
-=======
 msgid ""
 "Internal name of the action. Some XR runtimes don't allow spaces or special "
 "characters."
@@ -18521,7 +18194,6 @@ msgstr "Tipo dell'azione"
 msgid "Action Type"
 msgstr "Tipo dell'azione"
 
->>>>>>> godot/4.6
 msgid "Remove action"
 msgstr "Rimuovi un'azione"
 
@@ -18588,8 +18260,6 @@ msgstr "Elimina un'azione"
 msgid "Fold"
 msgstr "Riduci"
 
-<<<<<<< HEAD
-=======
 msgid "Action Set Name"
 msgstr "Nome di insieme di azioni"
 
@@ -18612,7 +18282,6 @@ msgstr ""
 msgid "Action Set Priority"
 msgstr "Priorità di insieme di azioni"
 
->>>>>>> godot/4.6
 msgid "Add action."
 msgstr "Aggiungi un'azione."
 
@@ -19079,12 +18748,9 @@ msgstr ""
 msgid "Unable to overwrite res/*.xml files with project name."
 msgstr "Impossibile sovrascrivere i file res:/*.xml con il nome del progetto."
 
-<<<<<<< HEAD
-=======
 msgid "Could not generate sparse pck metadata!"
 msgstr "Impossibile generare i metadati di un file pck sparso!"
 
->>>>>>> godot/4.6
 msgid "Could not write PCK directory!"
 msgstr "Impossibile scrivere la cartella PCK!"
 
@@ -20672,15 +20338,12 @@ msgstr ""
 "ButtonGroup è progettato a essere utilizzato solo con pulsanti che hanno "
 "toggle_mode impostato a true."
 
-<<<<<<< HEAD
-=======
 msgid "The changes to this palette have not been saved to a file."
 msgstr "Le modifiche a questa tavolozza non sono state salvate in un file."
 
 msgid "Execute an expression as a color."
 msgstr "Esegui un'espressione come un colore."
 
->>>>>>> godot/4.6
 msgid "Load existing color palette."
 msgstr "Carica una tavolozza di colori esistente."
 
@@ -21025,15 +20688,12 @@ msgstr "La funzione '%s' non può essere chiamata dal codice sorgente."
 msgid "No matching function for \"%s\" call:"
 msgstr "Nessuna funzione corrispondente trovata per la chiamata di \"%s\":"
 
-<<<<<<< HEAD
-=======
 msgid ""
 "candidate function \"%s(%s)\" not viable, argument %d should be %s but is %s."
 msgstr ""
 "Funzione candidata \"%s(%s)\" non valida, l'argomento %d dovrebbe essere %s "
 "ma è %s."
 
->>>>>>> godot/4.6
 msgid ""
 "Too few arguments for \"%s(%s)\" call. Expected at least %d but received %d."
 msgstr ""

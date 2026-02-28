@@ -93,25 +93,17 @@
 # Bartosz Nowaczyk <bartus.nowaczyk@gmail.com>, 2025.
 # Cyprian Klimaszewski <cyprian.klimaszewski@gmail.com>, 2025.
 # Marcus Cadaver <pilekc@hotmail.com>, 2025.
-<<<<<<< HEAD
-=======
 # "A Thousand Ships (she/her)" <over999ships@gmail.com>, 2025.
 # MiloszS <m.sobczyk.official@gmail.com>, 2025.
 # Pcniado <bratuspro2137@gmail.com>, 2025.
 # Marek J <marek.workspace@gmail.com>, 2026.
->>>>>>> godot/4.6
 msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine editor interface\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
-<<<<<<< HEAD
-"PO-Revision-Date: 2025-09-24 14:14+0000\n"
-"Last-Translator: Marcus Cadaver <pilekc@hotmail.com>\n"
-=======
-"PO-Revision-Date: 2026-01-16 10:01+0000\n"
+"PO-Revision-Date: 2026-02-05 19:02+0000\n"
 "Last-Translator: Tomek <kobewi4e@gmail.com>\n"
->>>>>>> godot/4.6
 "Language-Team: Polish <https://hosted.weblate.org/projects/godot-engine/godot/"
 "pl/>\n"
 "Language: pl\n"
@@ -120,12 +112,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.16-dev\n"
 
-<<<<<<< HEAD
-msgid "Unset"
-msgstr "Niewybrane"
-=======
 msgid "OK"
 msgstr "OK"
 
@@ -275,7 +263,6 @@ msgstr "Drukarka w ogniu"
 
 msgid "unset"
 msgstr "nieustawione"
->>>>>>> godot/4.6
 
 msgid "Physical"
 msgstr "Fizyczny"
@@ -4309,7 +4296,7 @@ msgid ""
 "Select a resource file in the filesystem or in the inspector to adjust import "
 "settings."
 msgstr ""
-"Wybierz plik zasobu z systemu plików lub z inspektoraby zmienić ustawienia "
+"Wybierz plik zasobu z systemu plików lub z inspektora, aby zmienić ustawienia "
 "importu."
 
 msgid ""
