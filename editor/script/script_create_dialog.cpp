@@ -899,6 +899,9 @@ ScriptCreateDialog::ScriptCreateDialog() {
 	}
 	if (default_language >= 0) {
 		language_menu->select(default_language);
+	} else {
+		default_language = 0;
+		language_menu->select(0); // Added by Xan to try to fix a bug.
 	}
 
 	language_menu->connect(SceneStringName(item_selected), callable_mp(this, &ScriptCreateDialog::_language_changed));
