@@ -163,6 +163,7 @@ private:
 		HashSet<Ref<ShaderInclude>> shader_includes;
 		List<String> features;
 		HashMap<String, List<String>> variants;
+		bool completion_show_defines = false;
 	};
 
 private:
