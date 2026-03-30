@@ -8,7 +8,9 @@ namespace Godot
     /// <summary>
     /// Added by Xan for Godot: Conservatory Edition
     /// <para/>
-    /// Extension members for <see cref="Vector2"/> specifically.
+    /// Extension members for <see cref="Vector2"/> specifically. This is because the current fork of the engine relies
+    /// on the type provided by <c>System.Numerics</c>, replacing the built in Godot type. This class provides extension
+    /// methods and members that enable source code to have 1:1 parity with original code.
     /// </summary>
     public static class Vector2Supplements
     {

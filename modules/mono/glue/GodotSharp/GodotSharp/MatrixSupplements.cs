@@ -11,6 +11,11 @@ namespace Godot
     /// Added by Xan for Godot: Conservatory Edition
     /// <para/>
     /// Extension members for <see cref="Transform2D"/>, <see cref="Basis"/>, <see cref="Transform3D"/>, and <see cref="Projection"/>.
+    /// This is because the current fork of the engine provides interoperability with the types provided by <c>System.Numerics</c>,
+    /// supplementing the built in Godot type. This class provides methods that allow translation between the two.
+    /// <para/>
+    /// In general, System types should be preferred when you plan to do a large amount of mathematical operations, as they are hardware
+    /// accelerated and can leverage parts of your CPU specifically designed for this purpose.
     /// </summary>
     public static class MatrixSupplements
     {
