@@ -1,6 +1,6 @@
 @ECHO OFF
 
-SET ACCESSKIT_NAME=accesskit-c-0.18.0
+SET ACCESSKIT_NAME=accesskit-c-0.21.2.1
 :: https://docs.godotengine.org/en/stable/engine_details/development/compiling/compiling_for_windows.html#installing-direct3d-12-requirements
 :: https://github.com/godotengine/godot-accesskit-c-static/releases
 :: https://github.com/godotengine/godot-angle-static/releases
