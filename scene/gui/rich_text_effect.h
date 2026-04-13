@@ -32,6 +32,7 @@
 
 #include "core/io/resource.h"
 #include "core/object/gdvirtual.gen.h"
+#include "scene/gui/rich_text_label.h"
 
 class CharFXTransform : public RefCounted {
 	GDCLASS(CharFXTransform, RefCounted);
@@ -53,6 +54,10 @@ public:
 	uint8_t glyph_count = 0;
 	int32_t relative_index = 0;
 	RID font;
+
+	// Xan's Additions:
+	RichTextLabel *label;
+	uint32_t font_size;
 
 	CharFXTransform();
 	~CharFXTransform();
@@ -95,6 +100,13 @@ public:
 
 	Dictionary get_environment() { return environment; }
 	void set_environment(Dictionary p_environment) { environment = p_environment; }
+
+	// Xan's Additions
+	RichTextLabel *get_label() const { return label; }
+	void set_label(RichTextLabel *p_label) { label = p_label; }
+
+	uint32_t get_font_size() const { return font_size; }
+	void set_font_size(uint32_t p_font_size) { font_size = p_font_size; }
 };
 
 class RichTextEffect : public Resource {

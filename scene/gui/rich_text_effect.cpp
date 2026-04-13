@@ -46,9 +46,14 @@ void RichTextEffect::_bind_methods(){
 
 Variant RichTextEffect::get_bbcode() const {
 	Variant r;
-	if (get_script_instance()) {
-		if (!get_script_instance()->get("bbcode", r)) {
-			String path = get_script_instance()->get_script()->get_path();
+	const ScriptInstance *this_script = get_script_instance();
+	if (this_script) {
+		bool got_bbcode = this_script->get("bbcode", r);
+		if (!got_bbcode) {
+			got_bbcode = this_script->get("BBCode", r);
+		}
+		if (!got_bbcode) {
+			String path = this_script->get_script()->get_path();
 			r = path.get_file().get_basename();
 		}
 	}
@@ -104,17 +109,27 @@ void CharFXTransform::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_font"), &CharFXTransform::get_font);
 	ClassDB::bind_method(D_METHOD("set_font", "font"), &CharFXTransform::set_font);
 
+	// Xan's Additions
+	ClassDB::bind_method(D_METHOD("get_text_label"), &CharFXTransform::get_label);
+	ClassDB::bind_method(D_METHOD("set_text_label", "label"), &CharFXTransform::set_label);
+
+	ClassDB::bind_method(D_METHOD("get_font_size"), &CharFXTransform::get_font_size);
+	ClassDB::bind_method(D_METHOD("set_font_size", "font_size"), &CharFXTransform::set_font_size);
+
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "text_label"), "set_text_label", "get_text_label");
 	ADD_PROPERTY(PropertyInfo(Variant::TRANSFORM2D, "transform"), "set_transform", "get_transform");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2I, "range"), "set_range", "get_range");
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::VECTOR2I, "range"), "set_range", "get_range");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "elapsed_time"), "set_elapsed_time", "get_elapsed_time");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "visible"), "set_visibility", "is_visible");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "outline"), "set_outline", "is_outline");
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::BOOL, "outline"), "set_outline", "is_outline");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "offset"), "set_offset", "get_offset");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "color"), "set_color", "get_color");
-	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "env"), "set_environment", "get_environment");
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::DICTIONARY, "env"), "set_environment", "get_environment");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "glyph_index"), "set_glyph_index", "get_glyph_index");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "glyph_count"), "set_glyph_count", "get_glyph_count");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "glyph_flags"), "set_glyph_flags", "get_glyph_flags");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "relative_index"), "set_relative_index", "get_relative_index");
-	ADD_PROPERTY(PropertyInfo(Variant::RID, "font"), "set_font", "get_font");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "glyph_codepoint"), "set_glyph_codepoint_novariant", "get_glyph_codepoint");
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "glyph_count"), "set_glyph_count", "get_glyph_count");
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "glyph_flags"), "set_glyph_flags", "get_glyph_flags");
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "relative_index"), "set_relative_index", "get_relative_index");
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::RID, "font"), "set_font", "get_font");
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "font_size"), "set_font_size", "get_font_size");
 }

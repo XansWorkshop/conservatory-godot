@@ -1482,6 +1482,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 
 					Point2 fx_offset = Vector2(glyphs[i].x_off, glyphs[i].y_off);
 					RID frid = glyphs[i].font_rid;
+					int fsize = glyphs[i].font_size;
 					uint32_t gl = glyphs[i].index;
 					uint16_t gl_fl = glyphs[i].flags;
 					uint8_t gl_cn = glyphs[i].count;
@@ -1537,7 +1538,12 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 								charfx->color = font_color;
 								charfx->transform = char_xform;
 
+								// Xan's Additions
+								charfx->font_size = fsize;
+
+								charfx->label = this;
 								bool effect_status = custom_effect->_process_effect_impl(charfx);
+								charfx->label = nullptr;
 								custom_fx_ok = effect_status;
 
 								char_xform = charfx->transform;
@@ -5384,8 +5390,18 @@ bool RichTextLabel::is_scroll_following_visible_characters() const {
 }
 
 void RichTextLabel::parse_bbcode(const String &p_bbcode) {
+	if (is_signaling_parse) return;
 	clear();
+
+	is_signaling_parse = true;
+	emit_signal(SNAME("parsing"), false);
+	is_signaling_parse = false;
+
 	append_text(p_bbcode);
+
+	is_signaling_parse = true;
+	emit_signal(SNAME("parsing"), true);
+	is_signaling_parse = false;
 }
 
 String RichTextLabel::_get_tag_value(const String &p_tag) {
@@ -7996,6 +8012,7 @@ void RichTextLabel::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("meta_hover_started", PropertyInfo(Variant::NIL, "meta", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)));
 	ADD_SIGNAL(MethodInfo("meta_hover_ended", PropertyInfo(Variant::NIL, "meta", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)));
 
+	ADD_SIGNAL(MethodInfo("parsing", PropertyInfo(Variant::BOOL, "is_calling_after_parsing")));
 	ADD_SIGNAL(MethodInfo("finished"));
 
 	BIND_ENUM_CONSTANT(LIST_NUMBERS);
