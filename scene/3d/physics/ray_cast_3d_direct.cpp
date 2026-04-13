@@ -281,7 +281,7 @@ void RayCast3DDirect::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("cast", "space"), &RayCast3DDirect::cast);
 	ClassDB::bind_method(D_METHOD("store_in_result", "result"), &RayCast3DDirect::store_in_result);
-	ClassDB::bind_static_method("RayCast3DDirect", D_METHOD("cast_statically", "space", "parameters", "result"), &RayCast3DDirect::cast_statically);
+	ClassDB::bind_static_method(RayCast3DDirect::get_class_static(), D_METHOD("cast_statically", "space", "parameters", "result"), &RayCast3DDirect::cast_statically);
 
 	ClassDB::bind_method(D_METHOD("get_hit_something"), &RayCast3DDirect::get_hit_something);
 	ClassDB::bind_method(D_METHOD("get_godot_object"), &RayCast3DDirect::get_hit_object);
