@@ -45,6 +45,13 @@
 #include "scene/main/node.h"
 #endif
 
+#if defined(_MSC_VER) && !defined(__clang__) && defined(TC_ALLOW_BREAK_ON_ERROR)
+#include "scene/resources/conservatory_debug_bridge.h"
+bool tc_break_on_err() {
+	return ConservatoryDebugBridge::should_break_on_engine_error();
+}
+#endif
+
 static ErrorHandlerList *error_handler_list = nullptr;
 static thread_local bool is_printing_error = false;
 
