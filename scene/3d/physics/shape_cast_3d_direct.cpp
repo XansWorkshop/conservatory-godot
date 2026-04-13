@@ -161,7 +161,7 @@ void ShapeCast3DDirect::set_from_parameters(const Ref<PhysicsShapeQueryParameter
 	shape_rid = p_parameters->get_shape_rid();
 	motion = p_parameters->get_motion();
 	exclude = HashSet<RID>();
-	for (const RID &rid : p_parameters->get_exclude()) {
+	for (const RID rid : p_parameters->get_exclude()) {
 		exclude.insert(rid);
 	}
 	margin = p_parameters->get_margin();
@@ -236,7 +236,7 @@ TypedArray<ShapeCastResult> ShapeCast3DDirect::cast_statically(const RID &p_spac
 	params.collision_mask = p_parameters->get_collision_mask();
 	params.collide_with_bodies = p_parameters->is_collide_with_bodies_enabled();
 	params.collide_with_areas = p_parameters->is_collide_with_areas_enabled();
-	for (const RID &rid : p_parameters->get_exclude()) {
+	for (const RID rid : p_parameters->get_exclude()) {
 		params.exclude.insert(rid);
 	}
 
