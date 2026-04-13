@@ -1912,9 +1912,13 @@ void MaterialStorage::global_shader_parameter_set_override(const StringName &p_n
 }
 
 Variant MaterialStorage::global_shader_parameter_get(const StringName &p_name) const {
+	/*
+	// Xan: Allow this to work always.
 	if (!Engine::get_singleton()->is_editor_hint()) {
 		ERR_FAIL_V_MSG(Variant(), "This function should never be used outside the editor, it can severely damage performance.");
 	}
+	*/
+	WARN_PRINT_ONCE("This function should be avoided if possible, it can severely damage performance.");
 
 	if (!global_shader_uniforms.variables.has(p_name)) {
 		return Variant();
