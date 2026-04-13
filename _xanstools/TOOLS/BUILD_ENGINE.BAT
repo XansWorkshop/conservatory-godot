@@ -148,7 +148,7 @@ ECHO Glue...
 
 :: Generate glue sources
 CD bin
-%EXNAME% --headless --generate-mono-glue "../modules/mono/glue"
+%EXNAME% --verbose --headless --generate-mono-glue "../modules/mono/glue"
 :: Build .NET assemblies
 
 CD..
