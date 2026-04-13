@@ -84,6 +84,12 @@ void Shader::set_include_path(const String &p_path) {
 	include_path = p_path;
 }
 
+String Shader::get_include_path() const {
+	// Used only if the shader does not have a resource path set,
+	// for example during loading stage or when created by code.
+	return include_path;
+}
+
 void Shader::set_code(const String &p_code) {
 	for (const Ref<ShaderInclude> &E : include_dependencies) {
 		E->disconnect_changed(callable_mp(this, &Shader::_dependency_changed));
@@ -279,6 +285,9 @@ void Shader::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_code", "code"), &Shader::set_code);
 	ClassDB::bind_method(D_METHOD("get_code"), &Shader::get_code);
 
+	ClassDB::bind_method(D_METHOD("set_include_path", "path"), &Shader::set_include_path);
+	ClassDB::bind_method(D_METHOD("get_include_path"), &Shader::get_include_path);
+
 	ClassDB::bind_method(D_METHOD("set_default_texture_parameter", "name", "texture", "index"), &Shader::set_default_texture_parameter, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_default_texture_parameter", "name", "index"), &Shader::get_default_texture_parameter, DEFVAL(0));
 
@@ -288,6 +297,7 @@ void Shader::_bind_methods() {
 	ClassDB::set_method_flags(get_class_static(), StringName("inspect_native_shader_code"), METHOD_FLAGS_DEFAULT | METHOD_FLAG_EDITOR);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "code", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_code", "get_code");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "include_path", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_include_path", "get_include_path");
 
 	BIND_ENUM_CONSTANT(MODE_SPATIAL);
 	BIND_ENUM_CONSTANT(MODE_CANVAS_ITEM);
