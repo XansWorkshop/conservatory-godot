@@ -217,7 +217,7 @@ int ShapeCast3DDirect::cast(const RID& p_space) {
 	return result_count;
 }
 
-TypedArray<ShapeCastResult> ShapeCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, const int p_max_results, const Ref<ShapeCastResultExtras> &p_extra_context) {
+TypedArray<ShapeCastResult> ShapeCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, const int p_max_results) {
 	TypedArray<ShapeCastResult> out_result = TypedArray<ShapeCastResult>();
 	ERR_FAIL_COND_V_MSG(p_max_results <= 0, out_result, "The provided results array must be resized before calling cast_statically, as its capacity determines the amount of results.");
 	ERR_FAIL_COND_V_MSG(p_space.is_null(), out_result, "Space is invalid. ShapeCast3DDirect requires a valid space to be passed into its cast method.");
@@ -270,15 +270,12 @@ TypedArray<ShapeCastResult> ShapeCast3DDirect::cast_statically(const RID &p_spac
 			result_instance->set_hit_object_id_and_instance((int64_t)info.collider_id);
 			result_instance->set_shape_index(info.shape);
 			result_instance->set_linear_velocity_at_contact(info.linear_velocity);
+			result_instance->set_collision_safe_fraction(collision_safe_fraction);
+			result_instance->set_collision_unsafe_fraction(collision_unsafe_fraction);
 			out_result.set(result_count++, result_instance);
 		} else {
 			break;
 		}
-	}
-
-	if (p_extra_context.is_valid()) {
-		p_extra_context->set_collision_safe_fraction(collision_safe_fraction);
-		p_extra_context->set_collision_unsafe_fraction(collision_unsafe_fraction);
 	}
 
 	return out_result; //Vector2(collision_safe_fraction, collision_unsafe_fraction);

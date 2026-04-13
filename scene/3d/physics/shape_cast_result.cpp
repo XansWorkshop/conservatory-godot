@@ -106,6 +106,20 @@ void ShapeCastResult::set_linear_velocity_at_contact(const Vector3& p_velocity) 
 	linear_velocity_at_contact = p_velocity;
 }
 
+void ShapeCastResult::set_collision_safe_fraction(real_t p_value) {
+	collision_safe_fraction = p_value;
+}
+real_t ShapeCastResult::get_collision_safe_fraction() const {
+	return collision_safe_fraction;
+}
+
+void ShapeCastResult::set_collision_unsafe_fraction(real_t p_value) {
+	collision_unsafe_fraction = p_value;
+}
+real_t ShapeCastResult::get_collision_unsafe_fraction() const {
+	return collision_unsafe_fraction;
+}
+
 void ShapeCastResult::clear() {
 	success = false;
 	point = Vector3();
@@ -115,6 +129,8 @@ void ShapeCastResult::clear() {
 	hit_object = nullptr;
 	shape_index = 0;
 	linear_velocity_at_contact = Vector3();
+	collision_safe_fraction = 0;
+	collision_unsafe_fraction = 0;
 }
 
 void ShapeCastResult::copy_to(const Ref<ShapeCastResult>& p_destination) const {
@@ -126,6 +142,8 @@ void ShapeCastResult::copy_to(const Ref<ShapeCastResult>& p_destination) const {
 	p_destination->hit_object = hit_object;
 	p_destination->shape_index = shape_index;
 	p_destination->linear_velocity_at_contact = linear_velocity_at_contact;
+	p_destination->collision_safe_fraction = collision_safe_fraction;
+	p_destination->collision_unsafe_fraction = collision_unsafe_fraction;
 }
 
 void ShapeCastResult::_bind_methods() {
@@ -146,6 +164,11 @@ void ShapeCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_shape_index", "shape_index"), &ShapeCastResult::set_shape_index);
 	ClassDB::bind_method(D_METHOD("set_linear_velocity_at_contact", "velocity"), &ShapeCastResult::set_linear_velocity_at_contact);
 
+	ClassDB::bind_method(D_METHOD("set_collision_safe_fraction", "value"), &ShapeCastResult::set_collision_safe_fraction);
+	ClassDB::bind_method(D_METHOD("get_collision_safe_fraction"), &ShapeCastResult::get_collision_safe_fraction);
+	ClassDB::bind_method(D_METHOD("set_collision_unsafe_fraction", "value"), &ShapeCastResult::set_collision_unsafe_fraction);
+	ClassDB::bind_method(D_METHOD("get_collision_unsafe_fraction"), &ShapeCastResult::get_collision_unsafe_fraction);
+
 	ClassDB::bind_method(D_METHOD("clear"), &ShapeCastResult::clear);
 	ClassDB::bind_method(D_METHOD("copy_to", "destination"), &ShapeCastResult::copy_to);
 
@@ -157,36 +180,12 @@ void ShapeCastResult::_bind_methods() {
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "hit_godot_object", PROPERTY_HINT_NONE), "get_hit_godot_object");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_shape_index", PROPERTY_HINT_NONE), "set_shape_index", "get_shape_index");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "linear_velocity_at_contact", PROPERTY_HINT_NONE), "set_linear_velocity_at_contact", "get_linear_velocity_at_contact");
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::FLOAT, "collision_safe_fraction"), "set_collision_safe_fraction", "get_collision_safe_fraction");
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::FLOAT, "collision_unsafe_fraction"), "set_collision_unsafe_fraction", "get_collision_unsafe_fraction");
 }
 
 ShapeCastResult::ShapeCastResult() {
 	clear();
-}
-
-void ShapeCastResultExtras::set_collision_safe_fraction(real_t p_value) {
-	collision_safe_fraction = p_value;
-}
-
-real_t ShapeCastResultExtras::get_collision_safe_fraction() const {
-	return collision_safe_fraction;
-}
-
-void ShapeCastResultExtras::set_collision_unsafe_fraction(real_t p_value) {
-	collision_unsafe_fraction = p_value;
-}
-
-real_t ShapeCastResultExtras::get_collision_unsafe_fraction() const {
-	return collision_unsafe_fraction;
-}
-
-void ShapeCastResultExtras::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_collision_safe_fraction", "value"), &ShapeCastResultExtras::set_collision_safe_fraction);
-	ClassDB::bind_method(D_METHOD("get_collision_safe_fraction"), &ShapeCastResultExtras::get_collision_safe_fraction);
-	ClassDB::bind_method(D_METHOD("set_collision_unsafe_fraction", "value"), &ShapeCastResultExtras::set_collision_unsafe_fraction);
-	ClassDB::bind_method(D_METHOD("get_collision_unsafe_fraction"), &ShapeCastResultExtras::get_collision_unsafe_fraction);
-
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::FLOAT, "collision_safe_fraction"), "set_collision_safe_fraction", "get_collision_safe_fraction");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::FLOAT, "collision_unsafe_fraction"), "set_collision_unsafe_fraction", "get_collision_unsafe_fraction");
 }
 
 #endif // PHYSICS_3D_DISABLED

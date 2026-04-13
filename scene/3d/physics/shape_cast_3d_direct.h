@@ -100,7 +100,7 @@ public:
 
 	void set_from_parameters(const Ref<PhysicsShapeQueryParameters3D> &p_parameters);
 	int cast(const RID &p_space);
-	static TypedArray<ShapeCastResult> cast_statically(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, const int p_max_results, const Ref<ShapeCastResultExtras> &p_extra_context);
+	static TypedArray<ShapeCastResult> cast_statically(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, const int p_max_results);
 
 	void add_exception_rid(const RID &p_rid);
 	void add_exception(const CollisionObject3D *p_node);

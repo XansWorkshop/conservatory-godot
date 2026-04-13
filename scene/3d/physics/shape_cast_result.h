@@ -58,6 +58,8 @@ private:
 	Object *hit_object = nullptr;
 	int shape_index = 0;
 	Vector3 linear_velocity_at_contact;
+	real_t collision_safe_fraction = 0;
+	real_t collision_unsafe_fraction = 0;
 
 protected:
 	static void _bind_methods();
@@ -89,27 +91,16 @@ public:
 	Vector3 get_linear_velocity_at_contact() const;
 	void set_linear_velocity_at_contact(const Vector3 &p_velocity);
 
-	void clear();
-	void copy_to(const Ref<ShapeCastResult> &p_destination) const;
-
-	ShapeCastResult();
-};
-
-class ShapeCastResultExtras : public RefCounted {
-	GDCLASS(ShapeCastResultExtras, RefCounted);
-
-	real_t collision_safe_fraction = 0;
-	real_t collision_unsafe_fraction = 0;
-
-protected:
-	static void _bind_methods();
-
-public:
 	void set_collision_safe_fraction(real_t p_value);
 	real_t get_collision_safe_fraction() const;
 
 	void set_collision_unsafe_fraction(real_t p_value);
 	real_t get_collision_unsafe_fraction() const;
+
+	void clear();
+	void copy_to(const Ref<ShapeCastResult> &p_destination) const;
+
+	ShapeCastResult();
 };
 
 #endif // PHYSICS_3D_DISABLED
