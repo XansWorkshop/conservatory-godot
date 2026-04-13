@@ -17,11 +17,12 @@ The external libraries needed are in here, for the most part, but there is some 
 3. You need Python 3.12.*+ to run this build tool.
 
 ## LIBRARIES
-
+(THIS IS IN SETUP.BAT, YOU CAN RUN IT TO DO THIS FOR YOU)
 1. Go to `misc/scripts`
 1. Run install_accesskit.py
 2. Run install_angle.py
 3. Run install_d3d12_sdk_windows.py
+4. Run install_winrt.py
 
 ## BUILDING
 
