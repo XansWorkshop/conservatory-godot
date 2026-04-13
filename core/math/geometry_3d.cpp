@@ -31,6 +31,7 @@
 #include "geometry_3d.h"
 
 #include "core/templates/hash_map.h"
+#include "core/math/convex_hull.h"
 
 void Geometry3D::get_closest_points_between_segments(const Vector3 &p_p0, const Vector3 &p_p1, const Vector3 &p_q0, const Vector3 &p_q1, Vector3 &r_ps, Vector3 &r_qt) {
 	// Based on David Eberly's Computation of Distance Between Line Segments algorithm.
@@ -857,6 +858,20 @@ Vector<Vector3> Geometry3D::compute_convex_mesh_points(const Plane *p_planes, in
 	}
 
 	return points;
+}
+
+Vector<Plane> Geometry3D::compute_convex_mesh_planes(const Vector<Vector3> &p_points) {
+	MeshData mdat;
+	Error error = ConvexHullComputer::convex_hull(p_points, mdat);
+	Vector<Plane> result;
+	if (error == OK) {
+		const int size = mdat.faces.size();
+		for (int i = 0; i < size; ++i) {
+			MeshData::Face face = mdat.faces[i];
+			result.push_back(face.plane);
+		}
+	}
+	return result;
 }
 
 #define square(m_s) ((m_s) * (m_s))

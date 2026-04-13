@@ -1175,6 +1175,17 @@ Vector<Vector3> Geometry3D::compute_convex_mesh_points(const TypedArray<Plane> &
 	return ret;
 }
 
+TypedArray<Plane> Geometry3D::compute_convex_mesh_planes(const Vector<Vector3> &p_points) {
+	Vector<Plane> planes_vec = ::Geometry3D::compute_convex_mesh_planes(p_points);
+	TypedArray<Plane> result;
+	int size = planes_vec.size();
+	result.resize(size);
+	for (int i = 0; i < size; ++i) {
+		result.set(i, planes_vec[i]);
+	}
+	return result;
+}
+
 TypedArray<Plane> Geometry3D::build_box_planes(const Vector3 &p_extents) {
 	Variant ret = ::Geometry3D::build_box_planes(p_extents);
 	return ret;

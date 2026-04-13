@@ -600,6 +600,9 @@ Vector<Plane> build_capsule_planes(real_t p_radius, real_t p_height, int p_sides
 
 Vector<Vector3> compute_convex_mesh_points(const Plane *p_planes, int p_plane_count);
 
+// Added by Xan. Uses convex_hull to get the planes from an arbitrary point cloud.
+static Vector<Plane> compute_convex_mesh_planes(const Vector<Vector3> &p_points);
+
 #define FINDMINMAX(x0, x1, x2, min, max) \
 	min = max = x0; \
 	if (x1 < min) { \
