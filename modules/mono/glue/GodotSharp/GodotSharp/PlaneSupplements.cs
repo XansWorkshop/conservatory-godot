@@ -155,6 +155,16 @@ namespace Godot
         public static bool IsPointOver(this Plane @this, Vector3 point) => Plane.DotNormal(@this, point) > @this.D;
 
         /// <summary>
+        /// Returns <see langword="true"/> if <paramref name="point"/> is located above the plane, or lies within
+        /// the plane.
+        /// </summary>
+        /// <param name="this">This plane.</param>
+        /// <param name="point">The point to check.</param>
+        /// <returns>A <see langword="bool"/> for whether or not the point is above or within the plane.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPointOnOrOver(this Plane @this, Vector3 point) => Plane.DotNormal(@this, point) >= @this.D;
+
+        /// <summary>
         /// Returns the plane scaled to unit length.
         /// </summary>
         /// <param name="this">This plane.</param>
@@ -254,6 +264,17 @@ namespace Godot
             public static Plane operator -(Plane plane)
             {
                 return (-plane.AsVector4()).AsPlane();
+            }
+
+            /// <summary>
+            /// Create a new <see cref="Plane"/> at the provided <paramref name="point"/> with
+            /// the provided <paramref name="normal"/>.
+            /// </summary>
+            /// <param name="point">The location of the plane's center.</param>
+            /// <param name="normal">The direction that the plane is facing.</param>
+            public static Plane CreateAt(Vector3 point, Vector3 normal) {
+                _normal = normal;
+                _d = normal.Dot(point);
             }
 
             /*

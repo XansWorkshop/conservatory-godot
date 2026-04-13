@@ -1,19 +1,32 @@
 The external libraries needed are in here, for the most part, but there is some additional work to do. This will be updated as time goes on.
 
-TO BUILD:
-PRELIMINARY:
-1. Run `/misc/scripts/install_d3d12_sdk_windows.py` (this is both d3d12 stuff and agile stuff)
-2. Download https://github.com/godotengine/godot-accesskit-c-static/releases and put it into the MODULES folder
-3. Make sure the contents of BUILD_ENGINE.BAT refer to the correct AccessKit version.
+# CATCHING UP:
 
-THEN:
-1. Start BUILD_ENGINE.BAT, then...
-2. The chosen options are #2 (Debug) and #5 (Release, Memory Tracked). The latter is the same as a stock release build, but the memory allocator stats are enabled to keep track of the amount of engine-allocated memory.
-    2a. If you choose a double precision build, modify the game's C# project to include the same macro: REAL_T_IS_DOUBLE. The Conservatory handles this automagically.
-    2b. ^ This is not recommended, as a lot of the hardware acceleration uses 128 bit vectors, aka m128, which most platforms support. m256 is rarer.
-3. Choose MSVC for debugging and fast iteration of engine builds. Choose MINGW for release.
-    3a. mingw's debug symbols aren't recognized by Visual Studio; it is not recommended for debug builds.
+1. This is largely the same as Godot's existing workflow for building the engine.
+2. You use things in the scons_profiles folder to set various build flags in scons (the build system).
+3. Most of these parameters are documented on Godot's site, with modules being special (see notes at the bottom of this document).
+4. You have also modified the build script (SConstruct in the root repo folder) to add new build parameters, "allow_break_on_error" and "allow_release_memory_tracking".
+5. Most of the new automagic build stuff is in your BUILD_ENGINE.BAT file.
 
-NOTES:
+# TO BUILD:
+
+## PREPARATION
+
+1. The debug build of the engine is built using MSVC. This comes with Visual Studio. It's generally quick to build the engine, but isn't great otherwise. The main reason it is used is because Visual Studio can debug MSVC things from the C# side when developing the game.
+2. The release build of the engine is built using MINGW. To future Xan: I remember that finding where to install this was a pain in the neck, but I don't remember the steps I took to do so. Please edit this instructions page in the future when you have to inevitably install it again.
+3. You need Python 3.12.*+ to run this build tool.
+
+## LIBRARIES
+
+1. Run `/misc/scripts/install_d3d12_sdk_windows.py` (this installs both d3d12 stuff and agile stuff)
+2. Download https://github.com/godotengine/godot-accesskit-c-static/releases and extract it into the MODULES folder. Edit BUILD_ENGINE.BAT to ensure the ACCESSKIT_NAME variable matches the name of the extracted folder.
+
+## BUILDING
+
+1. BUILD_ENGINE.BAT is a wizard, but in general your preferred options are #2 for debug (Debug Build), and #5 for release (Release Build, Memory Tracking).
+2. Double Precision is discouraged (and, as of writing, flat out not supported because you use System.Numerics.Vector3)
+
+## NOTES
+
 1. Glue exports to `%CURRENTUSER%/LocalNuget` i.e. `C:\Users\Xan\LocalNuget`. You need to add this as a package source to Visual Studio or whatever your IDE is.
-2. In the buildscript python, module_*_enabled is determined by the modules folder in the source directory. The name of the folder is what replaces the *.
+2. In the buildscript python, module_*_enabled fields have their names determined by the modules folder in the source directory.

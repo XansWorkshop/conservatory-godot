@@ -1,9 +1,17 @@
 @ECHO OFF
 
-SET ACCESSKIT_NAME=accesskit-c-0.21.2.1
+SET ACCESSKIT_NAME=accesskit-c-0.21.2-1
 :: https://docs.godotengine.org/en/stable/engine_details/development/compiling/compiling_for_windows.html#installing-direct3d-12-requirements
 :: https://github.com/godotengine/godot-accesskit-c-static/releases
 :: https://github.com/godotengine/godot-angle-static/releases
+
+:: Set this to nothing (or 0) if you are NOT using System.Numerics.Vector* types in C# as a supplement to Godot's types.
+:: As a note, this requires a LOT of work to switch on and off, as it involves going in and modifying the GodotSharp C# project files (all of them!)
+:: to (un)define the applicable compiler directive. Everything was put under a static branch though.
+
+:: But to make things even more complex, even if you do disable this, The Conservatory is hardcoded to use float now. It used to not be, but realistically
+:: double is just too slow and too precise to be useful. That, and every CPU can optimize float (SSE), but only some can optimize double (AVX).
+SET USING_SYSTEM_NUMERICS_VECTORS=1
 
 CD..
 SET XANSTOOLS_FOLDER=%CD%/
@@ -16,6 +24,7 @@ ECHO %CONSERVATORY_GODOT_FOLDER%
 ECHO If these directories are correct, you may continue.
 ECHO.
 
+:GET_OPTION
 ECHO What are you building this fork for? Press...
 ECHO [1] for The Conservatory (Release)
 ECHO [2] for The Conservatory (Debug)
@@ -33,18 +42,23 @@ if %ERRORLEVEL%==2 GOTO TYPE_CONSERVATORY_DEBUG
 if %ERRORLEVEL%==1 GOTO TYPE_CONSERVATORY_RELEASE
 GOTO ASKEXP
 
-:: godot.<platform>.<target>[.dev][.double].<arch>[.<extra_suffix>][.<ext>]
+:DOUBLE_NOT_SUPPORTED
+ECHO Currently, The Conservatory's C# API is using System.Numerics for its spatial types.
+ECHO This dramatically optimizes the performance of Vector2/3/4 types, but does not
+ECHO support double precision.
+ECHO.
+ECHO For this reason, double precision is not supported at this time. 
+ECHO Press any key to make a new selection . . .
+PAUSE >NUL
+CLS
+GOTO GET_OPTION
 
-:TYPE_GENERAL_EXPORT
-SET BUILD_NAME=xansworkshop
-SET PROFILE="module_mono_enabled=yes" "extra_suffix=%BUILD_NAME%"
-SET EXNAME=godot.windows.editor.x86_64.%BUILD_NAME%.mono.exe
-SET DOUBLE=
-GOTO ASKEXP
+:: godot.<platform>.<target>[.dev][.double].<arch>[.<extra_suffix>][.<ext>]
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :TYPE_CONSERVATORY_DEBUG_DOUBLE
+IF %USING_SYSTEM_NUMERICS_VECTORS%==1 GOTO DOUBLE_NOT_SUPPORTED
 SET BUILD_NAME=conservatory_edition
 SET PROFILE="profile=%XANSTOOLS_FOLDER%TOOLS/scons_profiles/conservatory_debug_double.py" "extra_suffix=%BUILD_NAME%"
 SET EXNAME=godot.windows.editor.dev.double.x86_64.%BUILD_NAME%.mono.exe
@@ -61,6 +75,7 @@ GOTO ASKEXP
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :TYPE_CONSERVATORY_RELEASE_DOUBLE
+IF %USING_SYSTEM_NUMERICS_VECTORS%==1 GOTO DOUBLE_NOT_SUPPORTED
 SET BUILD_NAME=conservatory_edition
 SET PROFILE="profile=%XANSTOOLS_FOLDER%TOOLS/scons_profiles/conservatory_release_double.py" "extra_suffix=%BUILD_NAME%"
 SET EXNAME=godot.windows.editor.double.x86_64.%BUILD_NAME%.mono.exe
@@ -77,6 +92,7 @@ GOTO ASKEXP
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :TYPE_CONSERVATORY_RELEASE_DOUBLE_RUNTIME_METRICS
+IF %USING_SYSTEM_NUMERICS_VECTORS%==1 GOTO DOUBLE_NOT_SUPPORTED
 SET BUILD_NAME=conservatory_edition
 SET PROFILE="profile=%XANSTOOLS_FOLDER%TOOLS/scons_profiles/conservatory_release_double_memtracking.py" "extra_suffix=%BUILD_NAME%"
 SET EXNAME=godot.windows.editor.double.x86_64.%BUILD_NAME%.mono.exe
@@ -132,7 +148,9 @@ CD bin
 CD..
 SET LOCAL_NUGET=%USERPROFILE%\LocalNuget
 SET PYTHONIOENCODING="UTF-8"
+IF NOT %USING_SYSTEM_NUMERICS_VECTORS%==1 GOTO BUILD_ASSEMBLIES
 python ./modules/mono/build_scripts/xans_comical_vector_axis_hack.py "%CONSERVATORY_GODOT_FOLDER%"
+:BUILD_ASSEMBLIES
 python ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows %DOUBLE% --no-deprecated --push-nupkgs-local "%LOCAL_NUGET%"
 
 ECHO.
