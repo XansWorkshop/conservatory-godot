@@ -530,6 +530,7 @@ private:
 	std::atomic<bool> validating;
 	std::atomic<double> loaded;
 	std::atomic<bool> parsing_bbcode;
+	std::atomic<bool> signaling_parsing_bbcode;
 
 	uint64_t loading_started = 0;
 	int progress_delay = 1000;
@@ -755,9 +756,6 @@ private:
 
 	bool internal_stack_editing = false;
 	bool stack_externally_modified = false;
-
-	// Xan's Addition
-	bool is_signaling_parse = false;
 
 	void _accessibility_action_menu(const Variant &p_data);
 	void _accessibility_scroll_down(const Variant &p_data);

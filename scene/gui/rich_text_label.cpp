@@ -5390,18 +5390,20 @@ bool RichTextLabel::is_scroll_following_visible_characters() const {
 }
 
 void RichTextLabel::parse_bbcode(const String &p_bbcode) {
-	if (is_signaling_parse) return;
+	if (signaling_parsing_bbcode.load()) {
+		return;
+	}
 	clear();
 
-	is_signaling_parse = true;
+	signaling_parsing_bbcode.store(true);
 	emit_signal(SNAME("parsing"), false);
-	is_signaling_parse = false;
+	signaling_parsing_bbcode.store(false);
 
 	append_text(p_bbcode);
 
-	is_signaling_parse = true;
+	signaling_parsing_bbcode.store(true);
 	emit_signal(SNAME("parsing"), true);
-	is_signaling_parse = false;
+	signaling_parsing_bbcode.store(false);
 }
 
 String RichTextLabel::_get_tag_value(const String &p_tag) {
@@ -8459,6 +8461,7 @@ RichTextLabel::RichTextLabel(const String &p_text) {
 	validating.store(false);
 	stop_thread.store(false);
 	parsing_bbcode.store(false);
+	signaling_parsing_bbcode.store(false);
 
 	set_clip_contents(true);
 
