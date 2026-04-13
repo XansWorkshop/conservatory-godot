@@ -117,6 +117,11 @@ Vector3 KinematicCollision3D::get_collider_velocity(int p_collision_index) const
 	return result.collisions[p_collision_index].collider_velocity;
 }
 
+Vector3 KinematicCollision3D::get_collider_angular_velocity(int p_collision_index) const {
+	ERR_FAIL_INDEX_V(p_collision_index, result.collision_count, Vector3());
+	return result.collisions[p_collision_index].collider_angular_velocity;
+}
+
 void KinematicCollision3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_travel"), &KinematicCollision3D::get_travel);
 	ClassDB::bind_method(D_METHOD("get_remainder"), &KinematicCollision3D::get_remainder);
@@ -132,4 +137,5 @@ void KinematicCollision3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_collider_shape", "collision_index"), &KinematicCollision3D::get_collider_shape, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_collider_shape_index", "collision_index"), &KinematicCollision3D::get_collider_shape_index, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_collider_velocity", "collision_index"), &KinematicCollision3D::get_collider_velocity, DEFVAL(0));
+	ClassDB::bind_method(D_METHOD("get_collider_angular_velocity", "collision_index"), &KinematicCollision3D::get_collider_angular_velocity, DEFVAL(0));
 }
