@@ -25,6 +25,7 @@ namespace Godot {
 
 	}
 
+    /*
     
 	partial class SimulationDomain {
 
@@ -38,6 +39,7 @@ namespace Godot {
         // MAGIC BEHAVIOR: Custom docs generator looks for "Ptr" ending to disable calling and delegation.
 
     }
+    */
 
     partial class ConservatoryDebugBridge {
 
