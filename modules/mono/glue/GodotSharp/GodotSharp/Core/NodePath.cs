@@ -51,36 +51,12 @@ namespace Godot
         /// <summary>
         /// A quick, shared reference to a nodepath created as <c>"."</c>, representing the node itself.
         /// </summary>
-        public static NodePath Self
-        {
-            get
-            {
-                if (Engine.IsEditorHint())
-                {
-                    return new NodePath("."); // Create a new instance in editor to prevent assembly unloading problems.
-                }
-                // Cache in runtime.
-                return _self ??= new NodePath(".");
-            }
-        }
-        private static NodePath? _self = null;
+        public static NodePath Self => Engine.IsEditorHint() ? new NodePath(".") : (field ??= new NodePath("."));
 
         /// <summary>
         /// A quick, shared reference to a nodepath created as <c>".."</c>, representing the parent to a node.
         /// </summary>
-        public static NodePath Parent
-        {
-            get
-            {
-                if (Engine.IsEditorHint())
-                {
-                    return new NodePath(".."); // Create a new instance in editor to prevent assembly unloading problems.
-                }
-                // Cache in runtime.
-                return _parent ??= new NodePath("..");
-            }
-        }
-        private static NodePath? _parent = null;
+        public static NodePath Parent => Engine.IsEditorHint() ? new NodePath("..") : (field ??= new NodePath(".."));
 
         ~NodePath()
         {
