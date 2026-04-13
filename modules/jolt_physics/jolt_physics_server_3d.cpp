@@ -415,7 +415,7 @@ void JoltPhysicsServer3D::area_set_shape_disabled(RID p_area, int p_shape_idx, b
 
 bool JoltPhysicsServer3D::area_get_shape_disabled(RID p_area, int p_shape_idx) const {
 	JoltArea3D *area = area_owner.get_or_null(p_area);
-	ERR_FAIL_NULL(area);
+	ERR_FAIL_NULL_V(area, false);
 
 	return area->is_shape_disabled(p_shape_idx);
 }
@@ -672,7 +672,7 @@ void JoltPhysicsServer3D::body_set_shape_disabled(RID p_body, int p_shape_idx, b
 
 bool JoltPhysicsServer3D::body_get_shape_disabled(RID p_body, int p_shape_idx) const {
 	JoltBody3D *body = body_owner.get_or_null(p_body);
-	ERR_FAIL_NULL(body);
+	ERR_FAIL_NULL_V(body, false);
 
 	return body->is_shape_disabled(p_shape_idx);
 }

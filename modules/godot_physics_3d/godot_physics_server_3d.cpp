@@ -340,8 +340,8 @@ void GodotPhysicsServer3D::area_set_shape_disabled(RID p_area, int p_shape_idx, 
 
 bool GodotPhysicsServer3D::area_get_shape_disabled(RID p_area, int p_shape_idx) const {
 	GodotArea3D *area = area_owner.get_or_null(p_area);
-	ERR_FAIL_NULL(area);
-	ERR_FAIL_INDEX(p_shape_idx, area->get_shape_count());
+	ERR_FAIL_NULL_V(area, false);
+	ERR_FAIL_INDEX_V(p_shape_idx, area->get_shape_count(), false);
 	FLUSH_QUERY_CHECK(area);
 	return area->is_shape_disabled(p_shape_idx);
 }
@@ -568,10 +568,9 @@ void GodotPhysicsServer3D::body_set_shape_disabled(RID p_body, int p_shape_idx, 
 
 bool GodotPhysicsServer3D::body_get_shape_disabled(RID p_body, int p_shape_idx) const {
 	GodotBody3D *body = body_owner.get_or_null(p_body);
-	ERR_FAIL_NULL(body);
-	ERR_FAIL_INDEX(p_shape_idx, body->get_shape_count());
+	ERR_FAIL_NULL_V(body, false);
+	ERR_FAIL_INDEX_V(p_shape_idx, body->get_shape_count(), false);
 	FLUSH_QUERY_CHECK(body);
-
 	return body->is_shape_disabled(p_shape_idx);
 }
 
