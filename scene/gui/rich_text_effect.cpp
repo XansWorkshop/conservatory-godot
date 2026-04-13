@@ -116,7 +116,6 @@ void CharFXTransform::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_font_size"), &CharFXTransform::get_font_size);
 	ClassDB::bind_method(D_METHOD("set_font_size", "font_size"), &CharFXTransform::set_font_size);
 
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "text_label"), "set_text_label", "get_text_label");
 	ADD_PROPERTY(PropertyInfo(Variant::TRANSFORM2D, "transform"), "set_transform", "get_transform");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::VECTOR2I, "range"), "set_range", "get_range");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "elapsed_time"), "set_elapsed_time", "get_elapsed_time");
@@ -130,5 +129,8 @@ void CharFXTransform::_bind_methods() {
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "glyph_flags"), "set_glyph_flags", "get_glyph_flags");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "relative_index"), "set_relative_index", "get_relative_index");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::RID, "font"), "set_font", "get_font");
+
+	// Xan's Additions
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "text_label"), "set_text_label", "get_text_label");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "font_size"), "set_font_size", "get_font_size");
 }
