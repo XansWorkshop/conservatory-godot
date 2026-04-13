@@ -365,6 +365,10 @@ opts.Add("rcflags", "Custom flags for Windows resource compiler")
 opts.Add("c_compiler_launcher", "C compiler launcher (e.g. `ccache`)")
 opts.Add("cpp_compiler_launcher", "C++ compiler launcher (e.g. `ccache`)")
 
+# Xan's Customs
+opts.Add(BoolVariable("allow_break_on_error", "Attached debuggers will receive __debugbreak() when an error occurs. The .NET Debugger is also prompted to break, but this requires special code from The Conservatory (ConservatoryDebugBridge.cs)", False))
+opts.Add(BoolVariable("allow_release_memory_tracking", "Memory tracking metrics, which are ordinarily disabled unless the engine is in debug mode, will be allowed to function anyway. This has a slight, almost imperceptible performance cost. It also increases memory usage by some small amount.", False))
+
 # Update the environment to have all above options defined
 # in following code (especially platform and custom_modules).
 opts.Update(env)
@@ -377,6 +381,12 @@ if env["import_env_vars"]:
     for env_var in str(env["import_env_vars"]).split(","):
         if env_var in os.environ:
             env["ENV"][env_var] = os.environ[env_var]
+
+# Xan's Customs:
+if env["allow_break_on_error"]:
+    env.Append(CPPDEFINES=["TC_ALLOW_BREAK_ON_ERROR"])
+if env["allow_release_memory_tracking"]:
+    env.Append(CPPDEFINES=["TC_ALLOW_RELEASE_MEMORY_TRACKING"])
 
 # Platform selection: validate input, and add options.
 
