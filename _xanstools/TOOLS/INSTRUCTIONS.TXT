@@ -1,0 +1,34 @@
+The external libraries needed are in here, for the most part, but there is some additional work to do. This will be updated as time goes on.
+
+# CATCHING UP:
+
+1. This is largely the same as Godot's existing workflow for building the engine.
+2. You use things in the scons_profiles folder to set various build flags in scons (the build system).
+3. Most of these parameters are documented on Godot's site, with modules being special (see notes at the bottom of this document).
+4. You have also modified the build script (SConstruct in the root repo folder) to add new build parameters, "allow_break_on_error" and "allow_release_memory_tracking".
+5. Most of the new automagic build stuff is in your BUILD_ENGINE.BAT file.
+
+# TO BUILD:
+
+## PREPARATION
+
+1. The debug build of the engine is built using MSVC. This comes with Visual Studio. It's generally quick to build the engine, but isn't great otherwise. The main reason it is used is because Visual Studio can debug MSVC things from the C# side when developing the game.
+2. The release build of the engine is built using MINGW. To future Xan: I remember that finding where to install this was a pain in the neck, but I don't remember the steps I took to do so. Please edit this instructions page in the future when you have to inevitably install it again.
+3. You need Python 3.12.*+ to run this build tool.
+
+## LIBRARIES
+
+1. Go to `misc/scripts`
+1. Run install_accesskit.py
+2. Run install_angle.py
+3. Run install_d3d12_sdk_windows.py
+
+## BUILDING
+
+1. BUILD_ENGINE.BAT is a wizard, but in general your preferred options are #2 for debug (Debug Build), and #5 for release (Release Build, Memory Tracking).
+2. Double Precision is discouraged (and, as of writing, flat out not supported because you use System.Numerics.Vector3)
+
+## NOTES
+
+1. Glue exports to `%CURRENTUSER%/LocalNuget` i.e. `C:\Users\Xan\LocalNuget`. You need to add this as a package source to Visual Studio or whatever your IDE is.
+2. In the buildscript python, module_*_enabled fields have their names determined by the modules folder in the source directory.
