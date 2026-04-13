@@ -7,6 +7,7 @@ namespace Godot {
 
     #region Class Modifications
 
+    /*
     partial class CharFXTransform {
 
 		/// <summary>
@@ -24,6 +25,7 @@ namespace Godot {
 		}
 
 	}
+    */
 
     /*
     
