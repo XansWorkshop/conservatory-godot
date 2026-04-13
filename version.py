@@ -1,9 +1,10 @@
 short_name = "godot"
-name = "Godot Engine"
+name = "Godot Engine: Conservatory Edition"
 major = 4
 minor = 7
 patch = 0
 status = "dev"
+build = "conservatory_edition"
 module_config = ""
-website = "https://godotengine.org"
-docs = "latest"
+website = "https://xansworkshop.com/conservatory/blog/site/engine"
+docs = "4.7"
