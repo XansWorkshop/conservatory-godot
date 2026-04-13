@@ -321,9 +321,49 @@ EditorThemeManager::ThemeConfiguration EditorThemeManager::_create_theme_config(
 
 			// A negative contrast rate looks better for light themes, since it better follows the natural order of UI "elevation".
 			const float light_contrast = -0.06;
+			float preset_relationship_line_opacity = 0.1;
 
 			// Please use alphabetical order if you're adding a new color preset here.
-			if (config.preset == "Black (OLED)") {
+			// no fuck off *incinerates you* (i don't hate you)
+			if (config.preset == "Xan's Workshop") {
+				preset_accent_color = Color::from_rgba8(189, 88, 70);
+				preset_base_color = Color::from_rgba8(56, 51, 51);
+				preset_contrast = 0.4;
+			} else if (config.preset == "A Divine Laboratory (Light)") {
+				preset_accent_color = Color::from_rgba8(106, 165, 176);
+				preset_base_color = Color::from_rgba8(186, 199, 204);
+				preset_contrast = -0.1;
+				preset_draw_extra_borders = true;
+				preset_relationship_line_opacity = 0.25;
+			} else if (config.preset == "The Iterator Project") {
+				preset_accent_color = Color::from_rgba8(116, 232, 152);
+				preset_base_color = Color::from_rgba8(43, 46, 43);
+				preset_contrast = 0.2;
+				preset_draw_extra_borders = true;
+				preset_relationship_line_opacity = 0.25;
+			} else if (config.preset == "Cultural Analysis: Gaian") {
+				preset_accent_color = Color::from_rgba8(78, 161, 255);
+				preset_base_color = Color::from_rgba8(113, 122, 126);
+				preset_contrast = 0.3;
+				preset_draw_extra_borders = true;
+				preset_relationship_line_opacity = 0.2;
+			} else if (config.preset == "Cultural Analysis: Avelian") {
+				preset_accent_color = Color::from_rgba8(206, 182, 95);
+				preset_base_color = Color::from_rgba8(92, 92, 92);
+				preset_contrast = 0.2;
+				preset_draw_extra_borders = true;
+				preset_relationship_line_opacity = 0.2;
+			} else if (config.preset == "Cultural Analysis: Kirivian") {
+				preset_accent_color = Color::from_rgba8(112, 163, 121);
+				preset_base_color = Color::from_rgba8(66, 69, 66);
+				preset_contrast = 0.2;
+				preset_relationship_line_opacity = 0.25;
+			} else if (config.preset == "Cultural Analysis: Novan") {
+				preset_accent_color = Color::from_rgba8(78, 227, 255);
+				preset_base_color = Color::from_rgba8(35, 24, 29);
+				preset_contrast = 0.6;
+				preset_relationship_line_opacity = 0.15;
+			} else if (config.preset == "Black (OLED)") {
 				preset_accent_color = Color(0.45, 0.75, 1.0);
 				preset_base_color = Color(0, 0, 0);
 				// The contrast rate value is irrelevant on a fully black theme.
@@ -366,6 +406,7 @@ EditorThemeManager::ThemeConfiguration EditorThemeManager::_create_theme_config(
 			config.contrast = preset_contrast;
 			config.draw_extra_borders = preset_draw_extra_borders;
 			config.icon_saturation = preset_icon_saturation;
+			config.relationship_line_opacity = preset_relationship_line_opacity;
 
 			EditorSettings::get_singleton()->set_initial_value("interface/theme/accent_color", config.accent_color);
 			EditorSettings::get_singleton()->set_initial_value("interface/theme/base_color", config.base_color);
