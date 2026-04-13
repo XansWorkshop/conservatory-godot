@@ -221,6 +221,7 @@ public:
 	EXBIND0R(RID, concave_polygon_shape_create)
 	EXBIND0R(RID, heightmap_shape_create)
 	EXBIND0R(RID, custom_shape_create)
+	EXBIND1RC(bool, is_shape, RID)
 
 	EXBIND2(shape_set_data, RID, const Variant &)
 	EXBIND2(shape_set_custom_solver_bias, RID, real_t)
@@ -235,6 +236,7 @@ public:
 	/* SPACE API */
 
 	EXBIND0R(RID, space_create)
+	EXBIND1RC(bool, is_space, RID)
 	EXBIND2(space_set_active, RID, bool)
 	EXBIND1RC(bool, space_is_active, RID)
 
@@ -251,6 +253,7 @@ public:
 
 	//EXBIND0RID(area);
 	EXBIND0R(RID, area_create)
+	EXBIND1RC(bool, is_area, RID)
 
 	EXBIND2(area_set_space, RID, RID)
 	EXBIND1RC(RID, area_get_space, RID)
@@ -259,6 +262,7 @@ public:
 	EXBIND3(area_set_shape, RID, int, RID)
 	EXBIND3(area_set_shape_transform, RID, int, const Transform3D &)
 	EXBIND3(area_set_shape_disabled, RID, int, bool)
+	EXBIND2RC(bool, area_get_shape_disabled, RID, int)
 
 	EXBIND1RC(int, area_get_shape_count, RID)
 	EXBIND2RC(RID, area_get_shape, RID, int)
@@ -292,6 +296,7 @@ public:
 
 	//EXBIND2RID(body,BodyMode,bool);
 	EXBIND0R(RID, body_create)
+	EXBIND1RC(bool, is_body, RID)
 
 	EXBIND2(body_set_space, RID, RID)
 	EXBIND1RC(RID, body_get_space, RID)
@@ -303,6 +308,7 @@ public:
 	EXBIND3(body_set_shape, RID, int, RID)
 	EXBIND3(body_set_shape_transform, RID, int, const Transform3D &)
 	EXBIND3(body_set_shape_disabled, RID, int, bool)
+	EXBIND2RC(bool, body_get_shape_disabled, RID, int)
 
 	EXBIND1RC(int, body_get_shape_count, RID)
 	EXBIND2RC(RID, body_get_shape, RID, int)
@@ -410,6 +416,7 @@ public:
 	/* SOFT BODY API */
 
 	EXBIND0R(RID, soft_body_create)
+	EXBIND1RC(bool, is_soft_body, RID)
 
 	EXBIND2(soft_body_update_rendering_server, RID, RequiredParam<PhysicsServer3DRenderingServerHandler>)
 
@@ -483,6 +490,7 @@ public:
 
 	EXBIND0R(RID, joint_create)
 	EXBIND1(joint_clear, RID)
+	EXBIND1RC(bool, is_joint, RID)
 
 	EXBIND5(joint_make_pin, RID, RID, const Vector3 &, RID, const Vector3 &)
 
