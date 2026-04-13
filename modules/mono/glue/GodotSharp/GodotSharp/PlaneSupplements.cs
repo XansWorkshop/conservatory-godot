@@ -273,80 +273,8 @@ namespace Godot
             /// <param name="point">The location of the plane's center.</param>
             /// <param name="normal">The direction that the plane is facing.</param>
             public static Plane CreateAt(Vector3 point, Vector3 normal) {
-                _normal = normal;
-                _d = normal.Dot(point);
+                return new Plane(Vector4.Create(normal, normal.Dot(point)));
             }
-
-            /*
-            /// <summary>
-            /// Constructs a <see cref="Plane"/> from four values.
-            /// <paramref name="a"/>, <paramref name="b"/> and <paramref name="c"/> become the
-            /// components of the resulting plane's <see cref="Normal"/> vector.
-            /// <paramref name="d"/> becomes the plane's distance from the origin.
-            /// </summary>
-            /// <param name="a">The X component of the plane's normal vector.</param>
-            /// <param name="b">The Y component of the plane's normal vector.</param>
-            /// <param name="c">The Z component of the plane's normal vector.</param>
-            /// <param name="d">The plane's distance from the origin. This value is typically non-negative.</param>
-            public Plane(float a, float b, float c, float d)
-            {
-                _normal = new Vector3(a, b, c);
-                _d = d;
-            }
-
-            /// <summary>
-            /// Constructs a <see cref="Plane"/> from a <paramref name="normal"/> vector.
-            /// The plane will intersect the origin.
-            /// </summary>
-            /// <param name="normal">The normal of the plane, must be a unit vector.</param>
-            public Plane(Vector3 normal)
-            {
-                _normal = normal;
-                _d = 0;
-            }
-
-            /// <summary>
-            /// Constructs a <see cref="Plane"/> from a <paramref name="normal"/> vector and
-            /// the plane's distance to the origin <paramref name="d"/>.
-            /// </summary>
-            /// <param name="normal">The normal of the plane, must be a unit vector.</param>
-            /// <param name="d">The plane's distance from the origin. This value is typically non-negative.</param>
-            public Plane(Vector3 normal, float d)
-            {
-                _normal = normal;
-                _d = d;
-            }
-
-            /// <summary>
-            /// Constructs a <see cref="Plane"/> from a <paramref name="normal"/> vector and
-            /// a <paramref name="point"/> on the plane.
-            /// </summary>
-            /// <param name="normal">The normal of the plane, must be a unit vector.</param>
-            /// <param name="point">The point on the plane.</param>
-            public Plane(Vector3 normal, Vector3 point)
-            {
-                _normal = normal;
-                _d = _normal.Dot(point);
-            }
-
-            /// <summary>
-            /// Constructs a <see cref="Plane"/> from the three points, given in clockwise order.
-            /// </summary>
-            /// <param name="v1">The first point.</param>
-            /// <param name="v2">The second point.</param>
-            /// <param name="v3">The third point.</param>
-            public Plane(Vector3 v1, Vector3 v2, Vector3 v3)
-            {
-#if USING_SYSTEM_NUMERICS_VECTORS
-                _normal = Vector3.Normalize(Vector3.Cross(v1 - v3, v1 - v2));
-                _d = Vector3.Dot(_normal, v1);
-#else
-            _normal = (v1 - v3).Cross(v1 - v2);
-            _normal.Normalize();
-            _d = _normal.Dot(v1);
-#endif
-            }
-            */
         }
     }
 }
