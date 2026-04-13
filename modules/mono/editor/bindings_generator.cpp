@@ -61,6 +61,9 @@ StringBuilder &operator<<(StringBuilder &r_sb, const char *p_cstring) {
 #define INDENT3 INDENT2 INDENT1
 #define INDENT4 INDENT3 INDENT1
 
+#define MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n" INDENT1 "[ConservatoryMkdocsHide]"
+#define HIDE_ATTRIBUTE_CONSERVATORY_DOCS "[ConservatoryMkdocsHide]"
+
 #define MEMBER_BEGIN "\n" INDENT1
 
 #define OPEN_BLOCK "{\n"
@@ -2316,7 +2319,9 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 
 	// Add properties
 
+	bool has_any_required_properties = false;
 	for (const PropertyInterface &iprop : itype.properties) {
+		has_any_required_properties |= iprop.is_required;
 		Error prop_err = _generate_cs_property(itype, iprop, output);
 		ERR_FAIL_COND_V_MSG(prop_err != OK, prop_err,
 				"Failed to generate property '" + iprop.cname.operator String() +
@@ -2326,9 +2331,11 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 	// Add native name static field and cached type.
 
 	if (is_derived_type && !itype.is_singleton) {
+		output << MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n";
 		output << MEMBER_BEGIN "private static readonly System.Type CachedType = typeof(" << itype.proxy_name << ");\n";
 	}
 
+	output << MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n";
 	output.append(MEMBER_BEGIN "private static readonly StringName " BINDINGS_NATIVE_NAME_FIELD " = \"");
 	output.append(itype.name);
 	output.append("\";\n");
@@ -2364,6 +2371,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 		if (itype.is_instantiable) {
 			// Add native constructor static field
 
+			output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 			output << MEMBER_BEGIN << "[DebuggerBrowsable(DebuggerBrowsableState.Never)]\n"
 				   << INDENT1 "private static readonly unsafe delegate* unmanaged<godot_bool, IntPtr> "
 				   << CS_STATIC_FIELD_NATIVE_CTOR " = " ICALL_CLASSDB_GET_CONSTRUCTOR
@@ -2371,8 +2379,11 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 		}
 
 		if (is_derived_type) {
+			String sets_required_members = has_any_required_properties ? (MEMBER_BEGIN "[System.Diagnostics.CodeAnalysis.SetsRequiredMembers]\n") : "";
+
 			// Add default constructor
 			if (itype.is_instantiable) {
+				output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 				output << MEMBER_BEGIN "public " << itype.proxy_name << "() : this("
 					   << (itype.memory_own ? "true" : "false") << ")\n" OPEN_BLOCK_L1
 					   << INDENT2 "unsafe\n" INDENT2 OPEN_BLOCK
@@ -2382,7 +2393,8 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 					   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 			} else {
 				// Hide the constructor
-				output << MEMBER_BEGIN "internal " << itype.proxy_name << "() : this("
+				output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
+				output << sets_required_members << MEMBER_BEGIN "internal " << itype.proxy_name << "() : this("
 					   << (itype.memory_own ? "true" : "false") << ")\n" OPEN_BLOCK_L1
 					   << INDENT2 "unsafe\n" INDENT2 OPEN_BLOCK
 					   << INDENT3 "ConstructAndInitialize(null, "
@@ -2391,7 +2403,8 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 					   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 			}
 
-			output << MEMBER_BEGIN "internal " << itype.proxy_name << "(IntPtr " CS_PARAM_INSTANCE ") : this("
+			output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
+			output << sets_required_members << MEMBER_BEGIN "internal " << itype.proxy_name << "(IntPtr " CS_PARAM_INSTANCE ") : this("
 				   << (itype.memory_own ? "true" : "false") << ")\n" OPEN_BLOCK_L1
 				   << INDENT2 "NativePtr = " CS_PARAM_INSTANCE ";\n"
 				   << INDENT2 "unsafe\n" INDENT2 OPEN_BLOCK
@@ -2401,6 +2414,8 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 				   << CLOSE_BLOCK_L2 CLOSE_BLOCK_L1;
 
 			// Add.. em.. trick constructor. Sort of.
+			output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
+			output.append(sets_required_members);
 			output.append(MEMBER_BEGIN "internal ");
 			output.append(itype.proxy_name);
 			output.append("(bool " CS_PARAM_MEMORYOWN ") : base(" CS_PARAM_MEMORYOWN ") { }\n");
@@ -2444,6 +2459,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 
 			output << MEMBER_BEGIN "// ReSharper disable once InconsistentNaming\n"
 				   << INDENT1 "[DebuggerBrowsable(DebuggerBrowsableState.Never)]\n"
+				   << INDENT1 HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n"
 				   << INDENT1 "private static readonly StringName "
 				   << CS_STATIC_FIELD_METHOD_PROXY_NAME_PREFIX << imethod.name
 				   << " = \"" << imethod.proxy_name << "\";\n";
@@ -2454,6 +2470,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 		for (const SignalInterface &isignal : itype.signals_) {
 			output << MEMBER_BEGIN "// ReSharper disable once InconsistentNaming\n"
 				   << INDENT1 "[DebuggerBrowsable(DebuggerBrowsableState.Never)]\n"
+				   << INDENT1 HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n"
 				   << INDENT1 "private static readonly StringName "
 				   << CS_STATIC_FIELD_SIGNAL_PROXY_NAME_PREFIX << isignal.name
 				   << " = \"" << isignal.proxy_name << "\";\n";
@@ -2475,6 +2492,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 		// Avoid raising diagnostics because of calls to obsolete methods.
 		output << "#pragma warning disable CS0618 // Member is obsolete\n";
 
+		output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 		output << INDENT1 "protected internal " << (is_derived_type ? "override" : "virtual")
 			   << " bool " CS_METHOD_INVOKE_GODOT_CLASS_METHOD "(in godot_string_name method, "
 			   << "NativeVariantPtrArgs args, out godot_variant ret)\n"
@@ -2565,6 +2583,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 			   << INDENT1 "/// </summary>\n"
 			   << INDENT1 "/// <param name=\"method\">Name of the method to check for.</param>\n";
 
+		output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 		output << MEMBER_BEGIN "protected internal " << (is_derived_type ? "override" : "virtual")
 			   << " bool " CS_METHOD_HAS_GODOT_CLASS_METHOD "(in godot_string_name method)\n"
 			   << INDENT1 "{\n";
@@ -2604,6 +2623,7 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 			   << INDENT1 "/// </summary>\n"
 			   << INDENT1 "/// <param name=\"signal\">Name of the signal to check for.</param>\n";
 
+		output.append(MEMBER_PREFIX_HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n");
 		output << MEMBER_BEGIN "protected internal " << (is_derived_type ? "override" : "virtual")
 			   << " bool " CS_METHOD_HAS_GODOT_CLASS_SIGNAL "(in godot_string_name signal)\n"
 			   << INDENT1 "{\n";
@@ -2803,6 +2823,9 @@ Error BindingsGenerator::_generate_cs_property(const BindingsGenerator::TypeInte
 	}
 
 	String prop_cs_type = prop_itype->cs_type + _get_generic_type_parameters(*prop_itype, proptype_name.generic_type_parameters);
+	if (setter && p_iprop.is_required) {
+		p_output.append("required ");
+	}
 
 	p_output.append(prop_cs_type);
 	p_output.append(" ");
@@ -2829,7 +2852,11 @@ Error BindingsGenerator::_generate_cs_property(const BindingsGenerator::TypeInte
 	}
 
 	if (setter) {
-		p_output.append(INDENT2 "set\n" OPEN_BLOCK_L2 INDENT3);
+		if (p_iprop.is_init_only) {
+			p_output.append(INDENT2 "init\n" OPEN_BLOCK_L2 INDENT3);
+		} else {
+			p_output.append(INDENT2 "set\n" OPEN_BLOCK_L2 INDENT3);
+		}
 
 		p_output.append(setter->proxy_name + "(");
 		if (p_iprop.index != -1) {
@@ -3054,6 +3081,7 @@ Error BindingsGenerator::_generate_cs_method(const BindingsGenerator::TypeInterf
 	{
 		if (!p_imethod.is_virtual && !p_imethod.requires_object_call && !p_use_span) {
 			p_output << MEMBER_BEGIN "[DebuggerBrowsable(DebuggerBrowsableState.Never)]\n"
+					 << INDENT1 HIDE_ATTRIBUTE_CONSERVATORY_DOCS "\n"
 					 << INDENT1 "private static readonly IntPtr " << method_bind_field << " = ";
 
 			if (p_itype.is_singleton) {
@@ -3959,8 +3987,12 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 
 			PropertyInterface iprop;
 			iprop.cname = property.name;
-			iprop.setter = ClassDB::get_property_setter(type_cname, iprop.cname);
+			iprop.setter = ClassDB::get_property_setter(type_cname, iprop.cname, &iprop.is_init_only, &iprop.is_required);
 			iprop.getter = ClassDB::get_property_getter(type_cname, iprop.cname);
+
+			if (iprop.setter == StringName() && iprop.is_required) {
+				ERR_FAIL_V_MSG(false, "Invalid property: '" + itype.name + "." + String(iprop.cname) + "'. A property cannot be marked as required and read-only at the same time.");
+			}
 
 			// If the property is internal hide it; otherwise, hide the getter and setter.
 			if (property.usage & PROPERTY_USAGE_INTERNAL) {

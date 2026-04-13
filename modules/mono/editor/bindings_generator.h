@@ -98,6 +98,10 @@ class BindingsGenerator {
 
 		bool is_deprecated = false;
 		String deprecation_message;
+
+		// Xan's Additions
+		bool is_init_only;
+		bool is_required;
 	};
 
 	struct TypeReference {
