@@ -35,6 +35,10 @@
 #include <new> // IWYU pragma: keep // `new` operators.
 #include <type_traits>
 
+#if defined(DEBUG_ENABLED) || defined(TC_ALLOW_RELEASE_MEMORY_TRACKING)
+#define TC_MEMORY_TRACKING_OR_DEBUG_ENABLED
+#endif
+
 namespace Memory {
 constexpr size_t get_aligned_address(size_t p_address, size_t p_alignment) {
 	const size_t n_bytes_unaligned = p_address % p_alignment;
