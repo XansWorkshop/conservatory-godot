@@ -1,6 +1,7 @@
 @ECHO OFF
 
-SET ACCESSKIT_NAME=accesskit-c-0.21.2-1
+:: YOU MAY NEED TO RUN SETUP.BAT BEFORE THIS - SEE INSTRUCTIONS
+
 :: https://docs.godotengine.org/en/stable/engine_details/development/compiling/compiling_for_windows.html#installing-direct3d-12-requirements
 :: https://github.com/godotengine/godot-accesskit-c-static/releases
 :: https://github.com/godotengine/godot-angle-static/releases
@@ -8,10 +9,11 @@ SET ACCESSKIT_NAME=accesskit-c-0.21.2-1
 :: Set this to nothing (or 0) if you are NOT using System.Numerics.Vector* types in C# as a supplement to Godot's types.
 :: As a note, this requires a LOT of work to switch on and off, as it involves going in and modifying the GodotSharp C# project files (all of them!)
 :: to (un)define the applicable compiler directive. Everything was put under a static branch though.
-
 :: But to make things even more complex, even if you do disable this, The Conservatory is hardcoded to use float now. It used to not be, but realistically
 :: double is just too slow and too precise to be useful. That, and every CPU can optimize float (SSE), but only some can optimize double (AVX).
 SET USING_SYSTEM_NUMERICS_VECTORS=1
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 CD..
 SET XANSTOOLS_FOLDER=%CD%/
@@ -121,7 +123,8 @@ ECHO.
 SET CHS=%ERRORLEVEL%
 
 @ECHO ON
-scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "angle_libs=%LOCALAPPDATA%\Godot\build_deps\angle-x86_64-%BUILDER%" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" %PROFILE%
+scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" %PROFILE%
+::scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "angle_libs=%LOCALAPPDATA%\Godot\build_deps\angle-x86_64-%BUILDER%" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" %PROFILE%
 @ECHO OFF
 
 if %ERRORLEVEL%==0 GOTO CARRYON
@@ -138,10 +141,12 @@ IF %CHS%==1 GOTO EXPORT_TEMPLATES
 ECHO Build Templates...
 
 ECHO Making Windows Debug Build Template...
-scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "angle_libs=%LOCALAPPDATA%\Godot\build_deps\angle-x86_64-%BUILDER%" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" target=template_debug %PROFILE%
+scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" target=template_debug %PROFILE%
+::scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "angle_libs=%LOCALAPPDATA%\Godot\build_deps\angle-x86_64-%BUILDER%" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" target=template_debug %PROFILE%
 
 ECHO Making Windows Release Build Template...
-scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "angle_libs=%LOCALAPPDATA%\Godot\build_deps\angle-x86_64-%BUILDER%" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" target=template_release %PROFILE%
+scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" target=template_release %PROFILE%
+::scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "angle_libs=%LOCALAPPDATA%\Godot\build_deps\angle-x86_64-%BUILDER%" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" target=template_release %PROFILE%
 
 :GLUE
 ECHO Glue...
