@@ -334,7 +334,7 @@ void ShapeCast3DDirect::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_from_parameters", "parameters"), &ShapeCast3DDirect::set_from_parameters);
 	ClassDB::bind_method(D_METHOD("cast", "space"), &ShapeCast3DDirect::cast);
-	ClassDB::bind_static_method(ShapeCast3DDirect::get_class_static(), D_METHOD("cast_statically", "space", "parameters", "max_results", "additional_info"), &ShapeCast3DDirect::cast_statically);
+	ClassDB::bind_static_method(ShapeCast3DDirect::get_class_static(), D_METHOD("cast_statically", "space", "parameters", "max_results"), &ShapeCast3DDirect::cast_statically);
 
 	ClassDB::bind_method(D_METHOD("set_collide_with_areas", "enable"), &ShapeCast3DDirect::set_collide_with_areas);
 	ClassDB::bind_method(D_METHOD("is_collide_with_areas_enabled"), &ShapeCast3DDirect::is_collide_with_areas_enabled);
