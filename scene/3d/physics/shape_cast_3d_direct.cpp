@@ -142,7 +142,6 @@ TypedArray<ShapeCastResult> ShapeCast3DDirect::get_results() const {
 		result_instance->set_intersection_normal(info.normal);
 		result_instance->set_rid(info.rid);
 		result_instance->set_hit_object_id_and_instance((int64_t)info.collider_id);
-		result_instance->set_collider_type((ShapeCastResult::PhysicsObjectType)info.type);
 		result_instance->set_shape_index(info.shape);
 		result_instance->set_linear_velocity_at_contact(info.linear_velocity);
 		returned_results.set(i, result_instance);
@@ -269,7 +268,6 @@ TypedArray<ShapeCastResult> ShapeCast3DDirect::cast_statically(const RID &p_spac
 			result_instance->set_intersection_normal(info.normal);
 			result_instance->set_rid(info.rid);
 			result_instance->set_hit_object_id_and_instance((int64_t)info.collider_id);
-			result_instance->set_collider_type((ShapeCastResult::PhysicsObjectType)info.type);
 			result_instance->set_shape_index(info.shape);
 			result_instance->set_linear_velocity_at_contact(info.linear_velocity);
 			out_result.set(result_count++, result_instance);
@@ -363,7 +361,7 @@ void ShapeCast3DDirect::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "collision_mask", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collision_mask", "get_collision_mask");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::BOOL, "hit_anything", PROPERTY_HINT_NONE), "get_hit_anything");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_count", PROPERTY_HINT_NONE), "get_hit_count");
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::ARRAY, "results", PROPERTY_HINT_ARRAY_TYPE, "ShapeCastResult"), "get_results");
+	ADD_READONLY_PROPERTY(PropertyInfo(Variant::ARRAY, "results", PROPERTY_HINT_ARRAY_TYPE, ShapeCastResult::get_class_static()), "get_results");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "closest_collision_safe_fraction", PROPERTY_HINT_NONE), "get_closest_collision_safe_fraction");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "closest_collision_unsafe_fraction", PROPERTY_HINT_NONE), "get_closest_collision_unsafe_fraction");
 

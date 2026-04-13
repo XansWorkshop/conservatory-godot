@@ -102,10 +102,6 @@ RID RayCast3DDirect::get_collider_rid() const {
 	return against_rid;
 }
 
-RayCastResult::PhysicsObjectType RayCast3DDirect::get_collider_type() const {
-	return type;
-}
-
 int RayCast3DDirect::get_collider_shape() const {
 	return against_shape;
 }
@@ -139,8 +135,6 @@ bool RayCast3DDirect::cast(const RID &p_space) {
 	PhysicsDirectSpaceState3D::RayResult rr;
 	if (dss->intersect_ray(ray_params, rr)) {
 		collided = true;
-		type = (RayCastResult::PhysicsObjectType)rr.type;
-
 		collision_point = rr.position;
 		collision_normal = rr.normal;
 		collision_face_index = rr.face_index;
@@ -150,8 +144,6 @@ bool RayCast3DDirect::cast(const RID &p_space) {
 		against_shape = rr.shape;
 	} else {
 		collided = false;
-		type = RayCastResult::PhysicsObjectType::INVALID;
-
 		collision_point = Vector3(0, 0, 0);
 		collision_normal = Vector3(0, 0, 0);
 		collision_face_index = -1;
@@ -170,7 +162,6 @@ void RayCast3DDirect::store_in_result(const Ref<RayCastResult> &p_result) const 
 	p_result->set_hit_normal(collision_normal);
 	p_result->set_rid(against_rid);
 	p_result->set_hit_object_id_and_instance(against);
-	p_result->set_collider_type(type);
 	p_result->set_shape_index(against_shape);
 	p_result->set_face_index(collision_face_index);
 	p_result->set_success(collided);
@@ -191,7 +182,6 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 		p_result->set_rid(rr.rid);
 		p_result->_set_hit_object_id(rr.collider_id);
 		p_result->_set_hit_object(rr.collider);
-		p_result->set_collider_type((RayCastResult::PhysicsObjectType)rr.type);
 		p_result->set_shape_index(rr.shape);
 		p_result->set_face_index(rr.face_index);
 		p_result->set_success(true);
@@ -287,7 +277,6 @@ void RayCast3DDirect::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_godot_object"), &RayCast3DDirect::get_hit_object);
 	ClassDB::bind_method(D_METHOD("get_object_id"), &RayCast3DDirect::get_hit_object_id);
 	ClassDB::bind_method(D_METHOD("get_collider_rid"), &RayCast3DDirect::get_collider_rid);
-	ClassDB::bind_method(D_METHOD("get_collider_type"), &RayCast3DDirect::get_collider_type);
 	ClassDB::bind_method(D_METHOD("get_collider_shape"), &RayCast3DDirect::get_collider_shape);
 	ClassDB::bind_method(D_METHOD("get_collider_face_index"), &RayCast3DDirect::get_collider_face_index);
 	ClassDB::bind_method(D_METHOD("get_collision_point"), &RayCast3DDirect::get_collision_point);
@@ -327,7 +316,6 @@ void RayCast3DDirect::_bind_methods() {
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::RID, "last_hit_rid", PROPERTY_HINT_NONE), "get_collider_rid");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "last_hit_object_id", PROPERTY_HINT_NONE), "get_object_id");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "last_hit_godot_object", PROPERTY_HINT_NONE), "get_godot_object");
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "last_hit_object_type", PROPERTY_HINT_ENUM, "invalid,area,body,soft_body"), "get_collider_type");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "last_hit_shape_index", PROPERTY_HINT_NONE), "get_collider_shape");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "last_hit_face_index", PROPERTY_HINT_NONE), "get_collider_face_index");
 	

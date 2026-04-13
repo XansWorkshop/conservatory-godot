@@ -56,9 +56,6 @@ int64_t RayCastResult::get_hit_object_id() const {
 Object *RayCastResult::get_hit_object() const {
 	return hit_object;
 }
-RayCastResult::PhysicsObjectType RayCastResult::get_collider_type() const {
-	return type;
-}
 int RayCastResult::get_shape_index() const {
 	return shape;
 }
@@ -101,9 +98,6 @@ void RayCastResult::set_hit_object_id_and_instance(const int64_t p_id) {
 void RayCastResult::_set_hit_object(const Object *p_collider) {
 	hit_object = (Object *)p_collider;
 }
-void RayCastResult::set_collider_type(RayCastResult::PhysicsObjectType p_type) {
-	type = p_type;
-}
 void RayCastResult::set_shape_index(int p_shape) {
 	shape = p_shape;
 }
@@ -126,7 +120,6 @@ void RayCastResult::clear() {
 	hit_object = nullptr;
 	shape = -1;
 	face_index = -1;
-	type = INVALID;
 	success = false;
 }
 
@@ -140,7 +133,6 @@ void RayCastResult::copy_to(const Ref<RayCastResult> &p_destination) const {
 	p_destination->hit_object = hit_object;
 	p_destination->shape = shape;
 	p_destination->face_index = face_index;
-	p_destination->type = type;
 	p_destination->success = success;
 }
 
@@ -151,7 +143,6 @@ void RayCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_rid"), &RayCastResult::get_rid);
 	ClassDB::bind_method(D_METHOD("get_hit_object_id"), &RayCastResult::get_hit_object_id);
 	ClassDB::bind_method(D_METHOD("get_hit_godot_object"), &RayCastResult::get_hit_object);
-	ClassDB::bind_method(D_METHOD("get_collider_type"), &RayCastResult::get_collider_type);
 	ClassDB::bind_method(D_METHOD("get_shape_index"), &RayCastResult::get_shape_index);
 	ClassDB::bind_method(D_METHOD("get_face_index"), &RayCastResult::get_face_index);
 	ClassDB::bind_method(D_METHOD("get_origin"), &RayCastResult::get_origin);
@@ -161,7 +152,6 @@ void RayCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_hit_normal", "normal"), &RayCastResult::set_hit_normal);
 	ClassDB::bind_method(D_METHOD("set_rid", "rid"), &RayCastResult::set_rid);
 	ClassDB::bind_method(D_METHOD("set_hit_object_id", "id"), &RayCastResult::set_hit_object_id_and_instance);
-	ClassDB::bind_method(D_METHOD("set_collider_type", "type"), &RayCastResult::set_collider_type);
 	ClassDB::bind_method(D_METHOD("set_shape_index", "shape_index"), &RayCastResult::set_shape_index);
 	ClassDB::bind_method(D_METHOD("set_face_index", "face_index"), &RayCastResult::set_face_index);
 	ClassDB::bind_method(D_METHOD("set_origin", "origin"), &RayCastResult::set_origin);
@@ -175,15 +165,9 @@ void RayCastResult::_bind_methods() {
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::RID, "hit_rid", PROPERTY_HINT_NONE), "set_rid", "get_rid");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_object_id", PROPERTY_HINT_NONE), "set_hit_object_id", "get_hit_object_id");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "hit_godot_object", PROPERTY_HINT_NONE), "get_hit_godot_object");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_type", PROPERTY_HINT_ENUM, "invalid,area,body,soft_body"), "set_collider_type", "get_collider_type");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_shape_index", PROPERTY_HINT_NONE), "set_shape_index", "get_shape_index");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_face_index", PROPERTY_HINT_NONE), "set_face_index", "get_face_index");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "origin", PROPERTY_HINT_NONE), "set_origin", "get_origin");
-
-	BIND_ENUM_CONSTANT(INVALID);
-	BIND_ENUM_CONSTANT(AREA);
-	BIND_ENUM_CONSTANT(BODY);
-	BIND_ENUM_CONSTANT(SOFT_BODY);
 }
 
 RayCastResult::RayCastResult() {

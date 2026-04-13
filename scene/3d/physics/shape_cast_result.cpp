@@ -92,13 +92,6 @@ void ShapeCastResult::_set_hit_object(const Object *p_collider) {
 	hit_object = (Object *)p_collider;
 }
 
-ShapeCastResult::PhysicsObjectType ShapeCastResult::get_collider_type() const {
-	return type;
-}
-void ShapeCastResult::set_collider_type(ShapeCastResult::PhysicsObjectType p_type) {
-	type = p_type;
-}
-
 int ShapeCastResult::get_shape_index() const {
 	return shape_index;
 }
@@ -118,7 +111,6 @@ void ShapeCastResult::clear() {
 	point = Vector3();
 	normal = Vector3();
 	rid = RID();
-	type = INVALID;
 	hit_object_id = ObjectID();
 	hit_object = nullptr;
 	shape_index = 0;
@@ -130,7 +122,6 @@ void ShapeCastResult::copy_to(const Ref<ShapeCastResult>& p_destination) const {
 	p_destination->point = point;
 	p_destination->normal = normal;
 	p_destination->rid = rid;
-	p_destination->type = type;
 	p_destination->hit_object_id = hit_object_id;
 	p_destination->hit_object = hit_object;
 	p_destination->shape_index = shape_index;
@@ -144,7 +135,6 @@ void ShapeCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_rid"), &ShapeCastResult::get_rid);
 	ClassDB::bind_method(D_METHOD("get_hit_object_id"), &ShapeCastResult::get_hit_object_id);
 	ClassDB::bind_method(D_METHOD("get_hit_godot_object"), &ShapeCastResult::get_hit_object);
-	ClassDB::bind_method(D_METHOD("get_collider_type"), &ShapeCastResult::get_collider_type);
 	ClassDB::bind_method(D_METHOD("get_shape_index"), &ShapeCastResult::get_shape_index);
 	ClassDB::bind_method(D_METHOD("get_linear_velocity_at_contact"), &ShapeCastResult::get_linear_velocity_at_contact);
 
@@ -153,7 +143,6 @@ void ShapeCastResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_intersection_normal", "normal"), &ShapeCastResult::set_intersection_normal);
 	ClassDB::bind_method(D_METHOD("set_rid", "rid"), &ShapeCastResult::set_rid);
 	ClassDB::bind_method(D_METHOD("set_hit_object_id", "id"), &ShapeCastResult::set_hit_object_id_and_instance);
-	ClassDB::bind_method(D_METHOD("set_collider_type", "type"), &ShapeCastResult::set_collider_type);
 	ClassDB::bind_method(D_METHOD("set_shape_index", "shape_index"), &ShapeCastResult::set_shape_index);
 	ClassDB::bind_method(D_METHOD("set_linear_velocity_at_contact", "velocity"), &ShapeCastResult::set_linear_velocity_at_contact);
 
@@ -166,14 +155,8 @@ void ShapeCastResult::_bind_methods() {
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::RID, "hit_rid", PROPERTY_HINT_NONE), "set_rid", "get_rid");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_object_id", PROPERTY_HINT_NONE), "set_hit_object_id", "get_hit_object_id");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "hit_godot_object", PROPERTY_HINT_NONE), "get_hit_godot_object");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_type", PROPERTY_HINT_ENUM, "invalid,area,body,soft_body"), "set_collider_type", "get_collider_type");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_shape_index", PROPERTY_HINT_NONE), "set_shape_index", "get_shape_index");
 	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "linear_velocity_at_contact", PROPERTY_HINT_NONE), "set_linear_velocity_at_contact", "get_linear_velocity_at_contact");
-
-	BIND_ENUM_CONSTANT(INVALID);
-	BIND_ENUM_CONSTANT(AREA);
-	BIND_ENUM_CONSTANT(BODY);
-	BIND_ENUM_CONSTANT(SOFT_BODY);
 }
 
 ShapeCastResult::ShapeCastResult() {

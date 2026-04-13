@@ -47,7 +47,6 @@ class RayCast3DDirect : public RefCounted {
 	GDCLASS(RayCast3DDirect, RefCounted);
 
 	bool collided = false;
-	RayCastResult::PhysicsObjectType type = RayCastResult::PhysicsObjectType::INVALID;
 	ObjectID against;
 	RID against_rid;
 	int against_shape = 0;
@@ -106,7 +105,6 @@ public:
 	Object *get_hit_object() const;
 	ObjectID get_hit_object_id() const;
 	RID get_collider_rid() const;
-	RayCastResult::PhysicsObjectType get_collider_type() const;
 	int get_collider_shape() const;
 	int get_collider_face_index() const;
 	Vector3 get_collision_point() const;

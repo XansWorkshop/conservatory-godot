@@ -49,20 +49,11 @@
 class ShapeCastResult : public RefCounted {
 	GDCLASS(ShapeCastResult, RefCounted);
 
-public:
-	enum PhysicsObjectType {
-		INVALID,
-		AREA,
-		BODY,
-		SOFT_BODY
-	};
-
 private:
 	bool success;
 	Vector3 point;
 	Vector3 normal;
 	RID rid;
-	PhysicsObjectType type = INVALID;
 	ObjectID hit_object_id;
 	Object *hit_object = nullptr;
 	int shape_index = 0;
@@ -92,9 +83,6 @@ public:
 	Object *get_hit_object() const;
 	void _set_hit_object(const Object *p_collider);
 
-	PhysicsObjectType get_collider_type() const;
-	void set_collider_type(PhysicsObjectType p_type);
-
 	int get_shape_index() const;
 	void set_shape_index(int p_shape_index);
 
@@ -123,7 +111,5 @@ public:
 	void set_collision_unsafe_fraction(real_t p_value);
 	real_t get_collision_unsafe_fraction() const;
 };
-
-VARIANT_ENUM_CAST(ShapeCastResult::PhysicsObjectType);
 
 #endif // PHYSICS_3D_DISABLED

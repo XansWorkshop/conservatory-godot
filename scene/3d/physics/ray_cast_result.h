@@ -52,14 +52,6 @@
 class RayCastResult : public RefCounted {
 	GDCLASS(RayCastResult, RefCounted);
 
-public:
-	enum PhysicsObjectType {
-		INVALID,
-		AREA,
-		BODY,
-		SOFT_BODY
-	};
-
 private:
 	bool success = false;
 	Vector3 origin;
@@ -70,7 +62,6 @@ private:
 	Object *hit_object = nullptr;
 	int shape = -1;
 	int face_index = -1;
-	PhysicsObjectType type = INVALID;
 	static uint8_t _can_index_face;
 
 	static bool can_index_face() {
@@ -115,9 +106,6 @@ public:
 	Object *get_hit_object() const;
 	void _set_hit_object(const Object *p_collider);
 
-	PhysicsObjectType get_collider_type() const;
-	void set_collider_type(PhysicsObjectType p_type);
-
 	int get_shape_index() const;
 	void set_shape_index(int p_shape);
 
@@ -129,8 +117,6 @@ public:
 
 	RayCastResult();
 };
-
-VARIANT_ENUM_CAST(RayCastResult::PhysicsObjectType);
 
 #undef JOLT_ALLOWS_RAYCAST_FACE_INDEX
 #undef IS_USING_JOLT
