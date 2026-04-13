@@ -102,6 +102,10 @@ RID GodotPhysicsServer3D::custom_shape_create() {
 	ERR_FAIL_V(RID());
 }
 
+bool GodotPhysicsServer3D::is_shape(RID p_shape) const {
+	return shape_owner.get_or_null(p_shape);
+}
+
 void GodotPhysicsServer3D::shape_set_data(RID p_shape, const Variant &p_data) {
 	GodotShape3D *shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
@@ -156,6 +160,10 @@ RID GodotPhysicsServer3D::space_create() {
 	space->set_static_global_body(sgb);
 
 	return id;
+}
+
+bool GodotPhysicsServer3D::is_space(RID p_space) const {
+	return space_owner.get_or_null(p_space);
 }
 
 void GodotPhysicsServer3D::space_set_active(RID p_space, bool p_active) {
@@ -219,6 +227,10 @@ RID GodotPhysicsServer3D::area_create() {
 	RID rid = area_owner.make_rid(area);
 	area->set_self(rid);
 	return rid;
+}
+
+bool GodotPhysicsServer3D::is_area(RID p_area) const {
+	return area_owner.get_or_null(p_area);
 }
 
 void GodotPhysicsServer3D::area_set_space(RID p_area, RID p_space) {
@@ -324,6 +336,14 @@ void GodotPhysicsServer3D::area_set_shape_disabled(RID p_area, int p_shape_idx, 
 	ERR_FAIL_INDEX(p_shape_idx, area->get_shape_count());
 	FLUSH_QUERY_CHECK(area);
 	area->set_shape_disabled(p_shape_idx, p_disabled);
+}
+
+bool GodotPhysicsServer3D::area_get_shape_disabled(RID p_area, int p_shape_idx) const {
+	GodotArea3D *area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+	ERR_FAIL_INDEX(p_shape_idx, area->get_shape_count());
+	FLUSH_QUERY_CHECK(area);
+	return area->is_shape_disabled(p_shape_idx);
 }
 
 void GodotPhysicsServer3D::area_attach_object_instance_id(RID p_area, ObjectID p_id) {
@@ -446,6 +466,10 @@ RID GodotPhysicsServer3D::body_create() {
 	return rid;
 }
 
+bool GodotPhysicsServer3D::is_body(RID p_body) const {
+	return body_owner.get_or_null(p_body);
+}
+
 void GodotPhysicsServer3D::body_set_space(RID p_body, RID p_space) {
 	GodotBody3D *body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
@@ -540,6 +564,15 @@ void GodotPhysicsServer3D::body_set_shape_disabled(RID p_body, int p_shape_idx, 
 	FLUSH_QUERY_CHECK(body);
 
 	body->set_shape_disabled(p_shape_idx, p_disabled);
+}
+
+bool GodotPhysicsServer3D::body_get_shape_disabled(RID p_body, int p_shape_idx) const {
+	GodotBody3D *body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+	ERR_FAIL_INDEX(p_shape_idx, body->get_shape_count());
+	FLUSH_QUERY_CHECK(body);
+
+	return body->is_shape_disabled(p_shape_idx);
 }
 
 Transform3D GodotPhysicsServer3D::body_get_shape_transform(RID p_body, int p_shape_idx) const {
@@ -976,6 +1009,10 @@ RID GodotPhysicsServer3D::soft_body_create() {
 	return rid;
 }
 
+bool GodotPhysicsServer3D::is_soft_body(RID p_soft_body) const {
+	return soft_body_owner.get_or_null(p_soft_body);
+}
+
 void GodotPhysicsServer3D::soft_body_update_rendering_server(RID p_body, RequiredParam<PhysicsServer3DRenderingServerHandler> rp_rendering_server_handler) {
 	GodotSoftBody3D *soft_body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(soft_body);
@@ -1249,6 +1286,10 @@ RID GodotPhysicsServer3D::joint_create() {
 	RID rid = joint_owner.make_rid(joint);
 	joint->set_self(rid);
 	return rid;
+}
+
+bool GodotPhysicsServer3D::is_joint(RID p_joint) const {
+	return joint_owner.get_or_null(p_joint);
 }
 
 void GodotPhysicsServer3D::joint_clear(RID p_joint) {

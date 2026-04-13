@@ -272,6 +272,7 @@ public:
 	virtual RID concave_polygon_shape_create() = 0;
 	virtual RID heightmap_shape_create() = 0;
 	virtual RID custom_shape_create() = 0;
+	virtual bool is_shape(RID p_shape) const = 0;
 
 	virtual void shape_set_data(RID p_shape, const Variant &p_data) = 0;
 	virtual void shape_set_custom_solver_bias(RID p_shape, real_t p_bias) = 0;
@@ -287,6 +288,7 @@ public:
 	/* SPACE API */
 
 	virtual RID space_create() = 0;
+	virtual bool is_space(RID p_space) const = 0;
 	virtual void space_set_active(RID p_space, bool p_active) = 0;
 	virtual bool space_is_active(RID p_space) const = 0;
 
@@ -335,6 +337,7 @@ public:
 	};
 
 	virtual RID area_create() = 0;
+	virtual bool is_area(RID p_area) const = 0;
 
 	virtual void area_set_space(RID p_area, RID p_space) = 0;
 	virtual RID area_get_space(RID p_area) const = 0;
@@ -359,6 +362,7 @@ public:
 	virtual void area_clear_shapes(RID p_area) = 0;
 
 	virtual void area_set_shape_disabled(RID p_area, int p_shape_idx, bool p_disabled) = 0;
+	virtual bool area_get_shape_disabled(RID p_area, int p_shape_idx) const = 0;
 
 	virtual void area_attach_object_instance_id(RID p_area, ObjectID p_id) = 0;
 	virtual ObjectID area_get_object_instance_id(RID p_area) const = 0;
@@ -399,6 +403,7 @@ public:
 	};
 
 	virtual RID body_create() = 0;
+	virtual bool is_body(RID p_body) const = 0;
 
 	virtual void body_set_space(RID p_body, RID p_space) = 0;
 	virtual RID body_get_space(RID p_body) const = 0;
@@ -418,6 +423,7 @@ public:
 	virtual void body_clear_shapes(RID p_body) = 0;
 
 	virtual void body_set_shape_disabled(RID p_body, int p_shape_idx, bool p_disabled) = 0;
+	virtual bool body_get_shape_disabled(RID p_body, int p_shape_idx) const = 0;
 
 	virtual void body_attach_object_instance_id(RID p_body, ObjectID p_id) = 0;
 	virtual ObjectID body_get_object_instance_id(RID p_body) const = 0;
@@ -575,6 +581,7 @@ public:
 	/* SOFT BODY */
 
 	virtual RID soft_body_create() = 0;
+	virtual bool is_soft_body(RID p_soft_body) const = 0;
 
 	virtual void soft_body_update_rendering_server(RID p_body, RequiredParam<PhysicsServer3DRenderingServerHandler> rp_rendering_server_handler) = 0;
 
@@ -648,6 +655,7 @@ public:
 	};
 
 	virtual RID joint_create() = 0;
+	virtual bool is_joint(RID p_joint) const = 0;
 
 	virtual void joint_clear(RID p_joint) = 0;
 

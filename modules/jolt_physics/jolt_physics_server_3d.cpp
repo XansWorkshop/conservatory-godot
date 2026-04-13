@@ -131,6 +131,10 @@ RID JoltPhysicsServer3D::custom_shape_create() {
 	ERR_FAIL_V_MSG(RID(), "Custom shapes are not supported.");
 }
 
+bool JoltPhysicsServer3D::is_shape(RID p_shape) const {
+	return shape_owner.get_or_null(p_shape);
+}
+
 void JoltPhysicsServer3D::shape_set_data(RID p_shape, const Variant &p_data) {
 	JoltShape3D *shape = shape_owner.get_or_null(p_shape);
 	ERR_FAIL_NULL(shape);
@@ -192,6 +196,10 @@ RID JoltPhysicsServer3D::space_create() {
 	default_area->set_space(space);
 
 	return rid;
+}
+
+bool JoltPhysicsServer3D::is_space(RID p_space) const {
+	return space_owner.get_or_null(p_space);
 }
 
 void JoltPhysicsServer3D::space_set_active(RID p_space, bool p_active) {
@@ -272,6 +280,10 @@ RID JoltPhysicsServer3D::area_create() {
 	RID rid = area_owner.make_rid(area);
 	area->set_rid(rid);
 	return rid;
+}
+
+bool JoltPhysicsServer3D::is_area(RID p_area) const {
+	return area_owner.get_or_null(p_area);
 }
 
 void JoltPhysicsServer3D::area_set_space(RID p_area, RID p_space) {
@@ -399,6 +411,13 @@ void JoltPhysicsServer3D::area_set_shape_disabled(RID p_area, int p_shape_idx, b
 	ERR_FAIL_NULL(area);
 
 	area->set_shape_disabled(p_shape_idx, p_disabled);
+}
+
+bool JoltPhysicsServer3D::area_get_shape_disabled(RID p_area, int p_shape_idx) const {
+	JoltArea3D *area = area_owner.get_or_null(p_area);
+	ERR_FAIL_NULL(area);
+
+	return area->is_shape_disabled(p_shape_idx);
 }
 
 void JoltPhysicsServer3D::area_attach_object_instance_id(RID p_area, ObjectID p_id) {
@@ -534,6 +553,10 @@ RID JoltPhysicsServer3D::body_create() {
 	return rid;
 }
 
+bool JoltPhysicsServer3D::is_body(RID p_body) const {
+	return body_owner.get_or_null(p_body);
+}
+
 void JoltPhysicsServer3D::body_set_space(RID p_body, RID p_space) {
 	JoltBody3D *body = body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
@@ -645,6 +668,13 @@ void JoltPhysicsServer3D::body_set_shape_disabled(RID p_body, int p_shape_idx, b
 	ERR_FAIL_NULL(body);
 
 	body->set_shape_disabled(p_shape_idx, p_disabled);
+}
+
+bool JoltPhysicsServer3D::body_get_shape_disabled(RID p_body, int p_shape_idx) const {
+	JoltBody3D *body = body_owner.get_or_null(p_body);
+	ERR_FAIL_NULL(body);
+
+	return body->is_shape_disabled(p_shape_idx);
 }
 
 void JoltPhysicsServer3D::body_attach_object_instance_id(RID p_body, ObjectID p_id) {
@@ -985,6 +1015,10 @@ RID JoltPhysicsServer3D::soft_body_create() {
 	return rid;
 }
 
+bool JoltPhysicsServer3D::is_soft_body(RID p_soft_body) const {
+	return soft_body_owner.get_or_null(p_soft_body);
+}
+
 void JoltPhysicsServer3D::soft_body_update_rendering_server(RID p_body, RequiredParam<PhysicsServer3DRenderingServerHandler> rp_rendering_server_handler) {
 	JoltSoftBody3D *body = soft_body_owner.get_or_null(p_body);
 	ERR_FAIL_NULL(body);
@@ -1255,6 +1289,10 @@ RID JoltPhysicsServer3D::joint_create() {
 	RID rid = joint_owner.make_rid(joint);
 	joint->set_rid(rid);
 	return rid;
+}
+
+bool JoltPhysicsServer3D::is_joint(RID p_joint) const {
+	return joint_owner.get_or_null(p_joint);
 }
 
 void JoltPhysicsServer3D::joint_clear(RID p_joint) {
