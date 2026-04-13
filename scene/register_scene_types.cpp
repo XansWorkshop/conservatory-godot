@@ -755,7 +755,9 @@ void register_scene_types() {
 
 	// Xan's Additions
 	GDREGISTER_CLASS(RayCast3DDirect);
+	GDREGISTER_CLASS(RayCastResult);
 	GDREGISTER_CLASS(ShapeCast3DDirect);
+	GDREGISTER_CLASS(ShapeCastResult);
 #endif // PHYSICS_3D_DISABLED
 	GDREGISTER_CLASS(MultiMeshInstance3D);
 
