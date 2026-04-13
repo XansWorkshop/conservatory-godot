@@ -773,6 +773,102 @@ namespace Godot
             return c;
         }
 
+
+        /// <summary>
+        /// Attempts to construct a <see cref="Color"/> from the HTML hexadecimal color string in RGBA format,
+        /// failing if the string is not in the proper format.
+        /// </summary>
+        /// <param name="rgba">A string for the HTML hexadecimal representation of this color.</param>
+        /// <param name="color">The result color.</param>
+        public static bool TryGetFromHtml(ReadOnlySpan<char> rgba, out Color color)
+        {
+            color = new Color(0, 0, 0, 1);
+            if (rgba.Length == 0)
+            {
+                return true;
+            }
+
+            if (rgba[0] == '#')
+            {
+                rgba = rgba.Slice(1);
+            }
+
+            // If enabled, use 1 hex digit per channel instead of 2.
+            // Other sizes aren't in the HTML/CSS spec but we could add them if desired.
+            bool isShorthand = rgba.Length < 5;
+            bool alpha;
+
+            if (rgba.Length == 8)
+            {
+                alpha = true;
+            }
+            else if (rgba.Length == 6)
+            {
+                alpha = false;
+            }
+            else if (rgba.Length == 4)
+            {
+                alpha = true;
+            }
+            else if (rgba.Length == 3)
+            {
+                alpha = false;
+            }
+            else
+            {
+                color = default;
+                return false;
+            }
+
+            color.A = 1.0f;
+            if (isShorthand)
+            {
+                color.R = ParseCol4(rgba, 0) / 15f;
+                color.G = ParseCol4(rgba, 1) / 15f;
+                color.B = ParseCol4(rgba, 2) / 15f;
+                if (alpha)
+                {
+                    color.A = ParseCol4(rgba, 3) / 15f;
+                }
+            }
+            else
+            {
+                color.R = ParseCol8(rgba, 0) / 255f;
+                color.G = ParseCol8(rgba, 2) / 255f;
+                color.B = ParseCol8(rgba, 4) / 255f;
+                if (alpha)
+                {
+                    color.A = ParseCol8(rgba, 6) / 255f;
+                }
+            }
+
+            if (color.R < 0)
+            {
+                color = default;
+                return false;
+            }
+
+            if (color.G < 0)
+            {
+                color = default;
+                return false;
+            }
+
+            if (color.B < 0)
+            {
+                color = default;
+                return false;
+            }
+
+            if (color.A < 0)
+            {
+                color = default;
+                return false;
+            }
+            return true;
+        }
+
+
         /// <summary>
         /// Returns a color constructed from integer red, green, blue, and alpha channels.
         /// Each channel should have 8 bits of information ranging from 0 to 255.
@@ -788,8 +884,7 @@ namespace Godot
         }
 
         /// <summary>
-        /// Returns a color according to the standardized name, with the
-        /// specified alpha value. Supported color names are the same as
+        /// Returns a color according to the standardized name. Supported color names are the same as
         /// the constants defined in <see cref="Colors"/>.
         /// </summary>
         /// <param name="name">The name of the color.</param>
@@ -797,7 +892,7 @@ namespace Godot
         /// A color with the given name is not found.
         /// </exception>
         /// <returns>The constructed color.</returns>
-        private static Color Named(string name)
+        public static Color Named(string name)
         {
             if (!FindNamedColor(name, out Color color))
             {
@@ -808,10 +903,8 @@ namespace Godot
         }
 
         /// <summary>
-        /// Returns a color according to the standardized name, with the
-        /// specified alpha value. Supported color names are the same as
-        /// the constants defined in <see cref="Colors"/>.
-        /// If a color with the given name is not found, it returns
+        /// Returns a color according to the standardized name. Supported color names are the same as
+        /// the constants defined in <see cref="Colors"/>. If a color with the given name is not found, it returns
         /// <paramref name="default"/>.
         /// </summary>
         /// <param name="name">The name of the color.</param>
@@ -820,7 +913,7 @@ namespace Godot
         /// is not found.
         /// </param>
         /// <returns>The constructed color.</returns>
-        private static Color Named(string name, Color @default)
+        public static Color Named(string name, Color @default)
         {
             if (!FindNamedColor(name, out Color color))
             {
@@ -830,15 +923,23 @@ namespace Godot
             return color;
         }
 
-        private static bool FindNamedColor(string name, out Color color)
+        /// <summary>
+        /// Stores the color according to the standardized name in <paramref name="color"/>. Supported color names are the same as
+        /// the constants defined in <see cref="Colors"/>. If a color with the given name is not found, this returns
+        /// <see langword="false"/>.
+        /// </summary>
+        /// <param name="name">The name of the color.</param>
+        /// <param name="color">The color that was found.</param>
+        /// <returns>True if a color was found, false otherwise.</returns>
+        public static bool FindNamedColor(string name, out Color color)
         {
-            name = name.Replace(" ", string.Empty, StringComparison.Ordinal);
-            name = name.Replace("-", string.Empty, StringComparison.Ordinal);
-            name = name.Replace("_", string.Empty, StringComparison.Ordinal);
-            name = name.Replace("'", string.Empty, StringComparison.Ordinal);
-            name = name.Replace(".", string.Empty, StringComparison.Ordinal);
-            name = name.ToUpperInvariant();
-
+            name = name.Replace(" ", null, StringComparison.Ordinal)
+                .Replace("-", null, StringComparison.Ordinal)
+                .Replace("_", null, StringComparison.Ordinal)
+                .Replace("'", null, StringComparison.Ordinal)
+                .Replace(".", null, StringComparison.Ordinal)
+                .ToUpperInvariant();
+            
             return Colors.NamedColors.TryGetValue(name, out color);
         }
 
@@ -939,25 +1040,20 @@ namespace Godot
         private static int ParseCol4(ReadOnlySpan<char> str, int index)
         {
             char character = str[index];
-
-            if (character >= '0' && character <= '9')
+            // Xan: Can optimize this using newer switch statement syntax.
+            // Readability is sacrificed in the default font, but I use a different font that adds ligatures.
+            return character switch
             {
-                return character - '0';
-            }
-            else if (character >= 'a' && character <= 'f')
-            {
-                return character + (10 - 'a');
-            }
-            else if (character >= 'A' && character <= 'F')
-            {
-                return character + (10 - 'A');
-            }
-            return -1;
+                >= '0' and <= '9' => character - '0',
+                >= 'a' and <= 'f' => character + (10 - 'a'),
+                >= 'A' and <= 'F' => character + (10 - 'A'),
+                _ => -1
+            };
         }
 
         private static int ParseCol8(ReadOnlySpan<char> str, int index)
         {
-            return ParseCol4(str, index) * 16 + ParseCol4(str, index + 1);
+            return (ParseCol4(str, index) << 4) + ParseCol4(str, index + 1);
         }
 
         /// <summary>

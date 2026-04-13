@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{8FBEC238-D944-4074-8548-B3B524305905}</ProjectGuid>
-    <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>12</LangVersion>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14</LangVersion>
+    <!-- Was 12 -->
     <OutputPath>bin/$(Configuration)</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <RootNamespace>Godot</RootNamespace>
@@ -15,7 +16,7 @@
     <Authors>Godot Engine contributors</Authors>
 
     <PackageId>GodotSharpEditor</PackageId>
-    <Version>4.7.0</Version>
+    <Version>4.6.2</Version>
     <PackageVersion>$(PackageVersion_GodotSharp)</PackageVersion>
     <RepositoryUrl>https://github.com/godotengine/godot/tree/master/modules/mono/glue/GodotSharp/GodotSharpEditor</RepositoryUrl>
     <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
@@ -30,11 +31,24 @@
     <DefineConstants>$(DefineConstants);GODOT</DefineConstants>
     <DefineConstants Condition=" '$(GodotFloat64)' == 'true' ">REAL_T_IS_DOUBLE;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="NumericsGlobalUsings.cs" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GodotSharp\GodotSharp.csproj">
       <Private>false</Private>
     </ProjectReference>
   </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);GODOT;USING_SYSTEM_NUMERICS_VECTORS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants);GODOT;USING_SYSTEM_NUMERICS_VECTORS</DefineConstants>
+  </PropertyGroup>
+
   <!-- Compat Sources -->
   <ItemGroup Condition=" '$(GodotNoDeprecated)' == '' ">
     <Compile Include="Compat.cs" />

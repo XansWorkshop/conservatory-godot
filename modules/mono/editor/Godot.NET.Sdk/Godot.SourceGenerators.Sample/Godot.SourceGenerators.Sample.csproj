@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>12</LangVersion>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -11,6 +11,13 @@
     <GodotProjectDirBase64 Condition=" $([MSBuild]::VersionGreaterThanOrEquals($(MSBuildAssemblyVersion), '17.3')) ">$([MSBuild]::ConvertToBase64('$(GodotProjectDir)'))</GodotProjectDirBase64>
     <!-- For compiling GetGodotPropertyDefaultValues. -->
     <DefineConstants>$(DefineConstants);TOOLS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);USING_SYSTEM_NUMERICS_VECTORS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants);USING_SYSTEM_NUMERICS_VECTORS</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup>

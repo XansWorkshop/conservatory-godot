@@ -435,5 +435,127 @@ namespace Godot
         {
             return $"{_position.ToString(format)}, {_size.ToString(format)}";
         }
+
+
+
+        #region The Conservatory
+
+        /// <summary>
+		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
+        /// <para/>
+        /// Create a new <see cref="Rect2"/> at (0, 0) with the provided size for its width and height.
+        /// </summary>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public static Rect2I FromSize(Vector2I size)
+        {
+            return new Rect2I(default, default, size);
+        }
+
+        /// <summary>
+		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
+        /// <para/>
+        /// Create a new <see cref="Rect2"/> at (0, 0) with the provided <paramref name="sizeX"/> for its width and <paramref name="sizeY"/> for its height.
+        /// </summary>
+        /// <param name="sizeX"></param>
+        /// <param name="sizeY"></param>
+        /// <returns></returns>
+        public static Rect2I FromSize(int sizeX, int sizeY)
+        {
+            return new Rect2I(default, default, sizeX, sizeY);
+        }
+
+        /// <summary>
+		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
+        /// <para/>
+        /// Clamps both axes of the provided <paramref name="point"/> such that the point is contained within this
+        /// <see cref="Rect2I"/>. If the original <paramref name="point"/> is outside, the resulting position returned
+        /// by this method will be the point nearest to the original
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public readonly Vector2I ConstrainPoint(Vector2I point)
+        {
+            return point.Clamp(Position, End);
+        }
+
+        /// <summary>
+		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
+        /// <para/>
+        /// Adds the provided <see cref="Vector2"/> onto the position of this <see cref="Rect2"/>, translating it.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Rect2I operator +(Rect2I left, Vector2I right)
+        {
+            return left with
+            {
+                _position = left._position + right
+            };
+        }
+
+        /// <summary>
+		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
+        /// <para/>
+        /// Subtracts the provided <see cref="Vector2"/> from the position of this <see cref="Rect2"/>, translating it.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Rect2I operator -(Rect2I left, Vector2I right)
+        {
+            return left with
+            {
+                _position = left._position - right
+            };
+        }
+
+        /// <summary>
+        /// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
+        /// <para/>
+        /// Adds the provided <see cref="Rect2"/>'s position and size onto the position and size of this <see cref="Rect2"/>, translating it and resizing it.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Rect2I operator +(Rect2I left, Rect2I right)
+        {
+            return left with
+            {
+                _position = left._position + right._position,
+                _size = left._size + right._size
+            };
+        }
+
+        /// <summary>
+		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
+        /// <para/>
+        /// Subtracts the provided <see cref="Rect2"/>'s position and size from the position and size of this <see cref="Rect2"/>, translating it and resizing it.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Rect2I operator -(Rect2I left, Rect2I right)
+        {
+            return left with
+            {
+                _position = left._position - right._position,
+                _size = left._size - right._size
+            };
+        }
+
+
+        /// <summary>
+		/// <strong>Appended by The Conservatory's engine fork. This is not native Godot code, and it will not be available in GDScript.</strong>
+        /// <para/>
+        /// The same as <see cref="Intersection(Rect2I)"/>.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Rect2I operator &(Rect2I left, Rect2I right) => left.Intersection(right);
+
+        #endregion
     }
 }

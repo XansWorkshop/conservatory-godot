@@ -1,5 +1,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+#if USING_SYSTEM_NUMERICS_VECTORS
+using System.Numerics;
+#endif
 
 #pragma warning disable CS0169
 #pragma warning disable CS0414
@@ -124,7 +127,11 @@ namespace Godot.SourceGenerators.Sample
         [Export] private Vector3 PropertyVector3 { get; set; } = new(10f, 10f, 10f);
         [Export] private Vector3I PropertyVector3I { get; set; } = Vector3I.Back;
         [Export] private Basis PropertyBasis { get; set; } = new Basis(Quaternion.Identity);
+#if USING_SYSTEM_NUMERICS_VECTORS
+        [Export] private Quaternion PropertyQuaternion { get; set; } = Basis.Identity.GetRotationQuaternion();
+#else
         [Export] private Quaternion PropertyQuaternion { get; set; } = new Quaternion(Basis.Identity);
+#endif
         [Export] private Transform3D PropertyTransform3D { get; set; } = Transform3D.Identity;
         [Export] private Vector4 PropertyVector4 { get; set; } = new(10f, 10f, 10f, 10f);
         [Export] private Vector4I PropertyVector4I { get; set; } = Vector4I.One;

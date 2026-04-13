@@ -1,3 +1,4 @@
+#if !USING_SYSTEM_NUMERICS_VECTORS
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -264,11 +265,11 @@ namespace Godot
         {
             Vector3 v = new Vector3(X, Y, Z);
             real_t theta = v.Length();
-            v = v.Normalized();
-            if (theta < Mathf.Epsilon || !v.IsNormalized())
+            if (theta < Mathf.Epsilon)
             {
                 return new Quaternion(0, 0, 0, 1);
             }
+            v = v.Normalized();
             return new Quaternion(v, theta);
         }
 
@@ -846,3 +847,4 @@ namespace Godot
         }
     }
 }
+#endif

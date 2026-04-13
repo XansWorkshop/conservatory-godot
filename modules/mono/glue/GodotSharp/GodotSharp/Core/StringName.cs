@@ -19,6 +19,11 @@ namespace Godot
 
         private WeakReference<IDisposable>? _weakReferenceToSelf;
 
+        /// <summary>
+        /// An empty <see cref="StringName"/>, analogous to <see cref="string.Empty"/>.
+        /// </summary>
+        public static StringName Empty { get; } = new StringName();
+
         ~StringName()
         {
             Dispose(false);

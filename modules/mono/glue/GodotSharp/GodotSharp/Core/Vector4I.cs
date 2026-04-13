@@ -12,7 +12,7 @@ namespace Godot
     /// </summary>
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Vector4I : IEquatable<Vector4I>
+    public struct Vector4I : IEquatable<Vector4I>, IComparable<Vector4I>
     {
         /// <summary>
         /// Enumerated index values for the axes.
@@ -192,6 +192,45 @@ namespace Godot
         }
 
         /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
+        /// Returns the Manhattan distance between this vector and <paramref name="to"/>. Manhattan distance is
+        /// also sometimes referred to as "city block distance" in that it measures a grid-based distance
+        /// with no diagonal lines. This is useful for some forms of pathfinding, and is the most optimal
+        /// technique for sorting by distance.
+        /// </summary>
+        /// <param name="to">The other vector to use.</param>
+        /// <returns>The manhattan distance between the two vectors.</returns>
+        public readonly int ManhattanDistanceTo(Vector4I to)
+        {
+            return (to - this).ManhattanLength();
+        }
+
+        /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
+        /// Returns the Chebyshev distance between this vector and <paramref name="to"/>. Chebyshev distance is
+        /// almost the same as Manhattan distance, but diagonal grid spaces are considered to be 1 unit away as well.
+        /// Think of a Queen on a chessboard moving 1 tile; this "1 tile" is any of the 8 directly around the Queen,
+        /// including the diagonals.
+        /// </summary>
+        /// <remarks>
+        /// For a visual example, refer to this image: <see href="https://en.wikipedia.org/wiki/File:Minkowski_distance_examples.svg"/>
+        /// </remarks>
+        /// <param name="to">The other vector to use.</param>
+        /// <returns>The Chebyshev distance between the two vectors.</returns>
+        public readonly int ChebyshevDistanceTo(Vector4I to)
+        {
+            return (this - to).ChebyshevLength();
+        }
+
+        /// <summary>
         /// Returns the length (magnitude) of this vector.
         /// </summary>
         /// <seealso cref="LengthSquared"/>
@@ -220,6 +259,46 @@ namespace Godot
             int w2 = W * W;
 
             return x2 + y2 + z2 + w2;
+        }
+
+        /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
+        /// Returns the Manhattan length of this vector. Manhattan length is also sometimes referred to as "city block distance"
+        /// in that it measures a grid-based distance without diagonal lines.
+        /// This is by far the most optimized technique for finding length. Note that if this is used as a radius in Euler space,
+        /// the shape is not circular, but rather a diamond. This is the best method to use for distance comparison, but note that
+        /// to be accurate, <em>both distances</em> must be measured using this method.
+        /// </summary>
+        /// <returns>The Manhattan length of this vector.</returns>
+        public readonly int ManhattanLength()
+        {
+            return int.Abs(X) + int.Abs(Y) + int.Abs(Z) + int.Abs(W);
+        }
+
+        /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
+        /// Returns the Chebyshev length of this vector. This is similar to Manhattan length, but diagonal grid spaces are considered
+        /// to be 1 unit of length as well (think of a Queen on a chessboard moving 1 tile; this "1 tile" is any of the 8 directly around
+        /// the Queen, including the diagonals). In 4D, the diagonals on all three axes (i.e. top front right [incomprehensible eldritch word])
+        /// are also considered to be of distance 1.
+        /// Note that if this is used as a radius in Euclidean space, the shape is not a hypersphere, but rather a tesseract.
+        /// To be accurate in comparisons, <em>both distances</em> must be measured using this method.
+        /// </summary>
+        /// <remarks>
+        /// For a visual example, refer to this image: <see href="https://en.wikipedia.org/wiki/File:Minkowski_distance_examples.svg"/>
+        /// </remarks>
+        /// <returns>The Chebyshev length of this vector.</returns>
+        public readonly int ChebyshevLength()
+        {
+            return int.Max(int.Max(int.Abs(X), int.Abs(Y)), int.Max(int.Abs(Z), int.Abs(W)));
         }
 
         /// <summary>
@@ -772,6 +851,18 @@ namespace Godot
         public readonly bool Equals(Vector4I other)
         {
             return X == other.X && Y == other.Y && Z == other.Z && W == other.W;
+        }
+
+        /// <summary>
+        /// Compares the length of this vector to that of <paramref name="other"/>.
+        /// </summary>
+        /// <param name="other">The vector to compare to.</param>
+        /// <returns>-1 if this is shorter than <paramref name="other"/>, 0 if equal, 1 if this is longer than <paramref name="other"/>.</returns>
+        public readonly int CompareTo(Vector4I other)
+        {
+            int myLength = ManhattanLength();
+            int otherLength = other.ManhattanLength();
+            return myLength.CompareTo(otherLength);
         }
 
         /// <summary>

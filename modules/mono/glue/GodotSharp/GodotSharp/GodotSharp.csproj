@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <ProjectGuid>{AEBF0036-DA76-4341-B651-A3F2856AB2FA}</ProjectGuid>
-    <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>12</LangVersion>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14</LangVersion>
+    <!-- Was 12 -->
     <OutputPath>bin/$(Configuration)</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <RootNamespace>Godot</RootNamespace>
@@ -19,7 +20,7 @@
     <Authors>Godot Engine contributors</Authors>
 
     <PackageId>GodotSharp</PackageId>
-    <Version>4.7.0</Version>
+    <Version>4.6.2</Version>
     <PackageVersion>$(PackageVersion_GodotSharp)</PackageVersion>
     <RepositoryUrl>https://github.com/godotengine/godot/tree/master/modules/mono/glue/GodotSharp/GodotSharp</RepositoryUrl>
     <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
@@ -41,6 +42,14 @@
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);GODOT</DefineConstants>
     <DefineConstants Condition=" '$(GodotFloat64)' == 'true' ">REAL_T_IS_DOUBLE;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);GODOT;USING_SYSTEM_NUMERICS_VECTORS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants);GODOT;USING_SYSTEM_NUMERICS_VECTORS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -117,6 +126,8 @@
     <Compile Include="Core\NativeInterop\VariantUtils.generic.cs" />
     <Compile Include="Core\NodePath.cs" />
     <Compile Include="Core\Plane.cs" />
+    <Compile Include="MatrixSupplements.cs" />
+    <Compile Include="PlaneSupplements.cs" />
     <Compile Include="Core\Projection.cs" />
     <Compile Include="Core\Quaternion.cs" />
     <Compile Include="Core\Rect2.cs" />
@@ -141,6 +152,10 @@
     <Compile Include="Core\Vector4I.cs" />
     <Compile Include="GlobalUsings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Vector2Supplements.cs" />
+    <Compile Include="Vector3Supplements.cs" />
+    <Compile Include="Vector4Supplements.cs" />
+    <Compile Include="QuaternionSupplements.cs" />
   </ItemGroup>
 
   <!-- Compat Sources -->

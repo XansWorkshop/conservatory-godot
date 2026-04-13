@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -19,6 +20,27 @@ namespace Godot
     [StructLayout(LayoutKind.Sequential)]
     public struct Transform2D : IEquatable<Transform2D>
     {
+#if USING_SYSTEM_NUMERICS_VECTORS
+        /// <summary>
+        /// Converts this <see cref="Transform2D"/> into a <see cref="Matrix3x2"/>, which can perform mathematical
+        /// operations significantly faster than this class due to its use of hardware acceleration.
+        /// </summary>
+        /// <returns></returns>
+        public readonly Matrix3x2 ToSystemMatrix()
+        {
+            return Matrix3x2.Create(X, Y, Origin);
+        }
+
+        /// <summary>
+        /// Converts a <see cref="Matrix3x2"/> into a <see cref="Transform2D"/>.
+        /// </summary>
+        /// <returns></returns>
+        public static Transform2D FromSystemMatrix(in Matrix3x2 matrix)
+        {
+            return new Transform2D(matrix.X, matrix.Y, matrix.Z);
+        }
+#endif
+
         /// <summary>
         /// The basis matrix's X vector (column 0). Equivalent to array index <c>[0]</c>.
         /// </summary>
@@ -258,9 +280,9 @@ namespace Godot
             Vector2 orthoX = ortho.X;
             Vector2 orthoY = ortho.Y;
 
-            orthoX.Normalize();
+            orthoX = orthoX.Normalized();
             orthoY = orthoY - orthoX * orthoX.Dot(orthoY);
-            orthoY.Normalize();
+            orthoY = orthoY.Normalized();
 
             ortho.X = orthoX;
             ortho.Y = orthoY;

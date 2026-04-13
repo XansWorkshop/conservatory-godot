@@ -204,23 +204,23 @@ namespace Godot
         }
 
         /// <summary>
-        /// Returns the <see cref="Vector3.Axis"/> index of the longest axis of the <see cref="Aabb"/>.
+        /// Returns the <see cref="Vector3Axis"/> index of the longest axis of the <see cref="Aabb"/>.
         /// </summary>
-        /// <returns>A <see cref="Vector3.Axis"/> index for which axis is longest.</returns>
-        public readonly Vector3.Axis GetLongestAxisIndex()
+        /// <returns>A <see cref="Vector3Axis"/> index for which axis is longest.</returns>
+        public readonly Vector3Axis GetLongestAxisIndex()
         {
-            var axis = Vector3.Axis.X;
+            var axis = Vector3Axis.X;
             real_t maxSize = _size.X;
 
             if (_size.Y > maxSize)
             {
-                axis = Vector3.Axis.Y;
+                axis = Vector3Axis.Y;
                 maxSize = _size.Y;
             }
 
             if (_size.Z > maxSize)
             {
-                axis = Vector3.Axis.Z;
+                axis = Vector3Axis.Z;
             }
 
             return axis;
@@ -267,23 +267,23 @@ namespace Godot
         }
 
         /// <summary>
-        /// Returns the <see cref="Vector3.Axis"/> index of the shortest axis of the <see cref="Aabb"/>.
+        /// Returns the <see cref="Vector3Axis"/> index of the shortest axis of the <see cref="Aabb"/>.
         /// </summary>
-        /// <returns>A <see cref="Vector3.Axis"/> index for which axis is shortest.</returns>
-        public readonly Vector3.Axis GetShortestAxisIndex()
+        /// <returns>A <see cref="Vector3Axis"/> index for which axis is shortest.</returns>
+        public readonly Vector3Axis GetShortestAxisIndex()
         {
-            var axis = Vector3.Axis.X;
+            var axis = Vector3Axis.X;
             real_t maxSize = _size.X;
 
             if (_size.Y < maxSize)
             {
-                axis = Vector3.Axis.Y;
+                axis = Vector3Axis.Y;
                 maxSize = _size.Y;
             }
 
             if (_size.Z < maxSize)
             {
-                axis = Vector3.Axis.Z;
+                axis = Vector3Axis.Z;
             }
 
             return axis;
@@ -496,7 +496,7 @@ namespace Godot
 
             for (int i = 0; i < 8; i++)
             {
-                if (plane.DistanceTo(points[i]) > 0)
+                if (plane.SignedDistanceTo(points[i]) > 0)
                 {
                     over = true;
                 }

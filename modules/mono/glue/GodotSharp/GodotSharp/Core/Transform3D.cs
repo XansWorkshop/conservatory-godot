@@ -1,7 +1,8 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
+using System.Runtime.InteropServices;
 
 #nullable enable
 
@@ -20,6 +21,41 @@ namespace Godot
     [StructLayout(LayoutKind.Sequential)]
     public struct Transform3D : IEquatable<Transform3D>
     {
+#if USING_SYSTEM_NUMERICS_VECTORS
+        /// <summary>
+        /// Converts this <see cref="Transform3D"/> into a <see cref="Matrix4x4"/>, which can perform mathematical
+        /// operations significantly faster than this class due to its use of hardware acceleration.
+        /// </summary>
+        /// <returns></returns>
+        public readonly Matrix4x4 ToSystemMatrix()
+        {
+            return Matrix4x4.Create(
+                Basis.Column0.AsVector4(),
+                Basis.Column1.AsVector4(),
+                Basis.Column2.AsVector4(),
+                new Vector4(Origin, 1.0f)
+            );
+        }
+
+        /// <summary>
+        /// Converts a <see cref="Matrix4x4"/> into a <see cref="Transform3D"/>. Note that this will discard affine transformations
+        /// (so things like a perspective projection will be broken).
+        /// </summary>
+        /// <returns></returns>
+        public static Transform3D FromSystemMatrix(in Matrix4x4 matrix)
+        {
+            //return new Projection(matrix.X, matrix.Y, matrix.Z, matrix.W);
+            return new Transform3D(
+                new Basis(
+                    matrix.X.AsVector3(),
+                    matrix.Y.AsVector3(),
+                    matrix.Z.AsVector3()
+                ),
+                matrix.W.AsVector3()
+            );
+        }
+#endif
+
         /// <summary>
         /// The <see cref="Godot.Basis"/> of this transform. Contains the X, Y, and Z basis
         /// vectors (columns 0 to 2) and is responsible for rotation and scale.
@@ -427,6 +463,24 @@ namespace Godot
                 transform.Basis.Row1.Dot(vector) + transform.Origin.Y,
                 transform.Basis.Row2.Dot(vector) + transform.Origin.Z
             );
+        }
+
+        /// <summary>
+        /// <admonition type="note">
+        /// <strong>Part of <em>Godot Engine: Conservatory Edition</em>.</strong>
+        /// This is not available in the official build of Godot.
+        /// </admonition>
+        /// <para/>
+        /// Rotates the provided <paramref name="transform"/> by the provided <paramref name="basis"/>.
+        /// </summary>
+        /// <param name="transform"></param>
+        /// <param name="basis"></param>
+        /// <returns></returns>
+        public static Transform3D operator *(Transform3D transform, Basis basis) {
+            return transform with
+            {
+                Basis = transform.Basis * basis
+            };
         }
 
         /// <summary>
