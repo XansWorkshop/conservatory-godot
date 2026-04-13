@@ -30,6 +30,9 @@
 
 #include "register_scene_types.h"
 
+// Xan's Stuff (Very Early)
+#include "resources/conservatory_debug_bridge.h"
+
 #include "core/config/engine.h"
 #include "core/config/project_settings.h"
 #include "core/io/resource_loader.h"
@@ -374,6 +377,14 @@
 #include "scene/resources/3d/world_boundary_shape_3d.h"
 #endif // PHYSICS_3D_DISABLED
 
+// Xan's Stuff (Late)
+#ifndef PHYSICS_3D_DISABLED
+#include "scene/3d/physics/ray_cast_result.h"
+#include "scene/3d/physics/ray_cast_3d_direct.h"
+#include "scene/3d/physics/shape_cast_result.h"
+#include "scene/3d/physics/shape_cast_3d_direct.h"
+#endif
+
 static Ref<ResourceFormatSaverText> resource_saver_text;
 static Ref<ResourceFormatLoaderText> resource_loader_text;
 
@@ -435,6 +446,7 @@ void register_scene_types() {
 
 	OS::get_singleton()->yield(); // may take time to init
 
+	GDREGISTER_CLASS(ConservatoryDebugBridge);
 	GDREGISTER_CLASS(Node);
 	GDREGISTER_CLASS(MissingNode);
 	GDREGISTER_ABSTRACT_CLASS(InstancePlaceholder);
@@ -740,6 +752,10 @@ void register_scene_types() {
 	GDREGISTER_CLASS(CollisionPolygon3D);
 	GDREGISTER_CLASS(RayCast3D);
 	GDREGISTER_CLASS(ShapeCast3D);
+
+	// Xan's Additions
+	GDREGISTER_CLASS(RayCast3DDirect);
+	GDREGISTER_CLASS(ShapeCast3DDirect);
 #endif // PHYSICS_3D_DISABLED
 	GDREGISTER_CLASS(MultiMeshInstance3D);
 
