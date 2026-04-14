@@ -608,6 +608,11 @@ Vector3 PhysicsTestMotionResult3D::get_collider_velocity(int p_collision_index) 
 	return result.collisions[p_collision_index].collider_velocity;
 }
 
+Vector3 PhysicsTestMotionResult3D::get_collider_angular_velocity(int p_collision_index) const {
+	ERR_FAIL_INDEX_V(p_collision_index, result.collision_count, Vector3());
+	return result.collisions[p_collision_index].collider_angular_velocity;
+}
+
 ObjectID PhysicsTestMotionResult3D::get_collider_id(int p_collision_index) const {
 	ERR_FAIL_INDEX_V(p_collision_index, result.collision_count, ObjectID());
 	return result.collisions[p_collision_index].collider_id;
@@ -647,6 +652,7 @@ void PhysicsTestMotionResult3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_collision_point", "collision_index"), &PhysicsTestMotionResult3D::get_collision_point, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_collision_normal", "collision_index"), &PhysicsTestMotionResult3D::get_collision_normal, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_collider_velocity", "collision_index"), &PhysicsTestMotionResult3D::get_collider_velocity, DEFVAL(0));
+	ClassDB::bind_method(D_METHOD("get_collider_angular_velocity", "collision_index"), &PhysicsTestMotionResult3D::get_collider_angular_velocity, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_collider_id", "collision_index"), &PhysicsTestMotionResult3D::get_collider_id, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_collider_rid", "collision_index"), &PhysicsTestMotionResult3D::get_collider_rid, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_collider", "collision_index"), &PhysicsTestMotionResult3D::get_collider, DEFVAL(0));
