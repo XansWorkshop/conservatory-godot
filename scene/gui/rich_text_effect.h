@@ -56,8 +56,8 @@ public:
 	RID font;
 
 	// Xan's Additions:
-	RichTextLabel *label;
-	uint32_t font_size;
+	RichTextLabel *label = nullptr;
+	uint32_t font_size = 0;
 
 	CharFXTransform();
 	~CharFXTransform();
