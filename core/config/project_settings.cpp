@@ -263,6 +263,18 @@ void ProjectSettings::add_hidden_prefix(const String &p_prefix) {
 	hidden_prefixes.push_back(p_prefix);
 }
 
+void ProjectSettings::set_description(const StringName &p_name, const String &p_description) {
+	custom_prop_descriptions[p_name] = p_description;
+}
+
+String ProjectSettings::get_description(const StringName &p_name) const {
+	const String *value = custom_prop_descriptions.getptr(p_name);
+	if (value) {
+		return String(*value);
+	}
+	return String();
+}
+
 String ProjectSettings::globalize_path(const String &p_path) const {
 	if (p_path.begins_with("res://")) {
 		if (!resource_path.is_empty()) {
@@ -1267,7 +1279,7 @@ Error ProjectSettings::save_custom(const String &p_path, const CustomMap &p_cust
 			vc.order = v->order;
 			vc.type = v->variant.get_type();
 			vc.flags = PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE;
-			if (v->variant == v->initial) {
+			if (v->variant == v->initial && !get_always_save(G.key)) {
 				continue;
 			}
 
@@ -1483,6 +1495,18 @@ bool ProjectSettings::has_custom_feature(const String &p_feature) const {
 	return custom_features.has(p_feature);
 }
 
+void ProjectSettings::set_always_save(const StringName &p_path, bool p_always_save) {
+	if (p_always_save) {
+		always_save.insert(p_path);
+	} else {
+		always_save.erase(p_path);
+	}
+}
+
+bool ProjectSettings::get_always_save(const StringName &p_path) const {
+	return always_save.has(p_path);
+}
+
 const HashMap<StringName, ProjectSettings::AutoloadInfo> &ProjectSettings::get_autoload_list() const {
 	return autoloads;
 }
@@ -1642,6 +1666,13 @@ void ProjectSettings::_bind_methods() {
 	// Change tracking methods
 	ClassDB::bind_method(D_METHOD("get_changed_settings"), &ProjectSettings::get_changed_settings);
 	ClassDB::bind_method(D_METHOD("check_changed_settings_in_group", "setting_prefix"), &ProjectSettings::check_changed_settings_in_group);
+
+	// Xan's Additions:
+	ClassDB::bind_method(D_METHOD("set_description", "name", "description"), &ProjectSettings::set_description);
+	ClassDB::bind_method(D_METHOD("get_description", "name"), &ProjectSettings::get_description);
+	ClassDB::bind_method(D_METHOD("set_always_save", "name", "always_save"), &ProjectSettings::set_always_save);
+	ClassDB::bind_method(D_METHOD("get_always_save", "name"), &ProjectSettings::get_always_save);
+
 	ADD_SIGNAL(MethodInfo("settings_changed"));
 }
 

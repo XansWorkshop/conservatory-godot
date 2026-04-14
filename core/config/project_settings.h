@@ -101,6 +101,8 @@ protected:
 	RBMap<StringName, VariantContainer> props; // NOTE: Key order is used e.g. in the save_custom method.
 	String resource_path;
 	HashMap<StringName, PropertyInfo> custom_prop_info;
+	HashMap<StringName, String> custom_prop_descriptions;
+	HashSet<StringName> always_save;
 	bool using_datapack = false;
 	bool project_loaded = false;
 	List<String> input_presets;
@@ -182,6 +184,8 @@ public:
 	void set_ignore_value_in_docs(const String &p_name, bool p_ignore);
 	bool get_ignore_value_in_docs(const String &p_name) const;
 	void add_hidden_prefix(const String &p_prefix);
+	void set_description(const StringName &p_name, const String &p_description);
+	String get_description(const StringName &p_name) const;
 
 	String get_project_data_dir_name() const;
 	String get_project_data_path() const;
@@ -214,6 +218,9 @@ public:
 	bool is_project_loaded() const;
 
 	bool has_custom_feature(const String &p_feature) const;
+
+	void set_always_save(const StringName &p_path, bool p_always_save);
+	bool get_always_save(const StringName &p_path) const;
 
 	// Change tracking methods
 	PackedStringArray get_changed_settings() const;
