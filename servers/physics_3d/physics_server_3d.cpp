@@ -32,6 +32,7 @@
 
 #include "core/config/project_settings.h"
 #include "core/object/class_db.h"
+#include "core/variant/array.h"
 #include "core/variant/typed_array.h"
 
 void PhysicsServer3DRenderingServerHandler::set_vertex(int p_vertex_id, const Vector3 &p_vertex) {
@@ -515,8 +516,8 @@ void PhysicsTestMotionParameters3D::set_exclude_bodies(const TypedArray<RID> &p_
 	}
 }
 
-TypedArray<uint64_t> PhysicsTestMotionParameters3D::get_exclude_objects() const {
-	TypedArray<uint64_t> exclude;
+Array PhysicsTestMotionParameters3D::get_exclude_objects() const {
+	Array exclude;
 	exclude.resize(parameters.exclude_objects.size());
 
 	int object_index = 0;
@@ -527,10 +528,10 @@ TypedArray<uint64_t> PhysicsTestMotionParameters3D::get_exclude_objects() const 
 	return exclude;
 }
 
-void PhysicsTestMotionParameters3D::set_exclude_objects(const TypedArray<uint64_t> &p_exclude) {
+void PhysicsTestMotionParameters3D::set_exclude_objects(const Array &p_exclude) {
 	parameters.exclude_objects.clear();
 	for (int i = 0; i < p_exclude.size(); ++i) {
-		ObjectID object_id = p_exclude[i];
+		ObjectID object_id = (ObjectID)p_exclude[i];
 		ERR_CONTINUE(object_id.is_null());
 		parameters.exclude_objects.insert(object_id);
 	}
