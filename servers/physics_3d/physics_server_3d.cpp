@@ -531,7 +531,7 @@ Array PhysicsTestMotionParameters3D::get_exclude_objects() const {
 void PhysicsTestMotionParameters3D::set_exclude_objects(const Array &p_exclude) {
 	parameters.exclude_objects.clear();
 	for (int i = 0; i < p_exclude.size(); ++i) {
-		ObjectID object_id = (ObjectID)p_exclude[i];
+		const ObjectID object_id = p_exclude[i].operator ObjectID();
 		ERR_CONTINUE(object_id.is_null());
 		parameters.exclude_objects.insert(object_id);
 	}
