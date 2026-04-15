@@ -258,6 +258,12 @@
 				Allows exiting edit mode while preserving focus.
 			</description>
 		</method>
+		<method name="get_caret_pixel_pos">
+			<return type="Vector2" />
+			<description>
+				Returns the coordinates of the bottom left of the caret, the little bar that shows when typing text, relative to this element's top left corner. This position is always in pixels.
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="alignment" type="int" setter="set_horizontal_alignment" getter="get_horizontal_alignment" enum="HorizontalAlignment" default="0">

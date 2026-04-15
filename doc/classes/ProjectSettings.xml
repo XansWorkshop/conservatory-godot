@@ -270,6 +270,33 @@
 				This can also be used to erase custom project settings. To do this change the setting value to [code]null[/code].
 			</description>
 		</method>
+		<method name="set_always_save">
+			<return type="void" />
+			<param index="0" name="always_save" type="bool" />
+			<description>
+				Intended for use in the editor. This forces a setting to save, even if its value is equal to its default.
+				Traditionally, settings with values equal to their default are not saved to prevent wasting space.
+			</description>
+		</method>
+		<method name="get_always_save">
+			<return type="bool" />
+			<description>
+				Returns whether this setting will save even if its value is equal to the default. See [method set_always_save] for more information.
+			</description>
+		</method>
+		<method name="set_description">
+			<return type="void" />
+			<param index="0" name="always_save" type="String" />
+			<description>
+				Intended for use in the editor with a tool class. This assigns a custom description to a setting. This can be used to override the description of any setting, but more vitally allows assigning documented descriptions to custom project settings that will be displayed in the editor's project settings dialogue.
+			</description>
+		</method>
+		<method name="get_description">
+			<return type="String" />
+			<description>
+				Returns the description set for a project setting by [method set_description]. [b]This does not return the built in descriptions of native project settings.[/b]
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="accessibility/general/accessibility_driver" type="String" setter="" getter="" default="&quot;accesskit&quot;">
