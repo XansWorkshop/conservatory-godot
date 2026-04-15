@@ -64,8 +64,16 @@
 #define ADD_ARRAY(m_array_path, m_prefix) ClassDB::add_property_array(get_class_static(), m_array_path, m_prefix)
 
 // Xan's Additions
-// Add a new property which has a getter but not a setter.
-#define ADD_READONLY_PROPERTY(m_property, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(), StringName(m_getter), -1, false, false)
+// Add a new property which has a getter but not a setter. Note that the property flags may include usage which makes it not readonly in the inspector; use ADD_READONLY_PROPERTY to avoid this.
+#define ADD_READONLY_PROPERTY_SOFT(m_property, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(), StringName(m_getter), -1, false, false)
+// Add a readonly property which modifies the PropertyInfo passed in to have the read only flag.
+#define ADD_READONLY_PROPERTY(m_property, m_getter) \
+	{ \
+		PropertyInfo ____propinstance = m_property; \
+		____propinstance.usage |= PROPERTY_USAGE_READ_ONLY; \
+		::ClassDB::add_property(get_class_static(), ____propinstance, StringName(), StringName(m_getter), -1, false, false); \
+	} \
+	((void)0)
 // Add a new property which uses the C# init keyword. This is not supported in GDScript and can be set regardless.
 #define ADD_INITONLY_PROPERTY(m_property, m_initer, m_getter) ::ClassDB::add_property(get_class_static(), m_property, StringName(m_initer), StringName(m_getter), -1, true, false)
 // Add a new property which uses the C# init keyword. This is not supported in GDScript and can be set regardless.
