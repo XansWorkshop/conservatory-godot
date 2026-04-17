@@ -32,12 +32,11 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#if false
 #include "shader_variant_metadata.h"
 #include "core/object/class_db.h"
 
-void ShaderVariantMetadata::validate_definition(StringName *p_definition) {
-	StringName new_variant = SNAME("NEW_VARIANT");
+void ShaderVariantMetadata::validate_definition(StringName *p_definition, bool make_uppercase) {
+	StringName new_variant = SNAME("NAME");
 	if (p_definition->is_empty()) {
 		*p_definition = new_variant;
 	} else {
@@ -50,7 +49,13 @@ void ShaderVariantMetadata::validate_definition(StringName *p_definition) {
 			bool is_az_lower = chr_val >= 'a' && chr_val <= 'z';
 			bool is_zero_nine = chr_val >= '0' && chr_val <= '9';
 			if (is_az_lower) {
-				def_clone.set(i, chr_val - 32); // Capitalize
+				if (make_uppercase) {
+					def_clone.set(i, chr_val - 32); // Capitalize
+				}
+			} else if (is_az_capital) {
+				if (!make_uppercase) {
+					def_clone.set(i, chr_val + 32); // Uncapitalize. Lowerize?
+				}
 			} else if (is_zero_nine) {
 				if (unlikely(is_first_char)) {
 					// ^ Only the first char is the first char. It will never happen again.
@@ -58,7 +63,7 @@ void ShaderVariantMetadata::validate_definition(StringName *p_definition) {
 					def_clone.set(i, '_');
 					changes_occurred = true;
 				}
-			} else if (!is_az_capital && chr_val != '_') {
+			} else if (chr_val != '_') {
 				def_clone.set(i, '_');
 				changes_occurred = true;
 			}
@@ -76,8 +81,10 @@ StringName ShaderVariantMetadata::get_definition() const {
 
 void ShaderVariantMetadata::set_definition(const StringName &p_definition) {
 	StringName def = p_definition;
-	validate_definition(&def);
+	validate_definition(&def, true);
 	definition = def;
+	// No property list change!
+	emit_changed();
 }
 
 bool ShaderVariantMetadata::get_is_variant() const {
@@ -85,71 +92,89 @@ bool ShaderVariantMetadata::get_is_variant() const {
 }
 
 void ShaderVariantMetadata::set_is_variant(bool p_is_variant) {
-	if (p_is_variant != is_variant) return;
+	if (p_is_variant == is_variant) return;
 	is_variant = p_is_variant;
 	notify_property_list_changed();
+	emit_changed();
 }
 
 TypedArray<StringName> ShaderVariantMetadata::get_valid_variants() const {
 	return valid_variants.duplicate();
 }
-void ShaderVariantMetadata::set_valid_variants(TypedArray<StringName>& p_valid_variants) {
+TypedArray<StringName> ShaderVariantMetadata::_get_valid_variants_direct() const {
+	return valid_variants;
+}
+void ShaderVariantMetadata::set_valid_variants(const TypedArray<StringName>& p_valid_variants) {
 	TypedArray<StringName> result = TypedArray<StringName>();
-	result.resize(p_valid_variants.size());
+	result.reserve(p_valid_variants.size());
 
-	for (const StringName &name : p_valid_variants) {
-		StringName real_name = name;
-		validate_definition(&real_name);
+	// Try to retain the same default.
+	StringName current_default = StringName();
+	if (variant_default_index >= 0 && variant_default_index < valid_variants.size()) {
+		current_default = valid_variants[variant_default_index];
+	}
+
+	for (const StringName &current_name : p_valid_variants) {
+		StringName real_name = current_name;
+		validate_definition(&real_name, true);
 		result.push_back(real_name);
 	}
+
+	variant_default_index = result.find(current_default);
+	if (variant_default_index == -1) {
+		variant_default_index = 0;
+	}
+
 	valid_variants = result;
-	notify_property_list_changed();
+	// notify_property_list_changed(); // Causes annoying issues, even though this is technically required...
+	emit_changed();
 }
 
 bool ShaderVariantMetadata::get_default_feature_state() const {
 	return feature_default_state;
 }
 void ShaderVariantMetadata::set_default_feature_state(bool p_default) {
+	if (feature_default_state == p_default) {
+		return;
+	}
 	feature_default_state = p_default;
+	// No property list change!
+	emit_changed();
 }
 
-int ShaderVariantMetadata::get_default_variant_index() const {
+int ShaderVariantMetadata::get_default_variant() const {
 	return variant_default_index;
 }
-void ShaderVariantMetadata::set_default_variant_index(int p_default) {
+void ShaderVariantMetadata::set_default_variant(int p_default) {
+	if (p_default >= valid_variants.size()) {
+		p_default = valid_variants.size() - 1;
+	}
+	// Do the <0 thing after because of the -1 above.
 	if (p_default < 0) {
 		p_default = 0;
 	}
-	if (p_default > 0x7FFFFFFF) {
-		p_default = 0x7FFFFFFF;
+	if (variant_default_index == p_default) {
+		return;
 	}
 	variant_default_index = p_default;
+	// No property list change!
+	emit_changed();
 }
 
-Ref<ShaderVariantMetadata> ShaderVariantMetadata::copy() const {
-	Ref<ShaderVariantMetadata> repl;
-	repl.instantiate();
-	repl->definition = definition;
-	repl->is_variant = is_variant;
-	repl->feature_default_state = feature_default_state;
-	repl->variant_default_index = variant_default_index;
-	repl->valid_variants = TypedArray<StringName>(valid_variants);
-	return repl;
-}
 bool ShaderVariantMetadata::_set(const StringName& p_name, const Variant& p_value) {
 	if (p_name == "default_feature_state") {
 		set_default_feature_state(p_value.booleanize());
 		return true;
-	} else if (p_name == "default_variant_index") {
+	} else if (p_name == "default_variant") {
 		if (p_value.is_num()) {
-			set_default_variant_index(p_value);
+			set_default_variant(p_value);
 			return true;
 		}
 	} else if (p_name == "valid_variants") {
 		if (p_value.is_array()) {
 			Array value_as_array = p_value;
 			TypedArray<StringName> values = TypedArray<StringName>();
-			values.resize(value_as_array.size());
+			values.reserve(value_as_array.size());
 			for (const Variant &var : value_as_array) {
 				if (var.is_string()) {
 					values.push_back(var);
@@ -165,8 +190,8 @@ bool ShaderVariantMetadata::_get(const StringName& p_name, Variant& r_ret) const
 	if (p_name == "default_feature_state") {
 		r_ret = get_default_feature_state();
 		return true;
-	} else if (p_name == "default_variant_index") {
-		r_ret = get_default_variant_index();
+	} else if (p_name == "default_variant") {
+		r_ret = get_default_variant();
 		return true;
 	} else if (p_name == "valid_variants") {
 		r_ret = get_valid_variants();
@@ -206,23 +231,16 @@ void ShaderVariantMetadata::_get_property_list(List<PropertyInfo> *p_list) const
 	}
 	p_list->push_back(PropertyInfo(
 		Variant::INT,
-		"default_variant_index",
-		PROPERTY_HINT_ENUM_SUGGESTION,
+		"default_variant",
+		PROPERTY_HINT_ENUM,
 		variant_index_suggestions,
 		is_variant ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_NO_EDITOR
 	));
 }
 bool ShaderVariantMetadata::_property_can_revert(const StringName& p_name) const {
-	return p_name == "default_feature_state" || p_name == "default_variant_index";
+	return false;
 }
 bool ShaderVariantMetadata::_property_get_revert(const StringName& p_name, Variant& r_property) const {
-	if (p_name == "default_feature_state") {
-		r_property = false;
-		return true;
-	} else if (p_name == "default_variant_index") {
-		r_property = 0;
-		return true;
-	}
 	return false;
 }
 
@@ -235,8 +253,8 @@ void ShaderVariantMetadata::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_valid_variants", "valid_variants"), &ShaderVariantMetadata::set_valid_variants);
 	ClassDB::bind_method(D_METHOD("get_default_feature_state"), &ShaderVariantMetadata::get_default_feature_state);
 	ClassDB::bind_method(D_METHOD("set_default_feature_state", "state"), &ShaderVariantMetadata::set_default_feature_state);
-	ClassDB::bind_method(D_METHOD("get_default_variant_index"), &ShaderVariantMetadata::get_default_variant_index);
-	ClassDB::bind_method(D_METHOD("set_default_variant_index", "index"), &ShaderVariantMetadata::set_default_variant_index);
+	ClassDB::bind_method(D_METHOD("get_default_variant"), &ShaderVariantMetadata::get_default_variant);
+	ClassDB::bind_method(D_METHOD("set_default_variant", "index"), &ShaderVariantMetadata::set_default_variant);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "definition"), "set_definition", "get_definition");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_variant"), "set_is_variant", "get_is_variant");
@@ -248,10 +266,7 @@ ShaderVariantMetadata::ShaderVariantMetadata() {
 	variant_default_index = 0;
 	is_variant = false;
 	valid_variants = TypedArray<StringName>();
-	_state.feature_state = false;
-	_state.variant_index = 0;
 }
 ShaderVariantMetadata::~ShaderVariantMetadata() {
 	valid_variants.clear();
 }
-#endif

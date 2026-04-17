@@ -32,7 +32,6 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#if false
 #pragma once
 
 #include "core/io/resource.h"
@@ -41,11 +40,11 @@
 
 class ShaderVariantMetadata : public Resource {
 	GDCLASS(ShaderVariantMetadata, Resource);
-
-	friend class ShaderVariantMaterial;
+	OBJ_SAVE_TYPE(ShaderVariantMetadata);
 
 private:
 	StringName definition;
+	StringName category;
 
 	// False: This is a feature (toggle)
 	// True: This is a variant (set of values)
@@ -60,15 +59,10 @@ private:
 	// The allowed values, if this is a variant. Ignored if this is a feature.
 	TypedArray<StringName> valid_variants;
 
-	struct State {
-		bool feature_state;
-		int variant_index;
-	} _state;
-
 protected:
 
 	static void _bind_methods();
-	static void validate_definition(StringName *p_definition);
+	static void validate_definition(StringName *p_definition, bool make_uppercase);
 
 	bool _set(const StringName &p_name, const Variant &p_value);
 	bool _get(const StringName &p_name, Variant &r_ret) const;
@@ -83,23 +77,22 @@ public:
 	bool get_is_variant() const;
 	void set_is_variant(bool p_is_variant);
 
+	// C++: Use _get_valid_variants_direct
 	TypedArray<StringName> get_valid_variants() const;
-	void set_valid_variants(TypedArray<StringName> &p_valid_variants);
+	TypedArray<StringName> _get_valid_variants_direct() const;
+	void set_valid_variants(const TypedArray<StringName> &p_valid_variants);
 
 	bool get_default_feature_state() const;
 	void set_default_feature_state(bool p_default);
 
-	int get_default_variant_index() const;
-	void set_default_variant_index(int p_default);
+	int get_default_variant() const;
+	void set_default_variant(int p_default);
 
-	_FORCE_INLINE_ void reset_state() {
-		_state.feature_state = false;
-		_state.variant_index = 0;
+	// Returns true if is_variant and definition match between these two. No other properties are checked.
+	inline bool is_basic_match(const Ref<ShaderVariantMetadata>& p_other) {
+		return definition == p_other->definition && is_variant == p_other->is_variant;
 	}
-
-	Ref<ShaderVariantMetadata> copy() const;
 
 	ShaderVariantMetadata();
 	~ShaderVariantMetadata();
 };
-#endif

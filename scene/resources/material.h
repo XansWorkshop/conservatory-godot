@@ -2,9 +2,13 @@
 /*  material.h                                                            */
 /**************************************************************************/
 /*                         This file is part of:                          */
-/*                             GODOT ENGINE                               */
-/*                        https://godotengine.org                         */
+/*                 GODOT ENGINE /// THE CONSERVATORY FORK                 */
+/*          https://godotengine.org /// https://xansworkshop.com          */
 /**************************************************************************/
+/*                     DERIVED FROM GODOT SOURCE CODE                     */
+/*                       SEE ORIGINAL LICENSE BELOW                       */
+/**************************************************************************/
+/* Copyright (c) 2026-present Xan's Workshop.                             */
 /* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
 /* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
 /*                                                                        */
@@ -33,7 +37,9 @@
 #include "core/io/resource.h"
 #include "core/templates/self_list.h"
 #include "scene/resources/shader.h"
+#include "scene/resources/shader_variant_metadata.h"
 #include "servers/rendering/rendering_server_enums.h"
+#include "thirdparty/xanstools/xanstools.h"
 
 class Material : public Resource {
 	GDCLASS(Material, Resource);
@@ -94,15 +100,18 @@ public:
 
 class ShaderMaterial : public Material {
 	GDCLASS(ShaderMaterial, Material);
-#if false
-	// Xan's Addition:
-	friend class ShaderVariantMaterial;
-#endif
-	Ref<Shader> shader;
 
+	Ref<Shader> shader;
+	
 	mutable HashMap<StringName, StringName> remap_cache;
 	mutable HashMap<StringName, Variant> param_cache;
 	mutable Mutex material_rid_mutex;
+
+	// Xan's Additions:
+	Vector<Ref<ShaderVariantMetadata>> variant_information;
+	Ref<Shader> current_variant;
+	mutable HashMap<StringName, bool> feature_state;
+	mutable HashMap<StringName, int> variant_state;
 
 protected:
 	bool _set(const StringName &p_name, const Variant &p_value);
@@ -124,11 +133,8 @@ protected:
 	void _check_material_rid() const;
 
 public:
-	// Future Xan: You made set_shader and get_shader virtual, for ShaderVariantMaterial.
-	// These are not virtual in the base version of Godot.
-
-	virtual void set_shader(const Ref<Shader> &p_shader);
-	virtual Ref<Shader> get_shader() const;
+	void set_shader(const Ref<Shader> &p_shader);
+	Ref<Shader> get_shader() const;
 
 	void set_shader_parameter(const StringName &p_param, const Variant &p_value);
 	Variant get_shader_parameter(const StringName &p_param) const;
@@ -137,6 +143,32 @@ public:
 
 	virtual RID get_rid() const override;
 	virtual RID get_shader_rid() const override;
+
+	// Xan's Additions:
+	Ref<Shader> get_current_shader_variant() const;
+
+	void set_shader_feature(const StringName &p_feature, const bool p_enabled);
+	bool get_shader_feature(const StringName &p_feature) const;
+
+	void set_shader_variant(const StringName &p_variant, const int p_index);
+	int get_shader_variant(const StringName &p_variant) const;
+
+	bool is_valid_shader_feature(const StringName &p_feature);
+	bool is_valid_shader_variant_key(const StringName &p_variant);
+	bool is_valid_shader_variant_value(const StringName &p_variant, const StringName &p_value_name);
+	bool is_valid_shader_variant_value_index(const StringName &p_variant, const int p_index);
+	int get_shader_variant_index(const StringName &p_variant, const StringName &p_value_name);
+
+	TypedArray<ShaderVariantMetadata> get_variant_metadata() const;
+	void set_variant_metadata(const TypedArray<ShaderVariantMetadata> &p_metadata);
+protected:
+	void _set_modified_shader_from_current(const bool p_notify_changed);
+	void _variant_metadata_changed();
+	void _remap_variant_values(const TypedArray<ShaderVariantMetadata> &p_using, const bool p_notify_changed);
+	void _editor_refresh_variants();
+
+public:
+	////////////////////////////////////
 
 	ShaderMaterial();
 	~ShaderMaterial();
