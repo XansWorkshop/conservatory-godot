@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  array_interop.h                                                       */
+/*  material.h                                                            */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                 GODOT ENGINE /// THE CONSERVATORY FORK                 */
@@ -28,51 +28,15 @@
 /**************************************************************************/
 
 #pragma once
+#include "core/templates/hash_set.h"
 
-#include "core/object/object.h"
-#include "core/object/ref_counted.h"
-#include "core/templates/vector.h"
-#include "core/variant/array.h"
-#include "core/variant/typed_array.h"
+struct XansTools {
 
-class XanArrayInterop {
-public:
-
-	// Converts a Vector<Ref<T>> into a TypedArray<T>. If r_modify_this is not null, it will be modified rather than allocating a new instance.
+	// Adds an item to the provided HashSet, returning true if the value was newly added, or false if it already existed.
 	template <typename T>
-	static TypedArray<T> vector_to_typed_array(const Vector<Ref<T>> &p_vector, const TypedArray<T> *r_modify_this = nullptr) {
-		if (r_modify_this) {
-			r_modify_this->clear();
-			r_modify_this->resize(p_vector.size());
-			for (const Ref<T> &reference : p_vector) {
-				r_modify_this->push_back(reference);
-			}
-			return *r_modify_this;
-		} else {
-		}
-	}
-
-	// Converts a TypedArray<T> into a Vector<Ref<T>>. If r_modify_this is not null, it will be modified rather than allocating a new instance.
-	template <typename T>
-	static Vector<Ref<T>> typed_array_to_vector(const TypedArray<T> &p_array, const Vector<Ref<T>> *r_modify_this = nullptr) {
-		if (r_modify_this) {
-			r_modify_this->clear();
-			r_modify_this->resize_uninitialized(p_array.size());
-			for (const Variant &reference : p_array) {
-				Ref<T> stored;
-				stored.reference_ptr((Object *)reference);
-				r_modify_this->push_back(stored);
-			}
-			return *r_modify_this;
-		} else {
-			Vector<Ref<T>> result;
-			result.resize_uninitialized(p_array.size());
-			for (const Variant &reference : p_array) {
-				Ref<T> stored;
-				stored.reference_ptr((Object *)reference);
-				result.push_back(stored);
-			}
-			return result;
-		}
+	static bool hashset_add(HashSet<T> &p_hashset, T p_item) {
+		int old_size = p_hashset.size();
+		p_hashset.insert(p_item);
+		return p_hashset.size() != old_size;
 	}
 };
