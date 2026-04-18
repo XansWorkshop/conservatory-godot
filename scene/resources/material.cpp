@@ -348,7 +348,8 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 		}
 		if (data->get_is_variant()) {
 			String suggestion = String();
-			for (const StringName &t_name : data->_get_valid_variants_direct()) {
+			// No &, explicit copy
+			for (const StringName t_name : data->_get_valid_variants_direct()) {
 				if (likely(suggestion.length() != 0)) {
 					suggestion += ",";
 				}
@@ -915,7 +916,8 @@ void ShaderMaterial::_remap_variant_values(const TypedArray<ShaderVariantMetadat
 		Vector<Ref<ShaderVariantMetadata>> search_information = variant_information.duplicate();
 		HashSet<StringName> unique_feature_names;
 		HashSet<StringName> unique_variant_names;
-		for (const Ref<ShaderVariantMetadata> &t_metadata : p_using) {
+		// No &, explicit copy
+		for (const Ref<ShaderVariantMetadata> t_metadata : p_using) {
 			if (t_metadata.is_null()) {
 				// If it's null, someone passed a null element into an array or a new instance was created in editor.
 				Ref<ShaderVariantMetadata> new_instance;
