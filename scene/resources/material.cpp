@@ -200,7 +200,8 @@ Material::~Material() {
 ///////////////////////////////////
 
 bool ShaderMaterial::_set(const StringName &p_name, const Variant &p_value) {
-	// Xan Edits: current_variant in place of shader
+	//////////////////////////////////////////////////////////////////////////////
+	
 #if TOOLS_ENABLED
 	if (p_name == "Refresh Variants") {
 		_editor_refresh_variants();
@@ -224,6 +225,9 @@ bool ShaderMaterial::_set(const StringName &p_name, const Variant &p_value) {
 		return true;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////
+	
+	// Xan's Edits: current_variant in place of shader
 	if (current_variant.is_valid()) {
 
 		const StringName *sn = remap_cache.getptr(p_name);
@@ -263,6 +267,8 @@ bool ShaderMaterial::_set(const StringName &p_name, const Variant &p_value) {
 }
 
 bool ShaderMaterial::_get(const StringName &p_name, Variant &r_ret) const {
+	//////////////////////////////////////////////////////////////////////////////
+
 	String t_name = p_name;
 	if (t_name.begins_with("shader_feature/") && t_name.length() > 15) {
 		String actual = t_name.substr(15);
@@ -282,6 +288,8 @@ bool ShaderMaterial::_get(const StringName &p_name, Variant &r_ret) const {
 		return false;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////
+
 	// Xan Edits: current_variant in place of shader
 	if (current_variant.is_valid()) {
 		const StringName *sn = remap_cache.getptr(p_name);
@@ -296,6 +304,8 @@ bool ShaderMaterial::_get(const StringName &p_name, Variant &r_ret) const {
 }
 
 void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
+
+	//////////////////////////////////////////////////////////////////////////////
 
 #if TOOLS_ENABLED
 	// This is fucking stupid but it works
@@ -354,6 +364,8 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 			p_list->push_back(cfg);
 		}
 	}
+
+	//////////////////////////////////////////////////////////////////////////////
 
 	// Xan Edits: current_variant in place of shader, then add variants to list
 	if (current_variant.is_valid()) {
@@ -468,6 +480,8 @@ void ShaderMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 }
 
 bool ShaderMaterial::_property_can_revert(const StringName &p_name) const {
+	//////////////////////////////////////////////////////////////////////////////
+
 	String t_name = p_name;
 	if (t_name.begins_with("shader_feature/") && t_name.length() > 15) {
 		String actual = t_name.substr(15);
@@ -499,6 +513,8 @@ bool ShaderMaterial::_property_can_revert(const StringName &p_name) const {
 		}
 	}
 
+	//////////////////////////////////////////////////////////////////////////////
+
 	// Xan Edits: current_variant in place of shader
 	if (current_variant.is_valid()) {
 		if (remap_cache.has(p_name)) {
@@ -511,6 +527,8 @@ bool ShaderMaterial::_property_can_revert(const StringName &p_name) const {
 }
 
 bool ShaderMaterial::_property_get_revert(const StringName &p_name, Variant &r_property) const {
+	//////////////////////////////////////////////////////////////////////////////
+
 	String t_name = p_name;
 	if (t_name.begins_with("shader_feature/") && t_name.length() > 15) {
 		String actual = t_name.substr(15);
@@ -539,6 +557,8 @@ bool ShaderMaterial::_property_get_revert(const StringName &p_name, Variant &r_p
 			}
 		}
 	}
+
+	//////////////////////////////////////////////////////////////////////////////
 
 	// Xan Edits: current_variant in place of shader
 	if (current_variant.is_valid()) {
@@ -680,6 +700,7 @@ void ShaderMaterial::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_shader_feature", "feature"), &ShaderMaterial::get_shader_feature);
 
 	ClassDB::bind_method(D_METHOD("set_shader_variant", "variant", "index"), &ShaderMaterial::set_shader_variant);
+	ClassDB::bind_method(D_METHOD("set_shader_variant_by_name", "variant", "name"), &ShaderMaterial::set_shader_variant_by_name);
 	ClassDB::bind_method(D_METHOD("get_shader_variant", "variant"), &ShaderMaterial::get_shader_variant);
 
 	ClassDB::bind_method(D_METHOD("is_valid_shader_feature", "feature"), &ShaderMaterial::is_valid_shader_feature);
@@ -758,6 +779,20 @@ bool ShaderMaterial::get_shader_feature(const StringName &p_feature) const {
 void ShaderMaterial::set_shader_variant(const StringName &p_variant, const int p_index) {
 	variant_state[p_variant] = p_index;
 	_set_modified_shader_from_current(false);
+}
+void ShaderMaterial::set_shader_variant_by_name(const StringName &p_variant, const StringName &p_name) {
+	for (int i = 0; i < variant_information.size(); ++i) {
+		Ref<ShaderVariantMetadata> info = variant_information[i];
+		if (info->get_definition() == p_variant) {
+			int index = info->_get_valid_variants_direct().find(p_name);
+			if (index != -1) {
+				variant_state[p_variant] = index;
+				_set_modified_shader_from_current(false);
+				return;
+			}
+		}
+	}
+	ERR_FAIL_MSG(vformat("No variant with name '%s' exists on this shader, or '%s' is not one of its valid options.", p_variant, p_name));
 }
 int ShaderMaterial::get_shader_variant(const StringName &p_variant) const {
 	int *index = variant_state.getptr(p_variant);

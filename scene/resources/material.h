@@ -151,6 +151,7 @@ public:
 	bool get_shader_feature(const StringName &p_feature) const;
 
 	void set_shader_variant(const StringName &p_variant, const int p_index);
+	void set_shader_variant_by_name(const StringName &p_variant, const StringName &p_name);
 	int get_shader_variant(const StringName &p_variant) const;
 
 	bool is_valid_shader_feature(const StringName &p_feature);
