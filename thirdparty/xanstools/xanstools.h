@@ -35,7 +35,7 @@ struct XansTools {
 	// Adds an item to the provided HashSet, returning true if the value was newly added, or false if it already existed.
 	template <typename T>
 	static bool hashset_add(HashSet<T> &p_hashset, T p_item) {
-		int old_size = p_hashset.size();
+		uint32_t old_size = p_hashset.size();
 		p_hashset.insert(p_item);
 		return p_hashset.size() != old_size;
 	}
