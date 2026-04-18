@@ -59,7 +59,6 @@ void ShaderVariantMetadata::validate_definition(StringName *p_definition, bool m
 			} else if (is_zero_nine) {
 				if (unlikely(is_first_char)) {
 					// ^ Only the first char is the first char. It will never happen again.
-					is_first_char = false;
 					def_clone.set(i, '_');
 					changes_occurred = true;
 				}
@@ -67,6 +66,7 @@ void ShaderVariantMetadata::validate_definition(StringName *p_definition, bool m
 				def_clone.set(i, '_');
 				changes_occurred = true;
 			}
+			is_first_char = false;
 		}
 
 		if (changes_occurred) {
@@ -114,7 +114,8 @@ void ShaderVariantMetadata::set_valid_variants(const TypedArray<StringName>& p_v
 		current_default = valid_variants[variant_default_index];
 	}
 
-	for (const StringName &current_name : p_valid_variants) {
+	// no & - this is a copy from a Variant and so removing this makes it explicit.
+	for (const StringName current_name : p_valid_variants) {
 		StringName real_name = current_name;
 		validate_definition(&real_name, true);
 		result.push_back(real_name);
@@ -223,7 +224,9 @@ void ShaderVariantMetadata::_get_property_list(List<PropertyInfo> *p_list) const
 
 	// Build the enum suggestions string for the property.
 	String variant_index_suggestions = String();
-	for (const StringName &valid : valid_variants) {
+
+	// no & - this is a copy from a Variant and so removing this makes it explicit.
+	for (const StringName valid : valid_variants) {
 		if (likely(variant_index_suggestions.length() != 0)) {
 			variant_index_suggestions += ',';
 		}
