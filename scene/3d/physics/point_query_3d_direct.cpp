@@ -83,11 +83,11 @@ TypedArray<PointQueryResult> PointQuery3DDirect::query_statically(const RID &p_s
 
 int PointQuery3DDirect::query_statically_preallocated(const RID &p_space, const Ref<PhysicsPointQueryParameters3D> &p_parameters, TypedArray<PointQueryResult> p_presized_result_array) {
 	if (p_presized_result_array.size() == 0) {
-		return;
+		return 0;
 	}
 
 	PhysicsDirectSpaceState3D *state = PhysicsServer3D::get_singleton()->space_get_direct_state(p_space);
-	ERR_FAIL_NULL_MSG(state, "There was no available physics state. Is the provided space RID valid?");
+	ERR_FAIL_NULL_V_MSG(state, 0, "There was no available physics state. Is the provided space RID valid?");
 
 	Vector<PhysicsDirectSpaceState3D::ShapeResult> results;
 	results.resize_uninitialized(p_presized_result_array.size());
