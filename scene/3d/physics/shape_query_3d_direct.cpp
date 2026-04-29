@@ -84,7 +84,7 @@ TypedArray<ShapeQueryResult> ShapeQuery3DDirect::query_statically(const RID &p_s
 	return retval;
 }
 
-void ShapeQuery3DDirect::query_statically_preallocated(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, TypedArray<ShapeQueryResult> p_presized_result_array) {
+int ShapeQuery3DDirect::query_statically_preallocated(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, TypedArray<ShapeQueryResult> p_presized_result_array) {
 	if (p_presized_result_array.size() == 0) {
 		return;
 	}
@@ -107,6 +107,7 @@ void ShapeQuery3DDirect::query_statically_preallocated(const RID &p_space, const
 		value->set_shape(shape_result.shape);
 		p_presized_result_array[i] = value;
 	}
+	return real_result_count;
 }
 
 ShapeQuery3DDirect::ShapeQuery3DDirect() {

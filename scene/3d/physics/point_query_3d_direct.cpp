@@ -81,7 +81,7 @@ TypedArray<PointQueryResult> PointQuery3DDirect::query_statically(const RID &p_s
 	return retval;
 }
 
-void PointQuery3DDirect::query_statically_preallocated(const RID &p_space, const Ref<PhysicsPointQueryParameters3D> &p_parameters, TypedArray<PointQueryResult> p_presized_result_array) {
+int PointQuery3DDirect::query_statically_preallocated(const RID &p_space, const Ref<PhysicsPointQueryParameters3D> &p_parameters, TypedArray<PointQueryResult> p_presized_result_array) {
 	if (p_presized_result_array.size() == 0) {
 		return;
 	}
@@ -104,4 +104,5 @@ void PointQuery3DDirect::query_statically_preallocated(const RID &p_space, const
 		value->set_shape(point_result.shape);
 		p_presized_result_array[i] = value;
 	}
+	return real_result_count;
 }
