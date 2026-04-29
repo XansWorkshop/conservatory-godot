@@ -55,5 +55,5 @@ public:
 
 	TypedArray<PointQueryResult> query(const RID &p_space, int p_max_results) const;
 	static TypedArray<PointQueryResult> query_statically(const RID &p_space, const Ref<PhysicsPointQueryParameters3D> &p_parameters, int max_results);
-	static void query_statically_preallocated(const RID &p_space, const Ref<PhysicsPointQueryParameters3D> &p_parameters, TypedArray<PointQueryResult> &p_presized_result_array);
+	static void query_statically_preallocated(const RID &p_space, const Ref<PhysicsPointQueryParameters3D> &p_parameters, TypedArray<PointQueryResult> p_presized_result_array);
 };

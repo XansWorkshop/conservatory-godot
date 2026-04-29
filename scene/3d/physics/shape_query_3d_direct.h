@@ -57,7 +57,7 @@ public:
 
 	TypedArray<ShapeQueryResult> query(const RID &p_space, int p_max_results) const;
 	static TypedArray<ShapeQueryResult> query_statically(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, int p_max_results);
-	static void query_statically_preallocated(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, TypedArray<ShapeQueryResult> &p_presized_result_array);
+	static void query_statically_preallocated(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, TypedArray<ShapeQueryResult> p_presized_result_array);
 
 	ShapeQuery3DDirect();
 };
