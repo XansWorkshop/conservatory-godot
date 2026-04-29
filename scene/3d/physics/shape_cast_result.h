@@ -46,9 +46,41 @@
 #include "core/variant/binder_common.h"
 #include "core/config/project_settings.h"
 
+#include "thirdparty/xanstools/xanstools.h"
+
 class ShapeCastResult : public RefCounted {
 	GDCLASS(ShapeCastResult, RefCounted);
 
+private:
+	ObjectID hit_object_id;
+	Object *hit_object = nullptr;
+
+protected:
+	static void _bind_methods();
+
+public:
+	XT_AUTO_PROPERTY_INLINE_C(bool, success);
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, intersection_point);
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, intersection_normal);
+	XT_AUTO_PROPERTY_INLINE_C(RID, rid);
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, linear_velocity_at_contact);
+	XT_AUTO_PROPERTY_INLINE_C(real_t, collision_safe_fraction);
+	XT_AUTO_PROPERTY_INLINE_C(real_t, collision_unsafe_fraction);
+	XT_AUTO_PROPERTY_INLINE_C(int, shape_index);
+
+	ObjectID _get_hit_object_id() const;
+	int64_t get_hit_object_id() const;
+	void _set_hit_object_id(const ObjectID &p_id);
+	void set_hit_object_id_and_instance(const int64_t p_id);
+
+	Object *get_hit_object() const;
+	void _set_hit_object(const Object *p_collider);
+
+	void clear();
+	void copy_to(const Ref<ShapeCastResult> &p_destination) const;
+
+	ShapeCastResult();
+	/*
 private:
 	bool success;
 	Vector3 point;
@@ -101,6 +133,7 @@ public:
 	void copy_to(const Ref<ShapeCastResult> &p_destination) const;
 
 	ShapeCastResult();
+	*/
 };
 
 #endif // PHYSICS_3D_DISABLED

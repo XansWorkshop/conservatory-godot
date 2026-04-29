@@ -46,12 +46,64 @@
 #include "core/variant/binder_common.h"
 #include "core/config/project_settings.h"
 
+#include "thirdparty/xanstools/xanstools.h"
+
 #define JOLT_ALLOWS_RAYCAST_FACE_INDEX (GLOBAL_GET("physics/jolt_physics_3d/queries/enable_ray_cast_face_index").booleanize())
 #define IS_USING_JOLT ((String)GLOBAL_GET("physics/3d/physics_engine") == "Jolt Physics")
 
 class RayCastResult : public RefCounted {
 	GDCLASS(RayCastResult, RefCounted);
 
+private:
+	ObjectID hit_object_id;
+	//Object *hit_object = nullptr;
+	//int shape = -1;
+	int face_index = -1;
+	static uint8_t _can_index_face;
+
+	static bool can_index_face() {
+		if (_can_index_face == 0) {
+			if (IS_USING_JOLT) {
+				if (JOLT_ALLOWS_RAYCAST_FACE_INDEX) {
+					_can_index_face = 2;
+				} else {
+					_can_index_face = 1;
+				}
+			} else {
+				_can_index_face = 1;
+			}
+		}
+		return _can_index_face == 2;
+	}
+
+protected:
+	static void _bind_methods();
+
+public:
+	XT_AUTO_PROPERTY_INLINE_C(bool, success);
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, origin);
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, hit_position);
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, hit_normal);
+	XT_AUTO_PROPERTY_INLINE_C(RID, rid);
+	XT_AUTO_PROPERTY_INLINE_C(int, shape_index);
+	XT_AUTO_PROPERTY_INLINE_P(Object, hit_object);
+
+	// Internal:
+	ObjectID _get_hit_object_id() const;
+	void _set_hit_object_id(const ObjectID p_id);
+
+	// Public to GD:
+	int64_t get_hit_object_id() const;
+	void set_hit_object_id_and_instance(const int64_t p_id);
+
+	int get_face_index() const;
+	void set_face_index(int p_face_index);
+
+	void clear();
+	void copy_to(const Ref<RayCastResult> &p_destination) const;
+
+	RayCastResult();
+	/*
 private:
 	bool success = false;
 	Vector3 origin;
@@ -96,11 +148,11 @@ public:
 	void set_hit_normal(const Vector3 &p_normal);
 
 	RID get_rid() const;
-	void set_rid(const RID &p_rid);
+	void set_rid(const RID p_rid);
 
 	ObjectID _get_hit_object_id() const;
 	int64_t get_hit_object_id() const;
-	void _set_hit_object_id(const ObjectID &p_id);
+	void _set_hit_object_id(const ObjectID p_id);
 	void set_hit_object_id_and_instance(const int64_t p_id);
 
 	Object *get_hit_object() const;
@@ -116,6 +168,7 @@ public:
 	void copy_to(const Ref<RayCastResult> &p_destination) const;
 
 	RayCastResult();
+*/
 };
 
 #undef JOLT_ALLOWS_RAYCAST_FACE_INDEX

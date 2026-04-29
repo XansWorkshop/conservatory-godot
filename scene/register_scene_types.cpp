@@ -384,6 +384,10 @@
 #include "scene/3d/physics/ray_cast_3d_direct.h"
 #include "scene/3d/physics/shape_cast_result.h"
 #include "scene/3d/physics/shape_cast_3d_direct.h"
+#include "scene/3d/physics/point_query_result.h"
+#include "scene/3d/physics/point_query_3d_direct.h"
+#include "scene/3d/physics/shape_query_result.h"
+#include "scene/3d/physics/shape_query_3d_direct.h"
 #endif
 
 static Ref<ResourceFormatSaverText> resource_saver_text;
@@ -760,6 +764,10 @@ void register_scene_types() {
 	GDREGISTER_CLASS(RayCastResult);
 	GDREGISTER_CLASS(ShapeCast3DDirect);
 	GDREGISTER_CLASS(ShapeCastResult);
+	GDREGISTER_CLASS(PointQuery3DDirect);
+	GDREGISTER_CLASS(PointQueryResult);
+	GDREGISTER_CLASS(ShapeQuery3DDirect);
+	GDREGISTER_CLASS(ShapeQueryResult);
 #endif // PHYSICS_3D_DISABLED
 	GDREGISTER_CLASS(MultiMeshInstance3D);
 

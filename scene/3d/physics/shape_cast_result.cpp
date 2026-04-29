@@ -37,35 +37,6 @@
 
 #include "shape_cast_result.h"
 
-bool ShapeCastResult::get_success() const {
-	return success;
-}
-
-void ShapeCastResult::set_success(bool p_success) {
-	success = p_success;
-}
-
-Vector3 ShapeCastResult::get_intersection_point() const {
-	return point;
-}
-void ShapeCastResult::set_intersection_point(const Vector3 &p_point) {
-	point = p_point;
-}
-
-Vector3 ShapeCastResult::get_intersection_normal() const {
-	return normal;
-}
-void ShapeCastResult::set_intersection_normal(const Vector3 &p_normal) {
-	normal = p_normal;
-}
-
-RID ShapeCastResult::get_rid() const {
-	return rid;
-}
-void ShapeCastResult::set_rid(const RID& p_rid) {
-	rid = p_rid;
-}
-
 ObjectID ShapeCastResult::_get_hit_object_id() const {
 	return hit_object_id;
 }
@@ -92,38 +63,10 @@ void ShapeCastResult::_set_hit_object(const Object *p_collider) {
 	hit_object = (Object *)p_collider;
 }
 
-int ShapeCastResult::get_shape_index() const {
-	return shape_index;
-}
-void ShapeCastResult::set_shape_index(int p_shape_index) {
-	shape_index = p_shape_index;
-}
-
-Vector3 ShapeCastResult::get_linear_velocity_at_contact() const {
-	return linear_velocity_at_contact;
-}
-void ShapeCastResult::set_linear_velocity_at_contact(const Vector3& p_velocity) {
-	linear_velocity_at_contact = p_velocity;
-}
-
-void ShapeCastResult::set_collision_safe_fraction(real_t p_value) {
-	collision_safe_fraction = p_value;
-}
-real_t ShapeCastResult::get_collision_safe_fraction() const {
-	return collision_safe_fraction;
-}
-
-void ShapeCastResult::set_collision_unsafe_fraction(real_t p_value) {
-	collision_unsafe_fraction = p_value;
-}
-real_t ShapeCastResult::get_collision_unsafe_fraction() const {
-	return collision_unsafe_fraction;
-}
-
 void ShapeCastResult::clear() {
 	success = false;
-	point = Vector3();
-	normal = Vector3();
+	intersection_point = Vector3();
+	intersection_normal = Vector3();
 	rid = RID();
 	hit_object_id = ObjectID();
 	hit_object = nullptr;
@@ -135,8 +78,8 @@ void ShapeCastResult::clear() {
 
 void ShapeCastResult::copy_to(const Ref<ShapeCastResult>& p_destination) const {
 	p_destination->success = success;
-	p_destination->point = point;
-	p_destination->normal = normal;
+	p_destination->intersection_point = intersection_point;
+	p_destination->intersection_normal = intersection_normal;
 	p_destination->rid = rid;
 	p_destination->hit_object_id = hit_object_id;
 	p_destination->hit_object = hit_object;

@@ -176,7 +176,7 @@ bool RayCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsRayQu
 		p_result->set_hit_normal(rr.normal);
 		p_result->set_rid(rr.rid);
 		p_result->_set_hit_object_id(rr.collider_id);
-		p_result->_set_hit_object(rr.collider);
+		p_result->set_hit_object(rr.collider);
 		p_result->set_shape_index(rr.shape);
 		p_result->set_face_index(rr.face_index);
 		p_result->set_success(true);

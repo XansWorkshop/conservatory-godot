@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<class name="ShapeQuery3DDirect" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		A query for a specific shape, at some transform in space.
+	</brief_description>
+	<description>
+		[admonition type="note" collapsible="true" open="false"]
+		[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+		This is not available in the official build of Godot.
+		[/admonition]
+		This class queries for physics bodies and areas intersecting a shape at some transform in space.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="query" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="space" type="RID" />
+			<param index="1" name="max_count" type="int" />
+			<description>
+				Performs a query using the properties of this object as parameters. Can return up to [param max_count] items.
+			</description>
+		</method>
+		<method name="query_statically">
+			<return type="bool" />
+			<param index="0" name="space" type="RID" />
+			<param index="1" name="parameters" type="PhysicsShapeQueryParameters3D"/>
+			<param index="2" name="max_count" type="int" />
+			<description>
+				Statically perform a query using the provided [param parameters]. Can return up to [param max_count] items.
+			</description>
+		</method>
+		<method name="query_statically_preallocated">
+			<return type="bool" />
+			<param index="0" name="space" type="RID" />
+			<param index="1" name="parameters" type="PhysicsShapeQueryParameters3D"/>
+			<param index="2" name="result_preallocated" type="Array" />
+			<description>
+				Statically perform a query using the provided [param parameters]. This variation of the method is special in that it expects the passed array ([param result_preallocated]) to have its size set [b]before[/b] calling this method. The size of this array is used to determine the number of results.
+				This variation of the method is most optimal, as any instances of results in the array will be overwritten, instead of an entirely new result object being created.
+				The array passed in is obviously edited; it is your result array.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="collide_with_areas" type="bool" setter="set_collide_with_areas" getter="is_collide_with_areas_enabled" default="false">
+			If [code]true[/code], collisions with physics areas (like [Area3D]) will be reported.
+		</member>
+		<member name="collide_with_bodies" type="bool" setter="set_collide_with_bodies" getter="is_collide_with_bodies_enabled" default="true">
+			If [code]true[/code], collisions with physics bodies (like [PhysicsBody3D]) will be reported.
+		</member>
+		<member name="collision_mask" type="int" setter="set_collision_mask" getter="get_collision_mask" default="1">
+			The query's collision mask. Only objects in at least one collision layer enabled in the mask will be detected. See [url=$DOCS_URL/tutorials/physics/physics_introduction.html#collision-layers-and-masks]Collision layers and masks[/url] in the documentation for more information.
+		</member>
+		<member name="transform" type="Transform3D" setter="set_transform" getter="get_transform">
+			The location of the shape in space. Note that scaling this transform is not advised; prefer setting the size properties of the shape.
+		</member>
+		<member name="shape" type="RID" setter="set_shape" getter="get_shape">
+			The RID of the [Shape3D] that is being used for the test.
+		</member>
+		<member name="margin" type="float" setter="set_margin" getter="get_margin">
+			The brim added to the outside of the shape, which gives it additional thickness.
+		</member>
+		<member name="exclude" type="Array" setter="set_exclude" getter="get_exclude">
+			The RIDs in this array will be excluded from the query and cannot be hit.
+		</member>
+	</members>
+</class>

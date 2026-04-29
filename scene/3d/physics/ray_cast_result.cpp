@@ -38,27 +38,14 @@
 
 uint8_t RayCastResult::_can_index_face = 0;
 
-Vector3 RayCastResult::get_hit_position() const {
-	return position;
-}
-Vector3 RayCastResult::get_hit_normal() const {
-	return normal;
-}
-RID RayCastResult::get_rid() const {
-	return rid;
-}
 ObjectID RayCastResult::_get_hit_object_id() const {
 	return hit_object_id;
 }
-int64_t RayCastResult::get_hit_object_id() const {
-	return (int64_t)hit_object_id;
+
+void RayCastResult::_set_hit_object_id(const ObjectID p_id) {
+	hit_object_id = p_id;
 }
-Object *RayCastResult::get_hit_object() const {
-	return hit_object;
-}
-int RayCastResult::get_shape_index() const {
-	return shape;
-}
+
 int RayCastResult::get_face_index() const {
 	if (face_index < 0 && success) {
 		if (!can_index_face()) {
@@ -67,25 +54,15 @@ int RayCastResult::get_face_index() const {
 	}
 	return face_index;
 }
-bool RayCastResult::get_success() const {
-	return success;
-}
-Vector3 RayCastResult::get_origin() const {
-	return origin;
+
+void RayCastResult::set_face_index(int p_face_index) {
+	face_index = p_face_index;
 }
 
-void RayCastResult::set_hit_position(const Vector3 &p_position) {
-	position = p_position;
+int64_t RayCastResult::get_hit_object_id() const {
+	return (int64_t)hit_object_id;
 }
-void RayCastResult::set_hit_normal(const Vector3 &p_normal) {
-	normal = p_normal;
-}
-void RayCastResult::set_rid(const RID &p_rid) {
-	rid = p_rid;
-}
-void RayCastResult::_set_hit_object_id(const ObjectID &p_id) {
-	hit_object_id = p_id;
-}
+
 void RayCastResult::set_hit_object_id_and_instance(const int64_t p_id) {
 	// The public version
 	hit_object_id = ObjectID(p_id);
@@ -95,30 +72,15 @@ void RayCastResult::set_hit_object_id_and_instance(const int64_t p_id) {
 		hit_object = nullptr;
 	}
 }
-void RayCastResult::_set_hit_object(const Object *p_collider) {
-	hit_object = (Object *)p_collider;
-}
-void RayCastResult::set_shape_index(int p_shape) {
-	shape = p_shape;
-}
-void RayCastResult::set_face_index(int p_face_index) {
-	face_index = p_face_index;
-}
-void RayCastResult::set_success(bool p_success) {
-	success = p_success;
-}
-void RayCastResult::set_origin(const Vector3 &p_origin) {
-	origin = p_origin;
-}
 
 void RayCastResult::clear() {
 	origin = Vector3();
-	position = Vector3();
-	normal = Vector3();
+	hit_position = Vector3();
+	hit_normal = Vector3();
 	rid = RID();
 	hit_object_id = ObjectID();
 	hit_object = nullptr;
-	shape = -1;
+	shape_index = -1;
 	face_index = -1;
 	success = false;
 }
@@ -126,12 +88,12 @@ void RayCastResult::clear() {
 void RayCastResult::copy_to(const Ref<RayCastResult> &p_destination) const {
 	ERR_FAIL_COND_MSG(p_destination.is_null(), "The provided destination object is null.");
 	p_destination->origin = origin;
-	p_destination->position = position;
-	p_destination->normal = normal;
+	p_destination->hit_position = hit_position;
+	p_destination->hit_normal = hit_normal;
 	p_destination->rid = rid;
 	p_destination->hit_object_id = hit_object_id;
 	p_destination->hit_object = hit_object;
-	p_destination->shape = shape;
+	p_destination->shape_index = shape_index;
 	p_destination->face_index = face_index;
 	p_destination->success = success;
 }
