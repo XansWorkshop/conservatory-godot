@@ -38,8 +38,12 @@
 #include "scene/3d/physics/collision_object_3d.h"
 #include "scene/3d/physics/ray_cast_result.h"
 
+#include "thirdparty/xanstools/xanstools.h"
+
 class RayCast3DDirect : public RefCounted {
 	GDCLASS(RayCast3DDirect, RefCounted);
+
+	HashSet<RID> filter;
 
 	bool collided = false;
 	ObjectID against;
@@ -49,44 +53,20 @@ class RayCast3DDirect : public RefCounted {
 	Vector3 collision_normal;
 	int collision_face_index = -1;
 
-	Vector3 source_position = Vector3(0, 0, 0);
-	Vector3 target_position = Vector3(0, 0, 1);
-	HashSet<RID> exclude;
-
-	uint32_t collision_mask = 0xFFFFFFFF;
-
-	bool collide_with_areas = false;
-	bool collide_with_bodies = true;
-
-	bool hit_from_inside = false;
-	bool hit_back_faces = true;
-
 protected:
 	static void _bind_methods();
 
 public:
-	void set_collide_with_areas(bool p_enabled);
-	bool is_collide_with_areas_enabled() const;
-
-	void set_collide_with_bodies(bool p_enabled);
-	bool is_collide_with_bodies_enabled() const;
-
-	void set_hit_from_inside(bool p_enabled);
-	bool is_hit_from_inside_enabled() const;
-
-	void set_hit_back_faces(bool p_enabled);
-	bool is_hit_back_faces_enabled() const;
-
-	void set_source_position(const Vector3 &p_point);
-	Vector3 get_source_position() const;
-
-	void set_target_position(const Vector3 &p_point);
-	Vector3 get_target_position() const;
+	XT_AUTO_PROPERTY_INLINE_C(bool, collide_with_bodies);
+	XT_AUTO_PROPERTY_INLINE_C(bool, collide_with_areas);
+	XT_AUTO_PROPERTY_INLINE_C(uint32_t, collision_mask);
+	XT_AUTO_PROPERTY_INLINE_C(bool, filter_is_inclusive);
+	XT_AUTO_PROPERTY_INLINE_C(bool, hit_from_inside);
+	XT_AUTO_PROPERTY_INLINE_C(bool, hit_back_faces);
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, source_position);
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, target_position);
 
 	void set_transform_and_distance(const Transform3D &p_transform, real_t p_length);
-
-	void set_collision_mask(uint32_t p_mask);
-	uint32_t get_collision_mask() const;
 
 	void set_collision_mask_value(int p_layer_number, bool p_value);
 	bool get_collision_mask_value(int p_layer_number) const;
@@ -105,11 +85,9 @@ public:
 	Vector3 get_collision_point() const;
 	Vector3 get_collision_normal() const;
 
-	void add_exception_rid(const RID &p_rid);
-	void add_exception(const CollisionObject3D *p_node);
-	void remove_exception_rid(const RID &p_rid);
-	void remove_exception(const CollisionObject3D *p_node);
-	void clear_exceptions();
+	void add_filter_rid(const RID &p_rid);
+	void remove_filter_rid(const RID &p_rid);
+	void clear_filter();
 
 	RayCast3DDirect();
 	RayCast3DDirect(const Ref<PhysicsRayQueryParameters3D> &p_parameters);

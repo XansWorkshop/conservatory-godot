@@ -27,6 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#if !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
 #include "shape_query_3d_direct.h"
 #include "core/object/class_db.h"
 
@@ -37,7 +38,8 @@ void ShapeQuery3DDirect::_bind_methods() {
 	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, collision_mask, Variant::INT);
 	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, collide_with_bodies, Variant::BOOL);
 	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, collide_with_areas, Variant::BOOL);
-	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, exclude, Variant::ARRAY);
+	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, filter, Variant::ARRAY);
+	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, filter_is_inclusive, Variant::BOOL);
 
 	ClassDB::bind_method(D_METHOD("query", "space", "max_results"), &ShapeQuery3DDirect::query);
 	ClassDB::bind_static_method(ShapeQuery3DDirect::get_class_static(), D_METHOD("query_statically_preallocated", "space", "parameters", "presized_result_array"), &ShapeQuery3DDirect::query_statically_preallocated);
@@ -53,7 +55,8 @@ TypedArray<ShapeQueryResult> ShapeQuery3DDirect::query(const RID &p_space, int p
 	parameters->set_collision_mask(collision_mask);
 	parameters->set_collide_with_bodies(collide_with_bodies);
 	parameters->set_collide_with_areas(collide_with_areas);
-	parameters->set_exclude(exclude);
+	parameters->set_exclude(filter);
+	parameters->set_change_exclusions_to_inclusions(filter_is_inclusive);
 	return ShapeQuery3DDirect::query_statically(p_space, parameters, p_max_results);
 }
 
@@ -113,3 +116,4 @@ int ShapeQuery3DDirect::query_statically_preallocated(const RID &p_space, const 
 ShapeQuery3DDirect::ShapeQuery3DDirect() {
 	transform = Transform3D();
 }
+#endif

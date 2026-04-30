@@ -27,6 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#if !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
 #pragma once
 
 #include "core/object/object.h"
@@ -50,10 +51,11 @@ public:
 	XT_AUTO_PROPERTY_INLINE_C(RID, shape);
 	XT_AUTO_PROPERTY_INLINE_C(Transform3D, transform);
 	XT_AUTO_PROPERTY_INLINE_C(real_t, margin);
-	XT_AUTO_PROPERTY_INLINE_C(uint32_t, collision_mask);
 	XT_AUTO_PROPERTY_INLINE_C(bool, collide_with_bodies);
 	XT_AUTO_PROPERTY_INLINE_C(bool, collide_with_areas);
-	XT_AUTO_PROPERTY_INLINE_C(TypedArray<RID>, exclude);
+	XT_AUTO_PROPERTY_INLINE_C(uint32_t, collision_mask);
+	XT_AUTO_PROPERTY_INLINE_C(TypedArray<RID>, filter);
+	XT_AUTO_PROPERTY_INLINE_C(bool, filter_is_inclusive);
 
 	TypedArray<ShapeQueryResult> query(const RID &p_space, int p_max_results) const;
 	static TypedArray<ShapeQueryResult> query_statically(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, int p_max_results);
@@ -61,3 +63,4 @@ public:
 
 	ShapeQuery3DDirect();
 };
+#endif

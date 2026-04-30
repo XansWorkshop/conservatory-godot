@@ -227,6 +227,9 @@ void PhysicsRayQueryParameters3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_hit_back_faces", "enable"), &PhysicsRayQueryParameters3D::set_hit_back_faces);
 	ClassDB::bind_method(D_METHOD("is_hit_back_faces_enabled"), &PhysicsRayQueryParameters3D::is_hit_back_faces_enabled);
 
+	ClassDB::bind_method(D_METHOD("get_change_exclusions_to_inclusions"), &PhysicsRayQueryParameters3D::get_change_exclusions_to_inclusions);
+	ClassDB::bind_method(D_METHOD("set_change_exclusions_to_inclusions", "enabled"), &PhysicsRayQueryParameters3D::set_change_exclusions_to_inclusions);
+
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "from"), "set_from", "get_from");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "to"), "set_to", "get_to");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "collision_mask", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collision_mask", "get_collision_mask");
@@ -235,6 +238,7 @@ void PhysicsRayQueryParameters3D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_with_areas"), "set_collide_with_areas", "is_collide_with_areas_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "hit_from_inside"), "set_hit_from_inside", "is_hit_from_inside_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "hit_back_faces"), "set_hit_back_faces", "is_hit_back_faces_enabled");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "change_exclusions_to_inclusions"), "set_change_exclusions_to_inclusions", "get_change_exclusions_to_inclusions");
 }
 
 ///////////////////////////////////////////////////////
@@ -282,11 +286,15 @@ void PhysicsPointQueryParameters3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_collide_with_areas", "enable"), &PhysicsPointQueryParameters3D::set_collide_with_areas);
 	ClassDB::bind_method(D_METHOD("is_collide_with_areas_enabled"), &PhysicsPointQueryParameters3D::is_collide_with_areas_enabled);
 
+	ClassDB::bind_method(D_METHOD("get_change_exclusions_to_inclusions"), &PhysicsPointQueryParameters3D::get_change_exclusions_to_inclusions);
+	ClassDB::bind_method(D_METHOD("set_change_exclusions_to_inclusions", "enabled"), &PhysicsPointQueryParameters3D::set_change_exclusions_to_inclusions);
+
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "position"), "set_position", "get_position");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "collision_mask", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collision_mask", "get_collision_mask");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "exclude", PROPERTY_HINT_ARRAY_TYPE, "RID"), "set_exclude", "get_exclude");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_with_bodies"), "set_collide_with_bodies", "is_collide_with_bodies_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_with_areas"), "set_collide_with_areas", "is_collide_with_areas_enabled");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "change_exclusions_to_inclusions"), "set_change_exclusions_to_inclusions", "get_change_exclusions_to_inclusions");
 }
 
 ///////////////////////////////////////////////////////
@@ -349,6 +357,9 @@ void PhysicsShapeQueryParameters3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_collide_with_areas", "enable"), &PhysicsShapeQueryParameters3D::set_collide_with_areas);
 	ClassDB::bind_method(D_METHOD("is_collide_with_areas_enabled"), &PhysicsShapeQueryParameters3D::is_collide_with_areas_enabled);
 
+	ClassDB::bind_method(D_METHOD("get_change_exclusions_to_inclusions"), &PhysicsShapeQueryParameters3D::get_change_exclusions_to_inclusions);
+	ClassDB::bind_method(D_METHOD("set_change_exclusions_to_inclusions", "enabled"), &PhysicsShapeQueryParameters3D::set_change_exclusions_to_inclusions);
+
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "collision_mask", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collision_mask", "get_collision_mask");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "exclude", PROPERTY_HINT_ARRAY_TYPE, "RID"), "set_exclude", "get_exclude");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "margin", PROPERTY_HINT_RANGE, "0,100,0.01"), "set_margin", "get_margin");
@@ -358,6 +369,7 @@ void PhysicsShapeQueryParameters3D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::TRANSFORM3D, "transform"), "set_transform", "get_transform");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_with_bodies"), "set_collide_with_bodies", "is_collide_with_bodies_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_with_areas"), "set_collide_with_areas", "is_collide_with_areas_enabled");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "change_exclusions_to_inclusions"), "set_change_exclusions_to_inclusions", "get_change_exclusions_to_inclusions");
 }
 
 /////////////////////////////////////
@@ -559,6 +571,9 @@ void PhysicsTestMotionParameters3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_exclude_objects"), &PhysicsTestMotionParameters3D::get_exclude_objects);
 	ClassDB::bind_method(D_METHOD("set_exclude_objects", "exclude_list"), &PhysicsTestMotionParameters3D::set_exclude_objects);
 
+	ClassDB::bind_method(D_METHOD("get_change_exclusions_to_inclusions"), &PhysicsTestMotionParameters3D::get_change_exclusions_to_inclusions);
+	ClassDB::bind_method(D_METHOD("set_change_exclusions_to_inclusions", "enabled"), &PhysicsTestMotionParameters3D::set_change_exclusions_to_inclusions);
+
 	ClassDB::bind_method(D_METHOD("is_recovery_as_collision_enabled"), &PhysicsTestMotionParameters3D::is_recovery_as_collision_enabled);
 	ClassDB::bind_method(D_METHOD("set_recovery_as_collision_enabled", "enabled"), &PhysicsTestMotionParameters3D::set_recovery_as_collision_enabled);
 
@@ -569,6 +584,7 @@ void PhysicsTestMotionParameters3D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_separation_ray"), "set_collide_separation_ray_enabled", "is_collide_separation_ray_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "exclude_bodies", PROPERTY_HINT_ARRAY_TYPE, "RID"), "set_exclude_bodies", "get_exclude_bodies");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "exclude_objects"), "set_exclude_objects", "get_exclude_objects");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "change_exclusions_to_inclusions"), "set_change_exclusions_to_inclusions", "get_change_exclusions_to_inclusions");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "recovery_as_collision"), "set_recovery_as_collision_enabled", "is_recovery_as_collision_enabled");
 }
 

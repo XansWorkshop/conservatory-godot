@@ -33,23 +33,16 @@
 #include "scene/resources/3d/shape_3d.h"
 #include "scene/3d/physics/shape_cast_result.h"
 
+#include "thirdparty/xanstools/xanstools.h"
+
 class CollisionObject3D;
 
 class ShapeCast3DDirect : public RefCounted {
 	GDCLASS(ShapeCast3DDirect, RefCounted);
 
-	RID shape_rid;
-	Transform3D source_transform = Transform3D();
-	Vector3 motion = Vector3();
-
-	HashSet<RID> exclude;
-	real_t margin = 0.0;
-	uint32_t collision_mask = 1;
-	bool collide_with_areas = false;
-	bool collide_with_bodies = true;
+	HashSet<RID> filter;
 
 	// Result
-	int max_results = 32;
 	int last_result_count = 0;
 	Vector<PhysicsDirectSpaceState3D::ShapeRestInfo> result;
 	bool hit_something = false;
@@ -60,29 +53,15 @@ protected:
 	static void _bind_methods();
 
 public:
-	void set_collide_with_areas(bool p_clip);
-	bool is_collide_with_areas_enabled() const;
-
-	void set_collide_with_bodies(bool p_clip);
-	bool is_collide_with_bodies_enabled() const;
-
-	void set_shape_rid(const RID &p_rid);
-	RID get_shape_rid() const;
-
-	void set_source_transform(const Transform3D &p_transform);
-	Transform3D get_source_transform() const;
-
-	void set_motion(const Vector3 &p_motion);
-	Vector3 get_motion() const;
-
-	void set_margin(real_t p_margin);
-	real_t get_margin() const;
-
-	void set_max_results(int p_max_results);
-	int get_max_results() const;
-
-	void set_collision_mask(uint32_t p_mask);
-	uint32_t get_collision_mask() const;
+	XT_AUTO_PROPERTY_INLINE_C(bool, collide_with_bodies);
+	XT_AUTO_PROPERTY_INLINE_C(bool, collide_with_areas);
+	XT_AUTO_PROPERTY_INLINE_C(uint32_t, collision_mask);
+	XT_AUTO_PROPERTY_INLINE_C(RID, shape);
+	XT_AUTO_PROPERTY_INLINE_C(Transform3D, source_transform);
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, motion);
+	XT_AUTO_PROPERTY_INLINE_C(real_t, margin);
+	XT_AUTO_PROPERTY_INLINE_C(int, max_results);
+	XT_AUTO_PROPERTY_INLINE_C(bool, filter_is_inclusive);
 
 	void set_collision_mask_value(int p_layer_number, bool p_value);
 	bool get_collision_mask_value(int p_layer_number) const;
@@ -97,9 +76,7 @@ public:
 	int cast(const RID &p_space);
 	static TypedArray<ShapeCastResult> cast_statically(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, const int p_max_results);
 
-	void add_exception_rid(const RID &p_rid);
-	void add_exception(const CollisionObject3D *p_node);
-	void remove_exception_rid(const RID &p_rid);
-	void remove_exception(const CollisionObject3D *p_node);
-	void clear_exceptions();
+	void add_filter_rid(const RID &p_rid);
+	void remove_filter_rid(const RID &p_rid);
+	void clear_filter();
 };

@@ -27,6 +27,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#if !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
 #include "point_query_3d_direct.h"
 #include "core/object/class_db.h"
 
@@ -35,7 +36,8 @@ void PointQuery3DDirect::_bind_methods() {
 	XT_AUTO_BIND_PROPERTY(PointQuery3DDirect, collision_mask, Variant::INT);
 	XT_AUTO_BIND_PROPERTY(PointQuery3DDirect, collide_with_bodies, Variant::BOOL);
 	XT_AUTO_BIND_PROPERTY(PointQuery3DDirect, collide_with_areas, Variant::BOOL);
-	XT_AUTO_BIND_PROPERTY(PointQuery3DDirect, exclude, Variant::ARRAY);
+	XT_AUTO_BIND_PROPERTY(PointQuery3DDirect, filter, Variant::ARRAY);
+	XT_AUTO_BIND_PROPERTY(PointQuery3DDirect, filter_is_inclusive, Variant::BOOL);
 
 	ClassDB::bind_method(D_METHOD("query", "space", "max_results"), &PointQuery3DDirect::query);
 
@@ -50,7 +52,8 @@ TypedArray<PointQueryResult> PointQuery3DDirect::query(const RID& p_space, int p
 	parameters->set_collision_mask(collision_mask);
 	parameters->set_collide_with_bodies(collide_with_bodies);
 	parameters->set_collide_with_areas(collide_with_areas);
-	parameters->set_exclude(exclude);
+	parameters->set_exclude(filter);
+	parameters->set_change_exclusions_to_inclusions(filter_is_inclusive);
 	return PointQuery3DDirect::query_statically(p_space, parameters, p_max_results);
 }
 
@@ -106,3 +109,4 @@ int PointQuery3DDirect::query_statically_preallocated(const RID &p_space, const 
 	}
 	return real_result_count;
 }
+#endif

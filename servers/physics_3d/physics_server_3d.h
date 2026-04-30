@@ -150,6 +150,8 @@ public:
 		bool hit_back_faces = true;
 
 		bool pick_ray = false;
+
+		bool exclude_is_actually_include = false;
 	};
 
 	struct RayResult {
@@ -178,6 +180,8 @@ public:
 
 		bool collide_with_bodies = true;
 		bool collide_with_areas = false;
+
+		bool exclude_is_actually_include = false;
 	};
 
 	virtual int intersect_point(const PointParameters &p_parameters, ShapeResult *r_results, int p_result_max) = 0;
@@ -192,6 +196,8 @@ public:
 
 		bool collide_with_bodies = true;
 		bool collide_with_areas = false;
+
+		bool exclude_is_actually_include = false;
 	};
 
 	struct ShapeRestInfo {
@@ -540,6 +546,8 @@ public:
 		HashSet<ObjectID> exclude_objects;
 		bool recovery_as_collision = false;
 
+		bool exclude_is_actually_include = false;
+
 		MotionParameters() {}
 
 		MotionParameters(const Transform3D &p_from, const Vector3 &p_motion, real_t p_margin = 0.001) :
@@ -875,6 +883,9 @@ public:
 
 	void set_exclude(const TypedArray<RID> &p_exclude);
 	TypedArray<RID> get_exclude() const;
+
+	bool get_change_exclusions_to_inclusions() const { return parameters.exclude_is_actually_include; }
+	void set_change_exclusions_to_inclusions(bool p_enabled) { parameters.exclude_is_actually_include = p_enabled; }
 };
 
 class PhysicsPointQueryParameters3D : public RefCounted {
@@ -902,6 +913,9 @@ public:
 
 	void set_exclude(const TypedArray<RID> &p_exclude);
 	TypedArray<RID> get_exclude() const;
+
+	bool get_change_exclusions_to_inclusions() const { return parameters.exclude_is_actually_include; }
+	void set_change_exclusions_to_inclusions(bool p_enabled) { parameters.exclude_is_actually_include = p_enabled; }
 };
 
 class PhysicsShapeQueryParameters3D : public RefCounted {
@@ -943,6 +957,9 @@ public:
 
 	void set_exclude(const TypedArray<RID> &p_exclude);
 	TypedArray<RID> get_exclude() const;
+
+	bool get_change_exclusions_to_inclusions() const { return parameters.exclude_is_actually_include; }
+	void set_change_exclusions_to_inclusions(bool p_enabled) { parameters.exclude_is_actually_include = p_enabled; }
 };
 
 class PhysicsTestMotionParameters3D : public RefCounted {
@@ -976,6 +993,9 @@ public:
 
 	Array get_exclude_objects() const;
 	void set_exclude_objects(const Array &p_exclude);
+
+	bool get_change_exclusions_to_inclusions() const { return parameters.exclude_is_actually_include; }
+	void set_change_exclusions_to_inclusions(bool p_enabled) { parameters.exclude_is_actually_include = p_enabled; }
 
 	bool is_recovery_as_collision_enabled() const { return parameters.recovery_as_collision; }
 	void set_recovery_as_collision_enabled(bool p_enabled) { parameters.recovery_as_collision = p_enabled; }

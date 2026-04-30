@@ -30,33 +30,9 @@
 #if !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
 #include "ray_cast_3d_direct.h"
 
-void RayCast3DDirect::set_source_position(const Vector3 &p_point) {
-	source_position = p_point;
-}
-
-Vector3 RayCast3DDirect::get_source_position() const {
-	return source_position;
-}
-
-void RayCast3DDirect::set_target_position(const Vector3 &p_point) {
-	target_position = p_point;
-}
-
-Vector3 RayCast3DDirect::get_target_position() const {
-	return target_position;
-}
-
 void RayCast3DDirect::set_transform_and_distance(const Transform3D& p_transform, real_t p_length) {
 	source_position = p_transform.origin;
 	target_position = p_transform.xform(Vector3(0, 0, -p_length));
-}
-
-void RayCast3DDirect::set_collision_mask(uint32_t p_mask) {
-	collision_mask = p_mask;
-}
-
-uint32_t RayCast3DDirect::get_collision_mask() const {
-	return collision_mask;
 }
 
 void RayCast3DDirect::set_collision_mask_value(int p_layer_number, bool p_value) {
@@ -120,7 +96,8 @@ bool RayCast3DDirect::cast(const RID &p_space) {
 	PhysicsDirectSpaceState3D::RayParameters ray_params;
 	ray_params.from = source_position;
 	ray_params.to = target_position;
-	ray_params.exclude = exclude;
+	ray_params.exclude = filter;
+	ray_params.exclude_is_actually_include = filter_is_inclusive;
 	ray_params.collision_mask = collision_mask;
 	ray_params.collide_with_bodies = collide_with_bodies;
 	ray_params.collide_with_areas = collide_with_areas;
@@ -193,7 +170,8 @@ void RayCast3DDirect::set_from_parameters(const Ref<PhysicsRayQueryParameters3D>
 	PhysicsDirectSpaceState3D::RayParameters parameters = p_parameters.ptr()->get_parameters();
 	source_position = parameters.from;
 	target_position = parameters.to;
-	exclude = parameters.exclude;
+	filter = parameters.exclude;
+	filter_is_inclusive = parameters.exclude_is_actually_include;
 	collision_mask = parameters.collision_mask;
 	collide_with_bodies = parameters.collide_with_bodies;
 	collide_with_areas = parameters.collide_with_areas;
@@ -201,66 +179,27 @@ void RayCast3DDirect::set_from_parameters(const Ref<PhysicsRayQueryParameters3D>
 	hit_back_faces = parameters.hit_back_faces;
 }
 
-void RayCast3DDirect::add_exception_rid(const RID &p_rid) {
-	exclude.insert(p_rid);
+void RayCast3DDirect::add_filter_rid(const RID &p_rid) {
+	filter.insert(p_rid);
 }
 
-void RayCast3DDirect::add_exception(const CollisionObject3D *p_node) {
-	ERR_FAIL_NULL_MSG(p_node, "The passed Node must be an instance of CollisionObject3D.");
-	add_exception_rid(p_node->get_rid());
+void RayCast3DDirect::remove_filter_rid(const RID &p_rid) {
+	filter.erase(p_rid);
 }
 
-void RayCast3DDirect::remove_exception_rid(const RID &p_rid) {
-	exclude.erase(p_rid);
-}
-
-void RayCast3DDirect::remove_exception(const CollisionObject3D *p_node) {
-	ERR_FAIL_NULL_MSG(p_node, "The passed Node must be an instance of CollisionObject3D.");
-	remove_exception_rid(p_node->get_rid());
-}
-
-void RayCast3DDirect::clear_exceptions() {
-	exclude.clear();
-}
-
-void RayCast3DDirect::set_collide_with_areas(bool p_enabled) {
-	collide_with_areas = p_enabled;
-}
-
-bool RayCast3DDirect::is_collide_with_areas_enabled() const {
-	return collide_with_areas;
-}
-
-void RayCast3DDirect::set_collide_with_bodies(bool p_enabled) {
-	collide_with_bodies = p_enabled;
-}
-
-bool RayCast3DDirect::is_collide_with_bodies_enabled() const {
-	return collide_with_bodies;
-}
-
-void RayCast3DDirect::set_hit_from_inside(bool p_enabled) {
-	hit_from_inside = p_enabled;
-}
-
-bool RayCast3DDirect::is_hit_from_inside_enabled() const {
-	return hit_from_inside;
-}
-
-void RayCast3DDirect::set_hit_back_faces(bool p_enabled) {
-	hit_back_faces = p_enabled;
-}
-
-bool RayCast3DDirect::is_hit_back_faces_enabled() const {
-	return hit_back_faces;
+void RayCast3DDirect::clear_filter() {
+	filter.clear();
 }
 
 void RayCast3DDirect::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_source_position", "global_point"), &RayCast3DDirect::set_source_position);
-	ClassDB::bind_method(D_METHOD("get_source_position"), &RayCast3DDirect::get_source_position);
-
-	ClassDB::bind_method(D_METHOD("set_target_position", "global_point"), &RayCast3DDirect::set_target_position);
-	ClassDB::bind_method(D_METHOD("get_target_position"), &RayCast3DDirect::get_target_position);
+	XT_AUTO_BIND_PROPERTY(RayCast3DDirect, collision_mask, Variant::INT);
+	XT_AUTO_BIND_PROPERTY(RayCast3DDirect, collide_with_bodies, Variant::BOOL);
+	XT_AUTO_BIND_PROPERTY(RayCast3DDirect, collide_with_areas, Variant::BOOL);
+	XT_AUTO_BIND_PROPERTY(RayCast3DDirect, hit_from_inside, Variant::BOOL);
+	XT_AUTO_BIND_PROPERTY(RayCast3DDirect, hit_back_faces, Variant::BOOL);
+	XT_AUTO_BIND_PROPERTY(RayCast3DDirect, filter_is_inclusive, Variant::BOOL);
+	XT_AUTO_BIND_PROPERTY(RayCast3DDirect, source_position, Variant::VECTOR3);
+	XT_AUTO_BIND_PROPERTY(RayCast3DDirect, target_position, Variant::VECTOR3);
 
 	ClassDB::bind_method(D_METHOD("set_transform_and_distance", "transform", "length"), &RayCast3DDirect::set_transform_and_distance);
 
@@ -279,31 +218,12 @@ void RayCast3DDirect::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_from_parameters"), &RayCast3DDirect::set_from_parameters);
 
-	ClassDB::bind_method(D_METHOD("add_exception_rid", "rid"), &RayCast3DDirect::add_exception_rid);
-	ClassDB::bind_method(D_METHOD("add_exception", "node"), &RayCast3DDirect::add_exception);
-
-	ClassDB::bind_method(D_METHOD("remove_exception_rid", "rid"), &RayCast3DDirect::remove_exception_rid);
-	ClassDB::bind_method(D_METHOD("remove_exception", "node"), &RayCast3DDirect::remove_exception);
-
-	ClassDB::bind_method(D_METHOD("clear_exceptions"), &RayCast3DDirect::clear_exceptions);
-
-	ClassDB::bind_method(D_METHOD("set_collision_mask", "mask"), &RayCast3DDirect::set_collision_mask);
-	ClassDB::bind_method(D_METHOD("get_collision_mask"), &RayCast3DDirect::get_collision_mask);
+	ClassDB::bind_method(D_METHOD("add_filter_rid", "rid"), &RayCast3DDirect::add_filter_rid);
+	ClassDB::bind_method(D_METHOD("remove_filter_rid", "rid"), &RayCast3DDirect::remove_filter_rid);
+	ClassDB::bind_method(D_METHOD("clear_filter"), &RayCast3DDirect::clear_filter);
 
 	ClassDB::bind_method(D_METHOD("set_collision_mask_value", "layer_number", "value"), &RayCast3DDirect::set_collision_mask_value);
 	ClassDB::bind_method(D_METHOD("get_collision_mask_value", "layer_number"), &RayCast3DDirect::get_collision_mask_value);
-
-	ClassDB::bind_method(D_METHOD("set_collide_with_areas", "enable"), &RayCast3DDirect::set_collide_with_areas);
-	ClassDB::bind_method(D_METHOD("is_collide_with_areas_enabled"), &RayCast3DDirect::is_collide_with_areas_enabled);
-
-	ClassDB::bind_method(D_METHOD("set_collide_with_bodies", "enable"), &RayCast3DDirect::set_collide_with_bodies);
-	ClassDB::bind_method(D_METHOD("is_collide_with_bodies_enabled"), &RayCast3DDirect::is_collide_with_bodies_enabled);
-
-	ClassDB::bind_method(D_METHOD("set_hit_from_inside", "enable"), &RayCast3DDirect::set_hit_from_inside);
-	ClassDB::bind_method(D_METHOD("is_hit_from_inside_enabled"), &RayCast3DDirect::is_hit_from_inside_enabled);
-
-	ClassDB::bind_method(D_METHOD("set_hit_back_faces", "enable"), &RayCast3DDirect::set_hit_back_faces);
-	ClassDB::bind_method(D_METHOD("is_hit_back_faces_enabled"), &RayCast3DDirect::is_hit_back_faces_enabled);
 
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::BOOL, "last_hit_something", PROPERTY_HINT_NONE), "get_hit_something");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "last_hit_position", PROPERTY_HINT_NONE), "get_collision_point");
@@ -313,14 +233,6 @@ void RayCast3DDirect::_bind_methods() {
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "last_hit_godot_object", PROPERTY_HINT_NONE), "get_godot_object");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "last_hit_shape_index", PROPERTY_HINT_NONE), "get_collider_shape");
 	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "last_hit_face_index", PROPERTY_HINT_NONE), "get_collider_face_index");
-	
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "source_position", PROPERTY_HINT_NONE), "set_source_position", "get_source_position");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "target_position", PROPERTY_HINT_NONE), "set_target_position", "get_target_position");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "collision_mask", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collision_mask", "get_collision_mask");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "hit_from_inside"), "set_hit_from_inside", "is_hit_from_inside_enabled");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "hit_back_faces"), "set_hit_back_faces", "is_hit_back_faces_enabled");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_with_areas", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collide_with_areas", "is_collide_with_areas_enabled");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "collide_with_bodies", PROPERTY_HINT_LAYERS_3D_PHYSICS), "set_collide_with_bodies", "is_collide_with_bodies_enabled");
 }
 
 RayCast3DDirect::RayCast3DDirect() {
