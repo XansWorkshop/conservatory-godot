@@ -466,7 +466,7 @@ bool JoltPhysicsDirectSpaceState3D::intersect_ray(const RayParameters &p_paramet
 
 	space->flush_pending_objects();
 
-	const JoltQueryFilter3D query_filter(*this, p_parameters.collision_mask, p_parameters.collide_with_bodies, p_parameters.collide_with_areas, p_parameters.exclude, p_parameters.pick_ray);
+	const JoltQueryFilter3D query_filter(*this, p_parameters.collision_mask, p_parameters.collide_with_bodies, p_parameters.collide_with_areas, p_parameters.exclude, p_parameters.pick_ray, p_parameters.exclude_is_actually_include);
 
 	const JPH::RVec3 from = to_jolt_r(p_parameters.from);
 	const JPH::RVec3 to = to_jolt_r(p_parameters.to);
@@ -533,7 +533,7 @@ int JoltPhysicsDirectSpaceState3D::intersect_point(const PointParameters &p_para
 
 	space->flush_pending_objects();
 
-	const JoltQueryFilter3D query_filter(*this, p_parameters.collision_mask, p_parameters.collide_with_bodies, p_parameters.collide_with_areas, p_parameters.exclude);
+	const JoltQueryFilter3D query_filter(*this, p_parameters.collision_mask, p_parameters.collide_with_bodies, p_parameters.collide_with_areas, p_parameters.exclude, false, p_parameters.exclude_is_actually_include);
 	JoltQueryCollectorAnyMulti<JPH::CollidePointCollector, 32> collector(p_result_max);
 	space->get_narrow_phase_query().CollidePoint(to_jolt_r(p_parameters.position), collector, query_filter, query_filter, query_filter);
 
@@ -590,7 +590,7 @@ int JoltPhysicsDirectSpaceState3D::intersect_shape(const ShapeParameters &p_para
 	JPH::CollideShapeSettings settings;
 	settings.mMaxSeparationDistance = (float)p_parameters.margin;
 
-	const JoltQueryFilter3D query_filter(*this, p_parameters.collision_mask, p_parameters.collide_with_bodies, p_parameters.collide_with_areas, p_parameters.exclude);
+	const JoltQueryFilter3D query_filter(*this, p_parameters.collision_mask, p_parameters.collide_with_bodies, p_parameters.collide_with_areas, p_parameters.exclude, false, p_parameters.exclude_is_actually_include);
 	JoltQueryCollectorAnyMulti<JPH::CollideShapeCollector, 32> collector(p_result_max);
 	_collide_shape_queries(jolt_shape, to_jolt(scale), to_jolt_r(transform_com), settings, to_jolt_r(transform_com.origin), collector, query_filter, query_filter, query_filter);
 
@@ -644,7 +644,7 @@ bool JoltPhysicsDirectSpaceState3D::cast_motion(const ShapeParameters &p_paramet
 	JPH::CollideShapeSettings settings;
 	settings.mMaxSeparationDistance = (float)p_parameters.margin;
 
-	const JoltQueryFilter3D query_filter(*this, p_parameters.collision_mask, p_parameters.collide_with_bodies, p_parameters.collide_with_areas, p_parameters.exclude);
+	const JoltQueryFilter3D query_filter(*this, p_parameters.collision_mask, p_parameters.collide_with_bodies, p_parameters.collide_with_areas, p_parameters.exclude, false, p_parameters.exclude_is_actually_include);
 	_cast_motion_impl(*jolt_shape, transform_com, scale, p_parameters.motion, JoltProjectSettings::use_enhanced_internal_edge_removal_for_queries, true, settings, query_filter, query_filter, query_filter, JPH::ShapeFilter(), r_closest_safe, r_closest_unsafe);
 
 	return true;
@@ -683,7 +683,7 @@ bool JoltPhysicsDirectSpaceState3D::collide_shape(const ShapeParameters &p_param
 
 	const Vector3 &base_offset = transform_com.origin;
 
-	const JoltQueryFilter3D query_filter(*this, p_parameters.collision_mask, p_parameters.collide_with_bodies, p_parameters.collide_with_areas, p_parameters.exclude);
+	const JoltQueryFilter3D query_filter(*this, p_parameters.collision_mask, p_parameters.collide_with_bodies, p_parameters.collide_with_areas, p_parameters.exclude, false, p_parameters.exclude_is_actually_include);
 	JoltQueryCollectorAnyMulti<JPH::CollideShapeCollector, 32> collector(p_result_max);
 	_collide_shape_queries(jolt_shape, to_jolt(scale), to_jolt_r(transform_com), settings, to_jolt_r(base_offset), collector, query_filter, query_filter, query_filter);
 

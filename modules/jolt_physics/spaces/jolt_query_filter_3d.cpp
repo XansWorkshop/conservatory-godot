@@ -35,9 +35,10 @@
 #include "jolt_physics_direct_space_state_3d.h"
 #include "jolt_space_3d.h"
 
-JoltQueryFilter3D::JoltQueryFilter3D(const JoltPhysicsDirectSpaceState3D &p_space_state, uint32_t p_collision_mask, bool p_collide_with_bodies, bool p_collide_with_areas, const HashSet<RID> &p_excluded, bool p_picking) :
+JoltQueryFilter3D::JoltQueryFilter3D(const JoltPhysicsDirectSpaceState3D &p_space_state, uint32_t p_collision_mask, bool p_collide_with_bodies, bool p_collide_with_areas, const HashSet<RID> &p_filter, bool p_picking, bool p_filter_list_is_include) :
 		space(p_space_state.get_space()),
-		excluded(p_excluded),
+		filter_list(p_filter), // Edited by Xan 2026
+		filter_list_is_include(p_filter_list_is_include), // Added by Xan 2026
 		collision_mask(p_collision_mask),
 		collide_with_bodies(p_collide_with_bodies),
 		collide_with_areas(p_collide_with_areas),
@@ -79,5 +80,12 @@ bool JoltQueryFilter3D::ShouldCollide(const JPH::BodyID &p_body_id) const {
 
 bool JoltQueryFilter3D::ShouldCollideLocked(const JPH::Body &p_body) const {
 	JoltObject3D *object = reinterpret_cast<JoltObject3D *>(p_body.GetUserData());
-	return (!picking || object->is_pickable()) && !excluded.has(object->get_rid());
+
+	// Edited by Xan 2026
+	if (!picking || object->is_pickable()) {
+		bool is_filtered = filter_list.has(object->get_rid());
+		return is_filtered == filter_list_is_include;
+	}
+	return false;
+	//return (!picking || object->is_pickable()) && !excluded.has(object->get_rid());
 }

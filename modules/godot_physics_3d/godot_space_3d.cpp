@@ -78,7 +78,7 @@ int GodotPhysicsDirectSpaceState3D::intersect_point(const PointParameters &p_par
 
 		//area can't be picked by ray (default)
 
-		if (p_parameters.exclude.has(space->intersection_query_results[i]->get_self())) {
+		if (p_parameters.exclude.has(space->intersection_query_results[i]->get_self()) != p_parameters.exclude_is_actually_include) {
 			continue;
 		}
 
@@ -136,7 +136,7 @@ bool GodotPhysicsDirectSpaceState3D::intersect_ray(const RayParameters &p_parame
 			continue;
 		}
 
-		if (p_parameters.exclude.has(space->intersection_query_results[i]->get_self())) {
+		if (p_parameters.exclude.has(space->intersection_query_results[i]->get_self()) != p_parameters.exclude_is_actually_include) {
 			continue;
 		}
 
@@ -234,7 +234,7 @@ int GodotPhysicsDirectSpaceState3D::intersect_shape(const ShapeParameters &p_par
 
 		//area can't be picked by ray (default)
 
-		if (p_parameters.exclude.has(space->intersection_query_results[i]->get_self())) {
+		if (p_parameters.exclude.has(space->intersection_query_results[i]->get_self()) != p_parameters.exclude_is_actually_include) {
 			continue;
 		}
 
@@ -291,7 +291,7 @@ bool GodotPhysicsDirectSpaceState3D::cast_motion(const ShapeParameters &p_parame
 			continue;
 		}
 
-		if (p_parameters.exclude.has(space->intersection_query_results[i]->get_self())) {
+		if (p_parameters.exclude.has(space->intersection_query_results[i]->get_self()) != p_parameters.exclude_is_actually_include) {
 			continue; //ignore excluded
 		}
 
@@ -412,7 +412,7 @@ bool GodotPhysicsDirectSpaceState3D::collide_shape(const ShapeParameters &p_para
 
 		const GodotCollisionObject3D *col_obj = space->intersection_query_results[i];
 
-		if (p_parameters.exclude.has(col_obj->get_self())) {
+		if (p_parameters.exclude.has(col_obj->get_self()) != p_parameters.exclude_is_actually_include) {
 			continue;
 		}
 

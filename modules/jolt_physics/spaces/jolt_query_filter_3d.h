@@ -48,14 +48,15 @@ class JoltQueryFilter3D final
 		  public JPH::ObjectLayerFilter,
 		  public JPH::BodyFilter {
 	const JoltSpace3D &space;
-	const HashSet<RID> &excluded;
+	const HashSet<RID> &filter_list; // Xan 2026: Was "excluded"
+	bool filter_list_is_include; // Added by Xan 2026
 	uint32_t collision_mask = 0;
 	bool collide_with_bodies = false;
 	bool collide_with_areas = false;
 	bool picking = false;
 
 public:
-	JoltQueryFilter3D(const JoltPhysicsDirectSpaceState3D &p_space_state, uint32_t p_collision_mask, bool p_collide_with_bodies, bool p_collide_with_areas, const HashSet<RID> &p_excluded, bool p_picking = false);
+	JoltQueryFilter3D(const JoltPhysicsDirectSpaceState3D &p_space_state, uint32_t p_collision_mask, bool p_collide_with_bodies, bool p_collide_with_areas, const HashSet<RID> &p_filter, bool p_picking = false, bool p_filter_list_is_include = false);
 
 	virtual bool ShouldCollide(JPH::BroadPhaseLayer p_broad_phase_layer) const override;
 	virtual bool ShouldCollide(JPH::ObjectLayer p_object_layer) const override;
