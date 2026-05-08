@@ -1043,12 +1043,12 @@ public:
 	}
 
 	template <typename U = T, std::enable_if_t<std::is_base_of_v<RefCounted, U>, int> = 0>
-	_FORCE_INLINE_ element_type *ptr() const {
+	_FORCE_INLINE_ T *ptr() const {
 		return *_value;
 	}
 
 	template <typename U = T, std::enable_if_t<!std::is_base_of_v<RefCounted, U>, int> = 0>
-	_FORCE_INLINE_ element_type *ptr() const {
+	_FORCE_INLINE_ T *ptr() const {
 		return _value;
 	}
 
@@ -1061,11 +1061,11 @@ public:
 		return Ref<T_Other>(_value);
 	}
 
-	_FORCE_INLINE_ element_type *operator*() const {
+	_FORCE_INLINE_ T *operator*() const {
 		return ptr();
 	}
 
-	_FORCE_INLINE_ element_type *operator->() const {
+	_FORCE_INLINE_ T *operator->() const {
 		return ptr();
 	}
 };
