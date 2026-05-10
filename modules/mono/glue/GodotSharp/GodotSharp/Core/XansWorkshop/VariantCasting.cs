@@ -61,13 +61,13 @@ namespace Godot {
         public static explicit operator checked Vector2I(Variant from) => from.VariantType == Variant.Type.Vector2I ? from.AsVector2I() : throw ThrowInvalidCast();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator checked Rect2(Variant from) => from.VariantType == Variant.Type.Rect2 ? from.Rect2() : throw ThrowInvalidCast();
+        public static explicit operator checked Rect2(Variant from) => from.VariantType == Variant.Type.Rect2 ? from.AsRect2() : throw ThrowInvalidCast();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator checked Rect2I(Variant from) => from.VariantType == Variant.Type.Rect2I ? from.Rect2I() : throw ThrowInvalidCast();
+        public static explicit operator checked Rect2I(Variant from) => from.VariantType == Variant.Type.Rect2I ? from.AsRect2I() : throw ThrowInvalidCast();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator checked Transform2D(Variant from) => from.VariantType == Variant.Type.Transform2D ? from.Transform2D() : throw ThrowInvalidCast();
+        public static explicit operator checked Transform2D(Variant from) => from.VariantType == Variant.Type.Transform2D ? from.AsTransform2D() : throw ThrowInvalidCast();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator checked Vector3(Variant from) => from.VariantType == Variant.Type.Vector3 ? from.AsVector3() : throw ThrowInvalidCast();
@@ -91,10 +91,10 @@ namespace Godot {
         public static explicit operator checked Vector4I(Variant from) => from.VariantType == Variant.Type.Vector4I ? from.AsVector4I() : throw ThrowInvalidCast();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator checked Projection(Variant from) => from.VariantType == Variant.Type.Projection ? from.Projection() : throw ThrowInvalidCast();
+        public static explicit operator checked Projection(Variant from) => from.VariantType == Variant.Type.Projection ? from.AsProjection() : throw ThrowInvalidCast();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator checked Aabb(Variant from) => from.VariantType == Variant.Type.Aabb ? from.Aabb() : throw ThrowInvalidCast();
+        public static explicit operator checked Aabb(Variant from) => from.VariantType == Variant.Type.Aabb ? from.AsAabb() : throw ThrowInvalidCast();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator checked Color(Variant from) => from.VariantType == Variant.Type.Color ? from.AsColor() : throw ThrowInvalidCast();
