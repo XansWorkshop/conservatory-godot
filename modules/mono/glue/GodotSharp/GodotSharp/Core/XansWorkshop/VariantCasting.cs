@@ -146,6 +146,7 @@ namespace Godot {
             for (int i = 0; i < result.Length; i++) {
                 result[i] = checked((StringName)array[i]);
             }
+            return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -157,6 +158,7 @@ namespace Godot {
             {
                 result[i] = checked((NodePath)array[i]);
             }
+            return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -168,6 +170,7 @@ namespace Godot {
             {
                 result[i] = checked((Rid)array[i]);
             }
+            return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
