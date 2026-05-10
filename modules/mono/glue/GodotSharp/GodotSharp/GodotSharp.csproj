@@ -64,6 +64,7 @@
   <!-- Sources -->
   <ItemGroup>
     <Compile Include="Core\XansWorkshop\ConservatoryInjections.cs" />
+    <Compile Include="Core\XansWorkshop\VariantCasting.cs" />
     
     <Compile Include="Core\Aabb.cs" />
     <Compile Include="Core\Attributes\ExportToolButtonAttribute.cs" />
