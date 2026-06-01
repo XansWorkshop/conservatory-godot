@@ -88,6 +88,12 @@
 				See also [member keep_editing_on_text_submit].
 			</description>
 		</method>
+		<method name="get_caret_pixel_pos">
+			<return type="Vector2" />
+			<description>
+				Returns the coordinates of the bottom left of the caret, the little bar that shows when typing text, relative to this element's top left corner. This position is always in pixels.
+			</description>
+		</method>
 		<method name="get_menu" qualifiers="const">
 			<return type="PopupMenu" />
 			<description>
@@ -256,12 +262,6 @@
 			<return type="void" />
 			<description>
 				Allows exiting edit mode while preserving focus.
-			</description>
-		</method>
-		<method name="get_caret_pixel_pos">
-			<return type="Vector2" />
-			<description>
-				Returns the coordinates of the bottom left of the caret, the little bar that shows when typing text, relative to this element's top left corner. This position is always in pixels.
 			</description>
 		</method>
 	</methods>

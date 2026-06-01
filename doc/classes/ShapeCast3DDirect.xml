@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ShapeCast3DDirect" inherits="RefCounted" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="cast">
+			<return type="int" />
+			<param index="0" name="space" type="RID" />
+			<description>
+			</description>
+		</method>
+		<method name="cast_statically" qualifiers="static">
+			<return type="ShapeCastResult[]" />
+			<param index="0" name="space" type="RID" />
+			<param index="1" name="parameters" type="PhysicsShapeQueryParameters3D" />
+			<param index="2" name="max_results" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_collision_mask_value" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="layer_number" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="set_collision_mask_value">
+			<return type="void" />
+			<param index="0" name="layer_number" type="int" />
+			<param index="1" name="value" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="set_from_parameters">
+			<return type="void" />
+			<param index="0" name="parameters" type="PhysicsShapeQueryParameters3D" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="closest_collision_safe_fraction" type="float" setter="" getter="get_closest_collision_safe_fraction" default="1.0">
+		</member>
+		<member name="closest_collision_unsafe_fraction" type="float" setter="" getter="get_closest_collision_unsafe_fraction" default="1.0">
+		</member>
+		<member name="collide_with_areas" type="bool" setter="set_collide_with_areas" getter="get_collide_with_areas" default="true">
+		</member>
+		<member name="collide_with_bodies" type="bool" setter="set_collide_with_bodies" getter="get_collide_with_bodies" default="true">
+		</member>
+		<member name="collision_mask" type="int" setter="set_collision_mask" getter="get_collision_mask" default="0">
+		</member>
+		<member name="filter_is_inclusive" type="bool" setter="set_filter_is_inclusive" getter="get_filter_is_inclusive" default="false">
+		</member>
+		<member name="hit_anything" type="bool" setter="" getter="get_hit_anything" default="false">
+		</member>
+		<member name="hit_count" type="int" setter="" getter="get_hit_count" default="0">
+		</member>
+		<member name="margin" type="float" setter="set_margin" getter="get_margin" default="0.0">
+		</member>
+		<member name="max_results" type="int" setter="set_max_results" getter="get_max_results" default="0">
+		</member>
+		<member name="results" type="ShapeCastResult[]" setter="" getter="get_results" default="[]">
+		</member>
+		<member name="shape" type="RID" setter="set_shape" getter="get_shape" default="RID()">
+		</member>
+		<member name="source_transform" type="Transform3D" setter="set_source_transform" getter="get_source_transform" default="Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)">
+		</member>
+	</members>
+</class>

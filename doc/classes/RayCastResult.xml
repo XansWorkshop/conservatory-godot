@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="RayCastResult" inherits="RefCounted" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="clear">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="copy_to" qualifiers="const">
+			<return type="void" />
+			<param index="0" name="destination" type="RayCastResult" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="hit_face_index" type="int" setter="set_face_index" getter="get_face_index" default="-1">
+		</member>
+		<member name="hit_godot_object" type="Object" setter="" getter="get_hit_godot_object">
+		</member>
+		<member name="hit_normal" type="Vector3" setter="set_hit_normal" getter="get_hit_normal" default="Vector3(0, 0, 0)">
+		</member>
+		<member name="hit_object_id" type="int" setter="set_hit_object_id" getter="get_hit_object_id" default="0">
+		</member>
+		<member name="hit_position" type="Vector3" setter="set_hit_position" getter="get_hit_position" default="Vector3(0, 0, 0)">
+		</member>
+		<member name="hit_rid" type="RID" setter="set_rid" getter="get_rid" default="RID()">
+		</member>
+		<member name="hit_shape_index" type="int" setter="set_shape_index" getter="get_shape_index" default="-1">
+		</member>
+		<member name="origin" type="Vector3" setter="set_origin" getter="get_origin" default="Vector3(0, 0, 0)">
+		</member>
+		<member name="success" type="bool" setter="set_success" getter="get_success" default="false">
+		</member>
+	</members>
+</class>

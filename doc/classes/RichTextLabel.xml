@@ -17,6 +17,12 @@
 		<link title="Operating System Testing Demo">https://godotengine.org/asset-library/asset/2789</link>
 	</tutorials>
 	<methods>
+		<method name="_resolve_custom_color" qualifiers="virtual const">
+			<return type="Color" />
+			<param index="0" name="color_name" type="String" />
+			<description>
+			</description>
+		</method>
 		<method name="add_hr">
 			<return type="void" />
 			<param index="0" name="width" type="int" default="90" />
@@ -352,12 +358,6 @@
 			<return type="bool" />
 			<description>
 				Returns whether the menu is visible. Use this instead of [code]get_menu().visible[/code] to improve performance (so the creation of the menu is avoided).
-			</description>
-		</method>
-		<method name="is_ready" qualifiers="const" deprecated="Use [method is_finished] instead.">
-			<return type="bool" />
-			<description>
-				If [member threaded] is enabled, returns [code]true[/code] if the background thread has finished text processing, otherwise always return [code]true[/code].
 			</description>
 		</method>
 		<method name="menu_option">
@@ -847,6 +847,11 @@
 			<param index="0" name="meta" type="Variant" />
 			<description>
 				Triggers when the mouse enters a meta tag.
+			</description>
+		</signal>
+		<signal name="parsing">
+			<param index="0" name="is_calling_after_parsing" type="bool" />
+			<description>
 			</description>
 		</signal>
 	</signals>

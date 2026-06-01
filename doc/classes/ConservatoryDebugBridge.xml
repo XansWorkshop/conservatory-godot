@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ConservatoryDebugBridge" inherits="Object" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="are_engine_memory_metrics_available" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="intercept_godot_logging_using_ptr" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="managed_error_handler" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="is_engine_error_breaking_possible" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="set_ptrs" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="should_break_on_error" type="int" />
+			<param index="1" name="is_debugger_attached" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="should_break_on_engine_error" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+	</methods>
+</class>

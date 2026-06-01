@@ -92,6 +92,13 @@
 				Returns the number of shapes assigned to an area.
 			</description>
 		</method>
+		<method name="area_get_shape_disabled" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="area" type="RID" />
+			<param index="1" name="shape_idx" type="int" />
+			<description>
+			</description>
+		</method>
 		<method name="area_get_shape_transform" qualifiers="const">
 			<return type="Transform3D" />
 			<param index="0" name="area" type="RID" />
@@ -442,6 +449,13 @@
 			<param index="0" name="body" type="RID" />
 			<description>
 				Returns the number of shapes assigned to a body.
+			</description>
+		</method>
+		<method name="body_get_shape_disabled" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="body" type="RID" />
+			<param index="1" name="shape_idx" type="int" />
+			<description>
 			</description>
 		</method>
 		<method name="body_get_shape_transform" qualifiers="const">
@@ -842,6 +856,42 @@
 			<param index="2" name="value" type="float" />
 			<description>
 				Sets a hinge joint parameter.
+			</description>
+		</method>
+		<method name="is_area" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="area" type="RID" />
+			<description>
+			</description>
+		</method>
+		<method name="is_body" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="body" type="RID" />
+			<description>
+			</description>
+		</method>
+		<method name="is_joint" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="body" type="RID" />
+			<description>
+			</description>
+		</method>
+		<method name="is_shape" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="shape" type="RID" />
+			<description>
+			</description>
+		</method>
+		<method name="is_soft_body" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="body" type="RID" />
+			<description>
+			</description>
+		</method>
+		<method name="is_space" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="space" type="RID" />
+			<description>
 			</description>
 		</method>
 		<method name="joint_clear">

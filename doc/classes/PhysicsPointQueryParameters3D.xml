@@ -9,6 +9,8 @@
 	<tutorials>
 	</tutorials>
 	<members>
+		<member name="change_exclusions_to_inclusions" type="bool" setter="set_change_exclusions_to_inclusions" getter="get_change_exclusions_to_inclusions" default="false">
+		</member>
 		<member name="collide_with_areas" type="bool" setter="set_collide_with_areas" getter="is_collide_with_areas_enabled" default="false">
 			If [code]true[/code], the query will take [Area3D]s into account.
 		</member>

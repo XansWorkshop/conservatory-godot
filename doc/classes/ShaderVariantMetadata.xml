@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ShaderVariantMetadata" inherits="Resource" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_default_feature_state" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="get_default_variant" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_valid_variants" qualifiers="const">
+			<return type="StringName[]" />
+			<description>
+			</description>
+		</method>
+		<method name="set_default_feature_state">
+			<return type="void" />
+			<param index="0" name="state" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="set_default_variant">
+			<return type="void" />
+			<param index="0" name="index" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="set_valid_variants">
+			<return type="void" />
+			<param index="0" name="valid_variants" type="StringName[]" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="definition" type="StringName" setter="set_definition" getter="get_definition" default="&amp;&quot;NEW_VARIANT&quot;">
+		</member>
+		<member name="is_variant" type="bool" setter="set_is_variant" getter="get_is_variant" default="false">
+		</member>
+	</members>
+</class>

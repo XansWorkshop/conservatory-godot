@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<class name="PointQuery3DDirect" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="PointQuery3DDirect" inherits="RefCounted" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
 	<brief_description>
-		A query for a specific point in space.
+		A query for colliders intersecting a single point.
 	</brief_description>
 	<description>
 		[admonition type="note" collapsible="true" open="false"]
@@ -14,49 +14,52 @@
 	</tutorials>
 	<methods>
 		<method name="query" qualifiers="const">
-			<return type="bool" />
+			<return type="PointQueryResult[]" />
 			<param index="0" name="space" type="RID" />
-			<param index="1" name="max_count" type="int" />
+			<param index="1" name="max_results" type="int" />
 			<description>
 				Performs a query using the properties of this object as parameters. Can return up to [param max_count] items.
 			</description>
 		</method>
-		<method name="query_statically">
-			<return type="bool" />
+		<method name="query_statically" qualifiers="static">
+			<return type="PointQueryResult[]" />
 			<param index="0" name="space" type="RID" />
-			<param index="1" name="parameters" type="PhysicsPointQueryParameters3D"/>
-			<param index="2" name="max_count" type="int" />
+			<param index="1" name="parameters" type="PhysicsPointQueryParameters3D" />
+			<param index="2" name="max_results" type="int" />
 			<description>
 				Statically perform a query using the provided [param parameters]. Can return up to [param max_count] items.
 			</description>
 		</method>
-		<method name="query_statically_preallocated">
+		<method name="query_statically_preallocated" qualifiers="static">
 			<return type="int" />
 			<param index="0" name="space" type="RID" />
-			<param index="1" name="parameters" type="PhysicsPointQueryParameters3D"/>
-			<param index="2" name="result_preallocated" type="Array" />
+			<param index="1" name="parameters" type="PhysicsPointQueryParameters3D" />
+			<param index="2" name="presized_result_array" type="PointQueryResult[]" />
 			<description>
 				Statically perform a query using the provided [param parameters]. This variation of the method is special in that it expects the passed array ([param result_preallocated]) to have its size set [b]before[/b] calling this method. The size of this array is used to determine the number of results.
 				This variation of the method is most optimal, as any instances of results in the array will be overwritten, instead of an entirely new result object being created.
-				The array passed in is obviously edited; it is your result array. The return value is the amount of results actually placed into the array.
+				The length of the array is not changed by this method, only its contents. Thus, the return value is the amount of results actually hit, so use the return value in a for loop to iterate over all results.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="collide_with_areas" type="bool" setter="set_collide_with_areas" getter="is_collide_with_areas_enabled" default="false">
+		<member name="collide_with_areas" type="bool" setter="set_collide_with_areas" getter="get_collide_with_areas" default="false">
 			If [code]true[/code], collisions with physics areas (like [Area3D]) will be reported.
 		</member>
-		<member name="collide_with_bodies" type="bool" setter="set_collide_with_bodies" getter="is_collide_with_bodies_enabled" default="true">
+		<member name="collide_with_bodies" type="bool" setter="set_collide_with_bodies" getter="get_collide_with_bodies" default="true">
 			If [code]true[/code], collisions with physics bodies (like [PhysicsBody3D]) will be reported.
 		</member>
-		<member name="collision_mask" type="int" setter="set_collision_mask" getter="get_collision_mask" default="1">
+		<member name="collision_mask" type="int" setter="set_collision_mask" getter="get_collision_mask" default="0">
 			The query's collision mask. Only objects in at least one collision layer enabled in the mask will be detected. See [url=$DOCS_URL/tutorials/physics/physics_introduction.html#collision-layers-and-masks]Collision layers and masks[/url] in the documentation for more information.
 		</member>
-		<member name="position" type="Vector3" setter="set_position" getter="get_position">
-			The position in space where this query will occur.
+		<member name="filter" type="RID[]" setter="set_filter" getter="get_filter" default="[]">
+			An array of [RID]s to filter. Depending on the value of [member filter_is_inclusive], this will either be a list of [RID]s that can not be hit (all other objects will be hit except for these), or it's the list of [RID]s that can only be hit (no objects will be hit except for these).
 		</member>
-		<member name="exclude" type="Array" setter="set_exclude" getter="get_exclude">
-			The RIDs in this array will be excluded from the query and cannot be hit.
+		<member name="filter_is_inclusive" type="bool" setter="set_filter_is_inclusive" getter="get_filter_is_inclusive" default="true">
+			Determines if [member filter] is a whitelist or blacklist for [RID]s.
+		</member>
+		<member name="position" type="Vector3" setter="set_position" getter="get_position" default="Vector3(0, 0, 0)">
+			The position in space where this query will occur.
 		</member>
 	</members>
 </class>

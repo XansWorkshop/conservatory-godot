@@ -45,6 +45,12 @@
 				Clips the polygon defined by the points in [param points] against the [param plane] and returns the points of the clipped polygon.
 			</description>
 		</method>
+		<method name="compute_convex_mesh_planes">
+			<return type="Plane[]" />
+			<param index="0" name="points" type="PackedVector3Array" />
+			<description>
+			</description>
+		</method>
 		<method name="compute_convex_mesh_points">
 			<return type="PackedVector3Array" />
 			<param index="0" name="planes" type="Plane[]" />

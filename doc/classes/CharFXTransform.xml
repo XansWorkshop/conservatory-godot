@@ -28,6 +28,8 @@
 			[TextServer] RID of the font used to render glyph, this value can be used with [code]TextServer.font_*[/code] methods to retrieve font information.
 			[b]Note:[/b] Read-only. Setting this property won't affect drawing.
 		</member>
+		<member name="font_size" type="int" setter="set_font_size" getter="get_font_size" default="0">
+		</member>
 		<member name="glyph_count" type="int" setter="set_glyph_count" getter="get_glyph_count" default="0">
 			Number of glyphs in the grapheme cluster. This value is set in the first glyph of a cluster.
 			[b]Note:[/b] Read-only. Setting this property won't affect drawing.
@@ -53,6 +55,8 @@
 		<member name="relative_index" type="int" setter="set_relative_index" getter="get_relative_index" default="0">
 			The character offset of the glyph, relative to the current [RichTextEffect] custom block.
 			[b]Note:[/b] Read-only. Setting this property won't affect drawing.
+		</member>
+		<member name="text_label" type="RichTextLabel" setter="set_text_label" getter="get_text_label">
 		</member>
 		<member name="transform" type="Transform2D" setter="set_transform" getter="get_transform" default="Transform2D(1, 0, 0, 1, 0, 0)">
 			The current transform of the current glyph. It can be overridden (for example, by driving the position and rotation from a curve). You can also alter the existing value to apply transforms on top of other effects.
