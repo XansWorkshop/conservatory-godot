@@ -31,22 +31,7 @@
 #include "shape_query_3d_direct.h"
 #include "core/object/class_db.h"
 
-void ShapeQuery3DDirect::_bind_methods() {
-	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, shape, Variant::RID);
-	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, transform, Variant::TRANSFORM3D);
-	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, margin, Variant::FLOAT);
-	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, collision_mask, Variant::INT);
-	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, collide_with_bodies, Variant::BOOL);
-	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, collide_with_areas, Variant::BOOL);
-	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, filter, Variant::ARRAY);
-	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, filter_is_inclusive, Variant::BOOL);
-
-	ClassDB::bind_method(D_METHOD("query", "space", "max_results"), &ShapeQuery3DDirect::query);
-	ClassDB::bind_static_method(ShapeQuery3DDirect::get_class_static(), D_METHOD("query_statically_preallocated", "space", "parameters", "presized_result_array"), &ShapeQuery3DDirect::query_statically_preallocated);
-	ClassDB::bind_static_method(ShapeQuery3DDirect::get_class_static(), D_METHOD("query_statically", "space", "parameters", "max_results"), &ShapeQuery3DDirect::query_statically);
-}
-
-TypedArray<ShapeQueryResult> ShapeQuery3DDirect::query(const RID &p_space, int p_max_results) const {
+int ShapeQuery3DDirect::query(const RID &p_space) {
 	PhysicsShapeQueryParameters3D params_on_stack = PhysicsShapeQueryParameters3D();
 	Ref<PhysicsShapeQueryParameters3D> parameters = &params_on_stack;
 	parameters->set_shape_rid(shape);
@@ -57,7 +42,10 @@ TypedArray<ShapeQueryResult> ShapeQuery3DDirect::query(const RID &p_space, int p
 	parameters->set_collide_with_areas(collide_with_areas);
 	parameters->set_exclude(filter);
 	parameters->set_change_exclusions_to_inclusions(filter_is_inclusive);
-	return ShapeQuery3DDirect::query_statically(p_space, parameters, p_max_results);
+	results = ShapeQuery3DDirect::query_statically(p_space, parameters, max_results);
+	result_count = results.size();
+	hit_something = !results.is_empty();
+	return result_count;
 }
 
 TypedArray<ShapeQueryResult> ShapeQuery3DDirect::query_statically(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, int p_max_results) {
@@ -113,7 +101,87 @@ int ShapeQuery3DDirect::query_statically_preallocated(const RID &p_space, const 
 	return real_result_count;
 }
 
-ShapeQuery3DDirect::ShapeQuery3DDirect() {
-	transform = Transform3D();
+void ShapeQuery3DDirect::set_collision_mask_value(int p_layer_number, bool p_value) {
+	ERR_FAIL_COND_MSG(p_layer_number < 1, "Collision layer number must be between 1 and 32 inclusive.");
+	ERR_FAIL_COND_MSG(p_layer_number > 32, "Collision layer number must be between 1 and 32 inclusive.");
+	uint32_t mask = get_collision_mask();
+	if (p_value) {
+		mask |= 1 << (p_layer_number - 1);
+	} else {
+		mask &= ~(1 << (p_layer_number - 1));
+	}
+	set_collision_mask(mask);
 }
+
+bool ShapeQuery3DDirect::get_collision_mask_value(int p_layer_number) const {
+	ERR_FAIL_COND_V_MSG(p_layer_number < 1, false, "Collision layer number must be between 1 and 32 inclusive.");
+	ERR_FAIL_COND_V_MSG(p_layer_number > 32, false, "Collision layer number must be between 1 and 32 inclusive.");
+	return get_collision_mask() & (1 << (p_layer_number - 1));
+}
+
+void ShapeQuery3DDirect::set_from_parameters(const Ref<PhysicsShapeQueryParameters3D>& p_parameters) {
+	shape = p_parameters->get_shape_rid();
+	transform = p_parameters->get_transform();
+	margin = p_parameters->get_margin();
+	collision_mask = p_parameters->get_collision_mask();
+	collide_with_bodies = p_parameters->is_collide_with_bodies_enabled();
+	collide_with_areas = p_parameters->is_collide_with_areas_enabled();
+	filter_is_inclusive = p_parameters->get_change_exclusions_to_inclusions();
+
+	// Copy the filter array, sort it, and then remove duplicates.
+	// Without this step, add/remove exclusion methods would fail as they rely on binary search.
+	TypedArray<RID> filter_pre = p_parameters->get_exclude();
+	int length = filter_pre.size();
+
+	TypedArray<RID> filter_post;
+	filter_post.resize(length);
+	filter_pre.sort();
+	RID last = RID();
+	for (int i = 0; i < length; ++i) {
+		RID current = filter_pre[i];
+		if (current != last) {
+			// When sorted, duplicates are always consecutive.
+			filter_post.push_back(current);
+		}
+	}
+	filter = filter_post;
+}
+
+void ShapeQuery3DDirect::add_filter_rid(const RID &p_rid) {
+	int index = filter.bsearch(p_rid);
+	if (index < 0) {
+		filter.insert(~index, p_rid);
+	}
+}
+
+void ShapeQuery3DDirect::remove_filter_rid(const RID &p_rid) {
+	int index = filter.bsearch(p_rid);
+	if (index >= 0) {
+		filter.remove_at(index);
+	}
+}
+
+void ShapeQuery3DDirect::clear_filter() {
+	filter.clear();
+}
+
+void ShapeQuery3DDirect::_bind_methods() {
+	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, shape, Variant::RID);
+	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, transform, Variant::TRANSFORM3D);
+	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, margin, Variant::FLOAT);
+	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, collision_mask, Variant::INT);
+	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, collide_with_bodies, Variant::BOOL);
+	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, collide_with_areas, Variant::BOOL);
+	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, filter_is_inclusive, Variant::BOOL);
+	XT_AUTO_BIND_PROPERTY(ShapeQuery3DDirect, max_results, Variant::INT);
+	XT_AUTO_BIND_READONLY_PROPERTY(ShapeQuery3DDirect, results, Variant::ARRAY);
+	XT_AUTO_BIND_READONLY_PROPERTY(ShapeQuery3DDirect, result_count, Variant::INT);
+	XT_AUTO_BIND_READONLY_PROPERTY(ShapeQuery3DDirect, hit_something, Variant::BOOL);
+
+	ClassDB::bind_method(D_METHOD("query", "space"), &ShapeQuery3DDirect::query);
+	ClassDB::bind_static_method(ShapeQuery3DDirect::get_class_static(), D_METHOD("query_statically_preallocated", "space", "parameters", "presized_result_array"), &ShapeQuery3DDirect::query_statically_preallocated);
+	ClassDB::bind_static_method(ShapeQuery3DDirect::get_class_static(), D_METHOD("query_statically", "space", "parameters", "max_results"), &ShapeQuery3DDirect::query_statically);
+}
+
+ShapeQuery3DDirect::ShapeQuery3DDirect() { }
 #endif

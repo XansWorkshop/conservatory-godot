@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="ShapeCast3DDirect" inherits="RefCounted" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
 	<brief_description>
+		A query for physics objects that uses a physics shape.
 	</brief_description>
 	<description>
+		[admonition type="note" collapsible="true" open="false"]
+			[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+			This is not available in the official build of Godot.
+		[/admonition]
+		This class provides a means to query the world for physics objects that collide with a specific shape.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -11,6 +17,7 @@
 			<return type="int" />
 			<param index="0" name="space" type="RID" />
 			<description>
+				Perform a shape cast using the properties of this object as its settings, in the provided physics [param space]. Returns the amount of objects that were hit, to read from [member results].
 			</description>
 		</method>
 		<method name="cast_statically" qualifiers="static">
@@ -19,12 +26,14 @@
 			<param index="1" name="parameters" type="PhysicsShapeQueryParameters3D" />
 			<param index="2" name="max_results" type="int" />
 			<description>
+				Perform a shape cast without having to make a new instance of [ShapeCast3DDirect], using the provided [param parameters], in the provided physics [param space].
 			</description>
 		</method>
 		<method name="get_collision_mask_value" qualifiers="const">
 			<return type="bool" />
 			<param index="0" name="layer_number" type="int" />
 			<description>
+				A convenience method for [member collision_mask] which allows reading a specific mask bit by index.
 			</description>
 		</method>
 		<method name="set_collision_mask_value">
@@ -32,41 +41,59 @@
 			<param index="0" name="layer_number" type="int" />
 			<param index="1" name="value" type="bool" />
 			<description>
+				A convenience method for [member collision_mask] which allows setting a specific mask bit by index.
 			</description>
 		</method>
 		<method name="set_from_parameters">
 			<return type="void" />
 			<param index="0" name="parameters" type="PhysicsShapeQueryParameters3D" />
 			<description>
+				Updates the parameters of this cast instance to mimic those of the provided [param parameters].
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="closest_collision_safe_fraction" type="float" setter="" getter="get_closest_collision_safe_fraction" default="1.0">
-		</member>
-		<member name="closest_collision_unsafe_fraction" type="float" setter="" getter="get_closest_collision_unsafe_fraction" default="1.0">
-		</member>
 		<member name="collide_with_areas" type="bool" setter="set_collide_with_areas" getter="get_collide_with_areas" default="true">
+			If [code]true[/code], this shape cast can detect physics areas, typically created as [Area3D]s.
 		</member>
 		<member name="collide_with_bodies" type="bool" setter="set_collide_with_bodies" getter="get_collide_with_bodies" default="true">
+			If [code]true[/code], this shape cast can detect physics bodies, typically created as [PhysicsBody3D]s.
 		</member>
-		<member name="collision_mask" type="int" setter="set_collision_mask" getter="get_collision_mask" default="0">
+		<member name="collision_mask" type="int" setter="set_collision_mask" getter="get_collision_mask" default="4294967295">
+			The collision mask bits that represent the layers which can be hit.
+		</member>
+		<member name="collision_safe_fraction" type="float" setter="" getter="get_collision_safe_fraction" default="0.0">
+			This returns the collision-safe fraction from the first result. This is the highest percentage of [member motion] can be applied [i]without[/i] actually colliding with the object.
+		</member>
+		<member name="collision_unsafe_fraction" type="float" setter="" getter="get_collision_unsafe_fraction" default="0.0">
+			This returns the collision-unsafe fraction from the first result. This is the smallest percentage of [member motion] that can be applied in order to just barely, but consistently, cause a collision.
 		</member>
 		<member name="filter_is_inclusive" type="bool" setter="set_filter_is_inclusive" getter="get_filter_is_inclusive" default="false">
+			Set this to [code]true[/code] to change the filter list such that it is [b]inclusive[/b], that is, only objects in the list can be hit. Otherwise, it is [b]exclusive[/b], preventing those objects from being hit.
 		</member>
-		<member name="hit_anything" type="bool" setter="" getter="get_hit_anything" default="false">
+		<member name="hit_something" type="bool" setter="" getter="get_hit_something" default="false">
+			This is set to [code]true[/code] if the shape cast hit something.
 		</member>
-		<member name="hit_count" type="int" setter="" getter="get_hit_count" default="0">
+		<member name="margin" type="float" setter="set_margin" getter="get_margin" default="0.04">
+			The margin is a sort of brim added to this shape, which expands its surface outward. This makes collisions less accurate - the shape is effectively larger than it's supposed to be - but also makes them more consistent.
 		</member>
-		<member name="margin" type="float" setter="set_margin" getter="get_margin" default="0.0">
+		<member name="motion" type="Vector3" setter="set_motion" getter="get_motion" default="Vector3(0, 0, 0)">
+			The velocity of the shape being casted. Note that if the shape will not be in motion, you should prefer [ShapeQuery3DDirect], which is simpler to compute but doesn't support moving shapes.
 		</member>
-		<member name="max_results" type="int" setter="set_max_results" getter="get_max_results" default="0">
+		<member name="max_results" type="int" setter="set_max_results" getter="get_max_results" default="32">
+			The maximum amount of collisions that will be acquired. If more than this many objects are detected by the shape, they will be skipped to avoid adding excessive computational load.
+		</member>
+		<member name="result_count" type="int" setter="" getter="get_result_count" default="0">
+			The amount of results that the last call to [method query] actually acquired.
 		</member>
 		<member name="results" type="ShapeCastResult[]" setter="" getter="get_results" default="[]">
+			The results of the last call to [method query].
 		</member>
 		<member name="shape" type="RID" setter="set_shape" getter="get_shape" default="RID()">
+			The [RID] of the shape that this will use to query the world.
 		</member>
 		<member name="source_transform" type="Transform3D" setter="set_source_transform" getter="get_source_transform" default="Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)">
+			The transformation of this query in world space. Note that scaling is not advised as it often breaks most physics systems.
 		</member>
 	</members>
 </class>

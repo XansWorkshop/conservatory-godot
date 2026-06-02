@@ -37,47 +37,21 @@
 
 #include "shape_cast_result.h"
 
-ObjectID ShapeCastResult::_get_hit_object_id() const {
-	return hit_object_id;
-}
-int64_t ShapeCastResult::get_hit_object_id() const {
-	return (int64_t)hit_object_id;
-}
-void ShapeCastResult::_set_hit_object_id(const ObjectID& p_id) {
-	hit_object_id = p_id;	
-}
-void ShapeCastResult::set_hit_object_id_and_instance(const int64_t p_id) {
-	// The public version
-	hit_object_id = ObjectID(p_id);
-	if (!hit_object_id.is_null()) {
-		hit_object = ObjectDB::get_instance(hit_object_id);
-	} else {
-		hit_object = nullptr;
-	}
-}
-
-Object* ShapeCastResult::get_hit_object() const {
-	return hit_object;
-}
-void ShapeCastResult::_set_hit_object(const Object *p_collider) {
-	hit_object = (Object *)p_collider;
-}
-
 void ShapeCastResult::clear() {
-	success = false;
+	hit_something = false;
 	intersection_point = Vector3();
 	intersection_normal = Vector3();
 	rid = RID();
 	hit_object_id = ObjectID();
 	hit_object = nullptr;
-	shape_index = 0;
+	shape_index = -1;
 	linear_velocity_at_contact = Vector3();
 	collision_safe_fraction = 0;
 	collision_unsafe_fraction = 0;
 }
 
 void ShapeCastResult::copy_to(const Ref<ShapeCastResult>& p_destination) const {
-	p_destination->success = success;
+	p_destination->hit_something = hit_something;
 	p_destination->intersection_point = intersection_point;
 	p_destination->intersection_normal = intersection_normal;
 	p_destination->rid = rid;
@@ -90,41 +64,18 @@ void ShapeCastResult::copy_to(const Ref<ShapeCastResult>& p_destination) const {
 }
 
 void ShapeCastResult::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_success"), &ShapeCastResult::get_success);
-	ClassDB::bind_method(D_METHOD("get_intersection_point"), &ShapeCastResult::get_intersection_point);
-	ClassDB::bind_method(D_METHOD("get_intersection_normal"), &ShapeCastResult::get_intersection_normal);
-	ClassDB::bind_method(D_METHOD("get_rid"), &ShapeCastResult::get_rid);
-	ClassDB::bind_method(D_METHOD("get_hit_object_id"), &ShapeCastResult::get_hit_object_id);
-	ClassDB::bind_method(D_METHOD("get_hit_godot_object"), &ShapeCastResult::get_hit_object);
-	ClassDB::bind_method(D_METHOD("get_shape_index"), &ShapeCastResult::get_shape_index);
-	ClassDB::bind_method(D_METHOD("get_linear_velocity_at_contact"), &ShapeCastResult::get_linear_velocity_at_contact);
-
-	ClassDB::bind_method(D_METHOD("set_success", "success"), &ShapeCastResult::set_success);
-	ClassDB::bind_method(D_METHOD("set_intersection_point", "point"), &ShapeCastResult::set_intersection_point);
-	ClassDB::bind_method(D_METHOD("set_intersection_normal", "normal"), &ShapeCastResult::set_intersection_normal);
-	ClassDB::bind_method(D_METHOD("set_rid", "rid"), &ShapeCastResult::set_rid);
-	ClassDB::bind_method(D_METHOD("set_hit_object_id", "id"), &ShapeCastResult::set_hit_object_id_and_instance);
-	ClassDB::bind_method(D_METHOD("set_shape_index", "shape_index"), &ShapeCastResult::set_shape_index);
-	ClassDB::bind_method(D_METHOD("set_linear_velocity_at_contact", "velocity"), &ShapeCastResult::set_linear_velocity_at_contact);
-
-	ClassDB::bind_method(D_METHOD("set_collision_safe_fraction", "value"), &ShapeCastResult::set_collision_safe_fraction);
-	ClassDB::bind_method(D_METHOD("get_collision_safe_fraction"), &ShapeCastResult::get_collision_safe_fraction);
-	ClassDB::bind_method(D_METHOD("set_collision_unsafe_fraction", "value"), &ShapeCastResult::set_collision_unsafe_fraction);
-	ClassDB::bind_method(D_METHOD("get_collision_unsafe_fraction"), &ShapeCastResult::get_collision_unsafe_fraction);
-
+	XT_AUTO_BIND_INITONLY_PROPERTY_SPECIAL_OBJECTID(ShapeCastResult, hit_object);
+	XT_AUTO_BIND_INITONLY_PROPERTY(ShapeCastResult, hit_something, Variant::BOOL);
+	XT_AUTO_BIND_INITONLY_PROPERTY(ShapeCastResult, intersection_point, Variant::VECTOR3);
+	XT_AUTO_BIND_INITONLY_PROPERTY(ShapeCastResult, intersection_normal, Variant::VECTOR3);
+	XT_AUTO_BIND_INITONLY_PROPERTY(ShapeCastResult, rid, Variant::RID);
+	XT_AUTO_BIND_INITONLY_PROPERTY(ShapeCastResult, shape_index, Variant::INT);
+	XT_AUTO_BIND_INITONLY_PROPERTY(ShapeCastResult, linear_velocity_at_contact, Variant::VECTOR3);
+	XT_AUTO_BIND_INITONLY_PROPERTY(ShapeCastResult, collision_safe_fraction, Variant::FLOAT);
+	XT_AUTO_BIND_INITONLY_PROPERTY(ShapeCastResult, collision_unsafe_fraction, Variant::FLOAT);
+	
 	ClassDB::bind_method(D_METHOD("clear"), &ShapeCastResult::clear);
 	ClassDB::bind_method(D_METHOD("copy_to", "destination"), &ShapeCastResult::copy_to);
-
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::BOOL, "success", PROPERTY_HINT_NONE), "set_success", "get_success");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "intersection_point", PROPERTY_HINT_NONE, "suffix:m"), "set_intersection_point", "get_intersection_point");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "intersection_normal", PROPERTY_HINT_NONE, "suffix:m"), "set_intersection_normal", "get_intersection_normal");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::RID, "hit_rid", PROPERTY_HINT_NONE), "set_rid", "get_rid");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_object_id", PROPERTY_HINT_NONE), "set_hit_object_id", "get_hit_object_id");
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "hit_godot_object", PROPERTY_HINT_NONE), "get_hit_godot_object");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_shape_index", PROPERTY_HINT_NONE), "set_shape_index", "get_shape_index");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "linear_velocity_at_contact", PROPERTY_HINT_NONE), "set_linear_velocity_at_contact", "get_linear_velocity_at_contact");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::FLOAT, "collision_safe_fraction"), "set_collision_safe_fraction", "get_collision_safe_fraction");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::FLOAT, "collision_unsafe_fraction"), "set_collision_unsafe_fraction", "get_collision_unsafe_fraction");
 }
 
 ShapeCastResult::ShapeCastResult() {

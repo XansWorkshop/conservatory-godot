@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="ConservatoryDebugBridge" inherits="Object" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
 	<brief_description>
+		An internal class used by [i]The Conservatory[/i] to interface the .NET Debugger with the engine's C++ code.
 	</brief_description>
 	<description>
+		An internal class used by [i]The Conservatory[/i] to interface the .NET Debugger with the engine's C++ code. This is not available for use in mods and its methods require knowledge of how the internal data is structured as it involves blitting types.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -10,17 +12,20 @@
 		<method name="are_engine_memory_metrics_available" qualifiers="static">
 			<return type="bool" />
 			<description>
+				Returns [code]true[/code] if the engine was compiled in a way that allows it to track the memory usage of all resources and nodes.
 			</description>
 		</method>
 		<method name="intercept_godot_logging_using_ptr" qualifiers="static">
 			<return type="void" />
 			<param index="0" name="managed_error_handler" type="int" />
 			<description>
+				Delegate signature: [code]void (*)(const uint64_t p_userdata, const uint8_t *p_message, const int32_t p_message_length, const uint8_t *p_error, const int32_t p_error_length, const uint8_t *p_function_name, const int32_t p_function_name_length, const uint8_t *p_file_name, const int32_t p_file_name_length, const int32_t p_line, const uint8_t p_severity_rating, const uint8_t p_is_bbcode)[/code]
 			</description>
 		</method>
 		<method name="is_engine_error_breaking_possible" qualifiers="static">
 			<return type="bool" />
 			<description>
+				Returns [code]true[/code] if the engine was compiled in a way that allows breaking when one of Godot's [code]ERROR[/code] macros is triggered.
 			</description>
 		</method>
 		<method name="set_ptrs" qualifiers="static">
@@ -28,11 +33,14 @@
 			<param index="0" name="should_break_on_error" type="int" />
 			<param index="1" name="is_debugger_attached" type="int" />
 			<description>
+				The first pointer is a [code]bool[/code] pointer which determines if the engine should trigger a breakpoint when one of Godot's [code]ERROR[/code] macros is triggered.
+				The second pointer is a parameterless [code]bool[/code]-returning function pointer which returns whether or not a debugger is attached. It is used with the [param should_break_on_error] parameter, as it will skip breaking if there is no debugger to handle said breakpoint.
 			</description>
 		</method>
 		<method name="should_break_on_engine_error" qualifiers="static">
 			<return type="bool" />
 			<description>
+				Calls the method set by [method set_ptrs]; see its documentation for more information.
 			</description>
 		</method>
 	</methods>

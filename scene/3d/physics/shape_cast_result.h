@@ -52,88 +52,24 @@ class ShapeCastResult : public RefCounted {
 	GDCLASS(ShapeCastResult, RefCounted);
 
 private:
-	ObjectID hit_object_id;
-	Object *hit_object = nullptr;
+	XT_AUTO_PROPERTY_SPECIAL_OBJECTID_WITH_OBJECT(hit_object);
+	XT_AUTO_PROPERTY_INLINE_DC(bool, hit_something) = false;
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, intersection_point) = Vector3();
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, intersection_normal) = Vector3();
+	XT_AUTO_PROPERTY_INLINE_C(RID, rid) = RID();
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, linear_velocity_at_contact) = Vector3();
+	XT_AUTO_PROPERTY_INLINE_DC(real_t, collision_safe_fraction) = 0.0f;
+	XT_AUTO_PROPERTY_INLINE_DC(real_t, collision_unsafe_fraction) = 0.0f;
+	XT_AUTO_PROPERTY_INLINE_DC(int, shape_index) = -1;
 
 protected:
 	static void _bind_methods();
 
 public:
-	XT_AUTO_PROPERTY_INLINE_C(bool, success);
-	XT_AUTO_PROPERTY_INLINE_C(Vector3, intersection_point);
-	XT_AUTO_PROPERTY_INLINE_C(Vector3, intersection_normal);
-	XT_AUTO_PROPERTY_INLINE_C(RID, rid);
-	XT_AUTO_PROPERTY_INLINE_C(Vector3, linear_velocity_at_contact);
-	XT_AUTO_PROPERTY_INLINE_C(real_t, collision_safe_fraction);
-	XT_AUTO_PROPERTY_INLINE_C(real_t, collision_unsafe_fraction);
-	XT_AUTO_PROPERTY_INLINE_C(int, shape_index);
-
-	ObjectID _get_hit_object_id() const;
-	int64_t get_hit_object_id() const;
-	void _set_hit_object_id(const ObjectID &p_id);
-	void set_hit_object_id_and_instance(const int64_t p_id);
-
-	Object *get_hit_object() const;
-	void _set_hit_object(const Object *p_collider);
-
 	void clear();
 	void copy_to(const Ref<ShapeCastResult> &p_destination) const;
 
 	ShapeCastResult();
-	/*
-private:
-	bool success;
-	Vector3 point;
-	Vector3 normal;
-	RID rid;
-	ObjectID hit_object_id;
-	Object *hit_object = nullptr;
-	int shape_index = 0;
-	Vector3 linear_velocity_at_contact;
-	real_t collision_safe_fraction = 0;
-	real_t collision_unsafe_fraction = 0;
-
-protected:
-	static void _bind_methods();
-
-public:
-	bool get_success() const;
-	void set_success(bool p_success);
-
-	Vector3 get_intersection_point() const;
-	void set_intersection_point(const Vector3 &p_point);
-
-	Vector3 get_intersection_normal() const;
-	void set_intersection_normal(const Vector3 &p_normal);
-
-	RID get_rid() const;
-	void set_rid(const RID &p_rid);
-
-	ObjectID _get_hit_object_id() const;
-	int64_t get_hit_object_id() const;
-	void _set_hit_object_id(const ObjectID &p_id);
-	void set_hit_object_id_and_instance(const int64_t p_id);
-
-	Object *get_hit_object() const;
-	void _set_hit_object(const Object *p_collider);
-
-	int get_shape_index() const;
-	void set_shape_index(int p_shape_index);
-
-	Vector3 get_linear_velocity_at_contact() const;
-	void set_linear_velocity_at_contact(const Vector3 &p_velocity);
-
-	void set_collision_safe_fraction(real_t p_value);
-	real_t get_collision_safe_fraction() const;
-
-	void set_collision_unsafe_fraction(real_t p_value);
-	real_t get_collision_unsafe_fraction() const;
-
-	void clear();
-	void copy_to(const Ref<ShapeCastResult> &p_destination) const;
-
-	ShapeCastResult();
-	*/
 };
 
 #endif // PHYSICS_3D_DISABLED

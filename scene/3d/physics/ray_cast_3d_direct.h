@@ -44,46 +44,35 @@ class RayCast3DDirect : public RefCounted {
 	GDCLASS(RayCast3DDirect, RefCounted);
 
 	HashSet<RID> filter;
+	XT_AUTO_PROPERTY_SPECIAL_OBJECTID_WITH_OBJECT(hit_collider);
+	XT_AUTO_PROPERTY_INLINE_DC(bool, hit_something) = false;
+	XT_AUTO_PROPERTY_INLINE_C(RID, hit_rid) = RID();
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, collision_point) = Vector3();
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, collision_normal) = Vector3();
+	XT_AUTO_PROPERTY_INLINE_DC(int, hit_face_index) = -1;
+	XT_AUTO_PROPERTY_INLINE_DC(int, hit_shape_index) = -1;
 
-	bool collided = false;
-	ObjectID against;
-	RID against_rid;
-	int against_shape = 0;
-	Vector3 collision_point;
-	Vector3 collision_normal;
-	int collision_face_index = -1;
+	XT_AUTO_PROPERTY_INLINE_DC(bool, collide_with_bodies) = true;
+	XT_AUTO_PROPERTY_INLINE_DC(bool, collide_with_areas) = true;
+	XT_AUTO_PROPERTY_INLINE_DC(uint32_t, collision_mask) = 0xFFFFFFFF;
+	XT_AUTO_PROPERTY_INLINE_DC(bool, filter_is_inclusive) = false;
+	XT_AUTO_PROPERTY_INLINE_DC(bool, collide_from_inside) = false;
+	XT_AUTO_PROPERTY_INLINE_DC(bool, collide_with_back_faces) = false;
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, source_position) = Vector3();
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, target_position) = Vector3();
 
 protected:
 	static void _bind_methods();
 
 public:
-	XT_AUTO_PROPERTY_INLINE_C(bool, collide_with_bodies);
-	XT_AUTO_PROPERTY_INLINE_C(bool, collide_with_areas);
-	XT_AUTO_PROPERTY_INLINE_C(uint32_t, collision_mask);
-	XT_AUTO_PROPERTY_INLINE_C(bool, filter_is_inclusive);
-	XT_AUTO_PROPERTY_INLINE_C(bool, hit_from_inside);
-	XT_AUTO_PROPERTY_INLINE_C(bool, hit_back_faces);
-	XT_AUTO_PROPERTY_INLINE_C(Vector3, source_position);
-	XT_AUTO_PROPERTY_INLINE_C(Vector3, target_position);
-
 	void set_transform_and_distance(const Transform3D &p_transform, real_t p_length);
-
 	void set_collision_mask_value(int p_layer_number, bool p_value);
 	bool get_collision_mask_value(int p_layer_number) const;
-
 	void set_from_parameters(const Ref<PhysicsRayQueryParameters3D> &p_parameters);
+
 	bool cast(const RID &p_space);
 	static bool cast_statically(const RID &p_space, const Ref<PhysicsRayQueryParameters3D> &p_parameters, const Ref<RayCastResult> &p_result);
 	void store_in_result(const Ref<RayCastResult> &p_result) const;
-
-	bool get_hit_something() const;
-	Object *get_hit_object() const;
-	ObjectID get_hit_object_id() const;
-	RID get_collider_rid() const;
-	int get_collider_shape() const;
-	int get_collider_face_index() const;
-	Vector3 get_collision_point() const;
-	Vector3 get_collision_normal() const;
 
 	void add_filter_rid(const RID &p_rid);
 	void remove_filter_rid(const RID &p_rid);

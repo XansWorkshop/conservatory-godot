@@ -7,13 +7,13 @@
 	<tutorials>
 	</tutorials>
 	<members>
-		<member name="collider" type="Object" setter="set_collider" getter="get_collider">
+		<member name="collider" type="Object" setter="" getter="get_collider">
 		</member>
 		<member name="collider_id" type="int" setter="set_collider_id" getter="get_collider_id" default="0">
 		</member>
 		<member name="rid" type="RID" setter="set_rid" getter="get_rid" default="RID()">
 		</member>
-		<member name="shape" type="int" setter="set_shape" getter="get_shape" default="0">
+		<member name="shape" type="int" setter="set_shape" getter="get_shape" default="-1">
 		</member>
 	</members>
 </class>

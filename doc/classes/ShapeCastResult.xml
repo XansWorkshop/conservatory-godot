@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="ShapeCastResult" inherits="RefCounted" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
 	<brief_description>
+		The result of a shape cast operation.
 	</brief_description>
 	<description>
+		[admonition type="note" collapsible="true" open="false"]
+			[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+			This is not available in the official build of Godot.
+		[/admonition]
+		The result of a shape cast operation, used by [ShapeCast3DDirect]. This is significantly more optimized than the [Dictionary] return value from the corresponding shape query method of [PhysicsServer3D] when pre-allocated and reused, as it avoids the need to allocate new data. Instead, this existing object can simply be edited in place to store new results.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -10,35 +16,47 @@
 		<method name="clear">
 			<return type="void" />
 			<description>
+				Resets the contents of this result back to the initial state that it had when it was first created.
 			</description>
 		</method>
 		<method name="copy_to" qualifiers="const">
 			<return type="void" />
 			<param index="0" name="destination" type="ShapeCastResult" />
 			<description>
+				Copies this result into another result. This is typically useful when providing this result to a consumer which may modify it or store it themselves, to prevent those modifications from affecting this instance.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="collision_safe_fraction" type="float" setter="set_collision_safe_fraction" getter="get_collision_safe_fraction" default="0.0">
+		<member name="collision_safe_fraction" type="float" setter="" getter="get_collision_safe_fraction" default="0.0">
+			This returns the collision-safe fraction from the first result. This is the highest percentage of the cast's motion can be applied [i]without[/i] actually colliding with the object.
 		</member>
-		<member name="collision_unsafe_fraction" type="float" setter="set_collision_unsafe_fraction" getter="get_collision_unsafe_fraction" default="0.0">
+		<member name="collision_unsafe_fraction" type="float" setter="" getter="get_collision_unsafe_fraction" default="0.0">
+			This returns the collision-unsafe fraction from the first result. This is the smallest percentage of the cast's motion that can be applied in order to just barely, but consistently, cause a collision.
 		</member>
-		<member name="hit_godot_object" type="Object" setter="" getter="get_hit_godot_object">
+		<member name="hit_object" type="Object" setter="" getter="get_hit_object">
+			The [Object] that was hit by the shape, if it could be resolved. The [PhysicsServer3D] allows attaching object IDs (see [member hit_object_id]) to physics objects. This is how Godot tracks the object here.
 		</member>
 		<member name="hit_object_id" type="int" setter="set_hit_object_id" getter="get_hit_object_id" default="0">
+			The object ID assigned by the physics server to the physics object. Godot natively uses this to associate a node (like [PhysicsBody3D] or [Area3D]) to a low-level physics object, but this ID may also be a custom value with meaning specific to the game.
 		</member>
-		<member name="hit_rid" type="RID" setter="set_rid" getter="get_rid" default="RID()">
-		</member>
-		<member name="hit_shape_index" type="int" setter="set_shape_index" getter="get_shape_index" default="0">
+		<member name="hit_something" type="bool" setter="set_hit_something" getter="get_hit_something" default="false">
+			This is [code]true[/code] if the ray hit something, or [code]false[/code] if it missed.
 		</member>
 		<member name="intersection_normal" type="Vector3" setter="set_intersection_normal" getter="get_intersection_normal" default="Vector3(0, 0, 0)">
+			The normal of the intersection, which is the axis that the intersection occurred along relative to the hit object.
 		</member>
 		<member name="intersection_point" type="Vector3" setter="set_intersection_point" getter="get_intersection_point" default="Vector3(0, 0, 0)">
+			The point at which the first intersection was detected. For intersections with mathematical perfection, this is the first point that was successfully tested, which has an undefined order.
 		</member>
 		<member name="linear_velocity_at_contact" type="Vector3" setter="set_linear_velocity_at_contact" getter="get_linear_velocity_at_contact" default="Vector3(0, 0, 0)">
+			The linear velocity of the cast shape at the [member intersection_point].
 		</member>
-		<member name="success" type="bool" setter="set_success" getter="get_success" default="false">
+		<member name="rid" type="RID" setter="set_rid" getter="get_rid" default="RID()">
+			The [RID] of the physics object that was hit. This can be used to perform low level operations via the [PhysicsServer3D].
+		</member>
+		<member name="shape_index" type="int" setter="set_shape_index" getter="get_shape_index" default="-1">
+			The index of the shape within the physics object that was hit, because physics objects can have multiple shapes within them.
 		</member>
 	</members>
 </class>

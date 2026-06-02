@@ -38,18 +38,10 @@
 
 uint8_t RayCastResult::_can_index_face = 0;
 
-ObjectID RayCastResult::_get_hit_object_id() const {
-	return hit_object_id;
-}
-
-void RayCastResult::_set_hit_object_id(const ObjectID p_id) {
-	hit_object_id = p_id;
-}
-
 int RayCastResult::get_face_index() const {
-	if (face_index < 0 && success) {
+	if (face_index < 0 && hit_something) {
 		if (!can_index_face()) {
-			ERR_FAIL_V_MSG(-1, "The physics engine is set to Jolt Physics, and the current configuration skips looking for which face got hit; get_face_index() is not useful at this time.");
+			ERR_FAIL_V_MSG(-1, "The physics engine is set to Jolt Physics, and the current configuration skips looking for which face got hit; get_face_index() is not usable at this time.");
 		}
 	}
 	return face_index;
@@ -57,20 +49,6 @@ int RayCastResult::get_face_index() const {
 
 void RayCastResult::set_face_index(int p_face_index) {
 	face_index = p_face_index;
-}
-
-int64_t RayCastResult::get_hit_object_id() const {
-	return (int64_t)hit_object_id;
-}
-
-void RayCastResult::set_hit_object_id_and_instance(const int64_t p_id) {
-	// The public version
-	hit_object_id = ObjectID(p_id);
-	if (!hit_object_id.is_null()) {
-		hit_object = ObjectDB::get_instance(hit_object_id);
-	} else {
-		hit_object = nullptr;
-	}
 }
 
 void RayCastResult::clear() {
@@ -82,7 +60,7 @@ void RayCastResult::clear() {
 	hit_object = nullptr;
 	shape_index = -1;
 	face_index = -1;
-	success = false;
+	hit_something = false;
 }
 
 void RayCastResult::copy_to(const Ref<RayCastResult> &p_destination) const {
@@ -95,41 +73,21 @@ void RayCastResult::copy_to(const Ref<RayCastResult> &p_destination) const {
 	p_destination->hit_object = hit_object;
 	p_destination->shape_index = shape_index;
 	p_destination->face_index = face_index;
-	p_destination->success = success;
+	p_destination->hit_something = hit_something;
 }
 
 void RayCastResult::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_success"), &RayCastResult::get_success);
-	ClassDB::bind_method(D_METHOD("get_hit_position"), &RayCastResult::get_hit_position);
-	ClassDB::bind_method(D_METHOD("get_hit_normal"), &RayCastResult::get_hit_normal);
-	ClassDB::bind_method(D_METHOD("get_rid"), &RayCastResult::get_rid);
-	ClassDB::bind_method(D_METHOD("get_hit_object_id"), &RayCastResult::get_hit_object_id);
-	ClassDB::bind_method(D_METHOD("get_hit_godot_object"), &RayCastResult::get_hit_object);
-	ClassDB::bind_method(D_METHOD("get_shape_index"), &RayCastResult::get_shape_index);
-	ClassDB::bind_method(D_METHOD("get_face_index"), &RayCastResult::get_face_index);
-	ClassDB::bind_method(D_METHOD("get_origin"), &RayCastResult::get_origin);
-
-	ClassDB::bind_method(D_METHOD("set_success", "success"), &RayCastResult::set_success);
-	ClassDB::bind_method(D_METHOD("set_hit_position", "position"), &RayCastResult::set_hit_position);
-	ClassDB::bind_method(D_METHOD("set_hit_normal", "normal"), &RayCastResult::set_hit_normal);
-	ClassDB::bind_method(D_METHOD("set_rid", "rid"), &RayCastResult::set_rid);
-	ClassDB::bind_method(D_METHOD("set_hit_object_id", "id"), &RayCastResult::set_hit_object_id_and_instance);
-	ClassDB::bind_method(D_METHOD("set_shape_index", "shape_index"), &RayCastResult::set_shape_index);
-	ClassDB::bind_method(D_METHOD("set_face_index", "face_index"), &RayCastResult::set_face_index);
-	ClassDB::bind_method(D_METHOD("set_origin", "origin"), &RayCastResult::set_origin);
+	XT_AUTO_BIND_INITONLY_PROPERTY_SPECIAL_OBJECTID(RayCastResult, hit_object);
+	XT_AUTO_BIND_INITONLY_PROPERTY(RayCastResult, hit_something, Variant::BOOL);
+	XT_AUTO_BIND_INITONLY_PROPERTY(RayCastResult, hit_position, Variant::VECTOR3);
+	XT_AUTO_BIND_INITONLY_PROPERTY(RayCastResult, hit_normal, Variant::VECTOR3);
+	XT_AUTO_BIND_INITONLY_PROPERTY(RayCastResult, rid, Variant::RID);
+	XT_AUTO_BIND_INITONLY_PROPERTY(RayCastResult, shape_index, Variant::INT);
+	XT_AUTO_BIND_INITONLY_PROPERTY(RayCastResult, face_index, Variant::INT);
+	XT_AUTO_BIND_INITONLY_PROPERTY(RayCastResult, origin, Variant::VECTOR3);
 
 	ClassDB::bind_method(D_METHOD("clear"), &RayCastResult::clear);
 	ClassDB::bind_method(D_METHOD("copy_to", "destination"), &RayCastResult::copy_to);
-
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::BOOL, "success", PROPERTY_HINT_NONE), "set_success", "get_success");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "hit_position", PROPERTY_HINT_NONE, "suffix:m"), "set_hit_position", "get_hit_position");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::VECTOR3, "hit_normal", PROPERTY_HINT_NONE, "suffix:m"), "set_hit_normal", "get_hit_normal");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::RID, "hit_rid", PROPERTY_HINT_NONE), "set_rid", "get_rid");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_object_id", PROPERTY_HINT_NONE), "set_hit_object_id", "get_hit_object_id");
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "hit_godot_object", PROPERTY_HINT_NONE), "get_hit_godot_object");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_shape_index", PROPERTY_HINT_NONE), "set_shape_index", "get_shape_index");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_face_index", PROPERTY_HINT_NONE), "set_face_index", "get_face_index");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "origin", PROPERTY_HINT_NONE), "set_origin", "get_origin");
 }
 
 RayCastResult::RayCastResult() {

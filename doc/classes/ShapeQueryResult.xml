@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="ShapeQueryResult" inherits="RefCounted" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
 	<brief_description>
+		A packed result instance for a [ShapeQuery3DDirect].
 	</brief_description>
 	<description>
+		A packed result instance for a [ShapeQuery3DDirect]. When reused (that is, an instance is created and shared across many casts), this can be significantly more optimized than the traditional [Dictionary] return value.
 	</description>
 	<tutorials>
 	</tutorials>
 	<members>
-		<member name="collider" type="Object" setter="set_collider" getter="get_collider">
+		<member name="collider" type="Object" setter="" getter="get_collider">
+			The [GodotObject] attached to the collider. Typically this is a [PhysicsBody3D] or [Area3D], but the engine allows any object to be associated with a physics object.
+			Note that some physics objects might be made custom, and not have an object assigned to them, making this [code]nil[/code] even if there was a hit.
 		</member>
 		<member name="collider_id" type="int" setter="set_collider_id" getter="get_collider_id" default="0">
+			The object ID of the [member collider]. 
+			Note that this may be set to a custom value that does not correspond to an object ID; if this is nonzero but [member collider] is [code]nil[/code], it likely corresponds to some custom object lookup.
 		</member>
 		<member name="rid" type="RID" setter="set_rid" getter="get_rid" default="RID()">
+			The [RID] of the physics object that got hit. Unlike [member collider] and [member collider_id], this is always valid if there is a hit.
 		</member>
-		<member name="shape" type="int" setter="set_shape" getter="get_shape" default="0">
+		<member name="shape" type="int" setter="set_shape" getter="get_shape" default="-1">
+			The index of the shape within the physics object that first detected the hit specifically.
 		</member>
 	</members>
 </class>

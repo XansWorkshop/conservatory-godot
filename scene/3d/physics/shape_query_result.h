@@ -39,14 +39,14 @@
 class ShapeQueryResult : public RefCounted {
 	GDCLASS(ShapeQueryResult, RefCounted);
 
+	XT_AUTO_PROPERTY_SPECIAL_OBJECTID_WITH_OBJECT(collider);
+	XT_AUTO_PROPERTY_INLINE_C(RID, rid) = RID();
+	XT_AUTO_PROPERTY_INLINE_DC(int, shape) = -1;
+
 protected:
 	static void _bind_methods();
 
 public:
-	XT_AUTO_PROPERTY_INLINE_P(Object, collider);
-	XT_AUTO_PROPERTY_INLINE_C(ObjectID, collider_id);
-	XT_AUTO_PROPERTY_INLINE_C(RID, rid);
-	XT_AUTO_PROPERTY_INLINE_C(int, shape);
 
 	void clear();
 	void copy_to(Ref<ShapeQueryResult> &p_other) const;

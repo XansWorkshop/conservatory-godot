@@ -44,17 +44,17 @@
 class PointQuery3DDirect : public RefCounted {
 	GDCLASS(PointQuery3DDirect, RefCounted);
 
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, position);
+	XT_AUTO_PROPERTY_INLINE_DC(uint32_t, collision_mask);
+	XT_AUTO_PROPERTY_INLINE_DC(bool, collide_with_bodies);
+	XT_AUTO_PROPERTY_INLINE_DC(bool, collide_with_areas);
+	XT_AUTO_PROPERTY_INLINE_C(TypedArray<RID>, filter);
+	XT_AUTO_PROPERTY_INLINE_DC(bool, filter_is_inclusive);
+
 protected:
 	static void _bind_methods();
 
 public:
-	XT_AUTO_PROPERTY_INLINE_C(Vector3, position);
-	XT_AUTO_PROPERTY_INLINE_C(uint32_t, collision_mask);
-	XT_AUTO_PROPERTY_INLINE_C(bool, collide_with_bodies);
-	XT_AUTO_PROPERTY_INLINE_C(bool, collide_with_areas);
-	XT_AUTO_PROPERTY_INLINE_C(TypedArray<RID>, filter);
-	XT_AUTO_PROPERTY_INLINE_C(bool, filter_is_inclusive);
-
 	TypedArray<PointQueryResult> query(const RID &p_space, int p_max_results) const;
 	static TypedArray<PointQueryResult> query_statically(const RID &p_space, const Ref<PhysicsPointQueryParameters3D> &p_parameters, int max_results);
 	static int query_statically_preallocated(const RID &p_space, const Ref<PhysicsPointQueryParameters3D> &p_parameters, TypedArray<PointQueryResult> p_presized_result_array);

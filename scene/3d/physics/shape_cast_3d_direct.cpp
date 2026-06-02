@@ -52,42 +52,6 @@ bool ShapeCast3DDirect::get_collision_mask_value(int p_layer_number) const {
 	return get_collision_mask() & (1 << (p_layer_number - 1));
 }
 
-bool ShapeCast3DDirect::get_hit_anything() const {
-	return hit_something;
-}
-
-int ShapeCast3DDirect::get_hit_count() const {
-	return last_result_count;
-}
-
-TypedArray<ShapeCastResult> ShapeCast3DDirect::get_results() const {
-	int amount = get_hit_count();
-	TypedArray<ShapeCastResult> returned_results;
-	returned_results.resize(amount);
-	for (int i = 0; i < amount; i++) {
-		PhysicsDirectSpaceState3D::ShapeRestInfo info = result.get(i);
-		Ref<ShapeCastResult> result_instance;
-		result_instance.instantiate();
-		result_instance->set_success(true);
-		result_instance->set_intersection_point(info.point);
-		result_instance->set_intersection_normal(info.normal);
-		result_instance->set_rid(info.rid);
-		result_instance->set_hit_object_id_and_instance((int64_t)info.collider_id);
-		result_instance->set_shape_index(info.shape);
-		result_instance->set_linear_velocity_at_contact(info.linear_velocity);
-		returned_results.set(i, result_instance);
-	}
-	return returned_results;
-}
-
-real_t ShapeCast3DDirect::get_closest_collision_safe_fraction() const {
-	return collision_safe_fraction;
-}
-
-real_t ShapeCast3DDirect::get_closest_collision_unsafe_fraction() const {
-	return collision_unsafe_fraction;
-}
-
 void ShapeCast3DDirect::set_from_parameters(const Ref<PhysicsShapeQueryParameters3D> &p_parameters) {
 	shape = p_parameters->get_shape_rid();
 	motion = p_parameters->get_motion();
@@ -137,19 +101,35 @@ int ShapeCast3DDirect::cast(const RID& p_space) {
 	params.motion = Vector3();
 
 	bool intersected = true;
-	int result_count = 0;
+	int count = 0;
 	while (intersected && result.size() < max_results) {
 		PhysicsDirectSpaceState3D::ShapeRestInfo info;
 		intersected = dss->rest_info(params, &info);
 		if (intersected) {
 			result.push_back(info);
 			params.exclude.insert(info.rid);
-			result_count++;
+			count++;
 		}
 	}
 	hit_something = !result.is_empty();
-	last_result_count = result_count;
-	return result_count;
+	result_count = count;
+	results.resize(count);
+	for (int i = 0; i < count; i++) {
+		PhysicsDirectSpaceState3D::ShapeRestInfo info = result.get(i);
+		Ref<ShapeCastResult> result_instance;
+		result_instance.instantiate();
+		result_instance->set_hit_something(true);
+		result_instance->set_intersection_point(info.point);
+		result_instance->set_intersection_normal(info.normal);
+		result_instance->set_rid(info.rid);
+		result_instance->set_hit_object_id(info.collider_id);
+		result_instance->set_hit_object(ObjectDB::get_instance(info.collider_id));
+		result_instance->set_shape_index(info.shape);
+		result_instance->set_linear_velocity_at_contact(info.linear_velocity);
+		results[i] = result_instance;
+	}
+
+	return count;
 }
 
 TypedArray<ShapeCastResult> ShapeCast3DDirect::cast_statically(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, const int p_max_results) {
@@ -187,11 +167,12 @@ TypedArray<ShapeCastResult> ShapeCast3DDirect::cast_statically(const RID &p_spac
 
 			Ref<ShapeCastResult> result_instance;
 			result_instance.instantiate();
-			result_instance->set_success(true);
+			result_instance->set_hit_something(true);
 			result_instance->set_intersection_point(info.point);
 			result_instance->set_intersection_normal(info.normal);
 			result_instance->set_rid(info.rid);
-			result_instance->set_hit_object_id_and_instance((int64_t)info.collider_id);
+			result_instance->set_hit_object_id(info.collider_id);
+			result_instance->set_hit_object(ObjectDB::get_instance(info.collider_id));
 			result_instance->set_shape_index(info.shape);
 			result_instance->set_linear_velocity_at_contact(info.linear_velocity);
 			result_instance->set_collision_safe_fraction(collision_safe_fraction);
@@ -202,7 +183,7 @@ TypedArray<ShapeCastResult> ShapeCast3DDirect::cast_statically(const RID &p_spac
 		}
 	}
 
-	return out_result; //Vector2(collision_safe_fraction, collision_unsafe_fraction);
+	return out_result;
 }
 
 void ShapeCast3DDirect::add_filter_rid(const RID &p_rid) {
@@ -219,31 +200,25 @@ void ShapeCast3DDirect::_bind_methods() {
 	XT_AUTO_BIND_PROPERTY(ShapeCast3DDirect, shape, Variant::RID);
 	XT_AUTO_BIND_PROPERTY(ShapeCast3DDirect, source_transform, Variant::TRANSFORM3D);
 	XT_AUTO_BIND_PROPERTY(ShapeCast3DDirect, margin, Variant::FLOAT);
+	XT_AUTO_BIND_PROPERTY(ShapeCast3DDirect, motion, Variant::VECTOR3);
 	XT_AUTO_BIND_PROPERTY(ShapeCast3DDirect, collision_mask, Variant::INT);
 	XT_AUTO_BIND_PROPERTY(ShapeCast3DDirect, collide_with_bodies, Variant::BOOL);
 	XT_AUTO_BIND_PROPERTY(ShapeCast3DDirect, collide_with_areas, Variant::BOOL);
 	XT_AUTO_BIND_PROPERTY(ShapeCast3DDirect, filter_is_inclusive, Variant::BOOL);
 	XT_AUTO_BIND_PROPERTY(ShapeCast3DDirect, max_results, Variant::INT);
 
+	XT_AUTO_BIND_READONLY_PROPERTY(ShapeCast3DDirect, hit_something, Variant::BOOL);
+	XT_AUTO_BIND_READONLY_PROPERTY(ShapeCast3DDirect, result_count, Variant::BOOL);
+	XT_AUTO_BIND_READONLY_PROPERTY(ShapeCast3DDirect, results, Variant::ARRAY);
+	XT_AUTO_BIND_READONLY_PROPERTY(ShapeCast3DDirect, collision_safe_fraction, Variant::FLOAT);
+	XT_AUTO_BIND_READONLY_PROPERTY(ShapeCast3DDirect, collision_unsafe_fraction, Variant::FLOAT);
+
 	ClassDB::bind_method(D_METHOD("set_collision_mask_value", "layer_number", "value"), &ShapeCast3DDirect::set_collision_mask_value);
 	ClassDB::bind_method(D_METHOD("get_collision_mask_value", "layer_number"), &ShapeCast3DDirect::get_collision_mask_value);
-
-	ClassDB::bind_method(D_METHOD("get_hit_anything"), &ShapeCast3DDirect::get_hit_anything);
-	ClassDB::bind_method(D_METHOD("get_hit_count"), &ShapeCast3DDirect::get_hit_count);
-	ClassDB::bind_method(D_METHOD("get_results"), &ShapeCast3DDirect::get_results);
-
-	ClassDB::bind_method(D_METHOD("get_closest_collision_safe_fraction"), &ShapeCast3DDirect::get_closest_collision_safe_fraction);
-	ClassDB::bind_method(D_METHOD("get_closest_collision_unsafe_fraction"), &ShapeCast3DDirect::get_closest_collision_unsafe_fraction);
 
 	ClassDB::bind_method(D_METHOD("set_from_parameters", "parameters"), &ShapeCast3DDirect::set_from_parameters);
 	ClassDB::bind_method(D_METHOD("cast", "space"), &ShapeCast3DDirect::cast);
 	ClassDB::bind_static_method(ShapeCast3DDirect::get_class_static(), D_METHOD("cast_statically", "space", "parameters", "max_results"), &ShapeCast3DDirect::cast_statically);
-
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::BOOL, "hit_anything", PROPERTY_HINT_NONE), "get_hit_anything");
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_count", PROPERTY_HINT_NONE), "get_hit_count");
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::ARRAY, "results", PROPERTY_HINT_ARRAY_TYPE, ShapeCastResult::get_class_static()), "get_results");
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "closest_collision_safe_fraction", PROPERTY_HINT_NONE), "get_closest_collision_safe_fraction");
-	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, "closest_collision_unsafe_fraction", PROPERTY_HINT_NONE), "get_closest_collision_unsafe_fraction");
 }
 
 #endif // PHYSICS_3D_DISABLED

@@ -58,6 +58,7 @@
 			Returns the shader's code as the user has written it, not the full generated code used internally.
 		</member>
 		<member name="include_path" type="String" setter="set_include_path" getter="get_include_path" default="&quot;&quot;">
+			The path which [code]#include[/code] directives load relative to, if an absolute [code]res://[/code] path is not provided.
 		</member>
 	</members>
 	<constants>

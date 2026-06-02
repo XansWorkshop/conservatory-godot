@@ -54,11 +54,16 @@
 class RayCastResult : public RefCounted {
 	GDCLASS(RayCastResult, RefCounted);
 
+	XT_AUTO_PROPERTY_SPECIAL_OBJECTID_WITH_OBJECT(hit_object);
+	XT_AUTO_PROPERTY_INLINE_DC(bool, hit_something) = false;
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, hit_position) = Vector3();
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, hit_normal) = Vector3();
+	XT_AUTO_PROPERTY_INLINE_C(RID, rid) = RID();
+	XT_AUTO_PROPERTY_INLINE_DC(int, shape_index) = -1;
+	XT_AUTO_PROPERTY_DC(int, face_index) = -1;
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, origin) = Vector3();
+
 private:
-	ObjectID hit_object_id;
-	//Object *hit_object = nullptr;
-	//int shape = -1;
-	int face_index = -1;
 	static uint8_t _can_index_face;
 
 	static bool can_index_face() {
@@ -80,95 +85,11 @@ protected:
 	static void _bind_methods();
 
 public:
-	XT_AUTO_PROPERTY_INLINE_C(bool, success);
-	XT_AUTO_PROPERTY_INLINE_C(Vector3, origin);
-	XT_AUTO_PROPERTY_INLINE_C(Vector3, hit_position);
-	XT_AUTO_PROPERTY_INLINE_C(Vector3, hit_normal);
-	XT_AUTO_PROPERTY_INLINE_C(RID, rid);
-	XT_AUTO_PROPERTY_INLINE_C(int, shape_index);
-	XT_AUTO_PROPERTY_INLINE_P(Object, hit_object);
-
-	// Internal:
-	ObjectID _get_hit_object_id() const;
-	void _set_hit_object_id(const ObjectID p_id);
-
-	// Public to GD:
-	int64_t get_hit_object_id() const;
-	void set_hit_object_id_and_instance(const int64_t p_id);
-
-	int get_face_index() const;
-	void set_face_index(int p_face_index);
 
 	void clear();
 	void copy_to(const Ref<RayCastResult> &p_destination) const;
 
 	RayCastResult();
-	/*
-private:
-	bool success = false;
-	Vector3 origin;
-	Vector3 position;
-	Vector3 normal;
-	RID rid;
-	ObjectID hit_object_id;
-	Object *hit_object = nullptr;
-	int shape = -1;
-	int face_index = -1;
-	static uint8_t _can_index_face;
-
-	static bool can_index_face() {
-		if (_can_index_face == 0) {
-			if (IS_USING_JOLT) {
-				if (JOLT_ALLOWS_RAYCAST_FACE_INDEX) {
-					_can_index_face = 2;
-				} else {
-					_can_index_face = 1;
-				}
-			} else {
-				_can_index_face = 1;
-			}
-		}
-		return _can_index_face == 2;
-	}
-
-protected:
-	static void _bind_methods();
-
-public:
-	bool get_success() const;
-	void set_success(bool p_success);
-
-	Vector3 get_origin() const;
-	void set_origin(const Vector3 &p_origin);
-
-	Vector3 get_hit_position() const;
-	void set_hit_position(const Vector3 &p_position);
-
-	Vector3 get_hit_normal() const;
-	void set_hit_normal(const Vector3 &p_normal);
-
-	RID get_rid() const;
-	void set_rid(const RID p_rid);
-
-	ObjectID _get_hit_object_id() const;
-	int64_t get_hit_object_id() const;
-	void _set_hit_object_id(const ObjectID p_id);
-	void set_hit_object_id_and_instance(const int64_t p_id);
-
-	Object *get_hit_object() const;
-	void _set_hit_object(const Object *p_collider);
-
-	int get_shape_index() const;
-	void set_shape_index(int p_shape);
-
-	int get_face_index() const;
-	void set_face_index(int p_face_index);
-
-	void clear();
-	void copy_to(const Ref<RayCastResult> &p_destination) const;
-
-	RayCastResult();
-*/
 };
 
 #undef JOLT_ALLOWS_RAYCAST_FACE_INDEX

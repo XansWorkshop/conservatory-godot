@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  material.h                                                            */
+/*  xanstools.h                                                           */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                 GODOT ENGINE /// THE CONSERVATORY FORK                 */
@@ -30,83 +30,179 @@
 #pragma once
 #include "core/templates/hash_set.h"
 
-// Declares a private field with the provided name, then a get and set method for that field.
+// Declares a private field with the provided name, then a get and set method for that field (setter is by reference).
+// This has a const input value. This macro is designed to be used as the left hand side; you can set it equal to the default value.
+// For example: XT_AUTO_PROPERTY(int, value) = 0;
 #define XT_AUTO_PROPERTY(type, name) \
-private: \
-	type name; \
-\
 public: \
-	void set_##name(const type &p_value); \
-	type get_##name() const
+	void set_##name(type &p_##name); \
+	type get_##name() const; \
+private: \
+	type name
+
+// Declares a private field with the provided name, then a get and set method for that field (setter is by reference).
+// This has a const input value. This macro is designed to be used as the left hand side; you can set it equal to the default value.
+// For example: XT_AUTO_PROPERTY_C(int, value) = 0;
+// "C" for "Constant"
+#define XT_AUTO_PROPERTY_C(type, name) \
+public: \
+	void set_##name(const type &p_##name); \
+	type get_##name() const; \
+private: \
+	type name
 
 // Declares a private field with the provided name, then a get and set method for that field.
+// This has a const input value. This macro is designed to be used as the left hand side; you can set it equal to the default value.
+// For example: XT_AUTO_PROPERTY_D(int, value) = 0;
+// "D" for "Direct" - the type is not by reference.
+#define XT_AUTO_PROPERTY_D(type, name) \
+public: \
+	void set_##name(type p_##name); \
+	type get_##name() const; \
+private: \
+	type name
+
+// Declares a private field with the provided name, then a get and set method for that field.
+// This has a const input value. This macro is designed to be used as the left hand side; you can set it equal to the default value.
+// For example: XT_AUTO_PROPERTY_D(int, value) = 0;
+// "D" for "Direct" - the type is not by reference.
+// "C" for "Constant"
+#define XT_AUTO_PROPERTY_DC(type, name) \
+public: \
+	void set_##name(const type p_##name); \
+	type get_##name() const; \
+private: \
+	type name
+
+// Declares a private field with the provided name, then a get and set method for that field (setter is by reference).
+// This macro is designed to be used as the left hand side; you can set it equal to the default value.
+// For example: XT_AUTO_PROPERTY_INLINE(int, value) = 0;
 #define XT_AUTO_PROPERTY_INLINE(type, name) \
-private: \
-	type name; \
-\
 public: \
-	void set_##name(type &p_value) { \
-		name = p_value; \
-	}; \
+	void set_##name(type &p_##name) { \
+		name = p_##name; \
+	} \
 	type get_##name() const { \
 		return name; \
-	}
+	} \
+private: \
+	type name
 
-// Declares a private field with the provided name, then a get and set method for that field.
-// This has a const input value.
+// Declares a private field with the provided name, then a get and set method for that field (setter is by reference).
+// This has a const input value. This macro is designed to be used as the left hand side; you can set it equal to the default value.
+// For example: XT_AUTO_PROPERTY_INLINE_C(int, value) = 0;
+// "C" for "Constant"
 #define XT_AUTO_PROPERTY_INLINE_C(type, name) \
-private: \
-	type name; \
-\
 public: \
-	void set_##name(const type &p_value) { \
-		name = p_value; \
-	}; \
+	void set_##name(const type &p_##name) { \
+		name = p_##name; \
+	} \
 	type get_##name() const { \
 		return name; \
-	}
+	} \
+private: \
+	type name
 
 // Declares a private field with the provided name, then a get and set method for that field.
 // This has a direct (non-ref, non-pointer) type. The type can be entered as a pointer type if desired.
+// This macro is designed to be used as the left hand side; you can set it equal to the default value.
+// For example: XT_AUTO_PROPERTY_INLINE_D(int, value) = 0;
+// "D" for "Direct" - the type is not by reference.
 #define XT_AUTO_PROPERTY_INLINE_D(type, name) \
-private: \
-	type name; \
-\
 public: \
-	void set_##name(type p_value) { \
-		name = p_value; \
+	void set_##name(type p_##name) { \
+		name = p_##name; \
 	} \
 	type get_##name() const { \
 		return name; \
-	}
-
-// Declares a private field with the provided name, then a get and set method for that field.
-// This has a pointer type.
-#define XT_AUTO_PROPERTY_INLINE_P(type, name) \
-private: \
-	type* name; \
-\
-public: \
-	void set_##name(type* p_value) { \
-		name = p_value; \
 	} \
-	type* get_##name() const { \
-		return name; \
-	}
+private: \
+	type name
 
 // Declares a private field with the provided name, then a get and set method for that field.
-// This has a const direct (non-ref, non-pointer) type. The type can be entered as a pointer type if desired.
-#define XT_AUTO_PROPERTY_INLINE_CD(type, name) \
-private: \
-	type name; \
-\
+// This has a const direct (non-ref, non-pointer) type.
+// This macro is designed to be used as the left hand side; you can set it equal to the default value.
+// For example: XT_AUTO_PROPERTY_INLINE_DC(int, value) = 0;
+// "D" for "Direct" - the type is not by reference.
+// "C" for "Constant"
+#define XT_AUTO_PROPERTY_INLINE_DC(type, name) \
 public: \
-	void set_##name(const type p_value) { \
-		name = p_value; \
+	void set_##name(const type p_##name) { \
+		name = p_##name; \
 	} \
 	const type get_##name() const { \
 		return name; \
-	}
+	} \
+private: \
+	type name
+
+// Declares a private field with the provided name, then a get and set method for that field.
+// This has a pointer type.
+// This macro is designed to be used as the left hand side; you can set it equal to the default value.
+// For example: XT_AUTO_PROPERTY_INLINE_P(int, value) = nullptr;
+// "P" for "Pointer"
+#define XT_AUTO_PROPERTY_INLINE_P(type, name) \
+public: \
+	void set_##name(type *p_##name) { \
+		name = p_##name; \
+	} \
+	type *get_##name() const { \
+		return name; \
+	} \
+private: \
+	type *name
+
+// A special variation of XT_AUTO_PROPERTY* which implements methods for handling ObjectID.
+// In particular, this creates two internal methods which get and set the object ID directly,
+// and then two more methods which return int64 instead for export.
+#define XT_AUTO_PROPERTY_SPECIAL_OBJECTID(name) \
+public: \
+	void set_##name (const ObjectID &p_##name) { \
+		name = p_##name; \
+	} \
+	ObjectID get_##name() const { \
+		return name; \
+	} \
+\
+private: \
+	void _set_##name(int64_t p_##name) { \
+		name = ObjectID(p_##name); \
+	} \
+	int64_t _get_##name() const { \
+		return (int64_t)name; \
+	} \
+	ObjectID name = ObjectID()
+
+// A special variation of XT_AUTO_PROPERTY* which implements methods for handling ObjectID.
+// In particular, this creates two internal methods which get and set the object ID directly,
+// and then two more methods which return int64 instead for export.
+// This additional method also causes the user-facing setter to set the hit object (denoted by object_field_name)
+// when setting the int ID. The internal method does not do this.
+#define XT_AUTO_PROPERTY_SPECIAL_OBJECTID_WITH_OBJECT(name) \
+public: \
+	void set_##name##_id(const ObjectID &p_##name##_id) { \
+		name##_id = p_##name##_id; \
+	} \
+	ObjectID get_##name##_id() const { \
+		return name##_id; \
+	} \
+	void set_##name(Object *p_##name) { \
+		name = p_##name; \
+	} \
+	Object *get_##name() const { \
+		return name; \
+	} \
+\
+private: \
+	void _set_##name##_id(int64_t p_##name##_id) { \
+		name##_id = ObjectID(p_##name##_id); \
+		name = ObjectDB::get_instance(name##_id); \
+	} \
+	int64_t _get_##name##_id() const { \
+		return (int64_t)name##_id; \
+	} \
+	ObjectID name##_id = ObjectID(); \
+	Object *name = nullptr
 
 // Automatically binds the getter and setter for a property with the provided name to the classDB, then registers a property.
 #define XT_AUTO_BIND_PROPERTY(this_class, name, variant_type) \
@@ -119,6 +215,34 @@ public: \
 	ClassDB::bind_method(D_METHOD("get_" #name), &this_class::get_##name); \
 	ClassDB::bind_method(D_METHOD("set_" #name, #name), &this_class::set_##name); \
 	ADD_INITONLY_PROPERTY(PropertyInfo(variant_type, #name), "set_" #name, "get_" #name)
+
+// Automatically binds the getter for a read-only property with the provided name to the classDB, then registers a property.
+#define XT_AUTO_BIND_READONLY_PROPERTY(this_class, name, variant_type) \
+	ClassDB::bind_method(D_METHOD("get_" #name), &this_class::get_##name); \
+	ADD_READONLY_PROPERTY(PropertyInfo(variant_type, #name), "get_" #name)
+
+// Same as XT_AUTO_BIND_PROPERTY, but this binds the special prefix methods for ObjectID.
+#define XT_AUTO_BIND_PROPERTY_SPECIAL_OBJECTID(this_class, name) \
+	ClassDB::bind_method(D_METHOD("get_" #name "_id"), &this_class::_get_##name##_id); \
+	ClassDB::bind_method(D_METHOD("set_" #name "_id", #name "_id"), &this_class::_set_##name##_id); \
+	ADD_PROPERTY(PropertyInfo(Variant::INT, #name "_id"), "set_" #name "_id", "get_" #name "_id"); \
+	XT_AUTO_BIND_READONLY_PROPERTY(this_class, name, Variant::OBJECT)
+// ^ Always readonly
+
+// Same as XT_AUTO_BIND_INITONLY_PROPERTY, but this binds the special prefix methods for ObjectID.
+#define XT_AUTO_BIND_INITONLY_PROPERTY_SPECIAL_OBJECTID(this_class, name) \
+	ClassDB::bind_method(D_METHOD("get_" #name "_id"), &this_class::_get_##name##_id); \
+	ClassDB::bind_method(D_METHOD("set_" #name "_id", #name "_id"), &this_class::_set_##name##_id); \
+	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, #name "_id"), "set_" #name "_id", "get_" #name "_id"); \
+	XT_AUTO_BIND_READONLY_PROPERTY(this_class, name, Variant::OBJECT)
+// ^ Always readonly
+
+// Same as XT_AUTO_BIND_PROPERTY, but this binds the special prefix methods for ObjectID.
+#define XT_AUTO_BIND_READONLY_PROPERTY_SPECIAL_OBJECTID(this_class, name) \
+	ClassDB::bind_method(D_METHOD("get_" #name "_id"), &this_class::_get_##name##_id); \
+	ADD_READONLY_PROPERTY(PropertyInfo(Variant::INT, #name "_id"), "get_" #name "_id"); \
+	XT_AUTO_BIND_READONLY_PROPERTY(this_class, name, Variant::OBJECT)
+// ^ Always readonly
 
 
 struct XansTools {

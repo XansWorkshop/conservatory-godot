@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  shape_query_3d_direct.h                                               */
+/*  mesh_direct_access.h                                                  */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                 GODOT ENGINE /// THE CONSERVATORY FORK                 */
@@ -27,55 +27,30 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#if !defined(PHYSICS_3D_DISABLED) && !defined(_3D_DISABLED)
 #pragma once
 
+#ifndef _3D_DISABLED
 #include "core/object/object.h"
-#include "core/object/ref_counted.h"
-#include "core/variant/array.h"
-#include "core/variant/typed_array.h"
-#include "core/variant/dictionary.h"
-#include "core/math/vector3.h"
-#include "servers/physics_3d/physics_server_3d.h"
-#include "scene/3d/physics/shape_query_result.h"
+#include "core/object/object_id.h"
+#include "core/object/class_db.h"
+#include "servers/rendering/rendering_server.h"
 
-#include "thirdparty/xanstools/xanstools.h"
-
-class ShapeQuery3DDirect : public RefCounted {
-	GDCLASS(ShapeQuery3DDirect, RefCounted);
-
-	TypedArray<RID> filter = TypedArray<RID>();
+class MeshDirectAccess : public Object {
+	GDCLASS(MeshDirectAccess, Object);
 
 protected:
-	static void _bind_methods();
+	static void _bind_methods() {
+		ClassDB::bind_static_method(MeshDirectAccess::get_class_static(), D_METHOD("mesh_get_surface_ptr", "mesh", "idx", "surf_ptr"), MeshDirectAccess::mesh_get_surface_ptr);
+		ClassDB::bind_static_method(MeshDirectAccess::get_class_static(), D_METHOD("mesh_add_surface_ptr", "mesh", "surf_ptr"), MeshDirectAccess::mesh_add_surface_ptr);
+	}
 
 public:
-	XT_AUTO_PROPERTY_INLINE_DC(bool, hit_something) = false;
-	XT_AUTO_PROPERTY_INLINE_C(TypedArray<ShapeQueryResult>, results) = TypedArray<ShapeQueryResult>();
-	XT_AUTO_PROPERTY_INLINE_DC(int, result_count) = 0;
-	XT_AUTO_PROPERTY_INLINE_C(RID, shape) = RID();
-
-	XT_AUTO_PROPERTY_INLINE_C(Transform3D, transform) = Transform3D();
-	XT_AUTO_PROPERTY_INLINE_DC(real_t, margin) = 0.04f;
-	XT_AUTO_PROPERTY_INLINE_DC(bool, collide_with_bodies) = true;
-	XT_AUTO_PROPERTY_INLINE_DC(bool, collide_with_areas) = true;
-	XT_AUTO_PROPERTY_INLINE_DC(uint32_t, collision_mask) = 0xFFFFFFFF;
-	XT_AUTO_PROPERTY_INLINE_DC(bool, filter_is_inclusive) = false;
-	XT_AUTO_PROPERTY_INLINE_DC(int, max_results) = 32;
-
-
-	void set_collision_mask_value(int p_layer_number, bool p_value);
-	bool get_collision_mask_value(int p_layer_number) const;
-	void set_from_parameters(const Ref<PhysicsShapeQueryParameters3D> &p_parameters);
-
-	int query(const RID &p_space);
-	static TypedArray<ShapeQueryResult> query_statically(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, int p_max_results);
-	static int query_statically_preallocated(const RID &p_space, const Ref<PhysicsShapeQueryParameters3D> &p_parameters, TypedArray<ShapeQueryResult> p_presized_result_array);
-
-	void add_filter_rid(const RID &p_rid);
-	void remove_filter_rid(const RID &p_rid);
-	void clear_filter();
-
-	ShapeQuery3DDirect();
+	static void mesh_get_surface_ptr(RID p_mesh, int p_idx, uint64_t p_surfdata_ptr) {
+		RenderingServerTypes::SurfaceData *surf = (RenderingServerTypes::SurfaceData *)p_surfdata_ptr;
+		*surf = RenderingServer::get_singleton()->mesh_get_surface(p_mesh, p_idx);
+	}
+	static void mesh_add_surface_ptr(RID p_mesh, uint64_t p_surfdata_ptr) {
+		RenderingServer::get_singleton()->mesh_add_surface(p_mesh, (RenderingServerTypes::SurfaceData &)p_surfdata_ptr);
+	}
 };
 #endif

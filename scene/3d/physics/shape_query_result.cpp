@@ -34,7 +34,7 @@ void ShapeQueryResult::clear() {
 	collider = nullptr;
 	collider_id = ObjectID();
 	rid = RID();
-	shape = 0;
+	shape = -1;
 }
 void ShapeQueryResult::copy_to(Ref<ShapeQueryResult> &p_other) const {
 	p_other->collider = collider;
@@ -44,23 +44,7 @@ void ShapeQueryResult::copy_to(Ref<ShapeQueryResult> &p_other) const {
 }
 
 void ShapeQueryResult::_bind_methods() {
-	/*
-	ClassDB::bind_method(D_METHOD("get_collider"), &ShapeQueryResult::get_collider);
-	ClassDB::bind_method(D_METHOD("set_collider", "collider"), &ShapeQueryResult::set_collider);
-	ClassDB::bind_method(D_METHOD("get_collider_id"), &ShapeQueryResult::get_collider_id);
-	ClassDB::bind_method(D_METHOD("set_collider_id", "id"), &ShapeQueryResult::set_collider_id);
-	ClassDB::bind_method(D_METHOD("get_rid"), &ShapeQueryResult::get_rid);
-	ClassDB::bind_method(D_METHOD("set_rid", "rid"), &ShapeQueryResult::set_rid);
-	ClassDB::bind_method(D_METHOD("get_shape"), &ShapeQueryResult::get_shape);
-	ClassDB::bind_method(D_METHOD("set_shape", "shape"), &ShapeQueryResult::set_shape);
-
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::OBJECT, "hit_godot_object"), "set_collider", "get_collider");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_object_id"), "set_collider_id", "get_collider_id");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::RID, "hit_rid"), "set_rid", "get_rid");
-	ADD_INITONLY_PROPERTY(PropertyInfo(Variant::INT, "hit_shape_index"), "set_shape", "get_shape");
-	*/
-	XT_AUTO_BIND_INITONLY_PROPERTY(ShapeQueryResult, collider, Variant::OBJECT);
-	XT_AUTO_BIND_INITONLY_PROPERTY(ShapeQueryResult, collider_id, Variant::INT);
+	XT_AUTO_BIND_INITONLY_PROPERTY_SPECIAL_OBJECTID(ShapeQueryResult, collider);
 	XT_AUTO_BIND_INITONLY_PROPERTY(ShapeQueryResult, rid, Variant::RID);
 	XT_AUTO_BIND_INITONLY_PROPERTY(ShapeQueryResult, shape, Variant::INT);
 }

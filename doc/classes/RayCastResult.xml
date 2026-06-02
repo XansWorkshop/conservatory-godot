@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="RayCastResult" inherits="RefCounted" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
 	<brief_description>
+		The result of a raycast operation.
 	</brief_description>
 	<description>
+		[admonition type="note" collapsible="true" open="false"]
+			[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+			This is not available in the official build of Godot.
+		[/admonition]
+		The result of a raycast operation, used by [RayCast3DDirect]. This is significantly more optimized than the [Dictionary] return value from the corresponding ray query method of [PhysicsServer3D] when pre-allocated and reused, as it avoids the need to allocate new data. Instead, this existing object can simply be edited in place to store new results.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -10,33 +16,44 @@
 		<method name="clear">
 			<return type="void" />
 			<description>
+				Resets the contents of this result back to the initial state that it had when it was first created.
 			</description>
 		</method>
 		<method name="copy_to" qualifiers="const">
 			<return type="void" />
 			<param index="0" name="destination" type="RayCastResult" />
 			<description>
+				Copies this result into another result. This is typically useful when providing this result to a consumer which may modify it or store it themselves, to prevent those modifications from affecting this instance.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="hit_face_index" type="int" setter="set_face_index" getter="get_face_index" default="-1">
-		</member>
-		<member name="hit_godot_object" type="Object" setter="" getter="get_hit_godot_object">
+		<member name="face_index" type="int" setter="set_face_index" getter="get_face_index" default="-1">
+			Returns the index of the face that was hit. Note that this may not be tracked; it has to be enabled in the project settings, due to its harsh memory cost.
 		</member>
 		<member name="hit_normal" type="Vector3" setter="set_hit_normal" getter="get_hit_normal" default="Vector3(0, 0, 0)">
+			The direction of the surface that was hit by the ray. If the ray was hit from the inside of the object, and if internal hits are enabled, then this normal will be [code](0, 0, 0)[/code].
+		</member>
+		<member name="hit_object" type="Object" setter="" getter="get_hit_object">
+			The [Object] that was hit by the ray, if it could be resolved. The [PhysicsServer3D] allows attaching object IDs (see [member hit_object_id]) to physics objects. This is how Godot tracks the object here.
 		</member>
 		<member name="hit_object_id" type="int" setter="set_hit_object_id" getter="get_hit_object_id" default="0">
+			The object ID assigned by the physics server to the physics object. Godot natively uses this to associate a node (like [PhysicsBody3D] or [Area3D]) to a low-level physics object, but this ID may also be a custom value with meaning specific to the game.
 		</member>
 		<member name="hit_position" type="Vector3" setter="set_hit_position" getter="get_hit_position" default="Vector3(0, 0, 0)">
+			The position that the ray hit the object, in world space.
 		</member>
-		<member name="hit_rid" type="RID" setter="set_rid" getter="get_rid" default="RID()">
-		</member>
-		<member name="hit_shape_index" type="int" setter="set_shape_index" getter="get_shape_index" default="-1">
+		<member name="hit_something" type="bool" setter="set_hit_something" getter="get_hit_something" default="false">
+			This is [code]true[/code] if the ray hit something, or [code]false[/code] if it missed.
 		</member>
 		<member name="origin" type="Vector3" setter="set_origin" getter="get_origin" default="Vector3(0, 0, 0)">
+			The starting point of the ray, in world space.
 		</member>
-		<member name="success" type="bool" setter="set_success" getter="get_success" default="false">
+		<member name="rid" type="RID" setter="set_rid" getter="get_rid" default="RID()">
+			The [RID] of the physics object that was hit. This can be used to perform low level operations via the [PhysicsServer3D].
+		</member>
+		<member name="shape_index" type="int" setter="set_shape_index" getter="get_shape_index" default="-1">
+			The index of the shape within the physics object that was hit, because physics objects can have multiple shapes within them.
 		</member>
 	</members>
 </class>

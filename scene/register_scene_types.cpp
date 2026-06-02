@@ -287,6 +287,10 @@
 #include "scene/resources/3d/primitive_meshes.h"
 #include "scene/resources/3d/sky_material.h"
 #include "scene/resources/3d/world_3d.h"
+
+// Xan's Additions:
+#include "thirdparty/xanstools/mesh_direct_access.h"
+
 #ifndef NAVIGATION_3D_DISABLED
 #include "scene/3d/navigation/navigation_agent_3d.h"
 #include "scene/3d/navigation/navigation_link_3d.h"
@@ -715,6 +719,9 @@ void register_scene_types() {
 	GDREGISTER_CLASS(JacobianIK3D);
 	GDREGISTER_CLASS(LimitAngularVelocityModifier3D);
 	GDREGISTER_CLASS(BoneTwistDisperser3D);
+
+	// Xan's Additions:
+	GDREGISTER_CLASS(MeshDirectAccess);
 
 #ifndef XR_DISABLED
 	GDREGISTER_CLASS(XRCamera3D);

@@ -41,36 +41,30 @@ class ShapeCast3DDirect : public RefCounted {
 	GDCLASS(ShapeCast3DDirect, RefCounted);
 
 	HashSet<RID> filter;
-
-	// Result
-	int last_result_count = 0;
 	Vector<PhysicsDirectSpaceState3D::ShapeRestInfo> result;
-	bool hit_something = false;
-	real_t collision_safe_fraction = 1.0;
-	real_t collision_unsafe_fraction = 1.0;
 
 protected:
 	static void _bind_methods();
 
 public:
-	XT_AUTO_PROPERTY_INLINE_C(bool, collide_with_bodies);
-	XT_AUTO_PROPERTY_INLINE_C(bool, collide_with_areas);
-	XT_AUTO_PROPERTY_INLINE_C(uint32_t, collision_mask);
-	XT_AUTO_PROPERTY_INLINE_C(RID, shape);
-	XT_AUTO_PROPERTY_INLINE_C(Transform3D, source_transform);
-	XT_AUTO_PROPERTY_INLINE_C(Vector3, motion);
-	XT_AUTO_PROPERTY_INLINE_C(real_t, margin);
-	XT_AUTO_PROPERTY_INLINE_C(int, max_results);
-	XT_AUTO_PROPERTY_INLINE_C(bool, filter_is_inclusive);
+	XT_AUTO_PROPERTY_INLINE_DC(bool, hit_something) = false;
+	XT_AUTO_PROPERTY_INLINE_DC(real_t, collision_safe_fraction) = 0.0;
+	XT_AUTO_PROPERTY_INLINE_DC(real_t, collision_unsafe_fraction) = 0.0;
+	XT_AUTO_PROPERTY_INLINE_DC(int, result_count) = 0;
+	XT_AUTO_PROPERTY_INLINE_C(TypedArray<ShapeCastResult>, results) = TypedArray<ShapeCastResult>();
+
+	XT_AUTO_PROPERTY_INLINE_DC(bool, collide_with_bodies) = true;
+	XT_AUTO_PROPERTY_INLINE_DC(bool, collide_with_areas) = true;
+	XT_AUTO_PROPERTY_INLINE_DC(uint32_t, collision_mask) = 0xFFFFFFFF;
+	XT_AUTO_PROPERTY_INLINE_C(RID, shape) = RID();
+	XT_AUTO_PROPERTY_INLINE_C(Transform3D, source_transform) = Transform3D();
+	XT_AUTO_PROPERTY_INLINE_C(Vector3, motion) = Vector3();
+	XT_AUTO_PROPERTY_INLINE_DC(real_t, margin) = 0.04f;
+	XT_AUTO_PROPERTY_INLINE_DC(int, max_results) = 32;
+	XT_AUTO_PROPERTY_INLINE_DC(bool, filter_is_inclusive) = false;
 
 	void set_collision_mask_value(int p_layer_number, bool p_value);
 	bool get_collision_mask_value(int p_layer_number) const;
-
-	bool get_hit_anything() const;
-	int get_hit_count() const;
-	TypedArray<ShapeCastResult> get_results() const;
-	real_t get_closest_collision_safe_fraction() const;
-	real_t get_closest_collision_unsafe_fraction() const;
 
 	void set_from_parameters(const Ref<PhysicsShapeQueryParameters3D> &p_parameters);
 	int cast(const RID &p_space);

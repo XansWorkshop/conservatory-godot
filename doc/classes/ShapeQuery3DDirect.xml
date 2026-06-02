@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="ShapeQuery3DDirect" inherits="RefCounted" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
 	<brief_description>
-		A query for a specific shape, at some transform in space.
+		Queries the world for physics objects that intersect with a shape.
 	</brief_description>
 	<description>
 		[admonition type="note" collapsible="true" open="false"]
-		[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
-		This is not available in the official build of Godot.
+			[b]Part of [i]Godot Engine: Conservatory Edition[/i].[/b]
+			This is not available in the official build of Godot.
 		[/admonition]
-		This class queries for physics bodies and areas intersecting a shape at some transform in space.
+		Queries the world for physics objects that intersect with a shape. This is a more optimized alternative to [ShapeCast3DDirect], at the cost that the shape can [b]not[/b] be moving (there is no [code]motion[/code] field).
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="query" qualifiers="const">
-			<return type="ShapeQueryResult[]" />
+		<method name="query">
+			<return type="int" />
 			<param index="0" name="space" type="RID" />
-			<param index="1" name="max_results" type="int" />
 			<description>
-				Performs a query using the properties of this object as parameters. Can return up to [param max_count] items.
+				Performs a query using the properties of this object as parameters, in the provided physics [param space]. Can return up to [param max_count] results. Returns the amount of objects that were actually hit, to read from [member results].
 			</description>
 		</method>
 		<method name="query_statically" qualifiers="static">
@@ -27,7 +26,7 @@
 			<param index="1" name="parameters" type="PhysicsShapeQueryParameters3D" />
 			<param index="2" name="max_results" type="int" />
 			<description>
-				Statically perform a query using the provided [param parameters]. Can return up to [param max_count] items.
+				Perform a query without having to make a new instance of [ShapeQuery3DDirect], using the provided [param parameters], in the provided physics [param space]. Can return up to [param max_count] items.
 			</description>
 		</method>
 		<method name="query_statically_preallocated" qualifiers="static">
@@ -43,23 +42,32 @@
 		</method>
 	</methods>
 	<members>
-		<member name="collide_with_areas" type="bool" setter="set_collide_with_areas" getter="get_collide_with_areas" default="false">
+		<member name="collide_with_areas" type="bool" setter="set_collide_with_areas" getter="get_collide_with_areas" default="true">
 			If [code]true[/code], collisions with physics areas (like [Area3D]) will be reported.
 		</member>
-		<member name="collide_with_bodies" type="bool" setter="set_collide_with_bodies" getter="get_collide_with_bodies" default="false">
+		<member name="collide_with_bodies" type="bool" setter="set_collide_with_bodies" getter="get_collide_with_bodies" default="true">
 			If [code]true[/code], collisions with physics bodies (like [PhysicsBody3D]) will be reported.
 		</member>
-		<member name="collision_mask" type="int" setter="set_collision_mask" getter="get_collision_mask" default="1">
+		<member name="collision_mask" type="int" setter="set_collision_mask" getter="get_collision_mask" default="4294967295">
 			The query's collision mask. Only objects in at least one collision layer enabled in the mask will be detected. See [url=$DOCS_URL/tutorials/physics/physics_introduction.html#collision-layers-and-masks]Collision layers and masks[/url] in the documentation for more information.
 		</member>
-		<member name="filter" type="RID[]" setter="set_filter" getter="get_filter" default="[]">
-			An array of [RID]s to filter. Depending on the value of [member filter_is_inclusive], this will either be a list of [RID]s that can not be hit (all other objects will be hit except for these), or it's the list of [RID]s that can only be hit (no objects will be hit except for these).
-		</member>
-		<member name="filter_is_inclusive" type="bool" setter="set_filter_is_inclusive" getter="get_filter_is_inclusive" default="true">
+		<member name="filter_is_inclusive" type="bool" setter="set_filter_is_inclusive" getter="get_filter_is_inclusive" default="false">
 			Determines if [member filter] is a whitelist or blacklist for [RID]s.
 		</member>
-		<member name="margin" type="float" setter="set_margin" getter="get_margin" default="0.0">
+		<member name="hit_something" type="bool" setter="" getter="get_hit_something" default="false">
+			If [code]true[/code], the last call to [method query] hit something.
+		</member>
+		<member name="margin" type="float" setter="set_margin" getter="get_margin" default="0.04">
 			The brim added to the outside of the shape, which gives it additional thickness.
+		</member>
+		<member name="max_results" type="int" setter="set_max_results" getter="get_max_results" default="32">
+			The maximum amount of results that the instance is allowed to return. Once this many physics objects are detected, it will stop searching.
+		</member>
+		<member name="result_count" type="int" setter="" getter="get_result_count" default="0">
+			The amount of results that were collected in the last call to [method query].
+		</member>
+		<member name="results" type="ShapeQueryResult[]" setter="" getter="get_results" default="[]">
+			All of the results that were located by the last call to [method query].
 		</member>
 		<member name="shape" type="RID" setter="set_shape" getter="get_shape" default="RID()">
 			The RID of the [Shape3D] that is being used for the test.

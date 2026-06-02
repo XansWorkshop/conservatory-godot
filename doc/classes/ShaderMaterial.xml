@@ -16,19 +16,21 @@
 			<return type="bool" />
 			<param index="0" name="feature" type="StringName" />
 			<description>
+				Returns the current value of the named shader [param feature]. This is like a boolean uniform, but is static rather than being a uniform, causing it to change how the shader compiles.
 			</description>
 		</method>
 		<method name="get_shader_parameter" qualifiers="const">
 			<return type="Variant" />
 			<param index="0" name="param" type="StringName" />
 			<description>
-				Returns the current value set for this material of a uniform in the shader.
+				Returns the current value of a uniform from the shader, which has been set for this material.
 			</description>
 		</method>
 		<method name="get_shader_variant" qualifiers="const">
 			<return type="int" />
 			<param index="0" name="variant" type="StringName" />
 			<description>
+				Returns the index of the actively selected [param variant] with the provided name. This is like an enum uniform, but is static rather than being a uniform, causing it to change how the shader compiles.
 			</description>
 		</method>
 		<method name="get_shader_variant_index">
@@ -36,18 +38,21 @@
 			<param index="0" name="variant" type="StringName" />
 			<param index="1" name="value_name" type="StringName" />
 			<description>
+				Provided with the name of a shader [param variant], and the name of one of its allowed options, this returns the numeric index of that option.
 			</description>
 		</method>
 		<method name="is_valid_shader_feature">
 			<return type="bool" />
 			<param index="0" name="feature" type="StringName" />
 			<description>
+				Returns [code]true[/code] if the provided [param feature] name is one that has been registered to this material.
 			</description>
 		</method>
 		<method name="is_valid_shader_variant_key">
 			<return type="bool" />
 			<param index="0" name="variant" type="StringName" />
 			<description>
+				Returns [code]true[/code] if the provided [param variant] name is one that has been registered to this material.
 			</description>
 		</method>
 		<method name="is_valid_shader_variant_value">
@@ -55,6 +60,7 @@
 			<param index="0" name="variant" type="StringName" />
 			<param index="1" name="index" type="StringName" />
 			<description>
+				Returns [code]true[/code] if the provided [param variant] name is one that has been registered to this material, and if the provided [param index] is the name of a valid value for said variant.
 			</description>
 		</method>
 		<method name="set_shader_feature">
@@ -62,6 +68,7 @@
 			<param index="0" name="feature" type="StringName" />
 			<param index="1" name="state" type="bool" />
 			<description>
+				Sets the value of the provided shader [param feature]. This is like a boolean uniform, but is static rather than being a uniform, causing it to change how the shader compiles.
 			</description>
 		</method>
 		<method name="set_shader_parameter">
@@ -79,6 +86,8 @@
 			<param index="0" name="variant" type="StringName" />
 			<param index="1" name="index" type="int" />
 			<description>
+				Sets the value of the provided shader [param variant]. This is like an enum uniform, but is static rather than being a uniform, causing it to change how the shader compiles. This sets the value by its numeric index, which can be acquired from [method get_shader_variant_index].
+				See also: [method set_shader_variant_by_name].
 			</description>
 		</method>
 		<method name="set_shader_variant_by_name">
@@ -86,6 +95,7 @@
 			<param index="0" name="variant" type="StringName" />
 			<param index="1" name="name" type="StringName" />
 			<description>
+				Sets the value of the provided shader [param variant]. This is like an enum uniform, but is static rather than being a uniform, causing it to change how the shader compiles. This sets the value by its name.
 			</description>
 		</method>
 	</methods>
@@ -96,6 +106,7 @@
 			The [Shader] program used to render this material.
 		</member>
 		<member name="variant_metadata" type="ShaderVariantMetadata[]" setter="set_variant_metadata" getter="get_variant_metadata" default="[]">
+			All shader features and variants that this shader will be compiled with.
 		</member>
 	</members>
 </class>
