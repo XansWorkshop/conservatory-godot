@@ -50,7 +50,8 @@ public:
 		*surf = RenderingServer::get_singleton()->mesh_get_surface(p_mesh, p_idx);
 	}
 	static void mesh_add_surface_ptr(RID p_mesh, uint64_t p_surfdata_ptr) {
-		RenderingServer::get_singleton()->mesh_add_surface(p_mesh, (RenderingServerTypes::SurfaceData &)p_surfdata_ptr);
+		RenderingServerTypes::SurfaceData *surf = (RenderingServerTypes::SurfaceData *)p_surfdata_ptr;
+		RenderingServer::get_singleton()->mesh_add_surface(p_mesh, *surf);
 	}
 };
 #endif
