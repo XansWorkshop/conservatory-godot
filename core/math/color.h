@@ -33,6 +33,8 @@
 #include "core/math/math_funcs.h"
 #include "core/templates/hashfuncs.h"
 
+#include "thirdparty/xanstools/color_bridge.h"
+
 class String;
 
 struct [[nodiscard]] Color {

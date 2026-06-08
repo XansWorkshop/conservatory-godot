@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  color_name_injector.h                                                 */
+/*  color_bridge.h                                                        */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                 GODOT ENGINE /// THE CONSERVATORY FORK                 */
@@ -29,22 +29,14 @@
 
 #pragma once
 
-// Used to add custom named colors from C#.
+struct ColorBridge {
+	typedef bool (*ColorByNameDelegate)(const char32_t *name, int length, float *rgba);
+	inline static ColorByNameDelegate cs_color_by_name;
 
-#include "core/object/object.h"
-#include "core/object/class_db.h"
-#include "color_bridge.h"
-
-class ColorNameInjector : public Object {
-	GDCLASS(ColorNameInjector, Object);
-
-protected:
-	static void _bind_methods() {
-		ClassDB::bind_static_method(ColorNameInjector::get_class_static(), D_METHOD("set_color_by_name_ptr", "ptr"), ColorNameInjector::set_color_by_name_ptr);
-	}
-
-public:
-	static void set_color_by_name_ptr(int64_t p_ptr) {
-		ColorBridge::cs_color_by_name = (bool (*)(const char32_t *, int, float *))p_ptr;
+	static bool get_color_by_name_cs(const char32_t *p_name_ptr, int p_name_size, float *p_color) {
+		if (cs_color_by_name) {
+			return cs_color_by_name(p_name_ptr, p_name_size, p_color);
+		}
+		return false;
 	}
 };

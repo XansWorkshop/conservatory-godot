@@ -37,8 +37,6 @@
 
 #include <thirdparty/misc/ok_color.h>
 
-#include "thirdparty/xanstools/color_name_injector.h"
-
 uint32_t Color::to_argb32() const {
 	uint32_t c = (uint8_t)Math::round(a * 255.0f);
 	c <<= 8;
@@ -400,7 +398,7 @@ Color Color::named(const String &p_name) {
 	if (idx == -1) {
 		// Added by Xan 2026. Allows C# to inject custom named colors.
 		float rgba[4];
-		if (ColorNameInjector::get_color_by_name(p_name, rgba)) {
+		if (ColorBridge::get_color_by_name_cs(p_name.ptr(), p_name.size(), rgba)) {
 			return Color(rgba[0], rgba[1], rgba[2], rgba[3]);
 		}
 		ERR_FAIL_V_MSG(Color(), "Invalid color name: " + p_name + ".");
@@ -413,7 +411,7 @@ Color Color::named(const String &p_name, const Color &p_default) {
 	if (idx == -1) {
 		// Added by Xan 2026. Allows C# to inject custom named colors.
 		float rgba[4];
-		if (ColorNameInjector::get_color_by_name(p_name, rgba)) {
+		if (ColorBridge::get_color_by_name_cs(p_name.ptr(), p_name.size(), rgba)) {
 			return Color(rgba[0], rgba[1], rgba[2], rgba[3]);
 		}
 		return p_default;
