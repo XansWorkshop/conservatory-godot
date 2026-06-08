@@ -33,9 +33,7 @@
 
 
 #include "core/object/object.h"
-#include "core/object/object_id.h"
 #include "core/object/class_db.h"
-#include "servers/rendering/rendering_server.h"
 
 class ColorNameInjector : public Object {
 	GDCLASS(ColorNameInjector, Object);

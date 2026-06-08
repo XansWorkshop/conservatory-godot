@@ -33,8 +33,6 @@
 #include "core/math/math_funcs.h"
 #include "core/templates/hashfuncs.h"
 
-#include "thirdparty/xanstools/color_name_injector.h"
-
 class String;
 
 struct [[nodiscard]] Color {

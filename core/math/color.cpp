@@ -37,6 +37,8 @@
 
 #include <thirdparty/misc/ok_color.h>
 
+#include "thirdparty/xanstools/color_name_injector.h"
+
 uint32_t Color::to_argb32() const {
 	uint32_t c = (uint8_t)Math::round(a * 255.0f);
 	c <<= 8;
