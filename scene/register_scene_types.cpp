@@ -288,9 +288,6 @@
 #include "scene/resources/3d/sky_material.h"
 #include "scene/resources/3d/world_3d.h"
 
-// Xan's Additions:
-#include "thirdparty/xanstools/mesh_direct_access.h"
-
 #ifndef NAVIGATION_3D_DISABLED
 #include "scene/3d/navigation/navigation_agent_3d.h"
 #include "scene/3d/navigation/navigation_link_3d.h"
@@ -392,7 +389,11 @@
 #include "scene/3d/physics/point_query_3d_direct.h"
 #include "scene/3d/physics/shape_query_result.h"
 #include "scene/3d/physics/shape_query_3d_direct.h"
+
+#include "thirdparty/xanstools/mesh_direct_access.h"
 #endif
+
+#include "thirdparty/xanstools/color_name_injector.h"
 
 static Ref<ResourceFormatSaverText> resource_saver_text;
 static Ref<ResourceFormatLoaderText> resource_loader_text;
@@ -720,9 +721,6 @@ void register_scene_types() {
 	GDREGISTER_CLASS(LimitAngularVelocityModifier3D);
 	GDREGISTER_CLASS(BoneTwistDisperser3D);
 
-	// Xan's Additions:
-	GDREGISTER_CLASS(MeshDirectAccess);
-
 #ifndef XR_DISABLED
 	GDREGISTER_CLASS(XRCamera3D);
 	GDREGISTER_CLASS(XRNode3D);
@@ -776,6 +774,10 @@ void register_scene_types() {
 	GDREGISTER_CLASS(ShapeQuery3DDirect);
 	GDREGISTER_CLASS(ShapeQueryResult);
 #endif // PHYSICS_3D_DISABLED
+
+	// Xan's Additions:
+	GDREGISTER_CLASS(MeshDirectAccess);
+
 	GDREGISTER_CLASS(MultiMeshInstance3D);
 
 	GDREGISTER_CLASS(Curve3D);
@@ -807,6 +809,8 @@ void register_scene_types() {
 
 	OS::get_singleton()->yield(); // may take time to init
 #endif // _3D_DISABLED
+
+	GDREGISTER_CLASS(ColorNameInjector);
 
 	/* REGISTER SHADER */
 
