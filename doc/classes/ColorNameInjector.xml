@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ColorNameInjector" inherits="Object" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		Internal type used to register custom color names.
+	</brief_description>
+	<description>
+		This is an internal type used by The Conservatory to shim in custom color names to [Color]. If the lookup of a standard color name fails, it can fall back to the delegate provided here to search from C#.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="set_color_by_name_ptr" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="ptr" type="int" />
+			<description>
+				Provide this with a [code]delegate* unmanaged&lt;uint*, int, float*, bool&gt;[/code]. The first argument is [code]char32_t[/code], the second is the length of that string, the float pointer is 4 units long for RGBA, and the bool is a return value which must be true if a color was provided, or false otherwise.
+			</description>
+		</method>
+	</methods>
+</class>

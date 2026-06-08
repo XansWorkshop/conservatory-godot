@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="MeshDirectAccess" inherits="Object" api_type="core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		Internal type used to access mesh data in memory.
+	</brief_description>
+	<description>
+		This is an internal type used by The Conservatory which allows C# code to access the low-level memory representation of geometry data.
+		This is typically used to upload or patch geometry [i]extremely[/i] quickly compared to the typical API, as it becomes possible to skip most of the intermediary steps.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="mesh_add_surface_ptr" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="mesh" type="RID" />
+			<param index="1" name="surf_ptr" type="int" />
+			<description>
+				Add a surface to the provided [param mesh] by providing a pointer to a [code]SurfaceData[/code] that can be read from.
+			</description>
+		</method>
+		<method name="mesh_get_surface_ptr" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="mesh" type="RID" />
+			<param index="1" name="idx" type="int" />
+			<param index="2" name="surf_ptr" type="int" />
+			<description>
+				Read the surface at index [param idx] from the provided [param mesh] by providing a pointer to a [code]SurfaceData[/code] that can be written to.
+			</description>
+		</method>
+	</methods>
+</class>

@@ -77,11 +77,11 @@
 		<member name="margin" type="float" setter="set_margin" getter="get_margin" default="0.04">
 			The margin is a sort of brim added to this shape, which expands its surface outward. This makes collisions less accurate - the shape is effectively larger than it's supposed to be - but also makes them more consistent.
 		</member>
-		<member name="motion" type="Vector3" setter="set_motion" getter="get_motion" default="Vector3(0, 0, 0)">
-			The velocity of the shape being casted. Note that if the shape will not be in motion, you should prefer [ShapeQuery3DDirect], which is simpler to compute but doesn't support moving shapes.
-		</member>
 		<member name="max_results" type="int" setter="set_max_results" getter="get_max_results" default="32">
 			The maximum amount of collisions that will be acquired. If more than this many objects are detected by the shape, they will be skipped to avoid adding excessive computational load.
+		</member>
+		<member name="motion" type="Vector3" setter="set_motion" getter="get_motion" default="Vector3(0, 0, 0)">
+			The velocity of the shape being casted. Note that if the shape will not be in motion, you should prefer [ShapeQuery3DDirect], which is simpler to compute but doesn't support moving shapes.
 		</member>
 		<member name="result_count" type="int" setter="" getter="get_result_count" default="0">
 			The amount of results that the last call to [method query] actually acquired.

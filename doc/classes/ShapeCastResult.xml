@@ -28,10 +28,10 @@
 		</method>
 	</methods>
 	<members>
-		<member name="collision_safe_fraction" type="float" setter="" getter="get_collision_safe_fraction" default="0.0">
+		<member name="collision_safe_fraction" type="float" setter="set_collision_safe_fraction" getter="get_collision_safe_fraction" default="0.0">
 			This returns the collision-safe fraction from the first result. This is the highest percentage of the cast's motion can be applied [i]without[/i] actually colliding with the object.
 		</member>
-		<member name="collision_unsafe_fraction" type="float" setter="" getter="get_collision_unsafe_fraction" default="0.0">
+		<member name="collision_unsafe_fraction" type="float" setter="set_collision_unsafe_fraction" getter="get_collision_unsafe_fraction" default="0.0">
 			This returns the collision-unsafe fraction from the first result. This is the smallest percentage of the cast's motion that can be applied in order to just barely, but consistently, cause a collision.
 		</member>
 		<member name="hit_object" type="Object" setter="" getter="get_hit_object">

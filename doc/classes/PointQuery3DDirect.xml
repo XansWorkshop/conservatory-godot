@@ -43,10 +43,10 @@
 		</method>
 	</methods>
 	<members>
-		<member name="collide_with_areas" type="bool" setter="set_collide_with_areas" getter="get_collide_with_areas" default="false">
+		<member name="collide_with_areas" type="bool" setter="set_collide_with_areas" getter="get_collide_with_areas" default="true">
 			If [code]true[/code], collisions with physics areas (like [Area3D]) will be reported.
 		</member>
-		<member name="collide_with_bodies" type="bool" setter="set_collide_with_bodies" getter="get_collide_with_bodies" default="false">
+		<member name="collide_with_bodies" type="bool" setter="set_collide_with_bodies" getter="get_collide_with_bodies" default="true">
 			If [code]true[/code], collisions with physics bodies (like [PhysicsBody3D]) will be reported.
 		</member>
 		<member name="collision_mask" type="int" setter="set_collision_mask" getter="get_collision_mask" default="0">
@@ -55,7 +55,7 @@
 		<member name="filter" type="RID[]" setter="set_filter" getter="get_filter" default="[]">
 			An array of [RID]s to filter. Depending on the value of [member filter_is_inclusive], this will either be a list of [RID]s that can not be hit (all other objects will be hit except for these), or it's the list of [RID]s that can only be hit (no objects will be hit except for these).
 		</member>
-		<member name="filter_is_inclusive" type="bool" setter="set_filter_is_inclusive" getter="get_filter_is_inclusive" default="false">
+		<member name="filter_is_inclusive" type="bool" setter="set_filter_is_inclusive" getter="get_filter_is_inclusive" default="true">
 			Determines if [member filter] is a whitelist or blacklist for [RID]s.
 		</member>
 		<member name="position" type="Vector3" setter="set_position" getter="get_position" default="Vector3(0, 0, 0)">
