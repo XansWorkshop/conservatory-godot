@@ -55,5 +55,6 @@ public:
 			PackedByteArray chars = p_name.to_utf8_buffer();
 			return cs_color_by_name(chars.ptr(), chars.size(), p_color);
 		}
+		return false;
 	}
 };
