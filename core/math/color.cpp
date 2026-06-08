@@ -396,6 +396,11 @@ bool Color::html_is_valid(const String &p_color) {
 Color Color::named(const String &p_name) {
 	int idx = find_named_color(p_name);
 	if (idx == -1) {
+		// Added by Xan 2026. Allows C# to inject custom named colors.
+		float rgba[4];
+		if (ColorNameInjector::get_color_by_name(p_name, rgba)) {
+			return Color(rgba[0], rgba[1], rgba[2], rgba[3]);
+		}
 		ERR_FAIL_V_MSG(Color(), "Invalid color name: " + p_name + ".");
 	}
 	return named_colors[idx].color;
@@ -404,11 +409,17 @@ Color Color::named(const String &p_name) {
 Color Color::named(const String &p_name, const Color &p_default) {
 	int idx = find_named_color(p_name);
 	if (idx == -1) {
+		// Added by Xan 2026. Allows C# to inject custom named colors.
+		float rgba[4];
+		if (ColorNameInjector::get_color_by_name(p_name, rgba)) {
+			return Color(rgba[0], rgba[1], rgba[2], rgba[3]);
+		}
 		return p_default;
 	}
 	return named_colors[idx].color;
 }
 
+// COMPAT FOR XAN: Do not use this directly, use Color::named(). No code other than named() uses this function currently.
 int Color::find_named_color(const String &p_name) {
 	String name = p_name;
 	// Normalize name.
