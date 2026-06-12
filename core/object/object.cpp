@@ -2470,6 +2470,7 @@ ObjectID ObjectDB::add_instance(Object *p_object) {
 	}
 	object_slots[slot].object = p_object;
 	object_slots[slot].is_ref_counted = p_object->is_ref_counted();
+	object_slots[slot].tc_is_custom = false;
 	validator_counter = (validator_counter + 1) & OBJECTDB_VALIDATOR_MASK;
 	if (unlikely(validator_counter == 0)) {
 		validator_counter = 1;

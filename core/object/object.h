@@ -892,16 +892,19 @@ bool Object::derives_from() const {
 
 class ObjectDB {
 // This needs to add up to 63, 1 bit is for reference.
-#define OBJECTDB_VALIDATOR_BITS 39
+// Added by Xan 2026: I need a bit for custom IDs, so take one from the validator.
+#define OBJECTDB_VALIDATOR_BITS 38 // Was 39 in base Godot
 #define OBJECTDB_VALIDATOR_MASK ((uint64_t(1) << OBJECTDB_VALIDATOR_BITS) - 1)
 #define OBJECTDB_SLOT_MAX_COUNT_BITS 24
 #define OBJECTDB_SLOT_MAX_COUNT_MASK ((uint64_t(1) << OBJECTDB_SLOT_MAX_COUNT_BITS) - 1)
-#define OBJECTDB_REFERENCE_BIT (uint64_t(1) << (OBJECTDB_SLOT_MAX_COUNT_BITS + OBJECTDB_VALIDATOR_BITS))
+#define OBJECTDB_REFERENCE_BIT (uint64_t(1) << (OBJECTDB_SLOT_MAX_COUNT_BITS + OBJECTDB_VALIDATOR_BITS + 0))
+#define OBJECTDB_TC_CUSTOM_BIT (uint64_t(1) << (OBJECTDB_SLOT_MAX_COUNT_BITS + OBJECTDB_VALIDATOR_BITS + 1))
 
 	struct ObjectSlot { // 128 bits per slot.
 		uint64_t validator : OBJECTDB_VALIDATOR_BITS;
 		uint64_t next_free : OBJECTDB_SLOT_MAX_COUNT_BITS;
 		uint64_t is_ref_counted : 1;
+		uint64_t tc_is_custom : 1; // Has to be here.
 		Object *object = nullptr;
 	};
 
@@ -928,6 +931,28 @@ public:
 		uint64_t id = p_instance_id;
 		uint32_t slot = id & OBJECTDB_SLOT_MAX_COUNT_MASK;
 
+		// Added by Xan 2026:
+		// SEE ALSO: Macros up above for bits!!
+		
+		// The Conservatory uses custom object IDs that are assigned to various servers (especially the physics server).
+		// Historically, it would just set the validator to 0, which would guarantee the ID was always invalid and thus it
+		// could never accidentally collide with a real Object. Great.
+
+		// There's just one problem:
+		// This design choice, while functional, wreaks all sorts of havoc on the performance of this code. In particular,
+		// it may trigger an error message, or if it doesn't error because the custom slot happens to be valid, then it will
+		// acquire the lock, trigger a condition explicitly decorated with unlikely() (which, as the name implies, is
+		// optimized for that *not* happening!), and then release the lock, blocking any other code for nothing.
+
+		// This boils down to what I would avidly explain with "Would you like your shit shaken or stirred".
+		// Frankly, I don't want shit at all.
+
+		// I've taken one bit from the validator to add another boolean field to object IDs. I would have added a fast check
+		// for zero validators, but I don't feel like rendering 39 bits unusable.
+		if (id & OBJECTDB_TC_CUSTOM_BIT) {
+			return nullptr;
+		}
+		
 		ERR_FAIL_COND_V(slot >= slot_max, nullptr); // This should never happen unless RID is corrupted.
 
 		spin_lock.lock();

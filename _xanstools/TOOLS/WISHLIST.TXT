@@ -1,0 +1,3 @@
+This document has random things where I say "It would be really nice if..." but don't want to work on right now.
+
+- Hardware accelerated Image::detect_alpha() (use SSE/AVX2/AVX512 to check many pixels in parallel)
