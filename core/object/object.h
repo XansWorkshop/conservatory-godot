@@ -891,20 +891,13 @@ bool Object::derives_from() const {
 }
 
 class ObjectDB {
-// This needs to add up to 63, 1 bit is for reference.
-// Added by Xan 2026: I need a bit for custom IDs, so take one from the validator.
-#define OBJECTDB_VALIDATOR_BITS 38 // Was 39 in base Godot
-#define OBJECTDB_VALIDATOR_MASK ((uint64_t(1) << OBJECTDB_VALIDATOR_BITS) - 1)
-#define OBJECTDB_SLOT_MAX_COUNT_BITS 24
-#define OBJECTDB_SLOT_MAX_COUNT_MASK ((uint64_t(1) << OBJECTDB_SLOT_MAX_COUNT_BITS) - 1)
-#define OBJECTDB_REFERENCE_BIT (uint64_t(1) << (OBJECTDB_SLOT_MAX_COUNT_BITS + OBJECTDB_VALIDATOR_BITS + 0))
-#define OBJECTDB_TC_CUSTOM_BIT (uint64_t(1) << (OBJECTDB_SLOT_MAX_COUNT_BITS + OBJECTDB_VALIDATOR_BITS + 1))
+	// Xan 2026: Macros for ObjectDB added to object_id.h
 
 	struct ObjectSlot { // 128 bits per slot.
 		uint64_t validator : OBJECTDB_VALIDATOR_BITS;
 		uint64_t next_free : OBJECTDB_SLOT_MAX_COUNT_BITS;
-		uint64_t is_ref_counted : 1;
 		uint64_t tc_is_custom : 1; // Has to be here.
+		uint64_t is_ref_counted : 1;
 		Object *object = nullptr;
 	};
 
