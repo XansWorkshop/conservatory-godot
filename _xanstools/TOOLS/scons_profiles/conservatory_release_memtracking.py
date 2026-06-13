@@ -10,6 +10,7 @@ d3d12 = "yes"
 fast_unsafe = "no"
 engine_update_check = "no"
 use_mingw = "yes"
+angle = "no"
 precision = "single"
 
 #### Some stuff for The Conservatory ####

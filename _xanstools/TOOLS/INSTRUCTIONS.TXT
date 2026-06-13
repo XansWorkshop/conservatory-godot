@@ -13,7 +13,7 @@ The external libraries needed are in here, for the most part, but there is some 
 ## PREPARATION
 
 1. The debug build of the engine is built using MSVC. This comes with Visual Studio. It's generally quick to build the engine, but isn't great otherwise. The main reason it is used is because Visual Studio can debug MSVC things from the C# side when developing the game.
-2. The release build of the engine is built using MINGW. To future Xan: I remember that finding where to install this was a pain in the neck, but I don't remember the steps I took to do so. Please edit this instructions page in the future when you have to inevitably install it again.
+2. The release build of the engine is built using MINGW. https://github.com/mstorsjo/llvm-mingw/releases
 3. You need Python 3.12.*+ to run this build tool.
 
 ## LIBRARIES
