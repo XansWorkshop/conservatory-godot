@@ -130,10 +130,26 @@ ECHO Would you like to build export templates as well? (Press Y (Yes) or N (No))
 CHOICE /n
 ECHO.
 SET CHS=%ERRORLEVEL%
+SET LTO=none
 
+IF %BUILDER%==llvm GOTO ASKLTO
+GOTO BEGINBUILD
+
+:ASKLTO
+ECHO What level of link-time optimization would you like? This trims out dead code paths.
+ECHO [1] for none (instant. No additional optimization).
+ECHO [2] for lite (5+ mins stuck at 100%%, light optimizations).
+ECHO [3] for full (15+ mins stuck at 100%%, complete optimization).
+CHOICE /c 123 /n
+ECHO.
+if %ERRORLEVEL%==3 SET LTO=full
+if %ERRORLEVEL%==2 SET LTO=lite
+if %ERRORLEVEL%==1 SET LTO=none
+
+:BEGINBUILD
 @ECHO ON
 ::scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" %PROFILE%
-scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "angle_libs=%LOCALAPPDATA%\Godot\build_deps\angle-x86_64-%BUILDER%" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" %PROFILE%
+scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "angle_libs=%LOCALAPPDATA%\Godot\build_deps\angle-x86_64-%BUILDER%" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" %PROFILE% "lto=%LTO%"
 @ECHO OFF
 
 if %ERRORLEVEL%==0 GOTO CARRYON
@@ -151,11 +167,11 @@ ECHO Build Templates...
 
 ECHO Making Windows Debug Build Template...
 ::scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" target=template_debug %PROFILE%
-scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "angle_libs=%LOCALAPPDATA%\Godot\build_deps\angle-x86_64-%BUILDER%" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" target=template_debug %PROFILE%
+scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "angle_libs=%LOCALAPPDATA%\Godot\build_deps\angle-x86_64-%BUILDER%" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" target=template_debug %PROFILE% "lto=%LTO%"
 
 ECHO Making Windows Release Build Template...
 ::scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" target=template_release %PROFILE%
-scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "angle_libs=%LOCALAPPDATA%\Godot\build_deps\angle-x86_64-%BUILDER%" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" target=template_release %PROFILE%
+scons platform=windows arch=x86_64 "accesskit_sdk_path=%LOCALAPPDATA%\Godot\build_deps\accesskit" "angle_libs=%LOCALAPPDATA%\Godot\build_deps\angle-x86_64-%BUILDER%" "mesa_libs=%LOCALAPPDATA%\Godot\build_deps\mesa-x86_64-%BUILDER%" "pix=%LOCALAPPDATA%\Godot\build_deps\pix" target=template_release %PROFILE% "lto=%LTO%"
 
 :GLUE
 ECHO Glue...
