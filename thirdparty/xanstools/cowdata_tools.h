@@ -39,7 +39,7 @@ class CowDataTools : public Object {
 
 protected:
 	static void _bind_methods() {
-		ClassDB::bind_static_method(CowDataTools::get_class_static(), D_METHOD("extract_offsets_ptr", "refcount_offset", "capacity_offset", "size_offset", "data_offset"), CowDataTools::extract_offsets_ptr);
+		ClassDB::bind_static_method(CowDataTools::get_class_static(), D_METHOD("extract_offsets_ptr", "refcount_offset", "capacity_offset", "size_offset", "data_offset"), &CowDataTools::extract_offsets_ptr);
 	}
 
 public:
