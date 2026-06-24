@@ -71,10 +71,12 @@ private:
 	//             └────────────────────┴──┴───────────────┴──┴─────────────┴──┴───────────...
 	// Offset:     ↑ REF_COUNT_OFFSET      ↑ CAPACITY_OFFSET  ↑ SIZE_OFFSET    ↑ DATA_OFFSET
 
+public: // Made public by Xan
 	static constexpr size_t REF_COUNT_OFFSET = 0;
 	static constexpr size_t CAPACITY_OFFSET = Memory::get_aligned_address(REF_COUNT_OFFSET + sizeof(SafeNumeric<USize>), alignof(USize));
 	static constexpr size_t SIZE_OFFSET = Memory::get_aligned_address(CAPACITY_OFFSET + sizeof(USize), alignof(USize));
 	static constexpr size_t DATA_OFFSET = Memory::get_aligned_address(SIZE_OFFSET + sizeof(USize), Memory::MAX_ALIGN);
+private:
 
 	mutable T *_ptr = nullptr;
 
