@@ -44,9 +44,9 @@ protected:
 
 public:
 	static void extract_offsets_ptr(int64_t p_refcount_offset_ptr, int64_t p_capacity_offset_ptr, int64_t p_size_offset_ptr, int64_t p_data_offset_ptr) {
-		*(uint64_t *)(p_refcount_offset_ptr) = CowData<void>::REF_COUNT_OFFSET;
-		*(uint64_t *)(p_capacity_offset_ptr) = CowData<void>::CAPACITY_OFFSET;
-		*(uint64_t *)(p_size_offset_ptr) = CowData<void>::SIZE_OFFSET;
-		*(uint64_t *)(p_data_offset_ptr) = CowData<void>::DATA_OFFSET;
+		*(uint64_t *)(p_refcount_offset_ptr) = CowData<uint64_t>::REF_COUNT_OFFSET;
+		*(uint64_t *)(p_capacity_offset_ptr) = CowData<uint64_t>::CAPACITY_OFFSET;
+		*(uint64_t *)(p_size_offset_ptr) = CowData<uint64_t>::SIZE_OFFSET;
+		*(uint64_t *)(p_data_offset_ptr) = CowData<uint64_t>::DATA_OFFSET;
 	}
 };
