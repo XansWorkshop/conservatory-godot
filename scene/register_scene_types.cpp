@@ -394,6 +394,7 @@
 #endif
 
 #include "thirdparty/xanstools/color_name_injector.h"
+#include "thirdparty/xanstools/cowdata_tools.h"
 
 static Ref<ResourceFormatSaverText> resource_saver_text;
 static Ref<ResourceFormatLoaderText> resource_loader_text;
@@ -811,6 +812,7 @@ void register_scene_types() {
 #endif // _3D_DISABLED
 
 	GDREGISTER_CLASS(ColorNameInjector);
+	GDREGISTER_CLASS(CowDataTools);
 
 	/* REGISTER SHADER */
 
