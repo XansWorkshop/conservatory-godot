@@ -40,6 +40,7 @@ class Main;
 class [[nodiscard]] StringName {
 	struct Table;
 
+public: // Made public by Xan
 	struct _Data {
 		SafeRefCount refcount;
 		SafeNumeric<uint32_t> static_count;
@@ -52,6 +53,7 @@ class [[nodiscard]] StringName {
 		_Data *prev = nullptr;
 		_Data *next = nullptr;
 	};
+private:
 
 	_Data *_data = nullptr;
 
