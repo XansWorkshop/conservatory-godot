@@ -40,7 +40,7 @@ class ColorNameInjector : public Object {
 
 protected:
 	static void _bind_methods() {
-		ClassDB::bind_static_method(ColorNameInjector::get_class_static(), D_METHOD("set_color_by_name_ptr", "ptr"), ColorNameInjector::set_color_by_name_ptr);
+		ClassDB::bind_static_method(ColorNameInjector::get_class_static(), D_METHOD("set_color_by_name_ptr", "ptr"), &ColorNameInjector::set_color_by_name_ptr);
 	}
 
 public:

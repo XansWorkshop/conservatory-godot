@@ -40,8 +40,8 @@ class MeshDirectAccess : public Object {
 
 protected:
 	static void _bind_methods() {
-		ClassDB::bind_static_method(MeshDirectAccess::get_class_static(), D_METHOD("mesh_get_surface_ptr", "mesh", "idx", "surf_ptr"), MeshDirectAccess::mesh_get_surface_ptr);
-		ClassDB::bind_static_method(MeshDirectAccess::get_class_static(), D_METHOD("mesh_add_surface_ptr", "mesh", "surf_ptr"), MeshDirectAccess::mesh_add_surface_ptr);
+		ClassDB::bind_static_method(MeshDirectAccess::get_class_static(), D_METHOD("mesh_get_surface_ptr", "mesh", "idx", "surf_ptr"), &MeshDirectAccess::mesh_get_surface_ptr);
+		ClassDB::bind_static_method(MeshDirectAccess::get_class_static(), D_METHOD("mesh_add_surface_ptr", "mesh", "surf_ptr"), &MeshDirectAccess::mesh_add_surface_ptr);
 	}
 
 public:
