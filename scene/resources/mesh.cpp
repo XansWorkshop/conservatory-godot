@@ -995,12 +995,12 @@ TypedArray<Array> Mesh::convex_decompose_exposed(const PackedVector3Array &p_tri
 
 	int decomp_size = decomposed.size();
 	TypedArray<Array> ret;
-	ret.resize(decomp_size);
+	ret.reserve(decomp_size);
 	for (int i = 0; i < decomp_size; ++i) {
 		const PackedVector3Array &list = decomposed.get(i);
 		const int size = list.size();
 		Array self;
-		self.resize(size);
+		self.reserve(size);
 		for (int j = 0; j < size; ++j) {
 			self.push_back(list[j]);
 		}

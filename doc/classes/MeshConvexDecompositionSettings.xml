@@ -10,7 +10,7 @@
 	</tutorials>
 	<members>
 		<member name="convex_hull_approximation" type="bool" setter="set_convex_hull_approximation" getter="get_convex_hull_approximation" default="true">
-			If [code]true[/code], uses approximation for computing convex hulls.
+			If [code]true[/code], approximation is used. Note that this is somewhat misleading in that Godot [i]always[/i] does approximation under its current API.
 		</member>
 		<member name="convex_hull_downsampling" type="int" setter="set_convex_hull_downsampling" getter="get_convex_hull_downsampling" default="4" deprecated="Godot: Conservatory Edition - This property is not recommended for use because its name is misleading. The term 'downsampling' implies that greater values reduce quality. They do not. Use [member convex_hull_granularity] instead.">
 			Controls the precision of the convex-hull generation process during the clipping plane selection stage. Ranges from [code]1[/code] to [code]16[/code].
@@ -31,7 +31,7 @@
 			Controls the adaptive sampling of the generated convex-hulls. Ranges from [code]0.0[/code] to [code]0.01[/code].
 		</member>
 		<member name="mode" type="int" setter="set_mode" getter="get_mode" enum="MeshConvexDecompositionSettings.Mode" default="0">
-			Mode for the approximate convex decomposition. Not used in precise mode.
+			Mode for the decomposition. Generally, tetrahedron provides better quality.
 		</member>
 		<member name="normalize_mesh" type="bool" setter="set_normalize_mesh" getter="get_normalize_mesh" default="false">
 			If [code]true[/code], normalizes the mesh before applying the convex decomposition. This may help improve accuracy, in some cases.
@@ -47,9 +47,11 @@
 		</member>
 		<member name="revolution_axes_clipping_bias" type="float" setter="set_revolution_axes_clipping_bias" getter="get_revolution_axes_clipping_bias" default="0.05">
 			Controls the bias toward clipping along revolution axes. Ranges from [code]0.0[/code] to [code]1.0[/code].
+			Revolution axes are axes that the geometry can rotate on which have rotational symmetry.
 		</member>
 		<member name="symmetry_planes_clipping_bias" type="float" setter="set_symmetry_planes_clipping_bias" getter="get_symmetry_planes_clipping_bias" default="0.05">
 			Controls the bias toward clipping along symmetry planes. Ranges from [code]0.0[/code] to [code]1.0[/code].
+			Symmetry planes are planes where the shape is mirrored on both sides.
 		</member>
 
 		<member name="convex_hull_granularity" type="int" setter="set_convex_hull_granularity" getter="get_convex_hull_granularity" default="4">
