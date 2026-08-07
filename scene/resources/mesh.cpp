@@ -149,9 +149,6 @@ void MeshConvexDecompositionSettings::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_max_concavity", "max_concavity"), &MeshConvexDecompositionSettings::set_max_concavity);
 	ClassDB::bind_method(D_METHOD("get_max_concavity"), &MeshConvexDecompositionSettings::get_max_concavity);
 
-	ClassDB::bind_method(D_METHOD("set_min_concavity", "min_concavity"), &MeshConvexDecompositionSettings::set_min_concavity);
-	ClassDB::bind_method(D_METHOD("get_min_concavity"), &MeshConvexDecompositionSettings::get_min_concavity);
-
 	ClassDB::bind_method(D_METHOD("set_symmetry_planes_clipping_bias", "symmetry_planes_clipping_bias"), &MeshConvexDecompositionSettings::set_symmetry_planes_clipping_bias);
 	ClassDB::bind_method(D_METHOD("get_symmetry_planes_clipping_bias"), &MeshConvexDecompositionSettings::get_symmetry_planes_clipping_bias);
 
