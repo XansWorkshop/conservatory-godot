@@ -56,7 +56,7 @@
 			Controls the precision of the convex-hull generation process during the clipping plane selection stage. Ranges from [code]1[/code] to [code]16[/code].
 			Higher values result in higher precision decomposition, but take longer to compute.
 		</member>
-		<member name="plane_downsampling" type="int" setter="set_plane_downsampling" getter="get_plane_downsampling" default="4">
+		<member name="plane_granularity" type="int" setter="set_plane_downsampling" getter="get_plane_downsampling" default="4">
 			Controls the granularity of the search for the "best" clipping plane between convex hulls. Ranges from [code]1[/code] to [code]16[/code].
 			Higher values result in higher precision decomposition, but take longer to compute.
 		</member>
