@@ -149,6 +149,9 @@ void MeshConvexDecompositionSettings::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_max_concavity", "max_concavity"), &MeshConvexDecompositionSettings::set_max_concavity);
 	ClassDB::bind_method(D_METHOD("get_max_concavity"), &MeshConvexDecompositionSettings::get_max_concavity);
 
+	ClassDB::bind_method(D_METHOD("set_min_concavity", "min_concavity"), &MeshConvexDecompositionSettings::set_min_concavity);
+	ClassDB::bind_method(D_METHOD("get_min_concavity"), &MeshConvexDecompositionSettings::get_min_concavity);
+
 	ClassDB::bind_method(D_METHOD("set_symmetry_planes_clipping_bias", "symmetry_planes_clipping_bias"), &MeshConvexDecompositionSettings::set_symmetry_planes_clipping_bias);
 	ClassDB::bind_method(D_METHOD("get_symmetry_planes_clipping_bias"), &MeshConvexDecompositionSettings::get_symmetry_planes_clipping_bias);
 
@@ -198,6 +201,20 @@ void MeshConvexDecompositionSettings::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "convex_hull_approximation"), "set_convex_hull_approximation", "get_convex_hull_approximation");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "max_convex_hulls"), "set_max_convex_hulls", "get_max_convex_hulls");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "project_hull_vertices"), "set_project_hull_vertices", "get_project_hull_vertices");
+
+	// Added by Xan
+	// For context: Godot really didn't choose good names (or changed the API? I haven't been around) in my opinion. The documentation and names of these properties
+	// is outright confusing, and so I've added these as supplementaries and deprecated their predecessors. Note that they use the original methods!
+
+	// So basically:
+	// max_concavity -	Outright wrong. A value of 1.0 implies the mesh can be as concave as it wants to be. Wrong. This causes it to be perfectly *convex*.
+	//					Likewise, a value of 0.0 implies no concavity is allowed at all. This allows full concavity.
+	// *_downsampling - Misleading. "Downsampling" implies "reduced quality" to me (i.e. "decreased sampling"). However, larger values promote *more* granularity
+	//					and precision, not less. So the word "downsampling" has been replaced with "granularity".
+
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "min_concavity", PROPERTY_HINT_RANGE, "0.0,1.0,0.001"), "set_max_concavity", "get_max_concavity");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "plane_granularity", PROPERTY_HINT_RANGE, "1,16,1"), "set_plane_downsampling", "get_plane_downsampling");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "convex_hull_granularity", PROPERTY_HINT_RANGE, "1,16,1"), "set_convex_hull_downsampling", "get_convex_hull_downsampling");
 
 	BIND_ENUM_CONSTANT(CONVEX_DECOMPOSITION_MODE_VOXEL);
 	BIND_ENUM_CONSTANT(CONVEX_DECOMPOSITION_MODE_TETRAHEDRON);
@@ -956,24 +973,34 @@ Vector<Ref<Shape3D>> Mesh::convex_decompose(const Ref<MeshConvexDecompositionSet
 	return ret;
 }
 
-TypedArray<Array> Mesh::convex_decompose_exposed(const Vector<Vector3> &p_triangles, const Ref<MeshConvexDecompositionSettings> &p_settings) {
+TypedArray<Array> Mesh::convex_decompose_exposed(const PackedVector3Array &p_triangles, const Ref<MeshConvexDecompositionSettings> &p_settings) {
 	ERR_FAIL_NULL_V(convex_decomposition_function, TypedArray<Array>());
 	ERR_FAIL_COND_V(p_triangles.size() % 3 != 0, TypedArray<Array>());
 
 	int vertex_count = p_triangles.size();
 	int triangle_count = vertex_count / 3;
 	Vector<uint32_t> indices;
-	indices.resize(vertex_count);
-	for (int i = 0; i < vertex_count; ++i) {
-		indices.push_back(i);
+	{
+		indices.resize(vertex_count);
+		uint32_t *w = indices.ptrw();
+		for (int i = 0; i < vertex_count; ++i) {
+			w[i] = i;
+		}
 	}
+	Vector<PackedVector3Array> decomposed = convex_decomposition_function(
+		(real_t *)p_triangles.ptr(),
+		vertex_count,
+		indices.ptr(),
+		triangle_count,
+		p_settings,
+		nullptr
+	);
 
-	Vector<Vector<Vector3>> decomposed = convex_decomposition_function((real_t *)p_triangles.ptr(), vertex_count, indices.ptr(), triangle_count, p_settings, nullptr);
 	int decomp_size = decomposed.size();
 	TypedArray<Array> ret;
 	ret.resize(decomp_size);
 	for (int i = 0; i < decomp_size; ++i) {
-		const Vector<Vector3> &list = decomposed.get(i);
+		const PackedVector3Array &list = decomposed.get(i);
 		const int size = list.size();
 		Array self;
 		self.resize(size);

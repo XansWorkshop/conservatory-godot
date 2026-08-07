@@ -12,11 +12,14 @@
 		<member name="convex_hull_approximation" type="bool" setter="set_convex_hull_approximation" getter="get_convex_hull_approximation" default="true">
 			If [code]true[/code], uses approximation for computing convex hulls.
 		</member>
-		<member name="convex_hull_downsampling" type="int" setter="set_convex_hull_downsampling" getter="get_convex_hull_downsampling" default="4">
+		<member name="convex_hull_downsampling" type="int" setter="set_convex_hull_downsampling" getter="get_convex_hull_downsampling" default="4" deprecated="Godot: Conservatory Edition - This property is not recommended for use because its name is misleading. The term 'downsampling' implies that greater values reduce quality. They do not. Use [member convex_hull_granularity] instead.">
 			Controls the precision of the convex-hull generation process during the clipping plane selection stage. Ranges from [code]1[/code] to [code]16[/code].
 		</member>
-		<member name="max_concavity" type="float" setter="set_max_concavity" getter="get_max_concavity" default="1.0">
+		<member name="max_concavity" type="float" setter="set_max_concavity" getter="get_max_concavity" default="1.0" deprecated="Godot: Conservatory Edition - This name is incorrect due to ambiguous writing in Godot's source code, and it actually represents the [i]minimum[/i] concavity. Use [member min_concavity] instead.">
 			Maximum concavity. Ranges from [code]0.0[/code] to [code]1.0[/code].
+		</member>
+		<member name="min_concavity" type="float" setter="set_min_concavity" getter="get_min_concavity" default="0.0">
+			The minimum amount of concavity that the mesh has. A value of 0 completely disallows concavity, generating a single convex hull. A value of 1 allows preserving the precise shape (limited by the other properties). Ranges from [code]0.0[/code] to [code]1.0[/code].
 		</member>
 		<member name="max_convex_hulls" type="int" setter="set_max_convex_hulls" getter="get_max_convex_hulls" default="1">
 			The maximum number of convex hulls to produce from the merge operation.
@@ -28,25 +31,34 @@
 			Controls the adaptive sampling of the generated convex-hulls. Ranges from [code]0.0[/code] to [code]0.01[/code].
 		</member>
 		<member name="mode" type="int" setter="set_mode" getter="get_mode" enum="MeshConvexDecompositionSettings.Mode" default="0">
-			Mode for the approximate convex decomposition.
+			Mode for the approximate convex decomposition. Not used in precise mode.
 		</member>
 		<member name="normalize_mesh" type="bool" setter="set_normalize_mesh" getter="get_normalize_mesh" default="false">
-			If [code]true[/code], normalizes the mesh before applying the convex decomposition.
+			If [code]true[/code], normalizes the mesh before applying the convex decomposition. This may help improve accuracy, in some cases.
 		</member>
-		<member name="plane_downsampling" type="int" setter="set_plane_downsampling" getter="get_plane_downsampling" default="4">
+		<member name="plane_downsampling" type="int" setter="set_plane_downsampling" getter="get_plane_downsampling" default="4" deprecated="Godot: Conservatory Edition - This property is not recommended for use because its name is misleading. The term 'downsampling' implies that greater values reduce quality. They do not. Use [member plane_granularity] instead.">
 			Controls the granularity of the search for the "best" clipping plane. Ranges from [code]1[/code] to [code]16[/code].
 		</member>
 		<member name="project_hull_vertices" type="bool" setter="set_project_hull_vertices" getter="get_project_hull_vertices" default="true">
 			If [code]true[/code], projects output convex hull vertices onto the original source mesh to increase floating-point accuracy of the results.
 		</member>
 		<member name="resolution" type="int" setter="set_resolution" getter="get_resolution" default="10000">
-			Maximum number of voxels generated during the voxelization stage.
+			Maximum number of voxels generated during the voxelization stage. Ranged from 10000 to 100000.
 		</member>
 		<member name="revolution_axes_clipping_bias" type="float" setter="set_revolution_axes_clipping_bias" getter="get_revolution_axes_clipping_bias" default="0.05">
 			Controls the bias toward clipping along revolution axes. Ranges from [code]0.0[/code] to [code]1.0[/code].
 		</member>
 		<member name="symmetry_planes_clipping_bias" type="float" setter="set_symmetry_planes_clipping_bias" getter="get_symmetry_planes_clipping_bias" default="0.05">
 			Controls the bias toward clipping along symmetry planes. Ranges from [code]0.0[/code] to [code]1.0[/code].
+		</member>
+
+		<member name="convex_hull_granularity" type="int" setter="set_convex_hull_granularity" getter="get_convex_hull_granularity" default="4">
+			Controls the precision of the convex-hull generation process during the clipping plane selection stage. Ranges from [code]1[/code] to [code]16[/code].
+			Higher values result in higher precision decomposition, but take longer to compute.
+		</member>
+		<member name="plane_downsampling" type="int" setter="set_plane_downsampling" getter="get_plane_downsampling" default="4">
+			Controls the granularity of the search for the "best" clipping plane between convex hulls. Ranges from [code]1[/code] to [code]16[/code].
+			Higher values result in higher precision decomposition, but take longer to compute.
 		</member>
 	</members>
 	<constants>
