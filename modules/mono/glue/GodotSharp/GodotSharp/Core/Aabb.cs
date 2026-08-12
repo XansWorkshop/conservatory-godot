@@ -359,6 +359,16 @@ namespace Godot
         /// </returns>
         public readonly bool HasPoint(Vector3 point)
         {
+#if USING_SYSTEM_NUMERICS_VECTORS
+            // Added by Xan:
+            // Use hardware acceleration if we can.
+            return Vector3.AllWhereAllBitsSet(
+				Vector3.BitwiseAnd(
+					Vector3.LessThan(_position, point),
+					Vector3.GreaterThan(_position + _size, point)
+				)
+			);
+#else
             if (point.X < _position.X)
                 return false;
             if (point.Y < _position.Y)
@@ -373,6 +383,7 @@ namespace Godot
                 return false;
 
             return true;
+#endif
         }
 
         /// <summary>
@@ -386,7 +397,13 @@ namespace Godot
         /// </returns>
         public readonly bool HasSurface()
         {
+#if USING_SYSTEM_NUMERICS_VECTORS
+            // Added by Xan:
+            // Use hardware acceleration if we can.
+            return Vector3.GreaterThanAny(_size, Vector3.Zero);
+#else
             return _size.X > 0.0f || _size.Y > 0.0f || _size.Z > 0.0f;
+#endif
         }
 
         /// <summary>
@@ -400,7 +417,13 @@ namespace Godot
         /// </returns>
         public readonly bool HasVolume()
         {
+#if USING_SYSTEM_NUMERICS_VECTORS
+            // Added by Xan:
+            // Use hardware acceleration if we can.
+            return Vector3.GreaterThanAll(_size, Vector3.Zero);
+#else
             return _size.X > 0.0f && _size.Y > 0.0f && _size.Z > 0.0f;
+#endif
         }
 
         /// <summary>
@@ -414,7 +437,15 @@ namespace Godot
             Vector3 srcMax = _position + _size;
             Vector3 dstMin = with._position;
             Vector3 dstMax = with._position + with._size;
-
+#if USING_SYSTEM_NUMERICS_VECTORS
+            // Added by Xan:
+            // Use hardware acceleration if we can.
+            Vector3 newMin = Vector3.Max(srcMin, dstMin);
+            Vector3 newMax = Vector3.Min(srcMax, dstMax);
+            Vector3 newSize = newMax - newMin;
+            if (Vector3.LessThanAny(newSize, Vector3.Zero)) return default;
+            return new Aabb(newMin, newSize);
+#else
             Vector3 min, max;
 
             if (srcMin.X > dstMax.X || srcMax.X < dstMin.X)
@@ -442,6 +473,7 @@ namespace Godot
             max.Z = srcMax.Z < dstMax.Z ? srcMax.Z : dstMax.Z;
 
             return new Aabb(min, max - min);
+#endif
         }
 
         /// <summary>
@@ -454,6 +486,16 @@ namespace Godot
         /// </returns>
         public readonly bool Intersects(Aabb with)
         {
+#if USING_SYSTEM_NUMERICS_VECTORS
+            // Added by Xan:
+            // Use hardware acceleration if we can.
+            return Vector3.AllWhereAllBitsSet(
+				Vector3.BitwiseAnd(
+					Vector3.LessThan(_position, with._position + with._size),
+					Vector3.GreaterThan(_position + _size, with._position)
+				)
+			);
+#else
             if (_position.X >= with._position.X + with._size.X)
                 return false;
             if (_position.X + _size.X <= with._position.X)
@@ -468,6 +510,7 @@ namespace Godot
                 return false;
 
             return true;
+#endif
         }
 
         /// <summary>
