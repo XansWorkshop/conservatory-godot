@@ -3887,6 +3887,8 @@ static EditorPropertyRangeHint _parse_range_hint(PropertyHint p_hint, const Stri
 			degrees = true;
 		} else if (slice.begins_with("suffix:")) {
 			hint.suffix = " " + slice.replace_first("suffix:", "").strip_edges();
+		} else if (slice.begins_with("raw_suffix:")) {
+			hint.suffix = slice.replace_first("raw_suffix:", "").strip_edges();
 		}
 	}
 
