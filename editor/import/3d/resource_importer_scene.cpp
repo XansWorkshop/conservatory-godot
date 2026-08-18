@@ -1399,7 +1399,7 @@ Node *ResourceImporterScene::_replace_node_with_type_and_script(Node *p_node, St
 		Script* node_type_script = Object::cast_to<Script>(node_instance.ptr());
 		if (node_type_script) {
 			String global_name = node_type_script->get_global_name();
-			if (global_name.length()) {
+			if (!global_name.is_empty()) {
 				p_node_type = global_name;
 			}
 		}
