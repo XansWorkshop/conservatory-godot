@@ -43,8 +43,10 @@ ECHO [3] for The Conservatory (Release, Double Precision)
 ECHO [4] for The Conservatory (Debug, Double Precision)
 ECHO [5] for The Conservatory (Release, Runtime Memory Metrics)
 ECHO [6] for The Conservatory (Release, Double Precision, Runtime Memory Metrics)
-CHOICE /c 123456 /n
+ECHO [7] for CreatureGame (Same as #5, Deprecated code enabled for compat)
+CHOICE /c 1234567 /n
 ECHO.
+if %ERRORLEVEL%==7 GOTO TYPE_CONSERVATORY_RELEASE_RUNTIME_METRICS_DEPRECATED_ON
 if %ERRORLEVEL%==6 GOTO TYPE_CONSERVATORY_RELEASE_DOUBLE_RUNTIME_METRICS
 if %ERRORLEVEL%==5 GOTO TYPE_CONSERVATORY_RELEASE_RUNTIME_METRICS
 if %ERRORLEVEL%==4 GOTO TYPE_CONSERVATORY_DEBUG_DOUBLE
@@ -114,6 +116,15 @@ SET EXNAME=godot.windows.editor.double.llvm.x86_64.%BUILD_NAME%.mono.exe
 SET DOUBLE=--precision=double
 SET BUILDER=llvm
 GOTO ASKEXP
+
+:TYPE_CONSERVATORY_RELEASE_RUNTIME_METRICS_DEPRECATED_ON
+SET BUILD_NAME=conservatory_edition
+SET PROFILE="profile=%XANSTOOLS_FOLDER%TOOLS/scons_profiles/creaturegame_release_memtracking.py" "extra_suffix=%BUILD_NAME%"
+SET EXNAME=godot.windows.editor.x86_64.llvm.%BUILD_NAME%.mono.exe
+SET DOUBLE=
+SET BUILDER=llvm
+GOTO ASKEXP
+
 
 :TYPE_CONSERVATORY_RELEASE_RUNTIME_METRICS
 SET BUILD_NAME=conservatory_edition
