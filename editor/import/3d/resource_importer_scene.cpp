@@ -1395,9 +1395,8 @@ Node *ResourceImporterScene::_post_fix_animations(Node *p_node, Node *p_root, co
 Node *ResourceImporterScene::_replace_node_with_type_and_script(Node *p_node, String p_node_type, Ref<Script> p_script) {
 	// Added by Xan. Fix #122547
 	if (ResourceLoader::exists(p_node_type)) {
-		Ref<Resource> node_instance = ResourceLoader::load(p_node_type);
-		Script* node_type_script = Object::cast_to<Script>(node_instance.ptr());
-		if (node_type_script) {
+		Ref<Script> node_type_script = ResourceLoader::load(p_node_type);
+		if (node_type_script.is_valid()) {
 			String global_name = node_type_script->get_global_name();
 			if (!global_name.is_empty()) {
 				p_node_type = global_name;
